@@ -1,11 +1,12 @@
 # Getting Started 
 
 
-The firebase file is stored in @jumbo/services/auth/firebase/firebase.js
-The interact v1 files (Pages & Components) are in @interact
+The firebase file is stored in @jumbo/services/auth/firebase/firebase.js \
+The interact v1 files (Pages & Components) are in @interact \
 
-The folder structure is as follows
-ork/structure/folder-structure
+The folder structure is as follows \
+[https://docs-jumbo-6.g-axon.work/structure/folder-structure](Structure)
+![alt text](https://753007720-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FSi2akz0KHtWfHi4VtGUU%2Fuploads%2FXiAi8r2LyAnlfrMhFShE%2Fjumbo%20folder%20structure.svg?alt=media&token=1fc6f57c-18f5-459a-9583-2e854c5f088d)
 
 
 ## Available Scripts
