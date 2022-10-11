@@ -2,7 +2,7 @@ import { TextField, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import { Link, useNavigate } from "react-router-dom";
-import { auth, loginWithEmailAndPassword, signInWithGoogle } from "../../../firebase";
+import { auth, loginWithEmailAndPassword, signInWithGoogle } from "@jumbo/services/auth/firebase/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import fb_logo from './facebook.png';
