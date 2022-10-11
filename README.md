@@ -1,6 +1,8 @@
 # Getting Started 
 
+The routes are in app/routes 
 
+First change index.js in routes, then you can put the path and the navigate to for the component you want, and make your own routes file /
 The firebase file is stored in @jumbo/services/auth/firebase/firebase.js \
 The interact v1 files (Pages & Components) are in @interact \
 
