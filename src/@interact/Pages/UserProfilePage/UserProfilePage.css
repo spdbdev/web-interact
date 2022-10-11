@@ -1,0 +1,32 @@
+.profilePic {
+    border-radius:1000px;
+    width:200px;
+    height:200px;
+}
+
+.coverSection{
+    background-color: #782fee;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    padding-top:20px;
+    padding-bottom:20px;
+    /* height:300px; */
+}
+
+.horizontalScroll::-webkit-scrollbar {
+    display: none;
+  }
+
+.modal{
+    max-width:700px;
+    width:400px;
+    height:70%;
+    background-color: white;
+    border-radius: 20px;
+    margin-left: calc(50% - 200px);
+    margin-top:10%;
+    padding:20px;
+}

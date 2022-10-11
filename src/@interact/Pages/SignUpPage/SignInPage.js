@@ -1,0 +1,79 @@
+import { TextField, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+
+import { Link, useNavigate } from "react-router-dom";
+import { auth, loginWithEmailAndPassword, signInWithGoogle } from "../../../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+import fb_logo from './facebook.png';
+import gl_logo from './google.png';
+
+import './SignUpPage.css'
+
+function SignInPage() {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (loading) {
+          // maybe trigger a loading screen
+          return;
+        }
+        if (user) navigate("/user");
+      }, [user, loading]);
+
+
+
+  return (
+        <div className='SignUpPage'>
+        {/* <div className='CredentialsBox'> */}
+
+        <div className='CredentialBox'>
+
+            <img src={process.env.PUBLIC_URL+'/logo.png'} alt="logo" style={{height:100, padding:20}}/>
+
+            <Button className='SignUpWithGoogle'  onClick={signInWithGoogle}><img src={gl_logo} style={{height:'100%'}} /> <div>Sign In with Google</div></Button>
+            {/* <Button className='SignUpWithGoogle' style={{backgroundColor:'#1778F2', color:'white'}}><img src={fb_logo} style={{height:'100%'}} /> <div>Sign In with Facebook</div></Button> */}
+
+        
+            <br/>
+            or
+            <br/>
+                    <div className='TextInputWrapper'>
+                        <TextField id="outlined-basic" label="Email Address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+                    <div className='TextInputWrapper'>
+                        <TextField id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
+                    </div>
+
+                    <div className='ButtonsWrapper'>
+                        <Button     
+                            style={{
+                                margin:10,
+                                color:'white',
+                                backgroundColor: "purple",
+                                padding: "10px 20px",
+                                // fontWeight:'bold',
+                            }}
+                            onClick={() => loginWithEmailAndPassword(email, password)}
+                            color='info'>Log In</Button>
+                    </div>
+                    <div style={{paddingTop:20}}>
+                        <Link to='/reset'>Forgot Password</Link>
+                    </div>
+                    <div style={{paddingTop:20}}>
+                        Don't have an account? <Link to='/signup'>Sign up now.</Link>
+                    </div>
+                    
+
+
+            </div>
+        {/* </div> */}
+        </div>
+  );
+}
+
+export default SignInPage;
