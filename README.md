@@ -1,8 +1,18 @@
-# Getting Started with Create React App
+# Getting Started 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+The firebase file is stored in @jumbo/services/auth/firebase/firebase.js
+The interact v1 files (Pages & Components) are in @interact
+
+The folder structure is as follows
+ork/structure/folder-structure
+
 
 ## Available Scripts
+
+Make sure you run this npm install command below :
+### `npm install --legacy-peer-deps`
+### `npm start`
 
 In the project directory, you can run:
 
