@@ -480,8 +480,11 @@ import { db } from "@jumbo/services/auth/firebase/firebase";
 //   rafflePrice:1.5,
 // }
 
-function CompaignPage() {
-  const num_giveaway = 10;
+
+function CampaignPage() {
+
+
+  const num_raffle = 10;
   const num_auction = 10;
 
   const [campaignData, setCampaignData] = useState({});
@@ -639,4 +642,4 @@ function CompaignPage() {
   );
 }
 
-export default CompaignPage;
+export default CampaignPage;
