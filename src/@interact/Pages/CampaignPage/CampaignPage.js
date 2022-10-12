@@ -484,7 +484,7 @@ import { db } from "@jumbo/services/auth/firebase/firebase";
 function CampaignPage() {
 
 
-  const num_raffle = 10;
+  const num_giveaway = 10;
   const num_auction = 10;
 
   const [campaignData, setCampaignData] = useState({});
