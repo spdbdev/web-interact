@@ -20,6 +20,7 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import InfoTooltip from "../InfoTooltip";
+import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 
 const columns = [
   { field: "id", headerName: "No", width: 90 },
@@ -93,16 +94,8 @@ export default function Leaderboard({ campaignData, bids }) {
   }, [bids]);
 
   return (
-    <Box
-      sx={{
-        borderRadius: 2,
-        boxShadow: 2,
-        p: 2,
-      }}
-    >
+    <JumboCardQuick title={"Leaderboard"}>
       <div style={{ padding: 10, height: "100%" }}>
-        <Typography variant="h5">Leaderboard</Typography>
-
         {bids?.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div style={{ padding: "10px 0" }}>
@@ -186,7 +179,7 @@ export default function Leaderboard({ campaignData, bids }) {
           </>
         )}
       </div>
-    </Box>
+    </JumboCardQuick>
   );
 }
 

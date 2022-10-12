@@ -11,17 +11,80 @@ import {
 } from "@mui/material";
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
+import JumboCardQuick from "@jumbo/components/JumboCardQuick";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 
 export default function Giveaway({ campaignData }) {
+  const Swal = useSwalWrapper();
+  const buyGiveawayAlert = () => {
+    Swal.fire({
+      title: "Skill-testing question",
+      text: "Before you make this purchase, you must correctly answer the math question below:",
+      icon: "warning",
+      html: (
+        <div>
+          <p>300+100+20 = ?</p>
+          <input id="answer" type={"number"} />
+        </div>
+      ),
+      showCancelButton: true,
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Wait, cancel!",
+      reverseButtons: true,
+      preConfirm: () => {
+        const answer = Swal.getPopup().querySelector("#answer").value;
+        if (answer != 420) {
+          Swal.showValidationMessage(`Please try again.`);
+        }
+        return { answer: answer };
+      },
+    }).then((result) => {
+      if (result.value.answer == 420) {
+        Swal.fire(
+          "Correct!",
+          "You'll now be taken to the payment page.",
+          "success"
+        );
+      } else {
+        Swal.fire(
+          "Incorrect.",
+          "We were expecting a different answer... try again!",
+          "error"
+        );
+      }
+    });
+  };
+  const freeGiveawayAlert = () => {
+    Swal.fire({
+      title: "Claim free entry?",
+      text: "Would you like to claim this free giveaway entry?",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Claim!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.value) {
+        Swal.fire(
+          "Claimed!",
+          "You've claimed a free entry for this giveaway. Good luck!",
+          "success"
+        );
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        // close alert
+      }
+    });
+  };
+
   // these are dummy values and will be replaced with legit DB variables
   const chanceMultiplier = 1;
   const lossChanceMultiplier = 2; // this can be 2 or 4, corresponding to 1 or 2 past losses in a giveaway (for same creator)
   return (
-    <Box
+    <JumboCardQuick
+      title={"Giveaway"}
       sx={{
-        borderRadius: 2,
-        boxShadow: 2,
-        p: 2,
         ml: 2,
         display: "flex",
         flexDirection: "column",
@@ -29,8 +92,6 @@ export default function Giveaway({ campaignData }) {
       }}
       id="giveawayCard"
     >
-      <Typography variant="h5">Giveaway</Typography>
-
       <div style={{ flex: 1 }}>
         <div>
           <span className="Highlight">50</span> x 30 minute interactions
@@ -80,7 +141,7 @@ export default function Giveaway({ campaignData }) {
           action="http://localhost:4242/create-raffle-session"
           method="POST"
         > */}
-          <InteractButton onClick={() => console.log("buy")}>
+          <InteractButton onClick={buyGiveawayAlert}>
             Buy VIP entry
           </InteractButton>
           {/* </form> */}
@@ -114,11 +175,11 @@ export default function Giveaway({ campaignData }) {
         //   action="http://localhost:4242/create-raffle-session"
         //   method="POST"
         > */}
-        <InteractButton onClick={() => console.log("buy")}>
+        <InteractButton onClick={freeGiveawayAlert}>
           Get a free entry
         </InteractButton>
         {/* </form> */}
       </div>
-    </Box>
+    </JumboCardQuick>
   );
 }

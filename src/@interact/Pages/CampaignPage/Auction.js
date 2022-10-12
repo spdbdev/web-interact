@@ -15,6 +15,8 @@ import {
 import { useState } from "react";
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
+import JumboCardQuick from "@jumbo/components/JumboCardQuick";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 
 export default function Auction({ bids, campaignData, bidAction }) {
   // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
@@ -22,20 +24,13 @@ export default function Auction({ bids, campaignData, bidAction }) {
   const [bidAmount, setBidAmount] = useState(0);
   const [maxBidAmount, setMaxBidAmount] = useState(0);
   const [desiredRanking, setDesiredRanking] = useState(0);
+
   return (
-    <Box
-      sx={{
-        borderRadius: 2,
-        boxShadow: 2,
-        p: 2,
-        ml: 2,
-        display: "flex",
-        flexDirection: "column",
-        minWidth: 400,
-      }}
+    <JumboCardQuick
+      title={"Auction"}
       id="auctionCard"
+      sx={{ ml: 2, display: "flex", flexDirection: "column", minWidth: 400 }}
     >
-      <Typography variant="h5">Auction</Typography>
       <div
         id="autoBidSection"
         style={{
@@ -190,6 +185,6 @@ export default function Auction({ bids, campaignData, bidAction }) {
       <span style={{ fontSize: 10, color: "#777", textAlign: "center" }}>
         You won't be charged if you don't win.
       </span>
-    </Box>
+    </JumboCardQuick>
   );
 }
