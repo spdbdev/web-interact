@@ -1,6 +1,12 @@
 # Getting Started 
 
-The routes are in app/routes 
+Make sure you have the correct dependencies by running this npm install command below :
+### `npm install --legacy-peer-deps`
+
+and to see the project running do :
+### `npm start`
+
+The routes are in app/routes \
 
 First change index.js in routes, then you can put the path and the navigate to for the component you want, and make your own routes file /
 The firebase file is stored in @jumbo/services/auth/firebase/firebase.js \
@@ -13,9 +19,7 @@ The folder structure is as follows \
 
 ## Available Scripts
 
-Make sure you run this npm install command below :
-### `npm install --legacy-peer-deps`
-### `npm start`
+
 
 In the project directory, you can run:
 
