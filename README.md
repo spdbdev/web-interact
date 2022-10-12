@@ -6,13 +6,13 @@ Make sure you have the correct dependencies by running this npm install command 
 and to see the project running do :
 ### `npm start`
 
-The routes are in app/routes \
+The routes are in app/routes 
 
-First change index.js in routes, then you can put the path and the navigate to for the component you want, and make your own routes file /
-The firebase file is stored in @jumbo/services/auth/firebase/firebase.js \
-The interact v1 files (Pages & Components) are in @interact \
+First change index.js in routes, then you can put the path and the navigate to for the component you want, and make your own routes file\
+The firebase file is stored in @jumbo/services/auth/firebase/firebase.js\
+The interact v1 files (Pages & Components) are in @interact 
 
-The folder structure is as follows \
+The folder structure is as follows\
 [https://docs-jumbo-6.g-axon.work/structure/folder-structure](Structure)
 ![alt text](https://753007720-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FSi2akz0KHtWfHi4VtGUU%2Fuploads%2FXiAi8r2LyAnlfrMhFShE%2Fjumbo%20folder%20structure.svg?alt=media&token=1fc6f57c-18f5-459a-9583-2e854c5f088d)
 
