@@ -3,11 +3,11 @@ import ListingDashboard from "../pages/dashboards/listing/ListingDashboard";
 import IntranetDashboard from "../pages/dashboards/intranet/IntranetDashboard";
 
 // Interactv1
-import SignInPage from "Pages/SignUpPage/SignInPage";
+import SignInPage from "@interact/Pages/SignUpPage/SignInPage";
 import UserProfile from "app/pages/users/user-profile";
-import UserProfilePage from "Pages/UserProfilePage/UserProfilePage";
-import CreateCampaignPage from "Pages/CreateCampaignPage/CreateCampaignPage";
-import CampaignPage from "Pages/CampaignPage/CampaignPage";
+import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
+import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
+import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
 
 const interactV1Routes = [
   {

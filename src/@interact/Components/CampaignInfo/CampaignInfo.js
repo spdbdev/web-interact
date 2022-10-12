@@ -1,13 +1,13 @@
-import './CampaignInfo.css';
-import * as React from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import TableComponent from '../TableComponent/TableComponent';
-import Faq from '../Faq/Faq';
-import Comments from '../Comments/Comments';
-import Supporters from '../Supporters/Supporters';
+import "./CampaignInfo.css";
+import * as React from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+// import TableComponent from "../TableComponent/TableComponent";
+// import Faq from "../Faq/Faq";
+// import Comments from "../Comments/Comments";
+import Supporters from "../Supporters/Supporters";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -29,8 +29,7 @@ function TabPanel(props) {
   );
 }
 
-
-function CampaignInfo({campaignData, comments, supporters, campaignId}) {
+function CampaignInfo({ campaignData, comments, supporters, campaignId }) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -38,21 +37,24 @@ function CampaignInfo({campaignData, comments, supporters, campaignId}) {
   };
 
   return (
-
-    
-    <div className='InfoContainer'>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', color:'#782eee' }}>
-  <Tabs value={value} onChange={handleChange} aria-label="basic tabs example"  
-   textColor="inherit" indicatorColor="secondary">
-    <Tab label="Campaign Info"  color='inherit'/>
-    <Tab label="Comments"/>
-    <Tab label="Supporters"/>
-  </Tabs>
-</Box>
-    <TabPanel value={value} index={0}>
-          <div>
-            {campaignData?.info?.description}
-              {/* <ul>
+    <div className="InfoContainer">
+      <Box sx={{ borderBottom: 1, borderColor: "divider", color: "#782eee" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+          textColor="inherit"
+          indicatorColor="secondary"
+        >
+          <Tab label="Campaign Info" color="inherit" />
+          <Tab label="Comments" />
+          <Tab label="Supporters" />
+        </Tabs>
+      </Box>
+      <TabPanel value={value} index={0}>
+        <div>
+          {campaignData?.info?.description}
+          {/* <ul>
                   <li>
                     Voice chat via Discord or Zoom meeting; you get to appear on stream! 
                   </li>
@@ -69,13 +71,13 @@ function CampaignInfo({campaignData, comments, supporters, campaignId}) {
               Beware that I have no obligation to carry out these interactions if a fan is rude {'&'} can ban a fan at any time if there is, what I deem, inappropriate behavior (e.g. racism, homophobia, sexism). No place for hate
                 
                    */}
-          </div>
+        </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Comments comments={comments} campaignId={campaignId}/>
+        {/* <Comments comments={comments} campaignId={campaignId}/> */}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Supporters supporters={supporters} campaignId={campaignId}/>
+        <Supporters supporters={supporters} campaignId={campaignId} />
       </TabPanel>
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ContentState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const CustomEditor = (props) => {
   let _contentState = ContentState.createFromText(
