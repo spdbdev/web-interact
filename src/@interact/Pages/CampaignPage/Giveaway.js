@@ -13,6 +13,7 @@ import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
+import Span from "@jumbo/shared/Span";
 
 export default function Giveaway({ campaignData }) {
   const Swal = useSwalWrapper();
@@ -90,28 +91,26 @@ export default function Giveaway({ campaignData }) {
         flexDirection: "column",
         width: 400,
       }}
+      headerSx={{ pb: 0 }}
+      wrapperSx={{ pt: 1 }}
       id="giveawayCard"
     >
       <div style={{ flex: 1 }}>
         <div>
-          <span className="Highlight">50</span> x 30 minute interactions
+          <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
+          minute interactions
         </div>
         <div>
-          <span className="Highlight">50</span> winners will be randomly chosen
-          from the ticketholders at the end of the campaign
+          <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
+          winners will be randomly chosen from the ticketholders at the end of
+          the campaign
         </div>
       </div>
 
       <div id="VIPGiveawaySection">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            margin: "10px 0",
-          }}
-        >
-          <Typography variant="h6">VIP Entry</Typography>
-        </div>
+        <Typography variant="h5" color="text.secondary" mt={2}>
+          VIP entry
+        </Typography>
 
         <span>
           Chance multiplier: {chanceMultiplier * lossChanceMultiplier * 25}x
@@ -158,7 +157,9 @@ export default function Giveaway({ campaignData }) {
           margin: "10px 0",
         }}
       >
-        <Typography variant="h6">Free Entry</Typography>
+        <Typography variant="h5" color="text.secondary">
+          Free entry
+        </Typography>
 
         <span>
           Chance multiplier: {chanceMultiplier * lossChanceMultiplier}x

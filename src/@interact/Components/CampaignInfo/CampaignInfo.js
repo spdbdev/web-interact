@@ -44,7 +44,7 @@ function CampaignInfo({ campaignData, comments, supporters, campaignId }) {
           onChange={handleChange}
           aria-label="basic tabs example"
           textColor="inherit"
-          indicatorColor="secondary"
+          indicatorColor="primary.main"
         >
           <Tab label="Campaign Info" color="inherit" />
           <Tab label="Comments" />

@@ -22,6 +22,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "@jumbo/services/auth/firebase/firebase";
+import { Box } from "@mui/material";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [
@@ -480,10 +481,7 @@ import { db } from "@jumbo/services/auth/firebase/firebase";
 //   rafflePrice:1.5,
 // }
 
-
 function CampaignPage() {
-
-
   const num_giveaway = 10;
   const num_auction = 10;
 
@@ -567,78 +565,69 @@ function CampaignPage() {
 
   // console.log('bids 1', bids)
   return (
-    <div className="CampaignPage">
-      <TopBar />
-
+    <Box className="CampaignPage">
       <Header campaignData={campaignData} />
 
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
-          marginTop: -20,
           flexDirection: "row",
           justifyContent: "space-between",
-          padding: 20,
-          paddingTop: 20,
+          py: 3,
         }}
       >
-        {/* <img style={{flex:2, objectFit:'cover', height:520}} alt='placeholderImage' src='https://i.stack.imgur.com/SziYe.png' /> */}
-        <iframe
-          style={{ minHeight: 500, flex: 1 }}
-          src={campaignData?.videoUrl}
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+        <Box sx={{ display: "flex", flex: 1, mr: 1 }}>
+          <iframe
+            style={{ width: "100%", flex: 1 }}
+            src={campaignData?.videoUrl}
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          />
+        </Box>
+
         {num_giveaway > 0 ? <Giveaway campaignData={campaignData} /> : null}
-      </div>
+      </Box>
 
       <Stats campaignData={campaignData} />
 
       {num_auction > 0 ? (
-        <div
+        <Box
           style={{
             display: "flex",
             flexDirection: "row",
-            padding: 20,
+            padding: "20px 0",
           }}
         >
           <Leaderboard campaignData={campaignData} bids={bids} />
           <Auction bidAction={bid} campaignData={campaignData} bids={bids} />
-        </div>
+        </Box>
       ) : null}
 
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
-          paddingLeft: 20,
-          paddingRight: 20,
-          paddingBottom: 20,
         }}
       >
-        <div style={{ flex: 2, marginRight: 20, marginTop: -20 }}>
+        <Box sx={{ flex: 1, mr: 3 }}>
           <CreatorName campaignData={campaignData} />
-          <br />
           <CampaignInfo
             campaignData={campaignData}
             comments={comments}
             campaignId={campaignId}
             supporters={supporters}
           />
-        </div>
-        <div style={{ flex: 1 }}>
+        </Box>
+        <Box sx={{ flex: 1, mt: 3 }}>
           <Faq campaignData={campaignData} />
-        </div>
-      </div>
-
-      <TopBar />
+        </Box>
+      </Box>
 
       {/* <center style={{color:'gray'}}>Affiliate Program: Refer an influencer {'&'} earn up to $10,000! 5% of their first year of profits will be given to the referrer.</center> */}
       {/* <center> <br/> some footer stuff <br /> </center> */}
-    </div>
+    </Box>
   );
 }
 

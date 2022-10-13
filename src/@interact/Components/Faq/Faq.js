@@ -1,36 +1,35 @@
-import './Faq.css';
-import {Accordion, AccordionDetails, AccordionSummary} from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import "./Faq.css";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-
-function Faq({campaignData}) {
-
-
+function Faq({ campaignData }) {
   const FAQs = campaignData?.info?.faq;
 
-
   return (
-    <div>
-      <h3 style={{color:'#782eee'}}>FAQ</h3>
-      {FAQs?.map(faq => <FaqElem faq={faq}/>)}
-    </div>
+    <Box>
+      <Typography variant="h2">FAQs</Typography>
+      {FAQs?.map((faq) => (
+        <FaqElem faq={faq} />
+      ))}
+    </Box>
   );
 }
 
 export default Faq;
 
-
-function FaqElem({faq}){
+function FaqElem({ faq }) {
   return (
     <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-      >
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         {faq.q}
       </AccordionSummary>
-      <AccordionDetails>
-        {faq.a}
-      </AccordionDetails>
+      <AccordionDetails>{faq.a}</AccordionDetails>
     </Accordion>
-  )
+  );
 }

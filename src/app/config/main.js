@@ -1,8 +1,12 @@
-import {DENSITIES, LAYOUT_CONTAINER_STYLES, POSITION_TYPES} from "@jumbo/utils/constants/layout";
-import {mainTheme} from "../themes/main/default";
-import {headerTheme} from "../themes/header/default";
-import {sidebarTheme} from "../themes/sidebar/default";
-import {footerTheme} from "../themes/footer/default";
+import {
+  DENSITIES,
+  LAYOUT_CONTAINER_STYLES,
+  POSITION_TYPES,
+} from "@jumbo/utils/constants/layout";
+import { mainTheme } from "../themes/main/interact";
+import { headerTheme } from "../themes/header/interact";
+import { sidebarTheme } from "../themes/sidebar/interact";
+import { footerTheme } from "../themes/footer/interact";
 
 const config = {
   activeLayout: "vertical-default",
@@ -12,7 +16,7 @@ const config = {
     main: mainTheme,
     header: {
       ...mainTheme,
-      ...headerTheme
+      ...headerTheme,
     },
     sidebar: {
       ...mainTheme,
@@ -21,7 +25,7 @@ const config = {
     footer: {
       ...mainTheme,
       ...footerTheme,
-    }
+    },
   },
   defaultContentLayout: {
     base: {
@@ -32,7 +36,7 @@ const config = {
       sx: {}, //for content layout wrapper
     },
     wrapper: {
-      sx: {}
+      sx: {},
     },
     sidebar: {
       type: POSITION_TYPES.DEFAULT,
@@ -42,7 +46,7 @@ const config = {
       sx: {},
     },
     main: {
-      sx: {}
+      sx: {},
     },
     header: {
       type: POSITION_TYPES.DEFAULT,
@@ -56,8 +60,8 @@ const config = {
       type: POSITION_TYPES.DEFAULT,
       spreadOut: true,
       sx: {},
-    }
-  }
+    },
+  },
 };
 
-export {config};
+export { config };

@@ -1,135 +1,143 @@
 import "./CampaignPage.css";
-// import {InfoCircleOutlined} from '@ant-design/icons'
-// import { Button, Divider, OutlinedInput, InputAdornment } from '@mui/material';
-// import ProgressBar from "@ramonak/react-progress-bar";
 import { useState } from "react";
-import Socials from "../../Components/Socials/Socials";
-import { LinearProgress } from "@mui/material";
-// import { ca } from 'date-fns/locale';
+import Socials from "@interact/Components/Socials/Socials";
+import {
+  Box,
+  Divider,
+  LinearProgress,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import InteractButton from "@interact/Components/Button/InteractButton";
+import InfoTooltip from "@interact/Components/InfoTooltip";
+import Span from "@jumbo/shared/Span";
 
 export default function Stats({ campaignData }) {
   let stats = campaignData?.stats ? campaignData.stats : {};
 
   return (
-    <div
-      style={{
-        paddingLeft: 20,
-        paddingRight: 20,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      spacing={4}
     >
-      <div style={{ paddingTop: 10 }}>
-        <LinearProgress
-          completed={4892}
-          maxCompleted={7000}
-          customLabel=" "
-          width="400px"
-          height="3px"
-          bgColor="#782FEE"
-          baseBgColor="#E8D6FF"
-        />
-        <div
-          style={{
-            display: "flex",
-            paddingTop: 5,
-            justifyContent: "flex-start",
-            alignItems: "top",
-          }}
+      <GoalDisplay stats={stats} />
+      <Stack
+        flex={1}
+        direction="row"
+        alignItems="center"
+        justifyContent="space-evenly"
+        spacing={4}
+      >
+        <FollowButton />
+        <Stack
+          spacing={2}
+          direction="row"
+          divider={<Divider orientation="vertical" flexItem />}
         >
-          <div style={{ fontSize: 40, color: "#782FEE", fontWeight: "bold" }}>
-            ${stats.currRaised}{" "}
-          </div>
-          {/* <div style={{ justifyContent:'center', alignItems:'center', display:'flex', flexDirection:'column', marginTop:-5}}> */}
-          <div style={{ marginTop: 5 }}>
-            <span style={{ fontSize: 19, paddingTop: 5, paddingLeft: 10 }}>
-              {" "}
-              {stats.targetTagline}{" "}
-              <span style={{ fontWeight: "bold", color: "#782FEE" }}>
-                ${stats.target}
-              </span>{" "}
-            </span>
-          </div>
-          {/* <div style={{fontSize:15, fontWeight:'bold'}}>I will eat 100 hotdogs at $5000</div> */}
-          {/* </div> */}
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Follow />
-        <div style={{ marginLeft: 20 }}>
-          <span style={{ fontWeight: "bold", color: "#782FEE" }}>
-            {stats.numFollowers}
-          </span>{" "}
-          Followers
-        </div>
-      </div>
-
-      <div>
-        <span style={{ fontWeight: "bold", color: "#782FEE" }}>
-          {stats.numBidders}
-        </span>{" "}
-        Bidders
-      </div>
-
-      <div>
-        <span style={{ fontWeight: "bold", color: "#782FEE" }}>
-          {stats.numRafflers}
-        </span>{" "}
-        Rafflers
-      </div>
-
-      <div
-        style={{
-          fontWeight: "bold",
-          color: "#782FEE",
-          fontWeight: "bold",
-          textDecoration: "underline",
-        }}
-      >
-        {stats.category}
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Socials type="hyperlink" />
-        <Socials type="discord" />
-        <Socials type="tiktok" />
-        <Socials type="twitter" />
-        <Socials type="facebook" />
-        <Socials type="instagram" />
-      </div>
-    </div>
+          <StatDisplay statValue={stats?.numFollowers} statTitle="Followers" />
+          <StatDisplay
+            statValue={stats?.numRafflers}
+            statTitle="Giveaway Entrants"
+          />
+          <StatDisplay
+            statValue={stats?.numBidders}
+            statTitle="Auction Bidders"
+          />
+          {stats?.category ? (
+            <StatDisplay statValue={stats?.category} statTitle="Category" />
+          ) : null}
+        </Stack>
+        <Stack spacing={1} direction="row" alignItems="center">
+          <Socials type="discord" />
+          <Socials type="tiktok" />
+          <Socials type="twitter" />
+          <Socials type="facebook" />
+          <Socials type="instagram" />
+        </Stack>
+      </Stack>
+    </Stack>
   );
 }
 
-export function Follow({ selected }) {
+export function FollowButton({ selected }) {
   let [selectedState, setSelectedState] = useState(selected);
   return (
-    <div
-      onClick={() => setSelectedState(!selectedState)}
-      style={{
-        width: 90,
-        height: 23,
-        cursor: "pointer",
-        fontSize: 15,
-        fontWeight: "bold",
-        padding: 3,
-        borderWidth: 2,
-        borderStyle: "solid",
-        color: "#782FEE",
-        borderColor: "#782FEE",
-        borderBottomLeftRadius: 11,
-        borderTopRightRadius: 11,
-      }}
-    >
-      <center>{selectedState ? "Following" : "Follow"}</center>
-    </div>
+    <InteractButton onClick={() => setSelectedState(!selectedState)}>
+      {selectedState ? "Following" : "Follow"}
+    </InteractButton>
+  );
+}
+
+export function GoalDisplay({ stats }) {
+  return (
+    <Box id="goalDisplay" sx={{ width: 400 }}>
+      <LinearProgress
+        variant="determinate"
+        value={(4892 / 7000) * 100}
+        sx={{ color: "primary.main" }}
+      />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "flex-start",
+          mt: 1,
+        }}
+      >
+        <Typography
+          variant="h1"
+          sx={{ color: "primary.main", fontSize: 32, fontWeight: 500 }}
+        >
+          ${stats?.currRaised}
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            mt: 0.5,
+          }}
+        >
+          <Typography
+            variant="body"
+            ml={2}
+            // sx={{
+            //   display: "-webkit-box",
+            //   overflow: "hidden",
+            //   WebkitBoxOrient: "vertical",
+            //   WebkitLineClamp: 2,
+            // }}
+          >
+            {stats?.targetTagline}
+            <Span sx={{ color: "primary.main", fontWeight: 500, mr: 0.5 }}>
+              {" "}
+              ${stats?.target}
+            </Span>
+            <InfoTooltip title="Interactions will still occur even if the goal is not reached, the goal is non-binding." />
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+export function StatDisplay({ statValue, statTitle }) {
+  return (
+    <Box>
+      <Typography
+        variant="h4"
+        sx={{ color: "primary.main", fontWeight: 500, my: 0 }}
+      >
+        {statValue}
+      </Typography>
+      <Typography variant="caption" noWrap>
+        {statTitle}
+      </Typography>
+    </Box>
   );
 }

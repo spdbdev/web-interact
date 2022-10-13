@@ -18,9 +18,11 @@ import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
+import { Container, Divider, Link, Stack, Typography } from "@mui/material";
 import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
+import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
+import JumboDemoCard from "@jumbo/components/JumboDemoCard";
 
 const columns = [
   { field: "id", headerName: "No", width: 90 },
@@ -94,13 +96,25 @@ export default function Leaderboard({ campaignData, bids }) {
   }, [bids]);
 
   return (
-    <JumboCardQuick title={"Leaderboard"}>
-      <div style={{ padding: 10, height: "100%" }}>
+    <JumboCardQuick sx={{ flex: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h4" sx={{ mr: 1, mb: 0 }}>
+          Leaderboard
+        </Typography>
+        <InfoTooltip title="If you’re on the leaderboard at the end of the campaign, you will receive a premium interaction (occurs before raffled interactions) otherwise, if you are overthrown from the leaderboard, you are not charged" />
+      </Box>
+      <Box>
         {bids?.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ padding: "10px 0" }}>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ py: 1 }}>
               {/* <span style={{fontWeight:'bold', color:'#782FEE', textDecoration:'underline'}}>Congrats, you're 8th!</span> */}
-              <span
+              {/* <span
                 style={{
                   fontWeight: "bold",
                   color: "#f54295",
@@ -108,77 +122,50 @@ export default function Leaderboard({ campaignData, bids }) {
                 }}
               >
                 You've been overthrown to 20th
-              </span>
+              </span> */}
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
+              <Stack
+                spacing={2}
+                direction="row"
+                justifyContent="space-evenly"
+                divider={<Divider orientation="vertical" flexItem />}
+                sx={{ my: 2 }}
               >
                 <RankComponent data={rows[0]} />
                 <RankComponent data={rows[1]} />
                 <RankComponent data={rows[2]} />
-              </div>
-            </div>
-            <div
-              style={{
+              </Stack>
+            </Box>
+            <Box
+              sx={{
                 display: "flex",
                 flexDirection: "column",
-                flex: 1,
-                width: "100%",
               }}
             >
-              <Box sx={{ flex: 1, width: "100%", ml: 2 }}>
-                <div
-                  style={{
-                    fontSize: 12,
-                    padding: 5,
-                  }}
-                >
-                  If you’re on the leaderboard at the end of the campaign, you
-                  will receive a{" "}
-                  <span style={{ fontWeight: "bold", color: "#782FEE" }}>
-                    premium interaction (occurs before raffled interactions)
-                  </span>
-                  ; otherwise, if you are overthrown from the leaderboard, you
-                  are not charged
-                </div>
-
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  pageSize={8}
-                  disableColumnMenu
-                  rowsPerPageOptions={[7]}
-                  // checkboxSelection
-                  disableSelectionOnClick
-                />
-              </Box>
-            </div>
-          </div>
+              <DataGrid
+                sx={{ flex: 1, height: 400, borderColor: "divider" }}
+                rows={rows}
+                columns={columns}
+                pageSize={10}
+                disableColumnMenu
+                // rowsPerPageOptions={[7]}
+                // checkboxSelection
+                disableSelectionOnClick
+              />
+            </Box>
+          </Box>
         ) : (
-          <>
-            <h1 style={{ padding: 20 }}>Be the first to bid</h1>
-            <div
-              style={{
-                fontSize: 12,
-                padding: 5,
-                paddingRight: 10,
-                paddingTop: 15,
-              }}
-            >
-              If you’re on the leaderboard at the end of the campaign, you will
-              receive a{" "}
-              <span style={{ fontWeight: "bold", color: "#782FEE" }}>
-                premium interaction (occurs before raffled interactions)
-              </span>
-              ; otherwise, if you are overthrown from the leaderboard, you are
-              not charged
-            </div>
-          </>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography style={{ padding: 20 }}>Be the first to bid</Typography>
+          </Box>
         )}
-      </div>
+      </Box>
     </JumboCardQuick>
   );
 }
@@ -186,52 +173,30 @@ export default function Leaderboard({ campaignData, bids }) {
 const medals = [medal1, medal2, medal3];
 
 function RankComponent({ data }) {
-  // console.log(data)
-  // console.log(data != undefined)
-  if (data != undefined) {
-    // // console.log('condition passed')
-    return (
-      <div
-        style={{
-          display: "flex",
-          width: 230,
-          alignItems: "center",
-          margin: "10px 0",
-          padding: 15,
-          height: 80,
-          borderTopRightRadius: 11,
-          borderBottomLeftRadius: 11,
-          borderStyle: "solid",
-          borderColor: "#782eee",
-          borderWidth: 3,
-        }}
-      >
-        <img
-          style={{ height: 80, paddingRight: 30 }}
-          src={medals[data.id - 1]}
-        />
-        <div>
-          <div style={{ fontSize: 25 }}>
-            <a href="#">{data.username}</a>
-          </div>
-          <div>Bid Price: {data.bidPrice}</div>
-          <div style={{ fontSize: 15, fontWeight: "bold", color: "#aaa" }}>
-            {data.bidTime.slice(0, 10)}
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    // // console.log('condition not passed')
-    return (
-      <></>
-      // <div style={{display:'flex', width:230, alignItems:'center', margin:15, padding:15, height:80, borderTopRightRadius:11, borderBottomLeftRadius:11, borderStyle:'solid', borderColor:'#782eee', borderWidth:3}}>
-      //   <div>
-      //     <div style={{fontSize:25}}><a href='#'>No bidder yet</a></div>
-      //   </div>
-      // </div>
-    );
-  }
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        my: 1,
+      }}
+    >
+      <img
+        style={{ height: 60, paddingRight: 10 }}
+        src={medals[data?.id - 1]}
+        alt=""
+      />
+      <Stack direction="column">
+        <Typography variant="h4">
+          <Link href="/interact/userProfile">{data?.username}</Link>
+        </Typography>
+        <Typography variant="body">${data?.bidPrice}</Typography>
+        <Typography variant="caption" color="text.hint">
+          {data?.bidTime?.slice(0, 10)}
+        </Typography>
+      </Stack>
+    </Box>
+  );
 }
 
 // function Leaderboard() {
