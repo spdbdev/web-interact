@@ -1,4 +1,4 @@
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TopBar from "../../Components/TopBar/TopBar";
 import Tabs from "@mui/material/Tabs";
@@ -84,8 +84,17 @@ function UserProfilePage() {
   return (
     <div>
       <FollowerList open={modalOpened} setOpen={setModalOpened} />
-      <TopBar />
-      <div className="coverSection">
+      <Stack
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          backgroundColor: "primary.main",
+          width: "100%",
+          py: 4,
+          borderRadius: 2,
+        }}
+      >
         <img
           className="profilePic"
           alt="profile-pic"
@@ -127,13 +136,14 @@ function UserProfilePage() {
               marginRight: 20,
               fontWeight: "bold",
               cursor: "pointer",
+              borderRadius: 2,
             }}
           >
             23k followers
           </div>
           <InteractButton>Follow</InteractButton>
         </div>
-      </div>
+      </Stack>
 
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -173,10 +183,6 @@ function UserProfilePage() {
           {isCreator ? <CreatorSchedules /> : null}
         </TabPanel>
       </Box>
-
-      <br />
-      <br />
-      <TopBar />
     </div>
   );
 }

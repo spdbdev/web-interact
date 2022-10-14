@@ -28,7 +28,7 @@ const interactMenus = [
         icon: <ListAltOutlinedIcon sx={{ fontSize: 20 }} />,
       },
       {
-        uri: "/dashboards/crm",
+        uri: "/interact/user",
         label: "User Profile",
         type: "nav-item",
         icon: <SupportAgentOutlinedIcon sx={{ fontSize: 20 }} />,

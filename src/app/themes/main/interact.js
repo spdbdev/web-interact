@@ -16,6 +16,7 @@ export const mainTheme = {
       main: "#782FEE",
       light: "#A06DF3",
       dark: "#6025BE",
+      translucent: "rgba(120, 47, 238, 0.15)",
       contrastText: "#FFEDF8",
     },
     secondary: {

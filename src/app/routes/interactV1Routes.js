@@ -21,7 +21,7 @@ const interactV1Routes = [
   {
     path: "/interact/user",
     //element: <CrmDashboard/>,
-    element: <UserProfile />, // use <UserProfilePage /> from @interact/Pages/UserProfilePages to see the old one.
+    element: <UserProfilePage />, // use <UserProfilePage /> from @interact/Pages/UserProfilePages to see the old one.
   },
   {
     path: "/interact/userold",

@@ -23,6 +23,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Box } from "@mui/material";
+import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [
@@ -567,7 +568,12 @@ function CampaignPage() {
   return (
     <Box className="CampaignPage">
       <Header campaignData={campaignData} />
-
+      <UserCampaignStatus
+        userAuctionPosition={8}
+        userGiveawayWinChance={20}
+        auctionLeaderboardSpots={31}
+        showUserAvatar
+      />
       <Box
         sx={{
           display: "flex",
