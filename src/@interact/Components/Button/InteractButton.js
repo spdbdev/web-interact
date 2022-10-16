@@ -1,18 +1,27 @@
 import { Button } from "@mui/material";
 
-export default function InteractButton({ onClick, children }) {
+export default function InteractButton({
+  onClick,
+  children,
+  sx,
+  disabled,
+  variant = "outlined",
+}) {
   return (
     <Button
-      variant="outlined"
+      disableElevation
+      variant={variant}
       onClick={onClick}
-      style={{
-        color: "#782eee",
+      sx={{
+        color: "primary.main",
+        borderColor: "primary.main",
         textTransform: "none",
         borderRadius: "2px 11px",
-        borderWidth: 2,
+        borderWidth: 1,
+        ...sx,
       }}
-      color="inherit"
       type="submit"
+      disabled={disabled}
     >
       {children}
     </Button>

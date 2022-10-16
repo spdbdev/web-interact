@@ -22,8 +22,10 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
+import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
+import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [
@@ -490,6 +492,9 @@ function CampaignPage() {
   const [bids, setBids] = useState([]);
   const [comments, setComments] = useState([]);
   const [supporters, setSupporters] = useState([]);
+  const [hasUserEnteredGiveaway, setHasUserEnteredGiveaway] = useState(false);
+  const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
+  const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const campaignId = "test12345";
   let userId = "user1234"; // dummy user id
   let user = {
@@ -564,76 +569,143 @@ function CampaignPage() {
     getCampaignData();
   };
 
-  // console.log('bids 1', bids)
-  return (
-    <Box className="CampaignPage">
-      <Header campaignData={campaignData} />
-      <UserCampaignStatus
-        userAuctionPosition={8}
-        userGiveawayWinChance={20}
-        auctionLeaderboardSpots={31}
-        showUserAvatar
-      />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          py: 3,
-        }}
-      >
-        <Box sx={{ display: "flex", flex: 1, mr: 1 }}>
-          <iframe
-            style={{ width: "100%", flex: 1 }}
-            src={campaignData?.videoUrl}
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          />
-        </Box>
-
-        {num_giveaway > 0 ? <Giveaway campaignData={campaignData} /> : null}
-      </Box>
-
-      <Stats campaignData={campaignData} />
-
-      {num_auction > 0 ? (
-        <Box
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            padding: "20px 0",
+  function renderUserCampaignStatus() {
+    if (hasUserEnteredAuction || hasUserEnteredGiveaway) {
+      return (
+        <Stack
+          alignItems="center"
+          sx={{
+            position: "fixed",
+            bottom: 10,
+            left: 0,
+            zIndex: 4000,
+            width: "100%",
           }}
         >
-          <Leaderboard campaignData={campaignData} bids={bids} />
-          <Auction bidAction={bid} campaignData={campaignData} bids={bids} />
-        </Box>
-      ) : null}
+          <Box
+            sx={{
+              backgroundColor: "primary.translucent",
+              boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 30px",
+              p: 1,
+              borderRadius: 2,
+            }}
+          >
+            <UserCampaignStatus
+              userAuctionPosition={8}
+              userGiveawayWinChance={20}
+              auctionLeaderboardSpots={31}
+              showUserAvatar
+            />
+          </Box>
+        </Stack>
+      );
+    } else {
+      return null;
+    }
+  }
+  // console.log('bids 1', bids)
+  return (
+    <JumboContentLayout
+      layoutOptions={{
+        wrapper: {
+          sx: {
+            alignItems: "flex-start",
+            px: 4,
+          },
+        },
+      }}
+    >
+      <Box className="CampaignPage">
+        {renderUserCampaignStatus()}
+        <Header campaignData={campaignData} />
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Box sx={{ flex: 1, mr: 3 }}>
-          <CreatorName campaignData={campaignData} />
-          <CampaignInfo
-            campaignData={campaignData}
-            comments={comments}
-            campaignId={campaignId}
-            supporters={supporters}
-          />
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            py: 3,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flex: 1,
+              mr: 1,
+              borderRadius: 3,
+              overflow: "hidden",
+              paddingBottom: "41.25%",
+              position: "relative",
+            }}
+          >
+            <iframe
+              style={{ flex: 1, position: "absolute" }}
+              src={campaignData?.videoUrl}
+              title="YouTube video player"
+              width="100%"
+              height="100%"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            />
+          </Box>
+
+          {num_giveaway > 0 ? (
+            <Giveaway
+              campaignData={campaignData}
+              hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
+              setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
+              setHasUserEnteredGiveaway={setHasUserEnteredGiveaway}
+            />
+          ) : null}
         </Box>
-        <Box sx={{ flex: 1, mt: 3 }}>
-          <Faq campaignData={campaignData} />
+
+        <Stats campaignData={campaignData} />
+
+        {num_auction > 0 ? (
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              padding: "20px 0",
+            }}
+          >
+            <Leaderboard campaignData={campaignData} bids={bids} />
+            <Auction
+              bidAction={bid}
+              campaignData={campaignData}
+              bids={bids}
+              hasUserEnteredAuction={hasUserEnteredAuction}
+              setHasUserEnteredAuction={setHasUserEnteredAuction}
+            />
+          </Box>
+        ) : null}
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Box sx={{ flex: 1, mr: 3 }}>
+            <CreatorName campaignData={campaignData} />
+            <CampaignInfo
+              campaignData={campaignData}
+              comments={comments}
+              campaignId={campaignId}
+              supporters={supporters}
+            />
+          </Box>
+          <Box sx={{ flex: 1, mt: 3 }}>
+            <Faq campaignData={campaignData} />
+          </Box>
         </Box>
+
+        {/* <center style={{color:'gray'}}>Affiliate Program: Refer an influencer {'&'} earn up to $10,000! 5% of their first year of profits will be given to the referrer.</center> */}
+        {/* <center> <br/> some footer stuff <br /> </center> */}
       </Box>
-
-      {/* <center style={{color:'gray'}}>Affiliate Program: Refer an influencer {'&'} earn up to $10,000! 5% of their first year of profits will be given to the referrer.</center> */}
-      {/* <center> <br/> some footer stuff <br /> </center> */}
-    </Box>
+    </JumboContentLayout>
   );
 }
 

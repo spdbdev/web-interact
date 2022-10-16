@@ -8,6 +8,8 @@ import {
   Typography,
   Box,
   Container,
+  Input,
+  Stack,
 } from "@mui/material";
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
@@ -15,7 +17,14 @@ import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import Span from "@jumbo/shared/Span";
 
-export default function Giveaway({ campaignData }) {
+export default function Giveaway({
+  campaignData,
+  hasUserClaimedFreeEntry,
+  hasUserPurchasedVIPEntry,
+  setHasUserClaimedFreeEntry,
+  setHasUserPurchasedVIPEntry,
+  setHasUserEnteredGiveaway,
+}) {
   const Swal = useSwalWrapper();
   const buyGiveawayAlert = () => {
     Swal.fire({
@@ -25,7 +34,7 @@ export default function Giveaway({ campaignData }) {
       html: (
         <div>
           <p>300+100+20 = ?</p>
-          <input id="answer" type={"number"} />
+          <Input id="answer" type={"number"} />
         </div>
       ),
       showCancelButton: true,
@@ -41,6 +50,8 @@ export default function Giveaway({ campaignData }) {
       },
     }).then((result) => {
       if (result.value.answer == 420) {
+        // setHasUserEnteredGiveaway(true); can't set these to true until we get a confirmation from stripe.
+        //setHasUserPurchasedVIPEntry(true);
         Swal.fire(
           "Correct!",
           "You'll now be taken to the payment page.",
@@ -65,6 +76,8 @@ export default function Giveaway({ campaignData }) {
       reverseButtons: true,
     }).then((result) => {
       if (result.value) {
+        setHasUserClaimedFreeEntry(true);
+        setHasUserEnteredGiveaway(true);
         Swal.fire(
           "Claimed!",
           "You've claimed a free entry for this giveaway. Good luck!",
@@ -92,10 +105,16 @@ export default function Giveaway({ campaignData }) {
         width: 400,
       }}
       headerSx={{ pb: 0 }}
-      wrapperSx={{ pt: 1 }}
+      wrapperSx={{
+        pt: 1,
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
       id="giveawayCard"
     >
-      <div style={{ flex: 1 }}>
+      <Box>
         <div>
           <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
           minute interactions
@@ -105,9 +124,9 @@ export default function Giveaway({ campaignData }) {
           winners will be randomly chosen from the ticketholders at the end of
           the campaign
         </div>
-      </div>
+      </Box>
 
-      <div id="VIPGiveawaySection">
+      <Box id="VIPGiveawaySection">
         <Typography variant="h5" color="text.secondary" mt={2}>
           VIP entry
         </Typography>
@@ -115,13 +134,13 @@ export default function Giveaway({ campaignData }) {
         <span>
           Chance multiplier: {chanceMultiplier * lossChanceMultiplier * 25}x
         </span>
-        <div>
+        <Stack direction="row" spacing={1} alignItems="center">
           <span>Chance of winning: 2.5%</span>
           <InfoTooltip
-            title="Remember, the % chance of winning the raffle will go down as more fans
-          join the raffle."
+            title="Remember, the % chance of winning will go down as more fans
+          join the giveaway."
           />
-        </div>
+        </Stack>
 
         <Box sx={{ display: "flex", flexDirection: "row", mb: 2, mt: 1 }}>
           <Box
@@ -145,11 +164,11 @@ export default function Giveaway({ campaignData }) {
           </InteractButton>
           {/* </form> */}
         </Box>
-      </div>
+      </Box>
 
       <Divider>or</Divider>
 
-      <div
+      <Box
         id="freeGiveawaySection"
         style={{
           display: "flex",
@@ -164,23 +183,26 @@ export default function Giveaway({ campaignData }) {
         <span>
           Chance multiplier: {chanceMultiplier * lossChanceMultiplier}x
         </span>
-        <Box sx={{ mb: 1 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
           <span>Chance of winning: 0.1%</span>
           <InfoTooltip
-            title="Remember, the % chance of winning the raffle will go down as more fans
-          join the raffle."
+            title="Remember, the % chance of winning will go down as more fans
+          join the giveaway."
           />
-        </Box>
+        </Stack>
 
         {/* <form
         //   action="http://localhost:4242/create-raffle-session"
         //   method="POST"
         > */}
-        <InteractButton onClick={freeGiveawayAlert}>
+        <InteractButton
+          onClick={freeGiveawayAlert}
+          disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry}
+        >
           Get a free entry
         </InteractButton>
         {/* </form> */}
-      </div>
+      </Box>
     </JumboCardQuick>
   );
 }

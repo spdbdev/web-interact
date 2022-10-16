@@ -6,7 +6,7 @@ import "./CampaignSnippet.css";
 import UserCampaignStatus from "./UserCampaignStatus";
 export default function CampaignSnippet() {
   return (
-    <JumboCardQuick noWrapper sx={{ maxWidth: 280, m: 1 }}>
+    <JumboCardQuick noWrapper sx={{ maxWidth: 280, m: 2 }}>
       <Box sx={{ position: "relative" }}>
         <img
           alt=""
@@ -20,11 +20,13 @@ export default function CampaignSnippet() {
           src="https://clips-media-assets2.twitch.tv/AT-cm%7C861811248-preview-480x272.jpg"
         />
         <Chip
+          size="small"
           sx={{
             position: "absolute",
-            bottom: 12,
-            left: 2,
+            bottom: 14,
+            left: 4,
             backgroundColor: "divider",
+            fontSize: 12,
           }}
           icon={<Icon icon="iconoir:warning-circled-outline" />}
           label="Limited Interactions"
@@ -37,7 +39,7 @@ export default function CampaignSnippet() {
         />
       </Box>
 
-      <Stack sx={{ p: 2 }} spacing={0.5}>
+      <Stack sx={{ p: 2 }}>
         <Typography sx={{ fontWeight: 500 }}>
           I will eat 100 hotdogs at $5000
         </Typography>

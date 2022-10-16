@@ -140,10 +140,11 @@ export default function Leaderboard({ campaignData, bids }) {
               sx={{
                 display: "flex",
                 flexDirection: "column",
+                height: 400,
               }}
             >
               <DataGrid
-                sx={{ flex: 1, height: 400, borderColor: "divider" }}
+                sx={{ flex: 1, height: "100%", borderColor: "divider" }}
                 rows={rows}
                 columns={columns}
                 pageSize={10}

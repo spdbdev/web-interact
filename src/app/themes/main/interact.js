@@ -16,7 +16,7 @@ export const mainTheme = {
       main: "#782FEE",
       light: "#A06DF3",
       dark: "#6025BE",
-      translucent: "rgba(120, 47, 238, 0.15)",
+      translucent: "rgba(120, 47, 238, 0.70)",
       contrastText: "#FFEDF8",
     },
     secondary: {
@@ -56,7 +56,7 @@ export const mainTheme = {
       hint: "#C9C5CF",
       title: "#3D3649",
     },
-    divider: "#e0dee3",
+    divider: "#f0effa",
     background: {
       paper: "#FFFFFF",
       default: "#F5F7FA",
@@ -96,7 +96,7 @@ export const mainTheme = {
     "0 5px 10px rgba(0, 0, 0, 0.175)",
   ],
   typography: {
-    fontFamily: "NoirPro, Arial",
+    fontFamily: "Jost, Arial",
     fontSize: 14,
     h1: {
       fontSize: "1.5rem",

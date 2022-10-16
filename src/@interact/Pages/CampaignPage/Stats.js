@@ -31,12 +31,12 @@ export default function Stats({ campaignData }) {
         justifyContent="space-evenly"
         spacing={4}
       >
-        <FollowButton />
         <Stack
           spacing={2}
           direction="row"
           divider={<Divider orientation="vertical" flexItem />}
         >
+          <FollowButton />
           <StatDisplay statValue={stats?.numFollowers} statTitle="Followers" />
           <StatDisplay
             statValue={stats?.numRafflers}
@@ -65,8 +65,16 @@ export default function Stats({ campaignData }) {
 export function FollowButton({ selected }) {
   let [selectedState, setSelectedState] = useState(selected);
   return (
-    <InteractButton onClick={() => setSelectedState(!selectedState)}>
-      {selectedState ? "Following" : "Follow"}
+    <InteractButton
+      sx={{ width: 120 }}
+      variant={selectedState ? "contained" : "outlined"}
+      onClick={() => setSelectedState(!selectedState)}
+    >
+      <Span
+        sx={{ color: selectedState ? "primary.contrastText" : "primary.main" }}
+      >
+        {selectedState ? "Following ✓" : "Follow"}
+      </Span>
     </InteractButton>
   );
 }

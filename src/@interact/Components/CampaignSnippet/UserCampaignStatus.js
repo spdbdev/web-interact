@@ -26,10 +26,7 @@ export default function UserCampaignStatus({
               py: 0.5,
               px: 1,
               borderRadius: 2,
-              backgroundColor:
-                userAuctionPosition > auctionLeaderboardSpots
-                  ? "divider"
-                  : "primary.translucent",
+              backgroundColor: "divider",
             }}
           >
             {!showUserAvatar ? (
@@ -42,7 +39,12 @@ export default function UserCampaignStatus({
                   : "You're no longer on the leaderboard."}
               </Typography>
             ) : (
-              <Typography variant="caption">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "primary.main",
+                }}
+              >
                 {isCampaignFinished
                   ? `You finished in ${userAuctionPosition}th place, you've received an
                 interaction!`
@@ -61,16 +63,21 @@ export default function UserCampaignStatus({
               py: 0.5,
               px: 1,
               borderRadius: 2,
-              backgroundColor:
-                hasUserWonGiveaway && isCampaignFinished
-                  ? "primary.translucent"
-                  : "divider",
+              backgroundColor: "divider",
             }}
           >
             {!showUserAvatar ? (
               <Icon icon="iconoir:mail" fontSize={20} />
             ) : null}
-            <Typography variant="caption">
+            <Typography
+              variant="caption"
+              sx={{
+                color:
+                  hasUserWonGiveaway && isCampaignFinished
+                    ? "primary.main"
+                    : "text.primary",
+              }}
+            >
               {isCampaignFinished
                 ? hasUserWonGiveaway
                   ? "You've won the giveaway, so you get an interaction!"

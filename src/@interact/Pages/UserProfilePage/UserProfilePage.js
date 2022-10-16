@@ -21,6 +21,7 @@ import { query, collection, getDocs, where } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
+import { FollowButton } from "../CampaignPage/Stats";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -141,7 +142,7 @@ function UserProfilePage() {
           >
             23k followers
           </div>
-          <InteractButton>Follow</InteractButton>
+          <FollowButton />
         </div>
       </Stack>
 
