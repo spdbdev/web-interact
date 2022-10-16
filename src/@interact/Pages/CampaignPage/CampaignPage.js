@@ -26,6 +26,7 @@ import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
+import { useJumboTheme } from "@jumbo/hooks";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [
@@ -504,6 +505,8 @@ function CampaignPage() {
     username: "andrew123",
   };
 
+  const { theme } = useJumboTheme();
+
   const getFirebaseArray = async (col) => {
     let arr = [];
     let arrFirebaseObject = await getDocs(col);
@@ -609,8 +612,12 @@ function CampaignPage() {
       layoutOptions={{
         wrapper: {
           sx: {
-            alignItems: "flex-start",
-            px: 4,
+            [theme.breakpoints.up("xl")]: {
+              px: 10,
+            },
+            [theme.breakpoints.up("xxl")]: {
+              px: 30,
+            },
           },
         },
       }}
