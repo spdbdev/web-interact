@@ -7,10 +7,43 @@ import GridContents from "./GridContents";
 
 import DTPicker from "./DateTimePicker";
 import BasicSelect from "./SelectCampaign";
+// imports for tabs
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import PhoneIcon from "@mui/icons-material/Phone";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import PersonPinIcon from "@mui/icons-material/PersonPin";
+import CreateIcon from "@mui/icons-material/Create"; // PENCIL BASICS
+import EventIcon from "@mui/icons-material/Event"; //INTERACTION DATE PICKER
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import InfoIcon from "@mui/icons-material/Info";
+import QuizIcon from "@mui/icons-material/Quiz"; //FAQ
+import PaidIcon from "@mui/icons-material/Paid";
+import CampaignIcon from "@mui/icons-material/Campaign"; //MEGAPHONE FOR PROMOTION
+
 export default function Header() {
+  // logic for tabs
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   return (
     <Container>
       <div>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="icon label tabs example"
+        >
+          <Tab icon={<CreateIcon />} label="BASICS" />
+          <Tab icon={<EventIcon />} label="INTERACTION" />
+          <Tab icon={<ScheduleIcon />} label="SCHEDULING" />
+          <Tab icon={<InfoIcon />} label="CAMPAIGN INFO" />
+          <Tab icon={<QuizIcon />} label="FAQ" />
+          <Tab icon={<PaidIcon />} label="PAYMENT" />
+          <Tab icon={<CampaignIcon />} label="PROMOTION" />
+        </Tabs>
         <div
           style={{
             fontSize: 30,

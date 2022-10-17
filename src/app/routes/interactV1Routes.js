@@ -8,6 +8,7 @@ import UserProfile from "app/pages/users/user-profile";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
+import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 
 const interactV1Routes = [
   {
@@ -35,6 +36,10 @@ const interactV1Routes = [
   {
     path: "/interact/createCampaign",
     element: <CreateCampaignPage />,
+  },
+  {
+    path: "/interact/what-is-interact",
+    element: <WhatIsInteractPage />,
   },
 ];
 

@@ -1,4 +1,5 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
+
 import {
   Button,
   Container,
@@ -10,6 +11,7 @@ import {
   Typography,
   Grid,
 } from "@mui/material";
+import { makeStyles } from "@material-ui/core/styles";
 import FAQAccordian from "./FAQAccordian";
 import CustomEditor from "./CustomEditor";
 import Scheduler from "../../Components/Scheduler/Scheduler";
