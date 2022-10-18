@@ -1,8 +1,8 @@
 import React from "react";
-import {useJumboApp} from "@jumbo/hooks";
+import useJumboApp from "@jumbo/hooks/useJumboApp";
 import {LAYOUTS} from "../../app/layouts/layouts";
 
-export const useJumboActiveLayoutConfig = () => {
+const useJumboActiveLayoutConfig = () => {
     const {activeLayout} = useJumboApp();
 
     let layoutConfig = {};
@@ -14,3 +14,5 @@ export const useJumboActiveLayoutConfig = () => {
 
     return layoutConfig;
 };
+
+export default useJumboActiveLayoutConfig;

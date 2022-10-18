@@ -1,11 +1,11 @@
 import React from 'react';
 import JumboNavIdentifier from "@jumbo/components/JumboVerticalNavbar/JumboNavIdentifier";
-import {useJumboLayoutSidebar} from "@jumbo/hooks";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import {SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 import List from "@mui/material/List";
 import PropTypes from 'prop-types';
 
-const JumboVerticalNavbar = ({items, translate}) => {
+const JumboVerticalNavbar = ({items}) => {
     const {sidebarOptions} = useJumboLayoutSidebar();
 
     const isMiniAndClosed = React.useMemo(() => {

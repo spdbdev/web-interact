@@ -9,7 +9,7 @@ import List from "@mui/material/List";
 import {ArrowWrapper} from "@jumbo/components/JumboVerticalNavbar/style";
 import JumboNavIdentifier from "@jumbo/components/JumboVerticalNavbar/JumboNavIdentifier";
 import {Popover} from "@mui/material";
-import {useJumboLayoutSidebar} from "@jumbo/hooks";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import {SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';

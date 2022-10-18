@@ -1,29 +1,14 @@
 import React from 'react';
-import {useJumboLayoutSidebar, useJumboSidebarTheme} from "@jumbo/hooks";
+import useJumboSidebarTheme from "@jumbo/hooks/useJumboSidebarTheme";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
-import {Drawer, Toolbar, useMediaQuery} from "@mui/material";
+import {Drawer, Toolbar} from "@mui/material";
 import {SIDEBAR_STYLES, SIDEBAR_VARIANTS, SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 import Div from "@jumbo/shared/Div";
 
 const JumboLayoutSidebar = ({children, headerHeightProps}) => {
     const {sidebarTheme} = useJumboSidebarTheme();
     const {sidebarOptions, setSidebarOptions} = useJumboLayoutSidebar();
-    const [sidebarOptionsBeforeSwitch, setSidebarOptionsBeforeSwitch] = React.useState(null);
-    const switchSidebarVariant = useMediaQuery('(min-width:1200px)');
-
-    React.useEffect(() => {
-        if (!switchSidebarVariant && !sidebarOptions.hide) {
-            setSidebarOptionsBeforeSwitch(sidebarOptions);
-            setSidebarOptions({
-                variant: SIDEBAR_VARIANTS.TEMPORARY,
-                style: SIDEBAR_STYLES.FULL_HEIGHT,
-                view: SIDEBAR_VIEWS.FULL,
-                open: false,
-            });
-        } else if (sidebarOptionsBeforeSwitch && !sidebarOptions.hide) {
-            setSidebarOptions(sidebarOptionsBeforeSwitch)
-        }
-    }, [switchSidebarVariant]);
 
     const handleClose = React.useCallback(() => {
         setSidebarOptions({
@@ -42,6 +27,7 @@ const JumboLayoutSidebar = ({children, headerHeightProps}) => {
             setSidebarOptions({variant: SIDEBAR_VARIANTS.PERMANENT, open: false});
         }
     }, [sidebarOptions?.view]);
+
 
     if (sidebarOptions?.hide) {
         return null;

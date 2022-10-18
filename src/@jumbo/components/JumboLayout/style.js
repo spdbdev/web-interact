@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@mui/material/styles/styled";
-import {useJumboLayoutSidebar} from "@jumbo/hooks";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import {SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 
 export const DrawerHeader = styled('div')(({theme}) => {

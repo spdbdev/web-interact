@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     title: {
         fontSize: '1.5rem',
         fontWeight: '400',
-        color: theme.palette.text.title
+        color: theme.typography.h1.color
     },
     closeButton: {
         color: theme.palette.text.primary,
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
             boxShadow: 'none',
         },
         '&:hover': {
-            color: theme.palette.text.title,
+            color: theme.typography.h1.color
         }
     },
     image: {

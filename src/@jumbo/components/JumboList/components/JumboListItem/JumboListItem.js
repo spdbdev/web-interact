@@ -2,7 +2,7 @@ import React from 'react';
 import ListItem from "@mui/material/ListItem";
 import PropTypes from 'prop-types';
 import {ListItemIcon} from "@mui/material";
-import {useJumboList} from "@jumbo/components/JumboList/hooks";
+import useJumboList from "@jumbo/components/JumboList/hooks/useJumboList";
 import JumboItemCheckbox from "../JumboItemCheckbox";
 
 const JumboListItem = ({component, componentElement, children, itemData, ...restProps}) => {

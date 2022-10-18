@@ -1,5 +1,5 @@
 import React from 'react';
-import {useJumboList} from "@jumbo/components/JumboList/hooks";
+import useJumboList from "@jumbo/components/JumboList/hooks/useJumboList";
 import Checkbox from "@mui/material/Checkbox";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {IconButton, Menu, MenuItem} from "@mui/material";

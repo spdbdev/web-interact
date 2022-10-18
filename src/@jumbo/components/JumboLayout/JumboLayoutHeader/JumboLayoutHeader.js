@@ -5,7 +5,7 @@ import {SIDEBAR_STYLES, SIDEBAR_VARIANTS, SIDEBAR_VIEWS} from "@jumbo/utils/cons
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import useJumboLayoutHeader from "@jumbo/hooks/useJumboLayoutHeader";
-import {useJumboHeaderTheme} from "@jumbo/hooks";
+import useJumboHeaderTheme from "@jumbo/hooks/useJumboHeaderTheme";
 
 const JumboLayoutHeader = ({children, sx}) => {
     const {sidebarOptions} = useJumboLayoutSidebar();
