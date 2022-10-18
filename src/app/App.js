@@ -19,7 +19,7 @@ import {CircularProgress} from "@mui/material";
 
 import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements } from '@stripe/react-stripe-js';
-import CaptureAuction from './Pages/CampaignPage/CaptureAuction';
+import CaptureAuction from '@interact/Pages/CampaignPage/CaptureAuction';
 const stripePromise = loadStripe('pk_test_51LJU6pIRYjPm2gCpQ07Vg68jRq7XfRVpVLSygsbAR4r42iZCN3hWueDFUxeOXxHBiUg3tUp9ciZE4mfQjsFpIxEN00g6y5PWRS');
 
 localStorage.clear();

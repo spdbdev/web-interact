@@ -529,16 +529,16 @@ function CampaignPage(userData) {
       await getFirebaseArray(collection(db, "campaigns", campaignId, "bids"))
     );
 
-    setComments(
-      await getFirebaseArray(
-        collection(db, "campaigns", campaignId, "comments")
-      )
-    );
-    setSupporters(
-      await getFirebaseArray(
-        collection(db, "campaigns", campaignId, "supporters")
-      )
-    );
+    // setComments(
+    //   await getFirebaseArray(
+    //     collection(db, "campaigns", campaignId, "comments")
+    //   )
+    // );
+    // setSupporters(
+    //   await getFirebaseArray(
+    //     collection(db, "campaigns", campaignId, "supporters")
+    //   )
+    // );
   };
 
   useEffect(() => {

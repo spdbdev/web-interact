@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useNavigate } from "react-router-dom";
-import { db, auth } from '../../firebase';
+import { db, auth } from "@jumbo/services/auth/firebase/firebase";
 import { doc, getDocs, orderBy, setDoc, addDoc, collection, serverTimestamp, getDoc,query,where } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 

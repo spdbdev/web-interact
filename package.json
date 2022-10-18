@@ -74,6 +74,7 @@
     "recharts": "^2.1.8",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
+    "stripe": "^8.202.0",
     "stylis": "^4.0.13",
     "stylis-plugin-rtl": "^2.0.2",
     "sweetalert2": "^11.3.4",
