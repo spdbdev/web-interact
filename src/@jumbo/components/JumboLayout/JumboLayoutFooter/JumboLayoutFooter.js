@@ -1,6 +1,7 @@
 import React from 'react';
 import Div from "@jumbo/shared/Div";
-import {useJumboFooterTheme, useJumboLayoutFooter} from "@jumbo/hooks";
+import useJumboFooterTheme from "@jumbo/hooks/useJumboFooterTheme";
+import useJumboLayoutFooter from "@jumbo/hooks/useJumboLayoutFooter";
 import ThemeProvider from "@mui/material/styles/ThemeProvider";
 
 const JumboLayoutFooter = ({children}) => {

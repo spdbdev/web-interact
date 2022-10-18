@@ -1,13 +1,14 @@
 import {useRoutes} from "react-router-dom";
 import {buildRoutes} from "@jumbo/utils";
+import useJumboApp from "@jumbo/hooks/useJumboApp";
 
-let isRouteTreeGenerated = false;
 let generatedRoutes = [];
 
 const useJumboRoutes = (routes) => {
-    if(!isRouteTreeGenerated) {
+    const {rebuildRoutes} = useJumboApp();
+
+    if(rebuildRoutes) {
         generatedRoutes = buildRoutes([...routes]);
-        isRouteTreeGenerated = true;
     }
     return useRoutes(generatedRoutes);
 };

@@ -2,9 +2,6 @@ import {DENSITIES, LAYOUT_CONTAINER_STYLES, POSITION_TYPES} from "@jumbo/utils/c
 import {enUS} from "@mui/material/locale";
 
 const config = {
-    app: {
-        activeLayout: "vertical-default"
-    },
     locale: {
         locale: enUS,
     },

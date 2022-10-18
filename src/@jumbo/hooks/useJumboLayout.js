@@ -1,4 +1,6 @@
-import {useJumboLayoutFooter, useJumboLayoutHeader, useJumboLayoutSidebar} from "@jumbo/hooks/index";
+import useJumboLayoutFooter from "@jumbo/hooks/useJumboLayoutFooter";
+import useJumboLayoutHeader from "@jumbo/hooks/useJumboLayoutHeader";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import useJumboLayoutRoot from "@jumbo/hooks/useJumboLayoutRoot";
 import useJumboLayoutContent from "@jumbo/hooks/useJumboLayoutContent";
 

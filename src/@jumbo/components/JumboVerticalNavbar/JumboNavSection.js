@@ -1,7 +1,7 @@
 import React from 'react';
 import ListSubheader from "@mui/material/ListSubheader";
 import JumboNavIdentifier from "@jumbo/components/JumboVerticalNavbar/JumboNavIdentifier";
-import {useJumboLayoutSidebar} from "@jumbo/hooks";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import {SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 import {useTranslation} from "react-i18next";
 

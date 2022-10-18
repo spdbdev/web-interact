@@ -16,3 +16,29 @@ export const getArrayElementFromKey = (variable, keyString) => {
     }
     return null;
 };
+
+export const sleep = (milliseconds) => {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+};
+
+export const createJumboTheme = (mainTheme, headerTheme, sidebarTheme, footerTheme) => {
+    return {
+        main: mainTheme,
+        header: {
+            ...mainTheme,
+            ...(headerTheme ?? {})
+        },
+        sidebar: {
+            ...mainTheme,
+            ...(sidebarTheme ?? {})
+        },
+        footer: {
+            ...mainTheme,
+            ...(footerTheme ?? {})
+        }
+    }
+};

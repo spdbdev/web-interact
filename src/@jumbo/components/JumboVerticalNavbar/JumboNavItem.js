@@ -4,9 +4,8 @@ import Link from '@mui/material/Link';
 import ListItemButton from "@mui/material/ListItemButton";
 import {ListItemIcon} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
-import {alpha} from "@mui/material/styles";
 import CircleIcon from '@mui/icons-material/Circle';
-import {useJumboLayoutSidebar} from "@jumbo/hooks";
+import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import {SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 import {useTranslation} from "react-i18next";
 
@@ -56,7 +55,7 @@ const JumboNavItem = ({item, isNested, translate}) => {
                 },
                 ...(location.pathname === item.uri) ? {
                     color: theme => theme.palette.nav.action.active,
-                    backgroundColor: theme => alpha(theme.palette.nav.background.active, .15),
+                    backgroundColor: theme => theme.palette.nav.background.active,
                     ...(!isMiniAndClosed) ? {'&::before': {
                         ...menuBefore,
                             backgroundColor: theme => theme.palette.nav.tick.active,

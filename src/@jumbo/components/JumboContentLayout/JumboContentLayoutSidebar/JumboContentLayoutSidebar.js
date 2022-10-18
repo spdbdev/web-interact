@@ -1,6 +1,6 @@
 import React from 'react';
 import Div from "@jumbo/shared/Div";
-import {useJumboContentLayout} from "@jumbo/hooks";
+import useJumboContentLayout from "@jumbo/hooks/useJumboContentLayout";
 
 const JumboContentLayoutSidebar = ({children}) => {
     const contentLayout = useJumboContentLayout();

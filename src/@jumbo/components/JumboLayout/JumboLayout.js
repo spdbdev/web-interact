@@ -8,7 +8,7 @@ import JumboLayoutHeader from "./JumboLayoutHeader";
 import JumboLayoutFooter from "./JumboLayoutFooter";
 import JumboLayoutSidebar from "./JumboLayoutSidebar";
 import Div from "@jumbo/shared/Div";
-import {useJumboLayoutHeader} from "@jumbo/hooks";
+import useJumboLayoutHeader from "@jumbo/hooks/useJumboLayoutHeader";
 import useJumboLayoutRoot from "@jumbo/hooks/useJumboLayoutRoot";
 import useJumboLayoutContent from "@jumbo/hooks/useJumboLayoutContent";
 

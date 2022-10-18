@@ -1,6 +1,6 @@
 import React from 'react';
 import Stack from "@mui/material/Stack";
-import {useJumboList} from "@jumbo/components/JumboList/hooks";
+import useJumboList from "@jumbo/components/JumboList/hooks/useJumboList";
 import Div from "@jumbo/shared/Div";
 import TablePagination from "@mui/material/TablePagination";
 

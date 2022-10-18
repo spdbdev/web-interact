@@ -21,8 +21,6 @@ const JumboSearch = ({onChange, value,sx}) => {
     return (
         <Div sx={{
             position: 'relative',
-            borderRadius: 24,
-            backgroundColor: theme => theme.palette.grey.A100,
             width: '100%',
             ...sx
         }}>
@@ -34,6 +32,7 @@ const JumboSearch = ({onChange, value,sx}) => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                zIndex: 2
             }}>
                 <SearchIcon/>
             </Div>
@@ -41,6 +40,9 @@ const JumboSearch = ({onChange, value,sx}) => {
                 sx={{
                     color: 'inherit',
                     display: 'flex',
+                    borderRadius: 24,
+                    backgroundColor: theme => theme.jumboComponents.JumboSearch.background,
+
                     '& .MuiInputBase-input': {
                         padding: theme => theme.spacing(1, 1, 1, 0),
                         // vertical padding + font size from searchIcon

@@ -1,5 +1,5 @@
 import React from 'react';
-import {useJumboList} from "../../hooks";
+import useJumboList from "../../hooks/useJumboList";
 import {getArrayElementFromKey} from "@jumbo/utils";
 import Checkbox from "@mui/material/Checkbox";
 

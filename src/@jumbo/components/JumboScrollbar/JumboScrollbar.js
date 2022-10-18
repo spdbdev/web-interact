@@ -1,6 +1,6 @@
 import React from 'react';
 import Scrollbars from "react-custom-scrollbars-2";
-import {useJumboTheme} from "@jumbo/hooks";
+import useJumboTheme from "@jumbo/hooks/useJumboTheme";
 import PropTypes from "prop-types";
 
 //todo - need to see how to define prop-types for this.

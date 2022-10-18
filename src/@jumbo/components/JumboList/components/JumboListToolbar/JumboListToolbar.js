@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {ListItem, ListItemText} from "@mui/material";
-import {useJumboList} from "../../hooks";
+import useJumboList from "../../hooks/useJumboList";
 import MultiSelectControl from './MultiSelectControl';
 import Stack from "@mui/material/Stack";
 import Zoom from "@mui/material/Zoom";
