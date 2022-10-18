@@ -29,9 +29,157 @@
 }
 
 
+.InfoSection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
 
+.InfoSection>div {
+    text-align: left;
+    color: #a6a6a6;
+    font-size: 15px;
+}
 
+.InfluencerVideo {
+    padding: 0px;
+    width: 100%;
+    height: calc(100% - 200px);
+    object-fit: cover;
+}
 
+.InfluencerDescription {
+    display: flex;
+    width: 100%;
+    height: 200px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.BiddingStats {
+    text-align: left;
+}
+
+.Socials {}
+
+.BottomSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between3;
+
+}
+
+.Share {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.Share * {
+    padding: 5px;
+}
+
+.Highlight {
+    font-weight: 600;
+    color: blueviolet;
+}
+
+body.active-modal {
+    overflow-y: hidden;
+}
+
+.btn-modal {
+    padding: 10px 20px;
+    display: block;
+    margin: 100px auto 0;
+    font-size: 18px;
+}
+
+.modal,
+.overlay {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+}
+
+.overlay {
+    background: rgba(49, 49, 49, 0.8);
+}
+
+.modal-content {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #f1f1f1;
+    padding: 14px 28px;
+    border-radius: 3px;
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 7px;
+}
+
+.checkbox-div {
+    text-align: left;
+    float: left;
+    display: block;
+    width: 100%;
+}
+
+.card-body-text {
+    font-size: 18px;
+    color: black;
+}
+
+.card-body-text p {
+    padding: 0;
+    margin: 5px 0px 5px 0;
+    text-align: left;
+    font-size: 14px;
+
+}
+    .card-body-text p a {
+        float: right;
+    }
+
+    .click-to-show-card-toggle-true {
+        /* font-size: 0; */
+        float: right;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    .click-to-show-card-toggle-false{
+        font-size: 0;
+        display: none;
+        float: right;
+    }
+
+    .buttonFloat{
+        float: right;
+        margin-bottom: 10px;
+    }
+    .show-error{
+        color: red;
+    }
+
+    .modal_input_email{
+        display: none;
+    }
+
+    
 
 
 

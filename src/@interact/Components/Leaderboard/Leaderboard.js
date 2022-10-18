@@ -66,7 +66,7 @@ export default function Leaderboard({ campaignData, bids }) {
   const minBid = 1.0; // assume bids smaller than min bid will not be acceoted
 
   const parseLeaderboard = (bids) => {
-    console.log("parsing");
+    // console.log("parsing");
     bids = [...bids]?.sort((a, b) => {
       // console.log( parseFloat(a.bidPrice) > parseFloat(b.bidPrice), a, b)
       return parseFloat(b.price) - parseFloat(a.price);
@@ -85,7 +85,7 @@ export default function Leaderboard({ campaignData, bids }) {
       };
     });
 
-    console.log(bids);
+    // console.log(bids);
 
     return bids;
   };

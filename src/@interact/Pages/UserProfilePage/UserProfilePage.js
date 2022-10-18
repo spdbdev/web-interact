@@ -82,6 +82,8 @@ function UserProfilePage() {
     fetchUserName();
   }, [user, loading]);
 
+  localStorage.setItem('name',name);
+
   return (
     <div>
       <FollowerList open={modalOpened} setOpen={setModalOpened} />

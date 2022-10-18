@@ -485,7 +485,7 @@ import { useJumboTheme } from "@jumbo/hooks";
 //   rafflePrice:1.5,
 // }
 
-function CampaignPage() {
+function CampaignPage(userData) {
   const num_giveaway = 10;
   const num_auction = 10;
 
@@ -497,7 +497,7 @@ function CampaignPage() {
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const campaignId = "test12345";
-  let userId = "user1234"; // dummy user id
+  let userId = 'user123456'; // dummy user id
   let user = {
     id: "user1234",
     photoUrl:
@@ -561,12 +561,14 @@ function CampaignPage() {
     // setSupporters(DUMMY_SUPPORTERS)
   }, []);
 
-  const bid = async (amount, auto = false) => {
+  const bid = async (amount, clientemail, auto = false) => {
     console.log("bidding", amount);
+    console.log("email : " + clientemail);
     await setDoc(doc(db, "campaigns", campaignId, "bids", userId), {
       person: user,
       price: amount,
       auto: auto,
+      email:clientemail,
       time: serverTimestamp(),
     });
     getCampaignData();
@@ -625,7 +627,7 @@ function CampaignPage() {
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
         <Header campaignData={campaignData} />
-
+        <p>{localStorage.getItem('data')}</p>
         <Box
           sx={{
             position: "relative",
