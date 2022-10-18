@@ -17,6 +17,14 @@ import JumboRTL from "@jumbo/JumboRTL/JumboRTL";
 import Div from "@jumbo/shared/Div";
 import {CircularProgress} from "@mui/material";
 
+import { loadStripe } from '@stripe/stripe-js/pure';
+import { Elements } from '@stripe/react-stripe-js';
+import CaptureAuction from '@interact/Pages/CampaignPage/CaptureAuction';
+const stripePromise = loadStripe('pk_test_51LJU6pIRYjPm2gCpQ07Vg68jRq7XfRVpVLSygsbAR4r42iZCN3hWueDFUxeOXxHBiUg3tUp9ciZE4mfQjsFpIxEN00g6y5PWRS');
+
+localStorage.clear();
+
+
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
@@ -29,6 +37,7 @@ const store = configureStore();
 
 function App() {
     return (
+        <Elements stripe={stripePromise}>
         <QueryClientProvider client={queryClient}>
             <Provider store={store}>
                 <BrowserRouter history={history}>
@@ -74,6 +83,7 @@ function App() {
                 </BrowserRouter>
             </Provider>
         </QueryClientProvider>
+        </Elements>
     );
 }
 

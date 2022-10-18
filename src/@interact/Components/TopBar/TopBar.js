@@ -8,7 +8,8 @@ function TopBar() {
   return (
     <div className="TopBar">
       <div>
-        <a>Start a campaign</a>
+      
+        <Link to="/campaign">Start a campaign</Link>
       </div>
       <div style={{ height: "100%" }}>
         <img src={logo} alt="logo" style={{ height: "100%" }} />
