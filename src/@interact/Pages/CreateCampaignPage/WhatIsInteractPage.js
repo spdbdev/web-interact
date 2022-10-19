@@ -11,6 +11,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import SoloPage from "app/layouts/solo-page/SoloPage";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
@@ -130,61 +131,60 @@ export default function WhatIsInteractPage() {
   const navigate = useNavigate();
 
   return (
-    <Box
-      sx={{
-        position: "absolute", // this is a 'hacky' fix for making the page full-screen as jumbo's default layout is tricky to change
-        zIndex: 4000,
-        top: 0,
-        left: 0,
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        width: "100%",
-        padding: 5,
-        backgroundColor: "background.default",
-      }}
-    >
-      <Box sx={{ alignSelf: "flex-end" }}>
-        <IconButton
-          disableRipple
-          disableFocusRipple
-          onClick={() => navigate(-1)}
-        >
-          <Close sx={{ color: "text.secondary" }} />
-        </IconButton>
-      </Box>
-      <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack spacing={1} sx={{ maxWidth: 1000 }}>
-          <Stack direction="column" alignItems="center" spacing={2}>
-            <img src={InteractLogo} alt="" width={50} />
-            <Typography variant="h2">What Is Interact?</Typography>
+    <SoloPage>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+          width: "100%",
+          padding: 5,
+          backgroundColor: "background.default",
+        }}
+      >
+        <Box sx={{ alignSelf: "flex-end" }}>
+          <IconButton
+            disableRipple
+            disableFocusRipple
+            onClick={() => navigate(-1)}
+          >
+            <Close sx={{ color: "text.secondary" }} />
+          </IconButton>
+        </Box>
+        <Stack direction="column" alignItems="center" width={"100%"}>
+          <Stack spacing={1} sx={{ maxWidth: 1000 }}>
+            <Stack direction="column" alignItems="center" spacing={2}>
+              <img src={InteractLogo} alt="" width={50} />
+              <Typography variant="h2">What Is Interact?</Typography>
+            </Stack>
+            <Typography variant="h5" sx={{ py: 4 }}>
+              Interact helps you bring joy to your most loyal fans who have
+              grown with you not only as a creator, but as a human being. We
+              minimize logistical hassle and make it worth your time (while
+              creating content/streaming, making an additional $100+ an hour
+              with only 1000 devoted fans). This is FREE MONEY at no opportunity
+              cost since you get fresh content for your stream (your streaming
+              scheduling can stay the same, no additional hours needed) and/or
+              you can make use of highlights from interactions to spice up new
+              videos.
+            </Typography>
+            {WhatIsInteractFAQs?.map((item, key) => (
+              <SpecialAccordion
+                key={key}
+                question={item.question}
+                answer={item.answer}
+              />
+            ))}
           </Stack>
-          <Typography variant="h5" sx={{ py: 4 }}>
-            Interact helps you bring joy to your most loyal fans who have grown
-            with you not only as a creator, but as a human being. We minimize
-            logistical hassle and make it worth your time (while creating
-            content/streaming, making an additional $100+ an hour with only 1000
-            devoted fans). This is FREE MONEY at no opportunity cost since you
-            get fresh content for your stream (your streaming scheduling can
-            stay the same, no additional hours needed) and/or you can make use
-            of highlights from interactions to spice up new videos.
-          </Typography>
-          {WhatIsInteractFAQs?.map((item, key) => (
-            <SpecialAccordion
-              key={key}
-              question={item.question}
-              answer={item.answer}
-            />
-          ))}
         </Stack>
-      </Stack>
-      <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
-        <InteractFlashyButton
-          onClick={() => navigate("/interact/createcampaign")}
-        >
-          Next →
-        </InteractFlashyButton>
+        <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
+          <InteractFlashyButton
+            onClick={() => navigate("/interact/createcampaign")}
+          >
+            Next →
+          </InteractFlashyButton>
+        </Box>
       </Box>
-    </Box>
+    </SoloPage>
   );
 }

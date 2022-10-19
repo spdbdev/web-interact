@@ -1,4 +1,4 @@
-import { Delete } from "@mui/icons-material";
+import { Clear, Delete, Remove } from "@mui/icons-material";
 import {
   Box,
   Chip,
@@ -48,28 +48,37 @@ export default function CampaignCategorySelect() {
     );
   };
 
+  const handleDelete = (e, value) => {
+    e.preventDefault();
+    const index = selectedCategories.indexOf(value);
+    setSelectedCategories(selectedCategories.splice(index, 1));
+  };
+
   return (
     <Box sx={{ zIndex: 9999 }}>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="campaign-categories-label">Category</InputLabel>
+      <FormControl sx={{ width: 400 }}>
         <Select
-          labelId="campaign-categories-label"
           id="campaign-categories"
           multiple
           value={selectedCategories}
           onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Category" />}
+          input={<OutlinedInput id="select-multiple-chip" />}
           renderValue={(selected) => (
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            <Box sx={{ display: "flex", flexWrap: "no-wrap", gap: 0.5 }}>
               {selected.map((value) => (
-                <Chip key={value} label={value} deleteIcon={<Delete />} />
+                <Chip
+                  sx={{ borderRadius: "2px 8px", fontSize: 12 }}
+                  key={value}
+                  label={value}
+                  deleteIcon={<Clear />}
+                  onDelete={(e) => handleDelete(e, value)}
+                />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
           {categories.map((category) => {
-            console.log(category);
             return (
               <MenuItem key={category} value={category}>
                 {category}
