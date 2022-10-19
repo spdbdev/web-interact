@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, ButtonBase, Container, Input } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonBase,
+  Container,
+  Input,
+  Stack,
+} from "@mui/material";
 import CampaignCreationTabs from "./CampaignCreationTabs";
 import BasicsTab from "./Tabs/BasicsTab";
 import SchedulingTab from "./Tabs/SchedulingTab";
@@ -13,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import { ExpandLess } from "@mui/icons-material";
 import { useJumboContentLayout } from "@jumbo/hooks";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import CampaignCategorySelect from "./CampaignCategorySelect";
 
 const FAQText = {
   0: <span>this is the basics tab</span>,
@@ -60,7 +69,7 @@ function CreateCampaignPage() {
     <div className="CreateCampaignPage">
       <Box
         sx={{
-          position: "absolute", // this is a 'hacky' fix for making the page full-screen as jumbo's default layout is tricky to change
+          position: "fixed", // this is a 'hacky' fix for making the page full-screen as jumbo's default layout is tricky to change
           zIndex: 4000,
           top: 0,
           left: 0,
@@ -80,7 +89,10 @@ function CreateCampaignPage() {
         <Container
           sx={{
             flex: 1,
+            display: "flex",
+            flexDirection: "column",
             width: "100%",
+            height: "100%",
           }}
         >
           <Container sx={{ display: "flex", justifyContent: "center" }}>
@@ -94,7 +106,32 @@ function CreateCampaignPage() {
             selectedTabIndex={selectedTabIndex}
             setSelectedTabIndex={setSelectedTabIndex}
           />
-          {renderTab()}
+          <Stack direction="column" flex={1} justifyContent="space-evenly">
+            {renderTab()}
+          </Stack>
+
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignSelf: "flex-end",
+              mt: 10,
+              mb: 6,
+            }}
+          >
+            <InteractFlashyButton
+              onClick={() => setSelectedTabIndex(selectedTabIndex - 1)}
+            >
+              ← Back
+            </InteractFlashyButton>
+            <InteractFlashyButton
+              onClick={() => setSelectedTabIndex(selectedTabIndex + 1)}
+            >
+              Next →
+            </InteractFlashyButton>
+          </Box>
         </Container>
       </Box>
     </div>

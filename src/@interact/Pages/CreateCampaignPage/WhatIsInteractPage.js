@@ -1,10 +1,14 @@
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { Close, ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Button,
   Container,
+  IconButton,
+  Stack,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -64,16 +68,21 @@ const WhatIsInteractFAQs = [
         (assuming 10,000 free entries & 50 interactions in the giveaway): $3K.
         Plus 50 interactions sold in the auction, which can add another $2K to
         $4K if each interaction sells for an average of $40 to $80,
-        respectively. So that’s a total of $5K to $7K gross raised from one
-        campaign selling 100 interactions with 1050 fans supporting you
-        monetarily. If the average interaction 30 minutes, that’s around 5 hours
-        a week of fan interaction over 2 months (only one or two interactions a
-        day or one evening per week); this is effectively being paid an extra
-        $100 to $140 per hour while streaming/creating additional content while
-        getting to meet & chill with your devoted fans. In a year, if a creator
-        launches 5 of these campaigns that reserve interactions for 2 months at
-        a time (10 months of interactions), that’s an additional $25K to $35K
-        gross revenue annually.
+        respectively. So that’s a total of{" "}
+        <strong style={{ fontWeight: 600 }}>
+          $5K to $7K gross raised from one campaign selling 100 interactions
+          with 1050 fans supporting you monetarily.
+        </strong>{" "}
+        If the average interaction 30 minutes, that’s around 5 hours a week of
+        fan interaction over 2 months (only one or two interactions a day or one
+        evening per week); this is effectively being paid an extra $100 to $140
+        per hour while streaming/creating additional content while getting to
+        meet & chill with your devoted fans. In a year, if a creator launches 5
+        of these campaigns that reserve interactions for 2 months at a time (10
+        months of interactions), that’s an additional{" "}
+        <strong style={{ fontWeight: 600 }}>
+          $25K to $35K gross revenue annually.
+        </strong>
       </span>
     ),
   },
@@ -91,6 +100,10 @@ const WhatIsInteractFAQs = [
         day campaigns + incentive to support you with a fun goal).
       </span>
     ),
+  },
+  {
+    question: <span>Why do fans want personal interactions?</span>,
+    answer: <span>dknfkdnfkajsdn lfdnf kjlsndf lsdfn</span>,
   },
 ];
 
@@ -117,19 +130,36 @@ export default function WhatIsInteractPage() {
   const navigate = useNavigate();
 
   return (
-    <>
-      <div className="mt-4 flex flex-col items-end">
-        <Button disableRipple disableFocusRipple onClick={() => navigate(-1)}>
-          <Close sx={{ color: "divider" }} />
-        </Button>
-      </div>
-      <div className="flex flex-col items-center pb-10">
-        <div className="w-full max-w-[1000px] space-y-2">
-          <div className="flex flex-col items-center space-y-4">
+    <Box
+      sx={{
+        position: "absolute", // this is a 'hacky' fix for making the page full-screen as jumbo's default layout is tricky to change
+        zIndex: 4000,
+        top: 0,
+        left: 0,
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100%",
+        padding: 5,
+        backgroundColor: "background.default",
+      }}
+    >
+      <Box sx={{ alignSelf: "flex-end" }}>
+        <IconButton
+          disableRipple
+          disableFocusRipple
+          onClick={() => navigate(-1)}
+        >
+          <Close sx={{ color: "text.secondary" }} />
+        </IconButton>
+      </Box>
+      <Stack direction="column" alignItems="center" width={"100%"}>
+        <Stack spacing={1} sx={{ maxWidth: 1000 }}>
+          <Stack direction="column" alignItems="center" spacing={2}>
             <img src={InteractLogo} alt="" width={50} />
-            <Typography variant="h4">What Is Interact?</Typography>
-          </div>
-          <h4 className="text-interact-dark-text py-10">
+            <Typography variant="h2">What Is Interact?</Typography>
+          </Stack>
+          <Typography variant="h5" sx={{ py: 4 }}>
             Interact helps you bring joy to your most loyal fans who have grown
             with you not only as a creator, but as a human being. We minimize
             logistical hassle and make it worth your time (while creating
@@ -138,7 +168,7 @@ export default function WhatIsInteractPage() {
             get fresh content for your stream (your streaming scheduling can
             stay the same, no additional hours needed) and/or you can make use
             of highlights from interactions to spice up new videos.
-          </h4>
+          </Typography>
           {WhatIsInteractFAQs?.map((item, key) => (
             <SpecialAccordion
               key={key}
@@ -146,8 +176,15 @@ export default function WhatIsInteractPage() {
               answer={item.answer}
             />
           ))}
-        </div>
-      </div>
-    </>
+        </Stack>
+      </Stack>
+      <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
+        <InteractFlashyButton
+          onClick={() => navigate("/interact/createcampaign")}
+        >
+          Next →
+        </InteractFlashyButton>
+      </Box>
+    </Box>
   );
 }

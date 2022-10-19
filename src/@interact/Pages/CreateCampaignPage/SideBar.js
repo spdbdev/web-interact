@@ -3,6 +3,7 @@ import { Box, Container, IconButton, Stack } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import SideBarSupportForm from "./SideBarSupportForm";
 import JumboVerticalNavbar from "@jumbo/components/JumboVerticalNavbar/JumboVerticalNavbar";
+import CampaignCategorySelect from "./CampaignCategorySelect";
 
 export default function SideBar({
   isSideBarCollapsed,
@@ -25,7 +26,6 @@ export default function SideBar({
       >
         <InfoOutlined sx={{ color: "primary.contrastText" }} />
       </IconButton>
-
       {isSideBarCollapsed ? null : (
         <>
           <Container sx={{ flex: 1, color: "primary.contrastText" }}>
