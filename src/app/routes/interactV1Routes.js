@@ -4,12 +4,15 @@ import IntranetDashboard from "../pages/dashboards/intranet/IntranetDashboard";
 
 // Interactv1
 import SignInPage from "@interact/Pages/SignUpPage/SignInPage";
+import SignUpPage2 from "@interact/Pages/SignUpPage/SignUpPage2";
 import UserProfile from "app/pages/users/user-profile";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
 import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
+
+
 
 const interactV1Routes = [
   {
@@ -18,12 +21,11 @@ const interactV1Routes = [
   },
   {
     path: "/interact/signup",
-    element: <ListingDashboard />,
+    element: <SignUpPage2/>,
   },
   {
     path: "/interact/user",
-    //element: <CrmDashboard/>,
-    element: <UserProfilePage />, // use <UserProfilePage /> from @interact/Pages/UserProfilePages to see the old one.
+    element: <UserProfilePage />, 
   },
   {
     path: "/interact/userold",

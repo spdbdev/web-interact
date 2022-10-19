@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, registerWithEmailAndPassword, signInWithGoogle } from "firebase";
+import { auth, registerWithEmailAndPassword, signInWithGoogle } from "@jumbo/services/auth/firebase/firebase";
 import PasswordChecklist from "react-password-checklist";
 
 import fb_logo from "./facebook.png";
