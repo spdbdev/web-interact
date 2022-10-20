@@ -17,8 +17,12 @@ const MenuProps = {
   },
 };
 
-export default function CampaignDropdownSelect({ items, placeholder }) {
-  const [selectedItem, setSelectedItem] = React.useState(null);
+export default function CampaignDropdownSelect({
+  items,
+  placeholder,
+  defaultValue,
+}) {
+  const [selectedItem, setSelectedItem] = React.useState(defaultValue);
 
   const handleChange = (event) => {
     const {

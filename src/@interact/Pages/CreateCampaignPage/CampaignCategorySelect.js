@@ -7,6 +7,7 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  Stack,
   useTheme,
 } from "@mui/material";
 import * as React from "react";
@@ -23,35 +24,40 @@ const MenuProps = {
 };
 
 const categories = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
+  "Gaming",
+  "Humor",
+  "Just chatting, commentary",
+  "News & politics",
+  "Sports",
+  "Academic/educational topics",
+  "Films, shows & anime",
+  "Animation",
+  "Travel, vlogs & lifestyle",
 ];
 
 export default function CampaignCategorySelect() {
-  const [selectedCategories, setSelectedCategories] = React.useState([]);
+  const [selectedCategories, setSelectedCategories] = React.useState([
+    "Gaming",
+  ]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setSelectedCategories(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+
+    if (selectedCategories.length < 3) {
+      setSelectedCategories(
+        // On autofill we get a stringified value.
+        typeof value === "string" ? value.split(",") : value
+      );
+    }
   };
 
   const handleDelete = (e, value) => {
     e.preventDefault();
-    const index = selectedCategories.indexOf(value);
-    setSelectedCategories(selectedCategories.splice(index, 1));
+    setSelectedCategories(
+      selectedCategories.filter((category) => category !== value)
+    );
   };
 
   return (
@@ -59,22 +65,20 @@ export default function CampaignCategorySelect() {
       <FormControl sx={{ width: 400 }}>
         <Select
           id="campaign-categories"
-          multiple
           value={selectedCategories}
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" />}
           renderValue={(selected) => (
-            <Box sx={{ display: "flex", flexWrap: "no-wrap", gap: 0.5 }}>
+            <Stack direction="row" spacing={0.5}>
               {selected.map((value) => (
                 <Chip
                   sx={{ borderRadius: "2px 8px", fontSize: 12 }}
                   key={value}
                   label={value}
-                  deleteIcon={<Clear />}
                   onDelete={(e) => handleDelete(e, value)}
                 />
               ))}
-            </Box>
+            </Stack>
           )}
           MenuProps={MenuProps}
         >

@@ -15,6 +15,7 @@ export default function BasicsTab() {
         </TitleAndDesc>
         <TextField
           variant="outlined"
+          inputProps={{ maxLength: 40 }}
           helperText="Max. 40 characters."
           sx={{ width: 400 }}
           placeholder={`Get to know ${"name"} 1-on-1`}
@@ -47,17 +48,13 @@ export default function BasicsTab() {
         </TitleAndDesc>
         <CampaignDropdownSelect
           placeholder="Currency"
+          defaultValue="🇨🇦 CAD Canadian Dollar"
           items={[
-            "Oliver Hansen",
-            "Van Henry",
-            "April Tucker",
-            "Ralph Hubbard",
-            "Omar Alexander",
-            "Carlos Abbott",
-            "Miriam Wagner",
-            "Bradley Wilkerson",
-            "Virginia Andrews",
-            "Kelly Snyder",
+            "🇺🇸 USD United States Dollar",
+            "🇨🇦 CAD Canadian Dollar",
+            "🇬🇧 GBP Pounds Sterling",
+            "🇪🇺 EUR Euro",
+            "🇦🇺 AUD Australian Dollar",
           ]}
         />
       </CreateCampaignItemWrapper>
