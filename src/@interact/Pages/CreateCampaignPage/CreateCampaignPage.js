@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, ButtonBase, Container, Input } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonBase,
+  Container,
+  Input,
+  Stack,
+  Typography,
+} from "@mui/material";
 import CampaignCreationTabs from "./CampaignCreationTabs";
 import BasicsTab from "./Tabs/BasicsTab";
 import SchedulingTab from "./Tabs/SchedulingTab";
@@ -13,6 +21,9 @@ import { useNavigate } from "react-router-dom";
 import { ExpandLess } from "@mui/icons-material";
 import { useJumboContentLayout } from "@jumbo/hooks";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import CampaignCategorySelect from "./CampaignCategorySelect";
+import SoloPage from "app/layouts/solo-page/SoloPage";
 
 const FAQText = {
   0: <span>this is the basics tab</span>,
@@ -57,16 +68,13 @@ function CreateCampaignPage() {
   }
 
   return (
-    <div className="CreateCampaignPage">
+    <SoloPage>
+      {/* use the "SoloPage" wrapper to completely remove the header and sidebar. */}
       <Box
         sx={{
-          position: "absolute", // this is a 'hacky' fix for making the page full-screen as jumbo's default layout is tricky to change
-          zIndex: 4000,
-          top: 0,
-          left: 0,
           display: "flex",
           flexDirection: "row",
-          height: "100vh",
+          height: "100%",
           width: "100%",
           padding: 0,
           backgroundColor: "background.default",
@@ -80,13 +88,24 @@ function CreateCampaignPage() {
         <Container
           sx={{
             flex: 1,
+            display: "flex",
+            flexDirection: "column",
             width: "100%",
+            height: "100%",
           }}
         >
           <Container sx={{ display: "flex", justifyContent: "center" }}>
-            <ButtonBase onClick={() => navigate("/interact/what-is-interact")}>
+            <ButtonBase
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                color: "text.hint",
+              }}
+              onClick={() => navigate("/interact/what-is-interact")}
+            >
               <ExpandLess />
-              <h5>What Is Interact?</h5>
+              <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
             </ButtonBase>
           </Container>
 
@@ -94,10 +113,35 @@ function CreateCampaignPage() {
             selectedTabIndex={selectedTabIndex}
             setSelectedTabIndex={setSelectedTabIndex}
           />
-          {renderTab()}
+          <Stack direction="column" flex={1} justifyContent="space-evenly">
+            {renderTab()}
+          </Stack>
+
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignSelf: "flex-end",
+              mt: 10,
+              mb: 6,
+            }}
+          >
+            <InteractFlashyButton
+              onClick={() => setSelectedTabIndex(selectedTabIndex - 1)}
+            >
+              ← Back
+            </InteractFlashyButton>
+            <InteractFlashyButton
+              onClick={() => setSelectedTabIndex(selectedTabIndex + 1)}
+            >
+              Next →
+            </InteractFlashyButton>
+          </Box>
         </Container>
       </Box>
-    </div>
+    </SoloPage>
   );
 }
 

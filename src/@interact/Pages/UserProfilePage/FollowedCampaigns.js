@@ -3,9 +3,12 @@ import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import MeetingBlocks from "./MeetingBlocks";
 import { useEffect, useRef } from "react";
 import InteractButton from "@interact/Components/Button/InteractButton";
+import { useNavigate } from "react-router-dom";
+import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
 
 function FollowedCampaigns() {
   const currentCampaigns = [1, 2, 3];
+  const navigate = useNavigate();
 
   const meetingBlockRef = useRef(null);
   useEffect(() => {
@@ -39,7 +42,7 @@ function FollowedCampaigns() {
       </div>
       <div style={{ margin: 20 }}>
         <InteractButton
-          onClick={() => alert("pressed")}
+          onClick={() => navigate("/interact/createcampaign")}
           style={{ paddingLeft: 200 }}
         >
           + Create New Campaign
