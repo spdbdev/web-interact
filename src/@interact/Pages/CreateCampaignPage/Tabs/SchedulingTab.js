@@ -42,6 +42,7 @@ export default function SchedulingTab() {
           <Stack direction="column" alignItems="center" spacing={3}>
             <DateTimePicker
               label="Start date & time"
+              InputProps={{ sx: { width: 300 } }}
               value={startDateTime}
               onChange={(newValue) => setStartDateTime(newValue)}
               renderInput={(params) => <TextField {...params} />}
@@ -54,6 +55,7 @@ export default function SchedulingTab() {
             />
             <DateTimePicker
               label="End date & time"
+              InputProps={{ sx: { width: 300 } }}
               value={endDateTime}
               onChange={(newValue) => setEndDateTime(newValue)}
               renderInput={(params) => <TextField {...params} />}
@@ -68,9 +70,9 @@ export default function SchedulingTab() {
           have to wait a long time, but too few weeks = more interactions to
           complete every week. Recommended: 10 weeks.
         </TitleAndDesc>
-        <Stack sx={{ width: 400 }}>
+        <Stack sx={{ width: 300 }}>
           <Slider
-            defaultValue={4}
+            defaultValue={10}
             valueLabelDisplay="auto"
             step={1}
             marks={marks}

@@ -21,7 +21,7 @@ export default function CampaignCreationTabs({
   setSelectedTabIndex,
 }) {
   const handleTabChange = (event, newTabIndex) => {
-    setSelectedTabIndex(newTabIndex);
+    event.preventDefault(); // prevent clicking tabs
   };
 
   return (

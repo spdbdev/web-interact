@@ -46,10 +46,7 @@ export default function CampaignCategorySelect() {
     } = event;
 
     if (selectedCategories.length < 3) {
-      setSelectedCategories(
-        // On autofill we get a stringified value.
-        typeof value === "string" ? value.split(",") : value
-      );
+      setSelectedCategories([...selectedCategories, value]);
     }
   };
 

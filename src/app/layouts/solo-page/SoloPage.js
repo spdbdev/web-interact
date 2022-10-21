@@ -8,7 +8,7 @@ const SoloPage = ({ children }) => {
 
   React.useEffect(() => {
     setJumboLayoutOptions(layoutConfig);
-  });
+  }, [children]);
 
   return <JumboLayout>{children}</JumboLayout>;
 };
