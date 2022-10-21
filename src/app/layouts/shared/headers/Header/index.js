@@ -12,10 +12,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import JumboIconButton from "@jumbo/components/JumboIconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import Logo from "../../../../shared/Logo";
 import { SIDEBAR_STYLES } from "@jumbo/utils/constants";
 import { useJumboHeaderTheme } from "@jumbo/hooks";
-import InteractLogo from "@interact/Images/logo.png";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 const Header = () => {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
@@ -28,22 +28,22 @@ const Header = () => {
       {(sidebarOptions.style === SIDEBAR_STYLES.CLIPPED_UNDER_HEADER ||
         (sidebarOptions.style !== SIDEBAR_STYLES.CLIPPED_UNDER_HEADER &&
           !sidebarOptions?.open)) && (
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="open drawer"
-          sx={{
-            ml:
-              sidebarOptions.style === SIDEBAR_STYLES.CLIPPED_UNDER_HEADER
-                ? -2
-                : 0,
-            mr: 3,
-          }}
-          onClick={() => setSidebarOptions({ open: !sidebarOptions.open })}
-        >
-          {sidebarOptions?.open ? <MenuOpenIcon /> : <MenuIcon />}
-        </IconButton>
-      )}
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{
+              ml:
+                sidebarOptions.style === SIDEBAR_STYLES.CLIPPED_UNDER_HEADER
+                  ? -2
+                  : 0,
+              mr: 3,
+            }}
+            onClick={() => setSidebarOptions({ open: !sidebarOptions.open })}
+          >
+            {sidebarOptions?.open ? <MenuOpenIcon /> : <MenuIcon />}
+          </IconButton>
+        )}
 
       <Slide in={dropdownSearchVisibility}>
         <Div
@@ -85,7 +85,10 @@ const Header = () => {
           </IconButton>
         </Div>
       </Slide>
-      <img src={InteractLogo} width={120} />
+      <Link to="/campaign">
+        <Button variant={"contained"}>Start a campaign</Button>
+      </Link>
+
       <Stack
         direction="row"
         alignItems="center"
@@ -99,7 +102,6 @@ const Header = () => {
           <SearchIcon fontSize={"small"} />
         </JumboIconButton>
 
-        <MessagesDropdown />
         <NotificationsDropdown />
         <AuthUserDropdown />
       </Stack>
