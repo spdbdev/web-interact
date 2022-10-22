@@ -1,10 +1,16 @@
 import React from "react";
-import { Container } from "@mui/material";
+import { Container, Stack, Typography } from "@mui/material";
+import FAQAccordian from "../FAQAccordian";
 
 export default function FAQTab() {
   return (
-    <Container>
-      <h5>Text</h5>
-    </Container>
+    <>
+      <Stack direction="column" alignItems="center" spacing={4}>
+        <Typography variant="h2" sx={{ fontWeight: 500 }}>
+          Your campaign FAQ will look like this:
+        </Typography>
+        <FAQAccordian />
+      </Stack>
+    </>
   );
 }

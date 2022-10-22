@@ -113,7 +113,12 @@ function CreateCampaignPage() {
             selectedTabIndex={selectedTabIndex}
             setSelectedTabIndex={setSelectedTabIndex}
           />
-          <Stack direction="column" flex={1} justifyContent="space-evenly">
+          <Stack
+            direction="column"
+            flex={1}
+            justifyContent="space-evenly"
+            spacing={4}
+          >
             {renderTab()}
           </Stack>
 

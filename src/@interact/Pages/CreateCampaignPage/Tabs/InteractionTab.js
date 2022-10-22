@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Container,
   FormControl,
   FormHelperText,
@@ -7,9 +8,16 @@ import {
   OutlinedInput,
   Slider,
   Stack,
+  Typography,
 } from "@mui/material";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc, { TitleAndDescFullWidth } from "../CampaignTitleAndDesc";
+import {
+  InteractionAvailabilitySlider,
+  InteractionDurationsSlider,
+} from "../Sliders";
+import Span from "@jumbo/shared/Span";
+import InteractionIcon from "../../../Images/interaction-icon.png";
 
 export default function InteractionTab() {
   const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
@@ -26,23 +34,9 @@ export default function InteractionTab() {
           <br />
           How much time should each interaction take?
         </TitleAndDesc>
-        <Stack spacing={6} sx={{ width: 300, mt: 6 }}>
-          <Slider
-            defaultValue={10}
-            valueLabelDisplay="auto"
-            step={1}
-            // marks={marks}
-            min={2}
-            max={20}
-          />
-          <Slider
-            defaultValue={10}
-            valueLabelDisplay="auto"
-            step={1}
-            // marks={marks}
-            min={2}
-            max={20}
-          />
+        <Stack spacing={4} sx={{ width: 300, mt: 4 }}>
+          <InteractionAvailabilitySlider />
+          <InteractionDurationsSlider />
         </Stack>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
@@ -116,6 +110,32 @@ export default function InteractionTab() {
           </FormControl>
         </TitleAndDescFullWidth>
       </CreateCampaignItemWrapper>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={4}
+        sx={{
+          mt: 6,
+          background: "rgba(120, 47, 238, 0.1)",
+          p: 3,
+          borderRadius: 3,
+          boxShadow: "0px 0px 20px rgba(120, 47, 238, 0.15)",
+        }}
+      >
+        <img alt="interaction-icon" src={InteractionIcon} width={60} />
+        <Typography
+          sx={{ color: "primary.main", fontWeight: 400, fontSize: 18 }}
+        >
+          With an average of <Span sx={{ fontWeight: 600 }}>5 hrs/week</Span>,
+          you can get to know <Span sx={{ fontWeight: 600 }}>97 fans</Span>{" "}
+          personally over the period of{" "}
+          <Span sx={{ fontWeight: 600 }}>Oct. 28, 2022</Span> to{" "}
+          <Span sx={{ fontWeight: 600 }}>Jan. 06, 2023</Span>.{" "}
+          <Span sx={{ color: "primary.light", fontSize: 14 }}>
+            (94 x 30 min interactions and 3 x 60 min interactions)
+          </Span>
+        </Typography>
+      </Stack>
     </>
   );
 }

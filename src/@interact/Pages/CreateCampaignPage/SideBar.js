@@ -14,6 +14,8 @@ export default function SideBar({
     <Stack
       direction="column"
       sx={{
+        // position: "fixed",
+        // height: "100%",
         width: isSideBarCollapsed ? 40 : 260,
         background:
           "linear-gradient(173.73deg, #782FEE 10.4%, #DD00FF 117.43%)",

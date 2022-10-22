@@ -1,32 +1,16 @@
 import React, { useState } from "react";
-import {
-  Container,
-  OutlinedInput,
-  Slider,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { OutlinedInput, Stack, TextField } from "@mui/material";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
+import { SchedulingSlider } from "../Sliders";
 
 export default function SchedulingTab() {
   const [startDateTime, setStartDateTime] = useState(moment().format());
   const [endDateTime, setEndDateTime] = useState(moment().format());
   const [campaignDurationDays, setCampaignDurationDays] = useState(0);
-
-  const marks = [
-    {
-      value: 2,
-      label: "2 weeks",
-    },
-    {
-      value: 20,
-      label: "20 weeks",
-    },
-  ];
 
   return (
     <>
@@ -71,14 +55,7 @@ export default function SchedulingTab() {
           complete every week. Recommended: 10 weeks.
         </TitleAndDesc>
         <Stack sx={{ width: 300 }}>
-          <Slider
-            defaultValue={10}
-            valueLabelDisplay="auto"
-            step={1}
-            marks={marks}
-            min={2}
-            max={20}
-          />
+          <SchedulingSlider />
         </Stack>
       </CreateCampaignItemWrapper>
     </>

@@ -18,7 +18,7 @@ export default function TitleAndDesc({ title, children }) {
 
 export function TitleAndDescFullWidth({ title, children, tooltipText }) {
   return (
-    <Stack direction="column" spacing={1}>
+    <Stack direction="column" spacing={1} width="100%">
       <Stack direction="row" alignItems="center" spacing={1}>
         <Typography sx={{ fontWeight: 500, fontSize: "20px" }}>
           {title}
