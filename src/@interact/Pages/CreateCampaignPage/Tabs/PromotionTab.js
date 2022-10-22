@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc, { TitleAndDescFullWidth } from "../CampaignTitleAndDesc";
+import InfoTooltip from "@interact/Components/InfoTooltip";
 
 export default function PromotionTab() {
   return (
@@ -31,10 +32,13 @@ export default function PromotionTab() {
               helperText="3 to 30 characters."
             />
           </Stack>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Save URL for future campaigns"
-          />
+          <Stack direction="row" alignItems="center">
+            <FormControlLabel
+              control={<Checkbox defaultChecked />}
+              label="Save URL for future campaigns"
+            />
+            <InfoTooltip title="This will override any past saved URLs, you can only reserve 1 URL at a time." />
+          </Stack>
         </Stack>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>

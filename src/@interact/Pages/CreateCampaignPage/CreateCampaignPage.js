@@ -67,6 +67,22 @@ function CreateCampaignPage() {
     }
   }
 
+  function handleNextButtonClick() {
+    if (selectedTabIndex < 6) {
+      setSelectedTabIndex(selectedTabIndex + 1);
+    } else {
+      return;
+    }
+  }
+
+  function handleBackButtonClick() {
+    if (selectedTabIndex > 0) {
+      setSelectedTabIndex(selectedTabIndex - 1);
+    } else {
+      return;
+    }
+  }
+
   return (
     <SoloPage>
       {/* use the "SoloPage" wrapper to completely remove the header and sidebar. */}
@@ -133,14 +149,10 @@ function CreateCampaignPage() {
               mb: 6,
             }}
           >
-            <InteractFlashyButton
-              onClick={() => setSelectedTabIndex(selectedTabIndex - 1)}
-            >
+            <InteractFlashyButton onClick={handleBackButtonClick}>
               ← Back
             </InteractFlashyButton>
-            <InteractFlashyButton
-              onClick={() => setSelectedTabIndex(selectedTabIndex + 1)}
-            >
+            <InteractFlashyButton onClick={handleNextButtonClick}>
               Next →
             </InteractFlashyButton>
           </Box>
