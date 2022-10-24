@@ -195,9 +195,10 @@ if(logged_user_stripe_customer_id){
         setDoc(doc(db, "campaigns", campaignId, 'raffles', user?.uid), data)
     }
 
-    const saveDatainStripeCustomer = (stripe_customer_data) => {
+    const saveDataInStripeCustomer = (stripe_customer_data) => {
         console.log(stripe_customer_data);
         setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data)
+        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data)
     }
 
 
@@ -290,7 +291,7 @@ console.log("user.email : " + user?.email);
                                             customer_id: response.data.stripe_customer_id,
                                         }
                                         //console.log(data)
-                                        saveDatainStripeCustomer(stripe_customer_data);
+                                        saveDataInStripeCustomer(stripe_customer_data);
 
 
                                      
@@ -316,7 +317,7 @@ console.log("user.email : " + user?.email);
                                         customer_id: response.data.stripe_customer_id,
                                     }
                                     //console.log(data)
-                                    saveDatainStripeCustomer(stripe_customer_data);
+                                    saveDataInStripeCustomer(stripe_customer_data);
 
 
                                     //console.log(data)
@@ -389,7 +390,7 @@ console.log("user.email : " + user?.email);
                                                     customer_id: response.data.stripe_customer_id,
                                                 }
                                                 //console.log(data)
-                                                saveDatainStripeCustomer(stripe_customer_data);
+                                                saveDataInStripeCustomer(stripe_customer_data);
                                                 saveDataInRaffle(data);
                                                 //console.log(result);
                                                 axios.post('http://localhost:4242/set_as_default', {
@@ -485,7 +486,7 @@ console.log("user.email : " + user?.email);
                                                 customer_id: response.data.stripe_customer_id,
                                             }
                                             //console.log(data)
-                                            saveDatainStripeCustomer(stripe_customer_data);
+                                            saveDataInStripeCustomer(stripe_customer_data);
 
                                             //console.log(data)
                                             saveDataInRaffle(data);
