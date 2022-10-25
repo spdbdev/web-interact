@@ -1,4 +1,5 @@
-import { Clear, Delete, Remove } from "@mui/icons-material";
+import InteractChip from "@interact/Components/Chips/InteractChip";
+import { Clear, Close, Delete, Remove } from "@mui/icons-material";
 import {
   Box,
   Chip,
@@ -68,10 +69,10 @@ export default function CampaignCategorySelect() {
           renderValue={(selected) => (
             <Stack direction="row" spacing={0.5}>
               {selected.map((value) => (
-                <Chip
-                  sx={{ borderRadius: "2px 8px", fontSize: 12 }}
+                <InteractChip
                   key={value}
                   label={value}
+                  deleteIcon={<Close sx={{ color: "primary.main" }} />}
                   onDelete={(e) => handleDelete(e, value)}
                 />
               ))}

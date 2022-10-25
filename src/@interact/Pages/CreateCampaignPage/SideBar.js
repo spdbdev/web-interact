@@ -2,8 +2,6 @@ import React from "react";
 import { Box, Container, IconButton, Stack } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import SideBarSupportForm from "./SideBarSupportForm";
-import JumboVerticalNavbar from "@jumbo/components/JumboVerticalNavbar/JumboVerticalNavbar";
-import CampaignCategorySelect from "./CampaignCategorySelect";
 
 export default function SideBar({
   isSideBarCollapsed,
@@ -14,8 +12,8 @@ export default function SideBar({
     <Stack
       direction="column"
       sx={{
-        // position: "fixed",
-        // height: "100%",
+        position: "fixed",
+        height: "100%",
         width: isSideBarCollapsed ? 40 : 260,
         background:
           "linear-gradient(173.73deg, #782FEE 10.4%, #DD00FF 117.43%)",
@@ -30,7 +28,16 @@ export default function SideBar({
       </IconButton>
       {isSideBarCollapsed ? null : (
         <>
-          <Container sx={{ flex: 1, color: "primary.contrastText" }}>
+          <Container
+            sx={{
+              flex: 1,
+              color: "primary.contrastText",
+              overflowY: "scroll",
+              my: 2,
+              pb: 6,
+              position: "relative",
+            }}
+          >
             {FAQSideBarText}
           </Container>
           <SideBarSupportForm />

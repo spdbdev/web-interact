@@ -4,7 +4,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Chip, Stack, TextField } from "@mui/material";
+import { Box, Chip, Stack, TextField } from "@mui/material";
 
 const FAQs = [
   {
@@ -146,19 +146,21 @@ const FAQs = [
   },
 ];
 
-export default function FAQAccordian() {
+export default function FAQAccordian({ shouldAllowEdit = true }) {
   return (
-    <div>
+    <Box sx={{ flex: 1, width: "100%" }}>
       {FAQs?.map((item, key) => {
         return (
-          <Accordion key={key}>
+          <Accordion sx={{ flex: 1 }} key={key}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Typography>{item.question}</Typography>
-                {item.isEditable ? <Chip label="Editable" /> : null}
+                {item.isEditable && shouldAllowEdit ? (
+                  <Chip label="Editable" />
+                ) : null}
               </Stack>
             </AccordionSummary>
-            {item.isEditable ? (
+            {item.isEditable && shouldAllowEdit ? (
               <AccordionDetails>
                 <Typography>
                   <TextField
@@ -177,6 +179,6 @@ export default function FAQAccordian() {
           </Accordion>
         );
       })}
-    </div>
+    </Box>
   );
 }

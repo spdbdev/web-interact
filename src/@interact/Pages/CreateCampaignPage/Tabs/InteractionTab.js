@@ -34,7 +34,7 @@ export default function InteractionTab() {
           <br />
           How much time should each interaction take?
         </TitleAndDesc>
-        <Stack spacing={4} sx={{ width: 300, mt: 4 }}>
+        <Stack spacing={3} sx={{ width: 300, pt: 4 }}>
           <InteractionAvailabilitySlider />
           <InteractionDurationsSlider />
         </Stack>
@@ -45,7 +45,7 @@ export default function InteractionTab() {
           <FormControl>
             <OutlinedInput
               type="number"
-              sx={{ mx: 2, mt: 2 }}
+              sx={{ mx: 2, height: "40px" }}
               value={numAuctionInteractions}
               onChange={(e) => {
                 e.target.value < 0
@@ -63,7 +63,7 @@ export default function InteractionTab() {
               startAdornment={
                 <InputAdornment position="start">$</InputAdornment>
               }
-              sx={{ mx: 2, mt: 2 }}
+              sx={{ mx: 2, height: "40px" }}
               value={auctionMinBidPrice}
               onChange={(e) => setAuctionMinBidPrice(e.target.value)}
             />
@@ -82,7 +82,7 @@ export default function InteractionTab() {
           <FormControl>
             <OutlinedInput
               type="number"
-              sx={{ mx: 2, mt: 2 }}
+              sx={{ mx: 2, height: "40px" }}
               value={numGiveawayInteractions}
               onChange={(e) => {
                 e.target.value < 0
@@ -100,7 +100,7 @@ export default function InteractionTab() {
               startAdornment={
                 <InputAdornment position="start">$</InputAdornment>
               }
-              sx={{ mx: 2, mt: 2 }}
+              sx={{ mx: 2, height: "40px" }}
               value={VIPEntryCost}
               onChange={(e) => setVIPEntryCost(e.target.value)}
             />
@@ -115,7 +115,6 @@ export default function InteractionTab() {
         alignItems="center"
         spacing={4}
         sx={{
-          mt: 6,
           background: "rgba(120, 47, 238, 0.1)",
           p: 3,
           borderRadius: 3,

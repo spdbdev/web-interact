@@ -11,8 +11,8 @@ import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaig
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
 import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
-
-
+import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
+import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage/CampaignCreationConfirmationPage";
 
 const interactV1Routes = [
   {
@@ -21,11 +21,11 @@ const interactV1Routes = [
   },
   {
     path: "/interact/signup",
-    element: <SignUpPage2/>,
+    element: <SignUpPage2 />,
   },
   {
     path: "/interact/user",
-    element: <UserProfilePage />, 
+    element: <UserProfilePage />,
   },
   {
     path: "/interact/userold",
@@ -38,7 +38,7 @@ const interactV1Routes = [
   },
   {
     path: "/interact/capture",
-    element: <CaptureAuction />
+    element: <CaptureAuction />,
   },
 
   {
@@ -49,6 +49,15 @@ const interactV1Routes = [
   {
     path: "/interact/what-is-interact",
     element: <WhatIsInteractPage />,
+  },
+
+  {
+    path: "/interact/campaign-creation-summary",
+    element: <CampaignCreationSummaryPage />,
+  },
+  {
+    path: "/interact/campaign-creation-confirmation",
+    element: <CampaignCreationConfirmationPage />,
   },
 ];
 

@@ -31,7 +31,8 @@ export default function CampaignCreationTabs({
         borderBottom: 1,
         borderColor: "divider",
         maxWidth: 1000,
-        my: 3,
+        mt: 1,
+        mb: 3,
       }}
     >
       <Tabs
