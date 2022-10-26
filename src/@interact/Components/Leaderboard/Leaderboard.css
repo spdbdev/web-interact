@@ -19,7 +19,7 @@
 .jumboCardQuick::before {
   background :  radial-gradient(
     400px circle at var(--mouse-x) var(--mouse-y) , 
-    rgb(180, 141, 242),
+    rgb(232, 222, 244),
     transparent 50%
   );
   z-index: 2;
@@ -29,7 +29,7 @@
 .jumboCardQuick::after {  
   background:  radial-gradient(
     600px circle at var(--mouse-x) var(--mouse-y), 
-    rgba(120, 46, 238),
+    rgb(232, 222, 244),
     transparent 40%
   );
   z-index: 1;
