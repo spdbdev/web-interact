@@ -1,24 +1,12 @@
-import "./CampaignPage.css";
-import {
-  Button,
-  Divider,
-  OutlinedInput,
-  InputAdornment,
-  useScrollTrigger,
-  Tooltip,
-  InputLabel,
-  FormControl,
-  Container,
-  Typography,
-  Box,
-  Stack,
-} from "@mui/material";
-import { useState } from "react";
-import InfoTooltip from "../../Components/InfoTooltip";
-import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
-import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import Span from "@jumbo/shared/Span";
+import {
+  Divider, FormControl, InputAdornment, InputLabel, OutlinedInput, Stack, Typography
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import InteractButton from "../../Components/Button/InteractButton";
+import InfoTooltip from "../../Components/InfoTooltip";
+import "./CampaignPage.css";
 
 export default function Auction({ bids, campaignData, bidAction }) {
   // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
@@ -27,12 +15,26 @@ export default function Auction({ bids, campaignData, bidAction }) {
   const [maxBidAmount, setMaxBidAmount] = useState(0);
   const [desiredRanking, setDesiredRanking] = useState(0);
 
+  useEffect(()=>{
+    document.getElementById("auctionCard").onmousemove = e => {
+      for(const card of document.getElementsByClassName("auctionCard")) {
+        const rect = card.getBoundingClientRect(),
+       
+              x = e.clientX - rect.left,
+              y = e.clientY - rect.top;
+    
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+      };
+    }
+  })
   return (
     <JumboCardQuick
       title={"Auction"}
       id="auctionCard"
       sx={{ ml: 2, display: "flex", flexDirection: "column", minWidth: 400 }}
       headerSx={{ pb: 0 }}
+      className="auctionCard"
     >
       <Stack id="autoBidSection" direction="column" spacing={2}>
         <Stack direction="row" alignItems="center" spacing={1} mb={1}>

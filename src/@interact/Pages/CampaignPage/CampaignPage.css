@@ -2,8 +2,6 @@
     width:100%;
 
 }
-
-
 .campaignMainArea {
     margin-left:30px;
     margin-right:30px;
@@ -179,18 +177,6 @@ body.active-modal {
         display: none;
     }
 
-    
-
-
-
-
-
-
-
-
-
-
-
 .Description{
     display: flex;
     justify-content: center;
@@ -286,8 +272,82 @@ body.active-modal {
 .Share * {
     padding:5px;
 }
+.giveawayCard:hover::before {
+    opacity: 1 !important;
+  }
+  .giveawayCard::before,
+.giveawayCard::after {
+  content: "" !important;
+  height: 100% !important;
+  left: 0px !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  top: 0px !important;
+  transition: opacity 500ms !important;
+  width: 100% !important;
+}
+#giveawayCard:hover > .giveawayCard::after {
+    opacity: 1;
+  }
+  
+.giveawayCard::before {
+  background :  radial-gradient(
+    400px circle at var(--mouse-x) var(--mouse-y) , 
+    rgb(180, 141, 242),
+    transparent 50%
+  );
+  z-index: 2;
+  border-radius: inherit
+}
+
+.giveawayCard::after {  
+  background:  radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y), 
+    rgba(120, 46, 238),
+    transparent 40%
+  );
+  z-index: 1;
+}
+
 
 .Highlight {
     font-weight:600;
     color:blueviolet;
+}
+
+.auctionCard:hover::before {
+    opacity: 1 !important;
+  }
+  .auctionCard::before,
+.auctionCard::after {
+  content: "" !important;
+  height: 100% !important;
+  left: 0px !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  top: 0px !important;
+  transition: opacity 500ms !important;
+  width: 100% !important;
+}
+#auctionCard:hover > .auctionCard::after {
+    opacity: 1;
+  }
+  
+.auctionCard::before {
+  background :  radial-gradient(
+    400px circle at var(--mouse-x) var(--mouse-y) , 
+    rgb(180, 141, 242),
+    transparent 50%
+  );
+  z-index: 2;
+  border-radius: inherit
+}
+
+.auctionCard::after {  
+  background:  radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y), 
+    rgba(120, 46, 238),
+    transparent 40%
+  );
+  z-index: 1;
 }
