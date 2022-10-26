@@ -5,7 +5,15 @@ import CampaignDropdownSelect from "../CampaignDropdownSelect";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 
-export default function BasicsTab() {
+const CURRENCIES = [
+  { value: "USD", label: "🇺🇸 USD United States Dollar" },
+  { value: "CAD", label: "🇨🇦 CAD Canadian Dollar" },
+  { value: "GBP", label: "🇬🇧 GBP Pounds Sterling" },
+  { value: "EUR", label: "🇪🇺 EUR Euro" },
+  { value: "AUD", label: "🇦🇺 AUD Australian Dollar" },
+];
+
+export default function BasicsTab({ data, setData }) {
   return (
     <>
       <CreateCampaignItemWrapper>
@@ -15,10 +23,13 @@ export default function BasicsTab() {
         </TitleAndDesc>
         <TextField
           variant="outlined"
+          name="title"
+          defaultValue={data?.title}
           inputProps={{ maxLength: 40 }}
           helperText="Max. 40 characters."
           sx={{ width: 400 }}
           placeholder={`Get to know ${"name"} 1-on-1`}
+          onChange={(e) => setData({ title: e.target.value })}
         />
       </CreateCampaignItemWrapper>
 
@@ -27,10 +38,12 @@ export default function BasicsTab() {
           Enter a short description of your campaign.
         </TitleAndDesc>
         <TextField
+          name="description"
           multiline
           rows={4}
-          defaultValue="Set some ground rules for interactions & how it will be carried out (will it be live on stream? Will the fan's face be shown?), and you can talk more in-depth about your campaign goal."
+          defaultValue={data?.description}
           sx={{ width: 400 }}
+          onChange={(e) => setData({ description: e.target.value })}
         />
       </CreateCampaignItemWrapper>
 
@@ -38,7 +51,7 @@ export default function BasicsTab() {
         <TitleAndDesc title="Categories">
           Select 1-3 categories for your campaign.
         </TitleAndDesc>
-        <CampaignCategorySelect />
+        <CampaignCategorySelect data={data} setData={setData} />
       </CreateCampaignItemWrapper>
 
       <CreateCampaignItemWrapper>
@@ -48,14 +61,9 @@ export default function BasicsTab() {
         </TitleAndDesc>
         <CampaignDropdownSelect
           placeholder="Currency"
-          defaultValue="🇨🇦 CAD Canadian Dollar"
-          items={[
-            "🇺🇸 USD United States Dollar",
-            "🇨🇦 CAD Canadian Dollar",
-            "🇬🇧 GBP Pounds Sterling",
-            "🇪🇺 EUR Euro",
-            "🇦🇺 AUD Australian Dollar",
-          ]}
+          defaultValue={data?.currency}
+          items={CURRENCIES}
+          setData={setData}
         />
       </CreateCampaignItemWrapper>
     </>

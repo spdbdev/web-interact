@@ -36,26 +36,26 @@ const categories = [
   "Travel, vlogs & lifestyle",
 ];
 
-export default function CampaignCategorySelect() {
-  const [selectedCategories, setSelectedCategories] = React.useState([
-    "Gaming",
-  ]);
+export default function CampaignCategorySelect({ data, setData }) {
+  const [selectedCategories, setSelectedCategories] = React.useState(
+    data?.categories
+  );
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-
     if (selectedCategories.length < 3) {
-      setSelectedCategories([...selectedCategories, value]);
+      const newCategories = [...selectedCategories, event.target.value];
+      setSelectedCategories(newCategories);
+      setData({ categories: newCategories });
     }
   };
 
   const handleDelete = (e, value) => {
     e.preventDefault();
-    setSelectedCategories(
-      selectedCategories.filter((category) => category !== value)
+    const newCategories = selectedCategories.filter(
+      (category) => category !== value
     );
+    setSelectedCategories(newCategories);
+    setData({ categories: newCategories });
   };
 
   return (

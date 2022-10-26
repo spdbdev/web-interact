@@ -4,6 +4,7 @@ import {
   Button,
   ButtonBase,
   Container,
+  IconButton,
   Input,
   Stack,
   Typography,
@@ -18,13 +19,14 @@ import PaymentTab from "./Tabs/PaymentTab";
 import PromotionTab from "./Tabs/PromotionTab";
 import SideBar from "./SideBar";
 import { useNavigate } from "react-router-dom";
-import { ExpandLess } from "@mui/icons-material";
-import { useJumboContentLayout } from "@jumbo/hooks";
-import JumboContentLayout from "@jumbo/components/JumboContentLayout";
+import { Close, ExpandLess } from "@mui/icons-material";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import CampaignCategorySelect from "./CampaignCategorySelect";
 import SoloPage from "app/layouts/solo-page/SoloPage";
 import Span from "@jumbo/shared/Span";
+import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
+import { db } from "@jumbo/services/auth/firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import moment from "moment";
 
 const FAQText = {
   0: <span>this is the basics tab</span>,
@@ -67,8 +69,22 @@ function CreateCampaignPage() {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
   const [FAQSideBarText, setFAQSideBarText] = useState("");
+  const [campaignData, setCampaignData] = useState(null);
 
+  const { data, setData, isAutosaving, lastSavedAt, autosaveError } =
+    useAutosaveCampaign(campaignData);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getCampaign = async () => {
+      let fetchedData = (
+        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+      ).data();
+      setCampaignData(fetchedData);
+    };
+
+    getCampaign();
+  }, [data, lastSavedAt]);
 
   useEffect(() => {
     setFAQSideBarText(FAQText[selectedTabIndex]);
@@ -77,21 +93,21 @@ function CreateCampaignPage() {
   function renderTab() {
     switch (selectedTabIndex) {
       case 0:
-        return <BasicsTab />;
+        return <BasicsTab data={campaignData} setData={setData} />;
       case 1:
-        return <SchedulingTab />;
+        return <SchedulingTab data={campaignData} setData={setData} />;
       case 2:
-        return <InteractionTab />;
+        return <InteractionTab data={campaignData} setData={setData} />;
       case 3:
-        return <GoalVideoTab />;
+        return <GoalVideoTab data={campaignData} setData={setData} />;
       case 4:
-        return <FAQTab />;
+        return <FAQTab data={campaignData} setData={setData} />;
       case 5:
-        return <PaymentTab />;
+        return <PaymentTab data={campaignData} setData={setData} />;
       case 6:
-        return <PromotionTab />;
+        return <PromotionTab data={campaignData} setData={setData} />;
       default:
-        return <BasicsTab />;
+        return <BasicsTab data={campaignData} setData={setData} />;
     }
   }
 
@@ -113,88 +129,110 @@ function CreateCampaignPage() {
     }
   }
 
-  return (
-    <SoloPage>
-      {/* use the "SoloPage" wrapper to completely remove the header and sidebar. */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          height: "100%",
-          width: "100%",
-          padding: 0,
-          backgroundColor: "background.default",
-        }}
-      >
-        <SideBar
-          isSideBarCollapsed={isSideBarCollapsed}
-          setIsSideBarCollapsed={setIsSideBarCollapsed}
-          FAQSideBarText={FAQSideBarText}
-        />
+  if (!campaignData) {
+    return null;
+  } else {
+    return (
+      <SoloPage>
+        {/* use the "SoloPage" wrapper to completely remove the header and sidebar. */}
         <Box
           sx={{
-            width: isSideBarCollapsed ? "40px" : "260px",
-          }}
-        ></Box>
-        <Container
-          sx={{
-            flex: 1,
             display: "flex",
-            flexDirection: "column",
-            width: "100%",
+            position: "relative",
+            flexDirection: "row",
             height: "100%",
-            // marginLeft: isSideBarCollapsed ? "40px" : "260px",
+            width: "100%",
+            padding: 0,
+            backgroundColor: "background.default",
           }}
         >
-          <Container sx={{ display: "flex", justifyContent: "center" }}>
-            <ButtonBase
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                color: "text.hint",
-              }}
-              onClick={() => navigate("/interact/what-is-interact")}
-            >
-              <ExpandLess />
-              <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
-            </ButtonBase>
-          </Container>
-
-          <CampaignCreationTabs
-            selectedTabIndex={selectedTabIndex}
-            setSelectedTabIndex={setSelectedTabIndex}
+          <SideBar
+            isSideBarCollapsed={isSideBarCollapsed}
+            setIsSideBarCollapsed={setIsSideBarCollapsed}
+            FAQSideBarText={FAQSideBarText}
           />
-          <Stack
-            direction="column"
-            flex={1}
-            justifyContent="space-evenly"
-            spacing={2}
-          >
-            {renderTab()}
-          </Stack>
-
           <Box
             sx={{
-              width: "100%",
+              width: isSideBarCollapsed ? "40px" : "260px",
+            }}
+          ></Box>
+          <Container
+            sx={{
+              flex: 1,
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignSelf: "flex-end",
-              my: 4,
+              flexDirection: "column",
+              width: "100%",
+              height: "100%",
             }}
           >
-            <InteractFlashyButton onClick={handleBackButtonClick}>
-              ← Back
-            </InteractFlashyButton>
-            <InteractFlashyButton onClick={handleNextButtonClick}>
-              Next →
-            </InteractFlashyButton>
+            <Container sx={{ display: "flex", justifyContent: "center" }}>
+              <ButtonBase
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  color: "text.hint",
+                }}
+                onClick={() => navigate("/interact/what-is-interact")}
+              >
+                <ExpandLess />
+                <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
+              </ButtonBase>
+            </Container>
+
+            <CampaignCreationTabs
+              selectedTabIndex={selectedTabIndex}
+              setSelectedTabIndex={setSelectedTabIndex}
+            />
+            <Stack
+              direction="column"
+              flex={1}
+              justifyContent="space-evenly"
+              spacing={2}
+            >
+              {renderTab()}
+            </Stack>
+
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignSelf: "flex-end",
+                my: 4,
+              }}
+            >
+              <InteractFlashyButton onClick={handleBackButtonClick}>
+                ← Back
+              </InteractFlashyButton>
+              <InteractFlashyButton onClick={handleNextButtonClick}>
+                Next →
+              </InteractFlashyButton>
+            </Box>
+          </Container>
+          <Box sx={{ position: "absolute", top: 10, right: 10 }}>
+            <Span sx={{ color: "text.hint" }}>
+              {autosaveError ? (
+                <Span sx={{ color: "error" }}>Could not autosave.</Span>
+              ) : isAutosaving ? (
+                "Saving..."
+              ) : (
+                <Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
+              )}{" "}
+            </Span>
+            <IconButton
+              disableRipple
+              disableFocusRipple
+              onClick={() => navigate(-1)}
+            >
+              <Close sx={{ color: "text.secondary" }} />
+            </IconButton>
           </Box>
-        </Container>
-      </Box>
-    </SoloPage>
-  );
+        </Box>
+      </SoloPage>
+    );
+  }
 }
 
 export default CreateCampaignPage;
