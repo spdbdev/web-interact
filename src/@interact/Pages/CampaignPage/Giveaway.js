@@ -1,21 +1,11 @@
-import "./CampaignPage.css";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Divider,
-  OutlinedInput,
-  InputAdornment,
-  Typography,
-  Box,
-  Container,
-  Input,
-  Stack,
-} from "@mui/material";
-import InfoTooltip from "../../Components/InfoTooltip";
-import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
-import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import Span from "@jumbo/shared/Span";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
+import { Box, Divider, Input, Stack, Typography } from "@mui/material";
+import { useEffect } from "react";
+import InteractButton from "../../Components/Button/InteractButton";
+import InfoTooltip from "../../Components/InfoTooltip";
+import "./CampaignPage.css";
 
 export default function Giveaway({
   campaignData,
@@ -91,7 +81,20 @@ export default function Giveaway({
       }
     });
   };
-
+  useEffect(()=>{
+    document.getElementById("giveawayCard").onmousemove = e => {
+      for(const card of document.getElementsByClassName("giveawayCard")) {
+        const rect = card.getBoundingClientRect(),
+       
+              x = e.clientX - rect.left,
+              y = e.clientY - rect.top;
+    
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+      };
+    }
+  })
+ 
   // these are dummy values and will be replaced with legit DB variables
   const chanceMultiplier = 1;
   const lossChanceMultiplier = 2; // this can be 2 or 4, corresponding to 1 or 2 past losses in a giveaway (for same creator)
@@ -99,6 +102,7 @@ export default function Giveaway({
     <JumboCardQuick
       title={"Giveaway"}
       sx={{
+        
         ml: 2,
         display: "flex",
         flexDirection: "column",
@@ -113,6 +117,7 @@ export default function Giveaway({
         justifyContent: "space-between",
       }}
       id="giveawayCard"
+      className="giveawayCard"
     >
       <Box>
         <div>

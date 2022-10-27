@@ -89,14 +89,26 @@ export default function Leaderboard({ campaignData, bids }) {
 
     return bids;
   };
-
+  useEffect(()=>{
+    document.getElementById("jumboCardQuick").onmousemove = e => {
+      for(const card of document.getElementsByClassName("jumboCardQuick")) {
+        const rect = card.getBoundingClientRect(),
+       
+              x = e.clientX - rect.left,
+              y = e.clientY - rect.top;
+    
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+      };
+    }
+  })
   const [rows, setRows] = useState([]);
   useEffect(() => {
     setRows(parseLeaderboard(bids));
   }, [bids]);
 
   return (
-    <JumboCardQuick sx={{ flex: 1 }}>
+    <JumboCardQuick sx={{ flex: 1 }} className="jumboCardQuick" id="jumboCardQuick">
       <Box
         sx={{
           display: "flex",
