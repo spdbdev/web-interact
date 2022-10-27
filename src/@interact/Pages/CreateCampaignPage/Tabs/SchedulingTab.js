@@ -8,22 +8,80 @@ import moment from "moment";
 import { SchedulingSlider } from "../Sliders";
 import Span from "@jumbo/shared/Span";
 
-export default function SchedulingTab() {
-  const [startDateTime, setStartDateTime] = useState(moment());
-  const [endDateTime, setEndDateTime] = useState(moment());
-  const [campaignDurationDays, setCampaignDurationDays] = useState(0);
+export default function SchedulingTab({ data, setData }) {
+  const [startDateTime, setStartDateTime] = useState(
+    moment.unix(data?.startDateTime) || moment()
+  ); //    moment.unix(data?.startDateTime)
+  const [endDateTime, setEndDateTime] = useState(
+    moment.unix(data?.endDateTime) || moment()
+  ); //moment.unix(data?.endDateTime)
+  const [campaignDurationDays, setCampaignDurationDays] = useState(
+    data?.durationDays
+  );
 
-  useEffect(() => {
+  // let durationDiff = endDateTime?.diff(startDateTime, "days");
+  // let newEndDate = moment(startDateTime)?.add(campaignDurationDays, "days");
+
+  // useEffect(() => {
+  //   //calculate days from start and end dates
+  //   const durationDiff = endDateTime?.diff(startDateTime, "days");
+  //   setCampaignDurationDays(durationDiff);
+  // }, [startDateTime, endDateTime]);
+
+  // useEffect(() => {
+  //   //calculate new end date from duration
+  //   const newEndDate = moment(startDateTime)?.add(campaignDurationDays, "days");
+  //   setEndDateTime(newEndDate);
+  // }, [campaignDurationDays]);
+
+  function recalculateDurationDays() {
     //calculate days from start and end dates
-    const durationDiff = endDateTime.diff(startDateTime, "days");
+    const durationDiff = endDateTime?.diff(startDateTime, "days");
     setCampaignDurationDays(durationDiff);
-  }, [startDateTime, endDateTime]);
+  }
 
-  useEffect(() => {
+  function recalculateEndDateTime() {
     //calculate new end date from duration
-    const newEndDate = moment(startDateTime).add(campaignDurationDays, "days");
+    const newEndDate = moment(startDateTime)?.add(campaignDurationDays, "days");
     setEndDateTime(newEndDate);
-  }, [campaignDurationDays]);
+  }
+
+  function updateDBWithValues() {
+    const endTimestampValue = moment(endDateTime).unix();
+    const startTimestampValue = moment(startDateTime).unix();
+
+    setData({ durationDays: campaignDurationDays });
+    setData({ endDateTime: endTimestampValue });
+    setData({ startDateTime: startTimestampValue });
+  }
+
+  function handleStartDateChange(newValue) {
+    setStartDateTime(newValue);
+    recalculateDurationDays();
+    updateDBWithValues(); // update all values in DB
+  }
+
+  function handleEndDateChange(newValue) {
+    setEndDateTime(newValue);
+    recalculateDurationDays();
+    updateDBWithValues(); // update all values in DB
+  }
+
+  function handleDurationDaysChange(e) {
+    console.log(campaignDurationDays);
+    // prevent values less than 0 or higher than 20.
+    if (e.target.value < 0) {
+      e.target.value = 0;
+    } else if (e.target.value > 20) {
+      e.target.value = 20;
+    } else {
+      setCampaignDurationDays(e.target.value);
+    }
+
+    console.log(campaignDurationDays);
+    recalculateEndDateTime();
+    updateDBWithValues(); // update all values in DB
+  }
 
   return (
     <>
@@ -41,9 +99,10 @@ export default function SchedulingTab() {
               label="Start date & time"
               InputProps={{ sx: { width: 300 } }}
               value={startDateTime}
-              onChange={(newValue) => setStartDateTime(newValue)}
+              onChange={handleStartDateChange}
               renderInput={(params) => <TextField {...params} />}
               minDateTime={moment()}
+              minutesStep={15}
             />
             <Stack direction="row" alignItems="center" spacing={2}>
               <OutlinedInput
@@ -51,15 +110,8 @@ export default function SchedulingTab() {
                 type="number"
                 style={{ height: 50 }}
                 value={campaignDurationDays}
-                defaultValue={10}
-                onChange={(e) => {
-                  // prevent values less than 0 or higher than 20.
-                  e.target.value < 0
-                    ? (e.target.value = 0)
-                    : e.target.value > 20
-                    ? (e.target.value = 20)
-                    : setCampaignDurationDays(e.target.value);
-                }}
+                onChange={(e) => handleDurationDaysChange(e)}
+                on
               />
               <Typography sx={{ fontSize: 16 }}>days</Typography>
             </Stack>
@@ -68,8 +120,10 @@ export default function SchedulingTab() {
               label="End date & time"
               InputProps={{ sx: { width: 300 } }}
               value={endDateTime}
-              onChange={(newValue) => setEndDateTime(newValue)}
+              onChange={handleEndDateChange}
               renderInput={(params) => <TextField {...params} />}
+              minDateTime={moment()}
+              minutesStep={15}
             />
           </Stack>
         </LocalizationProvider>

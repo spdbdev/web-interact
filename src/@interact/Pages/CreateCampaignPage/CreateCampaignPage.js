@@ -27,6 +27,7 @@ import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import moment from "moment";
+import Loading from "@interact/Components/Loading/Loading";
 
 const FAQText = {
   0: <span>this is the basics tab</span>,
@@ -130,7 +131,7 @@ function CreateCampaignPage() {
   }
 
   if (!campaignData) {
-    return null;
+    return <Loading />;
   } else {
     return (
       <SoloPage>
