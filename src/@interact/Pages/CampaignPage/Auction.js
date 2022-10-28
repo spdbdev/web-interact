@@ -1,3 +1,4 @@
+import { formatMoney } from "@interact/Components/utils";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
 import {
@@ -132,11 +133,11 @@ export default function Auction({ bids, campaignData, bidAction }) {
             <Span sx={{ color: "primary.main", fontWeight: 500 }}>
               {"$"}
               {bids && campaignData
-                ? `${
+                ? `${ formatMoney(
                     bids[
                       Math.min(bids.length - 1, campaignData.numBidSlots - 1)
                     ]?.price
-                  }0`
+                  +"0")}`
                 : "0"}
             </Span>
           </Typography>

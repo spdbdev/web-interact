@@ -23,6 +23,7 @@ import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboDemoCard from "@jumbo/components/JumboDemoCard";
+import { formatMoney } from "../utils";
 
 const columns = [
   { field: "id", headerName: "No", width: 90 },
@@ -79,8 +80,8 @@ export default function Leaderboard({ campaignData, bids }) {
         bidPrice: x.auto
           ? i == bids.length - 1
             ? minBid
-            : Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5)
-          : x.price,
+            : formatMoney(Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5))
+          : formatMoney(x.price),
         bidTime: new Date(x.time.seconds * 1000).toString(),
       };
     });
@@ -203,7 +204,7 @@ function RankComponent({ data }) {
         <Typography variant="h4">
           <Link href="/interact/user">{data?.username}</Link>
         </Typography>
-        <Typography variant="body">${data?.bidPrice}</Typography>
+        <Typography variant="body">${formatMoney(data?.bidPrice)}</Typography>
         <Typography variant="caption" color="text.hint">
           {data?.bidTime?.slice(0, 10)}
         </Typography>
