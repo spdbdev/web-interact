@@ -661,12 +661,14 @@ function CampaignPage(userData) {
           </Box>
 
           {num_giveaway > 0 ? (
-            <Giveaway
-              campaignData={campaignData}
-              hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
-              setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
-              setHasUserEnteredGiveaway={setHasUserEnteredGiveaway}
-            />
+             <Giveaway
+             campaignData={campaignData}
+             hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
+             hasUserPurchasedVIPEntry={hasUserEnteredGiveaway}
+             setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
+             setHasUserEnteredGiveaway={setHasUserEnteredGiveaway}
+             setHasUserPurchasedVIPEntry={setHasUserEnteredGiveaway}
+           />
           ) : null}
         </Box>
 
