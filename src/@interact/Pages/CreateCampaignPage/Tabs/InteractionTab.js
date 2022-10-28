@@ -18,12 +18,46 @@ import {
 } from "../Sliders";
 import Span from "@jumbo/shared/Span";
 import InteractionIcon from "../../../Images/interaction-icon.png";
+import {
+  addTrailingZeros,
+  getDateFromTimestamp,
+} from "@interact/Components/utils";
 
-export default function InteractionTab() {
-  const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
-  const [numGiveawayInteractions, setNumGiveawayInteractions] = useState(0);
-  const [auctionMinBidPrice, setAuctionMinBidPrice] = useState(0);
-  const [VIPEntryCost, setVIPEntryCost] = useState(0);
+export default function InteractionTab({ data, setData }) {
+  const [numAuctionInteractions, setNumAuctionInteractions] = useState(
+    data?.numAuctionInteractions
+  );
+  const [numGiveawayInteractions, setNumGiveawayInteractions] = useState(
+    data?.numGiveawayInteractions
+  );
+  const [auctionMinBidPrice, setAuctionMinBidPrice] = useState(
+    data?.auctionMinBid
+  );
+  const [VIPEntryCost, setVIPEntryCost] = useState(data?.giveawayVIPEntryCost);
+
+  function handleNumAuction(e) {
+    if (e.target.value < 3) {
+      setNumAuctionInteractions(3);
+    } else {
+      setNumAuctionInteractions(Number(e.target.value));
+      setData({ numAuctionInteractions: Number(e.target.value) });
+    }
+  }
+
+  function handleNumGiveaway(e) {
+    if (e.target.value < 0) {
+      setNumGiveawayInteractions(0);
+    } else {
+      setNumGiveawayInteractions(Number(e.target.value));
+      setData({ numGiveawayInteractions: Number(e.target.value) });
+    }
+  }
+
+  function getNumStdLengthInteractions() {
+    const numStdLengthInteractions =
+      numGiveawayInteractions + (numAuctionInteractions - 3); // interactions that take up std. time
+    return numStdLengthInteractions;
+  }
 
   return (
     <>
@@ -35,8 +69,8 @@ export default function InteractionTab() {
           How much time should each interaction take?
         </TitleAndDesc>
         <Stack spacing={3} sx={{ width: 300, pt: 4 }}>
-          <InteractionAvailabilitySlider />
-          <InteractionDurationsSlider />
+          <InteractionAvailabilitySlider data={data} setData={setData} />
+          <InteractionDurationsSlider data={data} setData={setData} />
         </Stack>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
@@ -47,11 +81,7 @@ export default function InteractionTab() {
               type="number"
               sx={{ mx: 2, height: "40px" }}
               value={numAuctionInteractions}
-              onChange={(e) => {
-                e.target.value < 0
-                  ? (e.target.value = 0)
-                  : setNumAuctionInteractions(e.target.value);
-              }}
+              onChange={(e) => handleNumAuction(e)}
             />
             <FormHelperText sx={{ ml: 3 }}>Min. 3 interactions</FormHelperText>
           </FormControl>
@@ -65,7 +95,10 @@ export default function InteractionTab() {
               }
               sx={{ mx: 2, height: "40px" }}
               value={auctionMinBidPrice}
-              onChange={(e) => setAuctionMinBidPrice(e.target.value)}
+              onChange={(e) => {
+                setAuctionMinBidPrice(Number(e.target.value));
+                setData({ auctionMinBid: Number(e.target.value) });
+              }}
             />
             <FormHelperText sx={{ ml: 3 }}>
               $0.50 increments. Min. $1.50
@@ -84,11 +117,7 @@ export default function InteractionTab() {
               type="number"
               sx={{ mx: 2, height: "40px" }}
               value={numGiveawayInteractions}
-              onChange={(e) => {
-                e.target.value < 0
-                  ? (e.target.value = 0)
-                  : setNumGiveawayInteractions(e.target.value);
-              }}
+              onChange={(e) => handleNumGiveaway(e)}
             />{" "}
             <FormHelperText sx={{ ml: 3 }}> </FormHelperText>
           </FormControl>
@@ -102,7 +131,10 @@ export default function InteractionTab() {
               }
               sx={{ mx: 2, height: "40px" }}
               value={VIPEntryCost}
-              onChange={(e) => setVIPEntryCost(e.target.value)}
+              onChange={(e) => {
+                setVIPEntryCost(Number(e.target.value));
+                setData({ giveawayVIPEntryCost: Number(e.target.value) });
+              }}
             />
             <FormHelperText sx={{ ml: 3 }}>
               $0.50 increments. Min. $1.50
@@ -125,13 +157,27 @@ export default function InteractionTab() {
         <Typography
           sx={{ color: "primary.main", fontWeight: 400, fontSize: 18 }}
         >
-          With an average of <Span sx={{ fontWeight: 600 }}>5 hrs/week</Span>,
-          you can get to know <Span sx={{ fontWeight: 600 }}>97 fans</Span>{" "}
+          With an average of{" "}
+          <Span sx={{ fontWeight: 600 }}>
+            {data?.creatorWeeklyAvailability} hrs/week
+          </Span>
+          , you can get to know{" "}
+          <Span sx={{ fontWeight: 600 }}>
+            {data?.numAuctionInteractions + data?.numGiveawayInteractions} fans
+          </Span>{" "}
           personally over the period of{" "}
-          <Span sx={{ fontWeight: 600 }}>Oct. 28, 2022</Span> to{" "}
-          <Span sx={{ fontWeight: 600 }}>Jan. 06, 2023</Span>.{" "}
+          <Span sx={{ fontWeight: 600 }}>
+            {getDateFromTimestamp({ timestamp: data?.endDateTime })}
+          </Span>{" "}
+          to{" "}
+          <Span sx={{ fontWeight: 600 }}>
+            {getDateFromTimestamp({ timestamp: data?.interactionEndDateTime })}
+          </Span>
+          .{" "}
           <Span sx={{ color: "primary.light", fontSize: 14 }}>
-            (94 x 30 min interactions and 3 x 60 min interactions)
+            ({getNumStdLengthInteractions()} x {data?.interactionDurationTime}{" "}
+            min interactions and 3 x {data?.interactionTopDurationTime} min
+            interactions)
           </Span>
         </Typography>
       </Stack>
