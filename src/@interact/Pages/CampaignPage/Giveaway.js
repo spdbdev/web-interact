@@ -158,7 +158,7 @@ export default function Giveaway({
               border: "2px dashed rgba(120, 47, 238, 1)",
             }}
           >
-            <span className="Highlight">${campaignData?.rafflePrice}0</span>
+            <span className="Highlight">${campaignData?.vipEntryPrice}0</span>
           </Box>
           {/* <form
           action="http://localhost:4242/create-raffle-session"

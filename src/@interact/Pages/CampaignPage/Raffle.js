@@ -66,7 +66,7 @@ export default function Raffle({ campaignData }) {
 
   fetchUserName();
     const getDataRaffle = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'raffles', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
         const docSnap = await getDoc(docRef);
         //console.log(docSnap);
         if (docSnap.exists()) {
@@ -188,11 +188,11 @@ if(logged_user_stripe_customer_id){
         return () => clearInterval(interval);
     }, [stripeError]);
 
-    var rafflePrice = "1.50";
+    var vipEntryPrice = "1.50";
     //console.log(userData);
 
     const saveDataInRaffle = (data) => {
-        setDoc(doc(db, "campaigns", campaignId, 'raffles', user?.uid), data)
+        setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data)
     }
 
     const saveDataInStripeCustomer = (stripe_customer_data) => {
@@ -251,7 +251,7 @@ console.log("user.email : " + user?.email);
                 axios.post('http://localhost:4242/payment_intent_already_save_card', {
                     name: name,
                     email: clientemail,
-                    price: rafflePrice,
+                    price: vipEntryPrice,
                     isChecked: isSubscribed,
                     useSaveCard: isActive,
                     stripe_customer_id:logged_user_stripe_customer_id,
@@ -278,7 +278,7 @@ console.log("user.email : " + user?.email);
                                         alert('Payment Successful');
                                         var data = {
                                             email: response.data.email,
-                                            price: rafflePrice,
+                                            price: vipEntryPrice,
                                             stripe_customer_id: response.data.stripe_customer_id,
                                             payment_id: result.id,
                                             status: result.status,
@@ -304,7 +304,7 @@ console.log("user.email : " + user?.email);
                         } else if(response.data.pi_status === 'succeeded') {
                              var data = {
                                         email: response.data.email,
-                                        price: rafflePrice,
+                                        price: vipEntryPrice,
                                         stripe_customer_id: response.data.stripe_customer_id,
                                         payment_id: response.data.id,
                                         status: response.data.pi_status,
@@ -349,7 +349,7 @@ console.log("user.email : " + user?.email);
                         axios.post('http://localhost:4242/payment_intent_save_new_card', {
                             email: clientemail,
                             name: name,
-                            price: rafflePrice,
+                            price: vipEntryPrice,
                             isChecked: isSubscribed,
                             useSaveCard: isActive,
                             stripe_customer_id:logged_user_stripe_customer_id,
@@ -377,7 +377,7 @@ console.log("user.email : " + user?.email);
                                                 alert("Payment Successful");
                                                 var data = {
                                                     email: response.data.email,
-                                                    price: rafflePrice,
+                                                    price: vipEntryPrice,
                                                     stripe_customer_id: response.data.stripe_customer_id,
                                                     payment_id: result.paymentIntent.id,
                                                     status: result.paymentIntent.status,
@@ -442,7 +442,7 @@ console.log("user.email : " + user?.email);
                     axios.post('http://localhost:4242/payment_intent', {
                         email: clientemail,
                         name: name,
-                        price: rafflePrice,
+                        price: vipEntryPrice,
                         isChecked: isSubscribed,
                         useSaveCard: isActive,
                     })
@@ -473,7 +473,7 @@ console.log("user.email : " + user?.email);
                                             alert("Payment Successful");
                                             var data = {
                                                 email: email,
-                                                price: rafflePrice,
+                                                price: vipEntryPrice,
                                                 stripe_customer_id: stripe_customer_id,
                                                 payment_id: result.paymentIntent.id,
                                                 status: result.paymentIntent.status,
@@ -559,7 +559,7 @@ console.log("user.email : " + user?.email);
             <div style={{ fontSize: 30, textDecoration: 'underline' }}><b>Raffle</b></div>
             <div><span className='Highlight'>50</span>x 30 minute interactions</div>
             <div><span className='Highlight'>50</span>winners will be randomly chosen from the ticketholders at the end of the campaign</div>
-            <div style={{ fontSize: 20 }}>Ticket cost: <span className='Highlight'>${campaignData?.rafflePrice}</span></div>
+            <div style={{ fontSize: 20 }}>Ticket cost: <span className='Highlight'>${campaignData?.vipEntryPrice}</span></div>
 
 
             <div>Chance multipler: 1x <a href='http://localhost:3000/?#/'>learn more</a></div>

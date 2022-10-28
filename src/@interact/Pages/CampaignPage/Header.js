@@ -16,7 +16,7 @@ import Span from "@jumbo/shared/Span";
 
 export default function Header({ campaignData }) {
   const numInteractions =
-    campaignData?.numBidSlots + campaignData?.numRaffleSlots;
+    campaignData?.numBidSlots + campaignData?.numGiveaway;
 
   return (
     // "50 interactions will be carried out from Aug 8th 2022 to Oct 3rd 2022, don't miss out!"
