@@ -4,83 +4,82 @@ import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import moment from "moment";
+import moment, { duration } from "moment";
 import { SchedulingSlider } from "../Sliders";
 import Span from "@jumbo/shared/Span";
+import {
+  formatMomentDate,
+  getDateFromTimestamp,
+} from "../../../Components/utils.js";
 
 export default function SchedulingTab({ data, setData }) {
   const [startDateTime, setStartDateTime] = useState(
-    moment.unix(data?.startDateTime) || moment()
+    moment.unix(data?.startDateTime) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //    moment.unix(data?.startDateTime)
   const [endDateTime, setEndDateTime] = useState(
-    moment.unix(data?.endDateTime) || moment()
+    moment.unix(data?.endDateTime) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //moment.unix(data?.endDateTime)
   const [campaignDurationDays, setCampaignDurationDays] = useState(
     data?.durationDays
   );
 
-  // let durationDiff = endDateTime?.diff(startDateTime, "days");
-  // let newEndDate = moment(startDateTime)?.add(campaignDurationDays, "days");
-
   // useEffect(() => {
-  //   //calculate days from start and end dates
-  //   const durationDiff = endDateTime?.diff(startDateTime, "days");
-  //   setCampaignDurationDays(durationDiff);
-  // }, [startDateTime, endDateTime]);
+  //   const endTimestampValue = moment(endDateTime).unix();
+  //   const startTimestampValue = moment(startDateTime).unix();
 
-  // useEffect(() => {
-  //   //calculate new end date from duration
-  //   const newEndDate = moment(startDateTime)?.add(campaignDurationDays, "days");
-  //   setEndDateTime(newEndDate);
-  // }, [campaignDurationDays]);
+  //   setData({ durationDays: campaignDurationDays });
+  //   setData({ endDateTime: endTimestampValue });
+  //   setData({ startDateTime: startTimestampValue });
+  // }, [endDateTime, startDateTime, campaignDurationDays]);
 
-  function recalculateDurationDays() {
+  function updateDurationDays({ start, end }) {
     //calculate days from start and end dates
-    const durationDiff = endDateTime?.diff(startDateTime, "days");
+    const durationDiff = end?.diff(start, "days");
     setCampaignDurationDays(durationDiff);
+    setData({ durationDays: durationDiff });
   }
 
-  function recalculateEndDateTime() {
+  function updateEndDateTime(newDurationDays) {
     //calculate new end date from duration
-    const newEndDate = moment(startDateTime)?.add(campaignDurationDays, "days");
+    const newEndDate = moment(startDateTime)?.add(newDurationDays, "days");
     setEndDateTime(newEndDate);
-  }
 
-  function updateDBWithValues() {
-    const endTimestampValue = moment(endDateTime).unix();
-    const startTimestampValue = moment(startDateTime).unix();
-
-    setData({ durationDays: campaignDurationDays });
-    setData({ endDateTime: endTimestampValue });
-    setData({ startDateTime: startTimestampValue });
+    const endTimestampValue = moment(newEndDate).unix(); // convert moment to timestamp for storing in DB
+    setData({ endDateTime: endTimestampValue }); // set value in DB
   }
 
   function handleStartDateChange(newValue) {
-    setStartDateTime(newValue);
-    recalculateDurationDays();
-    updateDBWithValues(); // update all values in DB
+    setStartDateTime(newValue); // set local state
+    updateDurationDays({ end: endDateTime, start: newValue }); // update duration days based on new start date
+
+    const startTimestampValue = moment(newValue).unix(); // convert moment to timestamp for storing in DB
+    setData({ startDateTime: startTimestampValue }); // set value in DB
+    setData({ durationDays: campaignDurationDays }); // set value in DB, needs to be updated here
   }
 
   function handleEndDateChange(newValue) {
-    setEndDateTime(newValue);
-    recalculateDurationDays();
-    updateDBWithValues(); // update all values in DB
+    setEndDateTime(newValue); // set local state
+    updateDurationDays({ end: newValue, start: startDateTime }); // update duration days based on new end date
+
+    const endTimestampValue = moment(newValue).unix(); // convert moment to timestamp for storing in DB
+    setData({
+      endDateTime: endTimestampValue,
+      durationDays: campaignDurationDays,
+    }); // set value in DB
+    // setData({ durationDays: campaignDurationDays }); // set value in DB, needs to be updated here
   }
 
   function handleDurationDaysChange(e) {
-    console.log(campaignDurationDays);
     // prevent values less than 0 or higher than 20.
     if (e.target.value < 0) {
-      e.target.value = 0;
+      setCampaignDurationDays(0);
     } else if (e.target.value > 20) {
-      e.target.value = 20;
+      setCampaignDurationDays(20);
     } else {
-      setCampaignDurationDays(e.target.value);
+      setCampaignDurationDays(e.target.value); // set local state
+      updateEndDateTime(e.target.value); // update end date based on new duration
+      setData({ durationDays: e.target.value }); // set value in DB
     }
-
-    console.log(campaignDurationDays);
-    recalculateEndDateTime();
-    updateDBWithValues(); // update all values in DB
   }
 
   return (
@@ -94,14 +93,15 @@ export default function SchedulingTab({ data, setData }) {
           Campaigns can last 5 to 20 days. Recommended duration: 10 days.
         </TitleAndDesc>
         <LocalizationProvider dateAdapter={AdapterMoment}>
+          {/* need this to use DateTimePicker. Date library used here is moment.js */}
           <Stack direction="column" alignItems="center" spacing={3}>
             <DateTimePicker
               label="Start date & time"
               InputProps={{ sx: { width: 300 } }}
               value={startDateTime}
-              onChange={handleStartDateChange}
+              onChange={(newValue) => handleStartDateChange(newValue)}
               renderInput={(params) => <TextField {...params} />}
-              minDateTime={moment()}
+              minDateTime={moment()} // min date is current date/time
               minutesStep={15}
             />
             <Stack direction="row" alignItems="center" spacing={2}>
@@ -120,9 +120,9 @@ export default function SchedulingTab({ data, setData }) {
               label="End date & time"
               InputProps={{ sx: { width: 300 } }}
               value={endDateTime}
-              onChange={handleEndDateChange}
+              onChange={(newValue) => handleEndDateChange(newValue)}
               renderInput={(params) => <TextField {...params} />}
-              minDateTime={moment()}
+              minDateTime={moment()} // min date is current date/time
               minutesStep={15}
             />
           </Stack>
@@ -137,11 +137,19 @@ export default function SchedulingTab({ data, setData }) {
           weeks.
         </TitleAndDesc>
         <Stack sx={{ width: 300 }} spacing={3}>
-          <SchedulingSlider />
+          <SchedulingSlider setData={setData} endDateTime={endDateTime} />
           <Typography sx={{ fontSize: 12 }}>
             Interactions will be available from{" "}
-            <Span sx={{ fontWeight: 500 }}>10/28/22 at 12:00 AM</Span> until{" "}
-            <Span sx={{ fontWeight: 500 }}>01/06/23 at 12:00 AM</Span>.
+            <Span sx={{ fontWeight: 500 }}>
+              {formatMomentDate({ date: endDateTime })}
+            </Span>{" "}
+            until{" "}
+            <Span sx={{ fontWeight: 500 }}>
+              {getDateFromTimestamp({
+                timestamp: data?.interactionEndDateTime,
+              })}
+            </Span>
+            .
           </Typography>
         </Stack>
       </CreateCampaignItemWrapper>

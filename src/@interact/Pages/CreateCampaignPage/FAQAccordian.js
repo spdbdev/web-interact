@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -7,28 +7,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box, Chip, Stack, TextField } from "@mui/material";
 
 const FAQs = [
-  {
-    question: "What can we do in an interaction?",
-    answer: (
-      <span>
-        Default: Laugh, play games, and chat together! Show me something cool
-        about you!
-      </span>
-    ),
-    isEditable: true,
-  },
-  {
-    question: "How are interactions carried out?",
-    answer: (
-      <span>
-        Zoom, Google Meet & Discord (link a server, automatically gives fans the
-        special role so they can join the private chat; special roles are
-        removed after the interaction is over). The creator may stream it live
-        or record it and upload highlights publicly.
-      </span>
-    ),
-    isEditable: true,
-  },
   {
     question: "How long is each interaction?",
     answer: (
@@ -146,36 +124,76 @@ const FAQs = [
   },
 ];
 
-export default function FAQAccordian({ shouldAllowEdit = true }) {
+export default function FAQAccordian({
+  data,
+  setData,
+  shouldAllowEdit = true,
+}) {
+  const [FAQ1, setFAQ1] = useState(data?.FAQAnswers[0]);
+  const [FAQ2, setFAQ2] = useState(data?.FAQAnswers[1]);
+
+  function handleEditFAQ1(e) {
+    setFAQ1(e.target.value);
+    setData({ FAQAnswers: { 0: e.target.value, 1: FAQ2 } });
+  }
+  function handleEditFAQ2(e) {
+    setFAQ2(e.target.value);
+    setData({ FAQAnswers: { 0: FAQ1, 1: e.target.value } });
+  }
+
   return (
     <Box sx={{ flex: 1, width: "100%" }}>
+      <Accordion sx={{ flex: 1 }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography>What can we do in an interaction?</Typography>
+            <Chip label="Editable" />
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <TextField
+              fullWidth
+              multiline
+              value={FAQ1}
+              onChange={(e) => handleEditFAQ1(e)}
+              variant="standard"
+            />
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography>How are interactions carried out?</Typography>
+
+            <Chip label="Editable" />
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <TextField
+              fullWidth
+              multiline
+              value={FAQ2}
+              onChange={(e) => handleEditFAQ2(e)}
+              variant="standard"
+            />
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+
       {FAQs?.map((item, key) => {
         return (
           <Accordion sx={{ flex: 1 }} key={key}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Typography>{item.question}</Typography>
-                {item.isEditable && shouldAllowEdit ? (
-                  <Chip label="Editable" />
-                ) : null}
               </Stack>
             </AccordionSummary>
-            {item.isEditable && shouldAllowEdit ? (
-              <AccordionDetails>
-                <Typography>
-                  <TextField
-                    fullWidth
-                    multiline
-                    defaultValue={item.answer.props.children}
-                    variant="standard"
-                  />
-                </Typography>
-              </AccordionDetails>
-            ) : (
-              <AccordionDetails>
-                <Typography>{item.answer}</Typography>
-              </AccordionDetails>
-            )}
+            <AccordionDetails>
+              <Typography>{item.answer}</Typography>
+            </AccordionDetails>
           </Accordion>
         );
       })}

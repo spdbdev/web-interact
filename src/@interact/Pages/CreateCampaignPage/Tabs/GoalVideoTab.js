@@ -21,12 +21,21 @@ import { Add, Close } from "@mui/icons-material";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import Span from "@jumbo/shared/Span";
 
-export default function GoalVideoTab() {
+export default function GoalVideoTab({ data, setData }) {
   const [isScriptExampleModalOpen, setIsScriptExampleModalOpen] =
     useState(false);
-  const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(0);
-  const [campaignReward, setCampaignReward] = useState("");
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(data?.goalValue);
+  const [campaignGoal, setCampaignGoal] = useState(data?.goal);
+  const [selectedVideo, setSelectedVideo] = useState(data?.campaignVideoLink);
+
+  function handleCampaignMoneyGoalChange(e) {
+    if (e.target.value < 0) {
+      setCampaignMoneyGoal(0);
+    } else {
+      setCampaignMoneyGoal(e.target.value);
+      setData({ goalValue: e.target.value });
+    }
+  }
 
   return (
     <>
@@ -89,11 +98,7 @@ export default function GoalVideoTab() {
               }
               sx={{ mx: 2, mt: 2 }}
               value={campaignMoneyGoal}
-              onChange={(e) => {
-                e.target.value < 0
-                  ? (e.target.value = 0)
-                  : setCampaignMoneyGoal(e.target.value);
-              }}
+              onChange={(e) => handleCampaignMoneyGoalChange(e)}
             />
             <FormHelperText sx={{ ml: 3 }}>Min. $10</FormHelperText>
           </FormControl>
@@ -103,6 +108,11 @@ export default function GoalVideoTab() {
               sx={{ mx: 2, mt: 2, width: 400 }}
               variant="outlined"
               inputProps={{ maxLength: 40 }}
+              value={campaignGoal}
+              onChange={(e) => {
+                setData({ goal: e.target.value });
+                setCampaignGoal(e.target.value);
+              }}
               helperText="Max. 50 characters."
               placeholder={`Eat a cricket on stream`}
               fullWidth

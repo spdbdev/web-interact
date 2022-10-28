@@ -18,6 +18,7 @@ export default function useAutosaveCampaign(dataToSave) {
   // It is responsible for persisting the changes in the database.
   // In this example, we use localStorage for simplicity.
   const saveData = useCallback(async (newData) => {
+    console.warn(newData);
     setIsAutosaving(true);
     setAutosaveError(false);
     const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
