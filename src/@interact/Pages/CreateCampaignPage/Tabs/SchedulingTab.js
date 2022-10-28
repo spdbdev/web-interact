@@ -22,63 +22,88 @@ export default function SchedulingTab({ data, setData }) {
   const [campaignDurationDays, setCampaignDurationDays] = useState(
     data?.durationDays
   );
+  const [interactionWindowDuration, setInteractionWindowDuration] = useState(
+    data?.interactionWindow
+  );
 
-  // useEffect(() => {
-  //   const endTimestampValue = moment(endDateTime).unix();
-  //   const startTimestampValue = moment(startDateTime).unix();
+  function handleSchedulingChanges({
+    start,
+    end,
+    duration,
+    windowDuration,
+    action,
+  }) {
+    let durationDiff = null;
+    let newEndDate = null;
+    let interactionWindowEndDate = null;
 
-  //   setData({ durationDays: campaignDurationDays });
-  //   setData({ endDateTime: endTimestampValue });
-  //   setData({ startDateTime: startTimestampValue });
-  // }, [endDateTime, startDateTime, campaignDurationDays]);
+    if (action == "updateStart") {
+      //calculate days from start and end dates
+      durationDiff = end?.diff(start, "days");
+      const startTimestampValue = moment(start).unix();
+      setData({
+        durationDays: durationDiff,
+        startDateTime: startTimestampValue,
+      });
 
-  function updateDurationDays({ start, end }) {
-    //calculate days from start and end dates
-    const durationDiff = end?.diff(start, "days");
-    setCampaignDurationDays(durationDiff);
-    setData({ durationDays: durationDiff });
-  }
+      setStartDateTime(start);
+      setCampaignDurationDays(durationDiff);
+    }
 
-  function updateEndDateTime(newDurationDays) {
-    //calculate new end date from duration
-    const newEndDate = moment(startDateTime)?.add(newDurationDays, "days");
-    setEndDateTime(newEndDate);
+    if (action == "updateEnd") {
+      //calculate days from start and end dates
+      durationDiff = end?.diff(start, "days");
 
-    const endTimestampValue = moment(newEndDate).unix(); // convert moment to timestamp for storing in DB
-    setData({ endDateTime: endTimestampValue }); // set value in DB
-  }
+      const endTimestampValue = moment(end).unix();
 
-  function handleStartDateChange(newValue) {
-    setStartDateTime(newValue); // set local state
-    updateDurationDays({ end: endDateTime, start: newValue }); // update duration days based on new start date
+      // calculate end date from interaction window
+      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
+      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
 
-    const startTimestampValue = moment(newValue).unix(); // convert moment to timestamp for storing in DB
-    setData({ startDateTime: startTimestampValue }); // set value in DB
-    setData({ durationDays: campaignDurationDays }); // set value in DB, needs to be updated here
-  }
+      setData({
+        durationDays: durationDiff,
+        endDateTime: endTimestampValue,
+        interactionEndDateTime: interactionTimestampValue,
+      });
 
-  function handleEndDateChange(newValue) {
-    setEndDateTime(newValue); // set local state
-    updateDurationDays({ end: newValue, start: startDateTime }); // update duration days based on new end date
+      setCampaignDurationDays(durationDiff);
+      setEndDateTime(end);
+    }
 
-    const endTimestampValue = moment(newValue).unix(); // convert moment to timestamp for storing in DB
-    setData({
-      endDateTime: endTimestampValue,
-      durationDays: campaignDurationDays,
-    }); // set value in DB
-    // setData({ durationDays: campaignDurationDays }); // set value in DB, needs to be updated here
-  }
+    if (action == "updateDuration") {
+      //calculate new end date from duration
+      newEndDate = moment(start)?.add(duration, "days");
 
-  function handleDurationDaysChange(e) {
-    // prevent values less than 0 or higher than 20.
-    if (e.target.value < 0) {
-      setCampaignDurationDays(0);
-    } else if (e.target.value > 20) {
-      setCampaignDurationDays(20);
-    } else {
-      setCampaignDurationDays(e.target.value); // set local state
-      updateEndDateTime(e.target.value); // update end date based on new duration
-      setData({ durationDays: e.target.value }); // set value in DB
+      // calculate end date from interaction window
+      interactionWindowEndDate = moment(newEndDate).add(
+        windowDuration,
+        "weeks"
+      );
+
+      const endTimestampValue = moment(newEndDate).unix();
+      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+
+      setData({
+        durationDays: duration,
+        endDateTime: endTimestampValue,
+        interactionEndDateTime: interactionTimestampValue,
+      });
+
+      setCampaignDurationDays(duration);
+      setEndDateTime(newEndDate);
+    }
+
+    if (action == "updateWindow") {
+      // calculate end date from interaction window
+      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
+      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+
+      setData({
+        interactionWindow: windowDuration,
+        interactionEndDateTime: interactionTimestampValue,
+      });
+
+      setInteractionWindowDuration(windowDuration);
     }
   }
 
@@ -99,7 +124,13 @@ export default function SchedulingTab({ data, setData }) {
               label="Start date & time"
               InputProps={{ sx: { width: 300 } }}
               value={startDateTime}
-              onChange={(newValue) => handleStartDateChange(newValue)}
+              onChange={(newValue) =>
+                handleSchedulingChanges({
+                  start: newValue,
+                  end: endDateTime,
+                  action: "updateStart",
+                })
+              }
               renderInput={(params) => <TextField {...params} />}
               minDateTime={moment()} // min date is current date/time
               minutesStep={15}
@@ -110,8 +141,22 @@ export default function SchedulingTab({ data, setData }) {
                 type="number"
                 style={{ height: 50 }}
                 value={campaignDurationDays}
-                onChange={(e) => handleDurationDaysChange(e)}
-                on
+                onChange={(e) => {
+                  // prevent values less than 0 or higher than 20.
+                  if (e.target.value < 0) {
+                    setCampaignDurationDays(0);
+                  } else if (e.target.value > 20) {
+                    setCampaignDurationDays(20);
+                  } else {
+                    handleSchedulingChanges({
+                      duration: e.target.value,
+                      start: startDateTime,
+                      end: endDateTime,
+                      windowDuration: interactionWindowDuration,
+                      action: "updateDuration",
+                    });
+                  }
+                }}
               />
               <Typography sx={{ fontSize: 16 }}>days</Typography>
             </Stack>
@@ -120,7 +165,14 @@ export default function SchedulingTab({ data, setData }) {
               label="End date & time"
               InputProps={{ sx: { width: 300 } }}
               value={endDateTime}
-              onChange={(newValue) => handleEndDateChange(newValue)}
+              onChange={(newValue) =>
+                handleSchedulingChanges({
+                  start: startDateTime,
+                  end: newValue,
+                  windowDuration: interactionWindowDuration,
+                  action: "updateEnd",
+                })
+              }
               renderInput={(params) => <TextField {...params} />}
               minDateTime={moment()} // min date is current date/time
               minutesStep={15}
@@ -137,7 +189,11 @@ export default function SchedulingTab({ data, setData }) {
           weeks.
         </TitleAndDesc>
         <Stack sx={{ width: 300 }} spacing={3}>
-          <SchedulingSlider setData={setData} endDateTime={endDateTime} />
+          <SchedulingSlider
+            interactionWindowDuration={interactionWindowDuration}
+            handleSchedulingChanges={handleSchedulingChanges}
+            endDateTime={endDateTime}
+          />
           <Typography sx={{ fontSize: 12 }}>
             Interactions will be available from{" "}
             <Span sx={{ fontWeight: 500 }}>

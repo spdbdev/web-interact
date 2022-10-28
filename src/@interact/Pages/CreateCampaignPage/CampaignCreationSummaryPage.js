@@ -1,5 +1,7 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import InteractChip from "@interact/Components/Chips/InteractChip";
+import { getDateFromTimestamp } from "@interact/Components/utils";
+import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
@@ -16,22 +18,12 @@ import {
   Typography,
 } from "@mui/material";
 import SoloPage from "app/layouts/solo-page/SoloPage";
-import React from "react";
+import { doc, getDoc } from "firebase/firestore";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
 import FAQAccordian from "./FAQAccordian";
-
-const CAMPAIGN_SUMMARY_ITEMS = [
-  { label: "Goal Value", value: "$1000 USD" },
-  { label: "Goal", value: "I will eat a cricket on stream" },
-  { label: "Start Date", value: "Oct. 03, 2022" },
-  { label: "End Date", value: "Nov. 03, 2022" },
-  { label: "Duration", value: "30 days" },
-  { label: "Interaction End Date", value: "Jan. 06, 2023" },
-  { label: "Auction Min. Bid", value: "$10" },
-  { label: "Giveaway VIP Entry Price", value: "$1" },
-  { label: "Custom URL", value: "cricket-challenge" },
-];
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -47,7 +39,48 @@ export function CampaignSummaryItem({ label, value }) {
 }
 
 export default function CampaignCreationSummaryPage() {
+  const [campaignData, setCampaignData] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getCampaign = async () => {
+      let fetchedData = (
+        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+      ).data();
+      setCampaignData(fetchedData);
+    };
+
+    getCampaign();
+  }, []);
+
+  const CAMPAIGN_SUMMARY_ITEMS = [
+    { label: "Goal Value", value: `$${campaignData?.goalValue}` },
+    { label: "Goal", value: campaignData?.goal },
+    {
+      label: "Start Date",
+      value: getDateFromTimestamp({ timestamp: campaignData?.startDateTime }),
+    },
+    {
+      label: "End Date",
+      value: getDateFromTimestamp({ timestamp: campaignData?.endDateTime }),
+    },
+    { label: "Duration", value: `${campaignData?.durationDays} days` },
+    {
+      label: "Interaction End Date",
+      value: getDateFromTimestamp({
+        timestamp: campaignData?.interactionEndDateTime,
+      }),
+    },
+    { label: "Auction Min. Bid", value: `$${campaignData?.auctionMinBid}` },
+    {
+      label: "Giveaway VIP Entry Price",
+      value: `$${campaignData?.giveawayVIPEntryCost}`,
+    },
+    {
+      label: "Custom URL",
+      value: `www.interact.vip/${campaignData?.customURL}`,
+    },
+  ];
 
   return (
     <SoloPage>
@@ -104,22 +137,28 @@ export default function CampaignCreationSummaryPage() {
                 textAlign: "center",
               }}
             >
-              <Typography>Click here to upload a thumbnail image.</Typography>
+              <img
+                alt="thumbnail"
+                src={campaignData?.campaignVideoThumbnailLink}
+              />
+              {/* <Typography>Click here to upload a thumbnail image.</Typography> */}
             </Stack>
             <FAQAccordian shouldAllowEdit={false} />
           </Stack>
           <Stack direction="column" spacing={3}>
             <Stack spacing={2} sx={{ height: 180 }}>
               <Typography variant="h3" sx={{ fontWeight: 500 }}>
-                Name of Campaign
+                {campaignData?.title}
               </Typography>
               <Typography flex={1}>
-                Interact helps you bring joy to your most loyal fans who have
-                grown with you not only as a creator, but as a human being.
+                {campaignData?.description}
+                {/* Interact helps you bring joy to your most loyal fans who have
+                grown with you not only as a creator, but as a human being. */}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1}>
-                <InteractChip label="Gaming" />
-                <InteractChip label="Gaming" />
+                {campaignData?.categories?.map((item, index) => (
+                  <InteractChip label={item} key={index} />
+                ))}
               </Stack>
             </Stack>
             <Grid sx={{ width: "100%" }} container rowSpacing={3}>

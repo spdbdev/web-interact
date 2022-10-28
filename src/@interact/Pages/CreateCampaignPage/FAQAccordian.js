@@ -158,6 +158,7 @@ export default function FAQAccordian({
               value={FAQ1}
               onChange={(e) => handleEditFAQ1(e)}
               variant="standard"
+              //contentEditable={shouldAllowEdit}
             />
           </Typography>
         </AccordionDetails>
@@ -178,6 +179,7 @@ export default function FAQAccordian({
               value={FAQ2}
               onChange={(e) => handleEditFAQ2(e)}
               variant="standard"
+              //contentEditable={shouldAllowEdit}
             />
           </Typography>
         </AccordionDetails>

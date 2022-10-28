@@ -2,20 +2,16 @@ import { Box, Slider } from "@mui/material";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 
-export function SchedulingSlider({ endDateTime, setData }) {
-  const [interactionWindowDuration, setInteractionWindowDuration] =
-    useState(10);
-
-  useEffect(() => {
-    handleInteractionWindowChange(null, interactionWindowDuration);
-  }, [endDateTime]);
-
+export function SchedulingSlider({
+  interactionWindowDuration,
+  handleSchedulingChanges,
+  endDateTime,
+}) {
   function handleInteractionWindowChange(event, newValue) {
-    setInteractionWindowDuration(newValue);
-
-    const interactionWindowEndDate = moment(endDateTime).add(newValue, "weeks");
-    setData({
-      interactionEndDateTime: moment(interactionWindowEndDate).unix(),
+    handleSchedulingChanges({
+      windowDuration: newValue,
+      end: endDateTime,
+      action: "updateWindow",
     });
   }
 
