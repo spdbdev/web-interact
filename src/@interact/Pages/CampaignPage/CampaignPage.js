@@ -6,6 +6,8 @@ import Giveaway from "./Giveaway";
 import Auction from "./Auction";
 import Faq from "@interact/Components/Faq/Faq";
 import { DataGrid } from "@mui/x-data-grid";
+import {auth} from '../../../firebase';
+import { useAuthState } from "react-firebase-hooks/auth";
 import Header from "./Header";
 import Stats from "./Stats";
 import CreatorName from "./CreatorName";
@@ -489,21 +491,29 @@ function CampaignPage(userData) {
   const num_giveaway = 10;
   const num_auction = 10;
 
+  const [vipChanceMultiplier,setVipChanceMultiplier] = useState(25);
+  const [freeChanceMultiplier, setFreeChanceMultiplier] = useState(1);
+
   const [campaignData, setCampaignData] = useState({});
   const [bids, setBids] = useState([]);
   const [comments, setComments] = useState([]);
   const [supporters, setSupporters] = useState([]);
+  const [totalEntry,setTotalEntry] = useState(0);
+  const [winningChances,setWiningChances] = useState(100);
   const [hasUserEnteredGiveaway, setHasUserEnteredGiveaway] = useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const campaignId = "test12345";
   let userId = 'user123456'; // dummy user id
-  let user = {
-    id: "user1234",
-    photoUrl:
-      "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-    username: "andrew123",
-  };
+  // let user = {
+  //   id: "user1234",
+  //   photoUrl:
+  //     "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+  //   username: "andrew123",
+  // };
+  let [user] = useAuthState(auth);
+  console.log("User>>",user);
+
 
   const { theme } = useJumboTheme();
 
@@ -522,6 +532,8 @@ function CampaignPage(userData) {
     let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
     // console.log('_campaignData', _campaignData)
     setCampaignData(_campaignData);
+    console.log("Campaign Data>>",campaignData);
+    if(Object.entries(_campaignData).length > 0) getChanceMultiplier()
 
     // let bidQuery = query(collection(db, 'campaigns', campaignId, 'bids'), orderBy("time"))
     // console.log('bidQuery', bidQuery)
@@ -541,8 +553,62 @@ function CampaignPage(userData) {
     // );
   };
 
+  const getChanceMultiplier = async () => {
+    let lostHistory = await getUserLostHistory(campaignData.person.id);
+    lostHistory = parseInt(lostHistory);
+    switch (lostHistory) {
+      case 1:
+        console.log("Case 1");
+        setVipChanceMultiplier(50);
+        setFreeChanceMultiplier(2);
+        break;
+      case 2:
+        console.log("Case 2");
+        setVipChanceMultiplier(75);
+        setFreeChanceMultiplier(4);
+        break;
+      case 3:
+        console.log("Case 3");
+        setVipChanceMultiplier(100);
+        break;
+      default:
+        console.log("Case default");
+        setVipChanceMultiplier(25);
+        setFreeChanceMultiplier(1);
+        break;
+    }
+    console.log("Lost history",lostHistory,'vip chance',vipChanceMultiplier,'free chance',freeChanceMultiplier);
+  }
+
+  const getUserLostHistory = async (userId) => {
+    const campaignHistoryUsers = await getDocs(collection(db, 'giveAwayLossHistory', userId , 'users'));
+    const userLostHistory = campaignHistoryUsers.docs.find((doc) => {
+        if(doc.get('user_id') === user.uid) return doc;
+    });
+    const {numOfLoss} = userLostHistory.data();
+    if(numOfLoss) return numOfLoss;
+    return null;
+  }
+
+  const getTotalEntry = async () => {
+    let chances = 100;
+    const docRef = doc(db, "campaigns", campaignId);
+    const colRef = collection(docRef,'Giveaway');
+    const docSnap = await getDocs(colRef);
+    console.log("doc snap",docSnap)
+    if (!docSnap.empty) {
+        const size = docSnap.size;
+        setTotalEntry(parseInt(size));        
+    } else {
+        console.log("No such document!");
+    }
+    if(totalEntry !== 0) chances = (1/totalEntry)*100;
+    setWiningChances(chances);
+  }
+
   useEffect(() => {
     getCampaignData();
+    getTotalEntry();
     // DUMMY_RAFFLES.forEach((x, i)=>{
     //   let raffle = {...DUMMY_RAFFLES[i]};
     //   raffle.time = serverTimestamp();
@@ -668,6 +734,9 @@ function CampaignPage(userData) {
              setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
              setHasUserEnteredGiveaway={setHasUserEnteredGiveaway}
              setHasUserPurchasedVIPEntry={setHasUserEnteredGiveaway}
+             vipChanceMultiplier={vipChanceMultiplier}
+             freeChanceMultiplier = {freeChanceMultiplier}
+             winningChances={winningChances}
            />
           ) : null}
         </Box>

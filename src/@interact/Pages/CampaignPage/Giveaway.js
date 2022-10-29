@@ -20,6 +20,9 @@ export default function Giveaway({
   setHasUserClaimedFreeEntry,
   setHasUserPurchasedVIPEntry,
   setHasUserEnteredGiveaway,
+  vipChanceMultiplier,
+  freeChanceMultiplier,
+  winningChances,
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -646,9 +649,6 @@ if(logged_user_stripe_customer_id){
     }
   })
  
-  // these are dummy values and will be replaced with legit DB variables
-  const chanceMultiplier = 1;
-  const lossChanceMultiplier = 2; // this can be 2 or 4, corresponding to 1 or 2 past losses in a giveaway (for same creator)
   return (
     <>
     <JumboCardQuick
@@ -689,10 +689,10 @@ if(logged_user_stripe_customer_id){
         </Typography>
 
         <span>
-          Chance multiplier: {chanceMultiplier * lossChanceMultiplier * 25}x
+          Chance multiplier: {vipChanceMultiplier}x
         </span>
         <Stack direction="row" spacing={1} alignItems="center">
-          <span>Chance of winning: 2.5%</span>
+          <span>Chance of winning: {winningChances}%</span>
           <InfoTooltip
             title="Remember, the % chance of winning will go down as more fans
           join the giveaway."
@@ -737,10 +737,10 @@ if(logged_user_stripe_customer_id){
         </Typography>
 
         <span>
-          Chance multiplier: {chanceMultiplier * lossChanceMultiplier}x
+          Chance multiplier: {freeChanceMultiplier}x
         </span>
         <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
-          <span>Chance of winning: 0.1%</span>
+          <span>Chance of winning: {winningChances}%</span>
           <InfoTooltip
             title="Remember, the % chance of winning will go down as more fans
           join the giveaway."
