@@ -18,6 +18,31 @@ import InteractLogo from "../../Images/logo512.png";
 
 const WhatIsInteractFAQs = [
   {
+    question: <span>How it works</span>,
+    answer: (
+      <span>
+        Content creators start a time-limited campaign (lasting 10 days, by
+        default) with a goal, offering 1-on-1 interactions to fans (eg. play a
+        game) that are scheduled in the 10 weeks (by default) after the campaign
+        ends. Fans try to be selected via the giveaway (with a free entry
+        option) or the auction (be a top bidder on the leaderboard; pricier but
+        a guaranteed interaction). Fans pay immediately for the giveaway;
+        meanwhile in the auction, fans only pay if they win (charged at the end
+        of the campaign, triggered manually, part of the firebase cloud
+        function). When new fans try to enter the auction/giveaway, they have to
+        create an account & input their general availability from Mon-Sun
+        (editable on their profile page too). After the campaign ends, selected
+        fans (winners) will have interactions assigned to them over the
+        interaction window duration, 10 weeks by default (with auction winners
+        having priority). The creator selects when they are available
+        week-by-week (creators have to lock in their availability by Friday
+        midnight for the next week); from this, with our matching algorithm,
+        interactions are scheduled.
+      </span>
+    ),
+    defaultExpanded: true,
+  },
+  {
     question: <span>Why interact with fans?</span>,
     answer: (
       <span>
@@ -104,13 +129,40 @@ const WhatIsInteractFAQs = [
   },
   {
     question: <span>Why do fans want personal interactions?</span>,
-    answer: <span>dknfkdnfkajsdn lfdnf kjlsndf lsdfn</span>,
+    answer: (
+      <span>
+        As social platforms are so one-sided, fans give you attention weekly or
+        even daily without being able to receive any meaningful attention or
+        recognition back. They treat you as someone they trust and/or a
+        relatable friend, but have never been able to fulfill that relationship.
+        Thus, fans want to be recognized by you & build a relationship by
+        showing off their talents (e.g. best X-main in this game, astute
+        questions & insights in X, musical/artistic talent, athleticism, or
+        comedic genius). Fans want to discuss & make their own viewpoints known
+        on subjects they are deeply passionate about, where you’re one of the
+        leaders in that subject/community (from anime to politics, from history
+        to frontier tech, from reviews & tier lists to educational animations).
+        Fame—if a fan’s interaction was interesting, creators can post
+        highlights of it or the interaction is part of a
+        live-streaming/podcasting scenario where the fan is recognized by many
+        fellow fans & viewers (react to content together, try not to laugh
+        challenge, etc. even if you don’t create that type of content yet,
+        expand your variety—fans love to watch drama & discourse, or just
+        something new). Interacting with fans as part of your content is
+        effective & appealing since other fans are envious & garners large
+        popularity (Mr. Beast, fans who don’t make money are still ecstatic).{" "}
+        <strong style={{ fontWeight: 600 }}>
+          Creating fresh content is one of the largest challenges we face, why
+          not add some spice?
+        </strong>
+      </span>
+    ),
   },
 ];
 
-function SpecialAccordion({ question, answer }) {
+function SpecialAccordion({ question, answer, defaultExpanded }) {
   return (
-    <Accordion>
+    <Accordion defaultExpanded={defaultExpanded}>
       <AccordionSummary
         sx={{
           background:
@@ -152,7 +204,7 @@ export default function WhatIsInteractPage() {
           </IconButton>
         </Box>
         <Stack direction="column" alignItems="center" width={"100%"}>
-          <Stack spacing={1} sx={{ maxWidth: 1000 }}>
+          <Stack spacing={1} mb={10} sx={{ maxWidth: 1000 }}>
             <Stack direction="column" alignItems="center" spacing={2}>
               <img src={InteractLogo} alt="" width={50} />
               <Typography variant="h2">What Is Interact?</Typography>
@@ -173,6 +225,7 @@ export default function WhatIsInteractPage() {
                 key={key}
                 question={item.question}
                 answer={item.answer}
+                defaultExpanded={item.defaultExpanded}
               />
             ))}
           </Stack>

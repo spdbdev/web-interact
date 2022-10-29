@@ -124,6 +124,7 @@ export default function CampaignCreationSummaryPage() {
             alignSelf="center"
             spacing={4}
             mt={6}
+            pb={10}
             sx={{ maxWidth: 800 }}
           >
             <Stack direction="column" spacing={3} sx={{ maxWidth: 350 }}>
