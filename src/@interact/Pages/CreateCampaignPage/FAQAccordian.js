@@ -147,19 +147,24 @@ export default function FAQAccordian({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography>What can we do in an interaction?</Typography>
-            <Chip label="Editable" />
+            {shouldAllowEdit ? <Chip label="Editable" /> : false}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <TextField
-              fullWidth
-              multiline
-              value={FAQ1}
-              onChange={(e) => handleEditFAQ1(e)}
-              variant="standard"
-              //contentEditable={shouldAllowEdit}
-            />
+            {shouldAllowEdit ? (
+              <TextField
+                fullWidth
+                multiline
+                value={FAQ1}
+                onChange={(e) => handleEditFAQ1(e)}
+                variant="standard"
+                InputProps={{ readOnly: !shouldAllowEdit }}
+                //contentEditable={shouldAllowEdit}
+              />
+            ) : (
+              FAQ1
+            )}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -167,20 +172,24 @@ export default function FAQAccordian({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography>How are interactions carried out?</Typography>
-
-            <Chip label="Editable" />
+            {shouldAllowEdit ? <Chip label="Editable" /> : false}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <TextField
-              fullWidth
-              multiline
-              value={FAQ2}
-              onChange={(e) => handleEditFAQ2(e)}
-              variant="standard"
-              //contentEditable={shouldAllowEdit}
-            />
+            {shouldAllowEdit ? (
+              <TextField
+                fullWidth
+                multiline
+                value={FAQ2}
+                onChange={(e) => handleEditFAQ2(e)}
+                variant="standard"
+                InputProps={{ readOnly: !shouldAllowEdit }}
+                //contentEditable={shouldAllowEdit}
+              />
+            ) : (
+              FAQ2
+            )}
           </Typography>
         </AccordionDetails>
       </Accordion>
