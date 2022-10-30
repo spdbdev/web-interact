@@ -33,7 +33,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 		functions.logger.info("campaign data:", data, {structuredData: true});
 
 		process_auction_list(campaign_id, Number(data.numBidSlots));
-		process_giveaway_list(campaign_id, Number(data.numRaffleSlots));
+		process_giveaway_list(campaign_id, Number(data.numRaffleSlots), data.person.id);
 	});
 
 	function process_auction_list(campaign_id, numBidSlots)
@@ -84,34 +84,46 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 	}
 
 
-	function process_giveaway_list(campaign_id, numRaffleSlots)
+	async function process_giveaway_list(campaign_id, numRaffleSlots, creator_id)
 	{
 		functions.logger.info("Collecting winners from GiveAway", {structuredData: true});
 
-		var fans = [];
-		var pool = [];
-		var selected = [];
-		db.collection("campaigns").doc(campaign_id).collection("raffles").get().then(snapshot => {
+		var fans = []; // all users in giveAway
+		var pool = []; // all users with multiplier entries
+		var selected = []; // users which are selected
+		var loosers = []; // users which are not get selected
+		try{
+			const snapshot = await db.collection("campaigns").doc(campaign_id).collection("Giveaway").get();
 		
-			snapshot.forEach(document => {
+			for (let document of snapshot.docs) {
 				let doc = document.data();
 				doc.price = Number(doc.price);
 				
-				let type = 'free';
-				if(doc.price > 0){
-					type = 'vip';
-					for (let index = 0; index < 25; index++) {
-						pool.push({'id':document.id, 'type':type});
-					}
-				}else{
-					pool.push({'id':document.id, 'type':type});
+				let previousLoss = 0;
+				let docSnap = await db.collection("giveAwayLossHistory").doc(creator_id).collection('users').doc(document.id).get();
+				if (docSnap.data()) {
+					let previousLossObj = docSnap.data();
+					previousLoss = previousLossObj.numOfLoss;
+					console.log('previousLoss', document.id, previousLoss);
+				}
+				
+				let noOfEntries = 1;
+				if(doc.price > 0) noOfEntries = 25;
+				if(previousLoss == 1) noOfEntries = noOfEntries * 2;
+				else if(previousLoss > 1) noOfEntries = noOfEntries * 4;
+
+				for (let index = 0; index < noOfEntries; index++) {
+					pool.push({'id':document.id, 'previousLoss':previousLoss});
 				}
 
-				fans.push({'id':document.id, 'type':type})
-			});
+				fans.push({'id':document.id, 'previousLoss':previousLoss, 'price':doc.price, 'noOfEntries':noOfEntries});
+			}	
+			//console.log("pool-00:", pool);
+			//console.log("fans-00:", fans);
 
 			if(fans.length <= numRaffleSlots) selected = fans;
 			else{
+				loosers = fans;
 				shuffle_array(pool);
 				//console.log("pool:", pool);
 
@@ -122,27 +134,58 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 					let selected_obj_id = pool[rendom_index].id;
 					pool = pool.filter(obj => obj.id != selected_obj_id);
+					loosers = loosers.filter(obj => obj.id != selected_obj_id);
+
+					if(selected.length % 9 == 0) {
+						shuffle_array(pool);
+						//console.log("pool:", pool);
+					}
 				}
 			}
 			//console.log("selected:", selected);
+			//console.log("loosers:", loosers);
 
-			update_giveaway_winners(campaign_id, selected);
-		}).catch(error => {
+			update_giveaway_users(campaign_id, selected, 1, creator_id);
+			update_giveaway_users(campaign_id, loosers, 0 , creator_id);
+		}
+		catch(error) {
 			console.error("Error getting document:", error);
-		});
+		};
 	}
 
-	function update_giveaway_winners(campaign_id, data) {
-		var coll_ref = db.collection("campaigns").doc(campaign_id).collection("raffles");
+	function update_giveaway_users(campaign_id, data, result, creator_id) 
+	{
+		var coll_ref = db.collection("campaigns").doc(campaign_id).collection("Giveaway");
+		var loss_ref = db.collection("giveAwayLossHistory").doc(creator_id).collection('users');
+		
 		data.forEach(document => {
+
 			coll_ref.doc(document.id).update({
-				"result": 1,
+				"result": result,
 			})
 			.then((docRef) => {
 				//console.log("Document successfully updated!", docRef.id);
 			}).catch((error) => {
 				console.error("Error adding document: ", error);
 			});
+
+
+			if(result == 0) {
+				loss_ref.doc(document.id).set({
+					"user_id":document.id,
+					"numOfLoss": document.previousLoss + 1
+				})
+				.then((docRef) => {
+					//console.log("Document successfully updated!", docRef.id);
+				}).catch((error) => {
+					console.error("Error adding document: ", error);
+				});
+			}
+			else if(result == 1)
+			{
+				loss_ref.doc(document.id).delete();
+			}
+			
 		});
 	}
 
