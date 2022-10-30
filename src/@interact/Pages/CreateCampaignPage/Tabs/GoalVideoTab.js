@@ -19,11 +19,21 @@ import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { Add, Close } from "@mui/icons-material";
 import { getYoutubeIDFromURL } from "@interact/Components/utils";
+import { TabNavigation } from "../TabNavigation";
+import { useFormValidation } from "@interact/Hooks/use-form-validation";
+import { addTrailingZerosToDollarValue } from "@interact/Components/utils";
 
-export default function GoalVideoTab({ data, setData }) {
+export default function GoalVideoTab({
+  data,
+  setData,
+  selectedTabIndex,
+  setSelectedTabIndex,
+}) {
   const [isScriptExampleModalOpen, setIsScriptExampleModalOpen] =
     useState(false);
-  const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(data?.goalValue);
+  const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(
+    addTrailingZerosToDollarValue(data?.goalValue)
+  );
   const [campaignGoal, setCampaignGoal] = useState(data?.goal);
   const [selectedVideo, setSelectedVideo] = useState(data?.campaignVideoLink);
   const [videoThumbnailLink, setVideoThumbnailLink] = useState(
@@ -41,14 +51,16 @@ export default function GoalVideoTab({ data, setData }) {
     getVideoThumbnailLink();
   }, [selectedVideo]);
 
-  function handleCampaignMoneyGoalChange(e) {
-    if (e.target.value < 0) {
-      setCampaignMoneyGoal(0);
-    } else {
-      setCampaignMoneyGoal(e.target.value);
-      setData({ goalValue: e.target.value });
-    }
-  }
+  const { goal, lastCompletedTabIndex } = data;
+
+  const formValidationConditions = goal.length <= 50 && goal.length > 0;
+
+  const isTabValidated = useFormValidation({
+    selectedTabIndex,
+    lastCompletedTabIndex,
+    setData,
+    formValidationConditions,
+  });
 
   return (
     <>
@@ -102,19 +114,12 @@ export default function GoalVideoTab({ data, setData }) {
         </Typography>
         <Stack direction="row" alignItems="center" mt={4} sx={{ fontSize: 18 }}>
           If we raise{" "}
-          <FormControl>
-            <OutlinedInput
-              type="number"
-              inputProps={{ step: ".50" }}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }
-              sx={{ mx: 2, mt: 2 }}
-              value={campaignMoneyGoal}
-              onChange={(e) => handleCampaignMoneyGoalChange(e)}
-            />
-            <FormHelperText sx={{ ml: 3 }}>Min. $10</FormHelperText>
-          </FormControl>
+          <GoalInput
+            value={campaignMoneyGoal}
+            setValue={setCampaignMoneyGoal}
+            setData={setData}
+            dataField={"goalValue"}
+          />
           I will
           <FormControl>
             <TextField
@@ -196,6 +201,64 @@ export default function GoalVideoTab({ data, setData }) {
           />
         </Stack>
       </CreateCampaignItemWrapper>
+      <TabNavigation
+        disableNext={!isTabValidated}
+        selectedTabIndex={selectedTabIndex}
+        setSelectedTabIndex={setSelectedTabIndex}
+      />
     </>
+  );
+}
+
+// Note - worth refactoring with BitInput from InteractionTab.js
+function GoalInput({ value, setValue, setData, dataField }) {
+  // These are currently the same for both auctions and giveaway. If they change,
+  // pass these values in through props instead.
+  const increment = 0.5;
+  const minValue = 10;
+
+  function validate(nextValue) {
+    function isValidIncrement(nextIncrement) {
+      if (nextIncrement % increment === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return (
+      typeof nextValue === "number" &&
+      !isNaN(nextValue) &&
+      nextValue >= minValue &&
+      isValidIncrement(nextValue)
+    );
+  }
+
+  function handleBid(e) {
+    const nextValue = Number(e.target.value);
+    const isValid = validate(nextValue);
+    if (!isValid) {
+      setValue(addTrailingZerosToDollarValue(minValue));
+    } else {
+      setValue(addTrailingZerosToDollarValue(nextValue));
+      setData({ [dataField]: nextValue });
+    }
+  }
+
+  return (
+    <FormControl>
+      <OutlinedInput
+        type="number"
+        inputProps={{ step: ".50" }}
+        startAdornment={<InputAdornment position="start">$</InputAdornment>}
+        sx={{ mx: 2, height: "40px" }}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={(e) => handleBid(e)}
+      />
+      <FormHelperText sx={{ ml: 3 }}>
+        $0.50 increments. Min. $10.50
+      </FormHelperText>
+    </FormControl>
   );
 }

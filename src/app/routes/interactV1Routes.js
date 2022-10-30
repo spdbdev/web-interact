@@ -1,4 +1,5 @@
 import React from "react";
+import Page from "@jumbo/shared/Page";
 import ListingDashboard from "../pages/dashboards/listing/ListingDashboard";
 import IntranetDashboard from "../pages/dashboards/intranet/IntranetDashboard";
 
@@ -25,7 +26,9 @@ const interactV1Routes = [
   },
   {
     path: "/interact/user",
-    element: <UserProfilePage />,
+    element: (
+      <Page component={UserProfilePage} layout="vertical-default" />
+    ),
   },
   {
     path: "/interact/userold",
@@ -43,7 +46,9 @@ const interactV1Routes = [
 
   {
     path: "/interact/createCampaign",
-    element: <CreateCampaignPage />,
+    element: (
+      <Page component={CreateCampaignPage} layout="solo-page" />
+    ),
   },
 
   {

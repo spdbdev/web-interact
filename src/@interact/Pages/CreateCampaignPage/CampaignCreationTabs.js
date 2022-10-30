@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import { Tab, Tabs } from "@mui/material";
-import { Container } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import React, { useState } from 'react';
+import { Tab, Tabs } from '@mui/material';
+import { Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     // this uses the theme we passed to the ThemeProvider in App.js
-    textTransform: "none",
+    textTransform: 'none',
     fontWeight: 400,
-    fontSize: "16px",
+    fontSize: '16px',
     color: theme.palette.text.primary,
-    "&.Mui-selected": {
+    '&.Mui-selected': {
       color: theme.palette.text.primary,
     },
+    cursor: 'default',
   })
 );
 
@@ -29,7 +30,7 @@ export default function CampaignCreationTabs({
       disableGutters
       sx={{
         borderBottom: 1,
-        borderColor: "divider",
+        borderColor: 'divider',
         maxWidth: 1000,
         mt: 1,
         mb: 3,
