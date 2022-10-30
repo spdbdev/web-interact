@@ -18,7 +18,10 @@ import {
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { Add, Close } from "@mui/icons-material";
-import { getYoutubeIDFromURL } from "@interact/Components/utils";
+import {
+  getYoutubeIDFromURL,
+  isValidHttpUrl,
+} from "@interact/Components/utils";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { addTrailingZerosToDollarValue } from "@interact/Components/utils";
@@ -53,7 +56,8 @@ export default function GoalVideoTab({
 
   const { goal, lastCompletedTabIndex } = data;
 
-  const formValidationConditions = goal.length <= 50 && goal.length > 0;
+  const formValidationConditions =
+    goal.length <= 50 && goal.length > 0 && isValidHttpUrl(selectedVideo);
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
@@ -125,7 +129,8 @@ export default function GoalVideoTab({
             <TextField
               sx={{ mx: 2, mt: 2, width: 400 }}
               variant="outlined"
-              inputProps={{ maxLength: 40 }}
+              inputProps={{ maxLength: 50 }}
+              error={goal.length <= 0}
               value={campaignGoal}
               onChange={(e) => {
                 setData({ goal: e.target.value });
@@ -192,6 +197,7 @@ export default function GoalVideoTab({
           <TextField
             variant="outlined"
             fullWidth
+            error={!isValidHttpUrl(selectedVideo)}
             label="Video link"
             value={selectedVideo}
             onChange={(e) => {
@@ -249,15 +255,16 @@ function GoalInput({ value, setValue, setData, dataField }) {
     <FormControl>
       <OutlinedInput
         type="number"
+        error={value < minValue}
         inputProps={{ step: ".50" }}
         startAdornment={<InputAdornment position="start">$</InputAdornment>}
-        sx={{ mx: 2, height: "40px" }}
+        sx={{ mx: 2, mt: 2 }}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => handleBid(e)}
       />
       <FormHelperText sx={{ ml: 3 }}>
-        $0.50 increments. Min. $10.50
+        $0.50 increments. Min. $10.00
       </FormHelperText>
     </FormControl>
   );

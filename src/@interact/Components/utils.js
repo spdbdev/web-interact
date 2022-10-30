@@ -1,9 +1,6 @@
 import moment from "moment";
 
-export function getDateFromTimestamp({
-  timestamp,
-  format = "MMM Do, YYYY",
-}) {
+export function getDateFromTimestamp({ timestamp, format = "MMM Do, YYYY" }) {
   return moment.unix(timestamp).format(format) ?? "";
 }
 
@@ -27,4 +24,13 @@ export function getYoutubeIDFromURL(url) {
     ID = url;
   }
   return ID;
+}
+
+export function isValidHttpUrl(string) {
+  try {
+    const url = new URL(string);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch (err) {
+    return false;
+  }
 }

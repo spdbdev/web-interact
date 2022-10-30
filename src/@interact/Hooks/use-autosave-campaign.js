@@ -20,11 +20,7 @@ export default function useAutosaveCampaign(campaignData) {
   const saveData = useCallback(async (newData) => {
     setIsAutosaving(true);
     setAutosaveError(false);
-    const docRef = await doc(
-      db,
-      "campaigns",
-      "campaign-creation-test"
-    ); //this needs to be passed in programatically
+    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
 
     updateDoc(docRef, newData)
       .then(() => {
