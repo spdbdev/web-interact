@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { OutlinedInput, Stack, TextField, Typography } from "@mui/material";
+import {
+  OutlinedInput,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DateTimePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment, { duration } from "moment";
 import { SchedulingSlider } from "../Sliders";
@@ -11,8 +19,15 @@ import {
   formatMomentDate,
   getDateFromTimestamp,
 } from "../../../Components/utils.js";
+import { TabNavigation } from "../TabNavigation";
+import { useFormValidation } from "@interact/Hooks/use-form-validation";
 
-export default function SchedulingTab({ data, setData }) {
+export default function SchedulingTab({
+  data,
+  setData,
+  selectedTabIndex,
+  setSelectedTabIndex,
+}) {
   const [startDateTime, setStartDateTime] = useState(
     moment.unix(data?.startDateTime) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //    moment.unix(data?.startDateTime)
@@ -22,9 +37,24 @@ export default function SchedulingTab({ data, setData }) {
   const [campaignDurationDays, setCampaignDurationDays] = useState(
     data?.durationDays
   );
-  const [interactionWindowDuration, setInteractionWindowDuration] = useState(
-    data?.interactionWindow
-  );
+  const [interactionWindowDuration, setInteractionWindowDuration] =
+    useState(data?.interactionWindow);
+
+  const formValidationConditions =
+    typeof data?.durationDays == "number" &&
+    data?.durationDays > 0 &&
+    moment(data?.startDateTime).isValid() &&
+    moment(data?.endDateTime).isValid() &&
+    moment(data?.interactionEndDateTime).isValid() &&
+    typeof data?.interactionWindow == "number" &&
+    data?.interactionWindow > 0;
+
+  const isTabValidated = useFormValidation({
+    selectedTabIndex,
+    lastCompletedTabIndex: data?.lastCompletedTabIndex,
+    setData,
+    formValidationConditions,
+  });
 
   function handleSchedulingChanges({
     start,
@@ -42,7 +72,7 @@ export default function SchedulingTab({ data, setData }) {
       durationDiff = end?.diff(start, "days");
       const startTimestampValue = moment(start).unix();
       setData({
-        durationDays: durationDiff,
+        durationDays: Number(durationDiff),
         startDateTime: startTimestampValue,
       });
 
@@ -57,11 +87,16 @@ export default function SchedulingTab({ data, setData }) {
       const endTimestampValue = moment(end).unix();
 
       // calculate end date from interaction window
-      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
-      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+      interactionWindowEndDate = moment(end).add(
+        windowDuration,
+        "weeks"
+      );
+      const interactionTimestampValue = moment(
+        interactionWindowEndDate
+      ).unix();
 
       setData({
-        durationDays: durationDiff,
+        durationDays: Number(durationDiff),
         endDateTime: endTimestampValue,
         interactionEndDateTime: interactionTimestampValue,
       });
@@ -81,10 +116,12 @@ export default function SchedulingTab({ data, setData }) {
       );
 
       const endTimestampValue = moment(newEndDate).unix();
-      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+      const interactionTimestampValue = moment(
+        interactionWindowEndDate
+      ).unix();
 
       setData({
-        durationDays: duration,
+        durationDays: Number(duration),
         endDateTime: endTimestampValue,
         interactionEndDateTime: interactionTimestampValue,
       });
@@ -95,11 +132,16 @@ export default function SchedulingTab({ data, setData }) {
 
     if (action == "updateWindow") {
       // calculate end date from interaction window
-      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
-      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+      interactionWindowEndDate = moment(end).add(
+        windowDuration,
+        "weeks"
+      );
+      const interactionTimestampValue = moment(
+        interactionWindowEndDate
+      ).unix();
 
       setData({
-        interactionWindow: windowDuration,
+        interactionWindow: Number(windowDuration),
         interactionEndDateTime: interactionTimestampValue,
       });
 
@@ -111,11 +153,12 @@ export default function SchedulingTab({ data, setData }) {
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign Duration">
-          Set how long the campaign will be active. Enter a start date & time,
-          then duration in days OR the end date & time. <br />
+          Set how long the campaign will be active. Enter a start date
+          & time, then duration in days OR the end date & time. <br />
           <br />
-          Changing the duration will recalculate the end date, and vice-versa.
-          Campaigns can last 5 to 20 days. Recommended duration: 10 days.
+          Changing the duration will recalculate the end date, and
+          vice-versa. Campaigns can last 5 to 20 days. Recommended
+          duration: 10 days.
         </TitleAndDesc>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           {/* need this to use DateTimePicker. Date library used here is moment.js */}
@@ -124,13 +167,15 @@ export default function SchedulingTab({ data, setData }) {
               label="Start date & time"
               InputProps={{ sx: { width: 300 } }}
               value={startDateTime}
-              onChange={(newValue) =>
-                handleSchedulingChanges({
-                  start: newValue,
-                  end: endDateTime,
-                  action: "updateStart",
-                })
-              }
+              onChange={(newValue) => {
+                if (moment(newValue).isValid()) {
+                  handleSchedulingChanges({
+                    start: newValue,
+                    end: endDateTime,
+                    action: "updateStart",
+                  });
+                }
+              }}
               renderInput={(params) => <TextField {...params} />}
               minDateTime={moment()} // min date is current date/time
               minutesStep={15}
@@ -182,11 +227,11 @@ export default function SchedulingTab({ data, setData }) {
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Interaction Window Duration">
-          Choose the number of weeks; interactions will be scheduled with fans
-          for X weeks after the campaign ends. <br /> <br />
-          Too many weeks = some fans will have to wait a long time, but too few
-          weeks = more interactions to complete every week. Recommended: 10
-          weeks.
+          Choose the number of weeks; interactions will be scheduled
+          with fans for X weeks after the campaign ends. <br /> <br />
+          Too many weeks = some fans will have to wait a long time,
+          but too few weeks = more interactions to complete every
+          week. Recommended: 10 weeks.
         </TitleAndDesc>
         <Stack sx={{ width: 300 }} spacing={3}>
           <SchedulingSlider
@@ -209,6 +254,48 @@ export default function SchedulingTab({ data, setData }) {
           </Typography>
         </Stack>
       </CreateCampaignItemWrapper>
+      <TabNavigation
+        disableNext={!isTabValidated}
+        selectedTabIndex={selectedTabIndex}
+        setSelectedTabIndex={setSelectedTabIndex}
+      />
     </>
+  );
+}
+
+function NumDurationInput({
+  value,
+  setValue,
+  setData,
+  dataField,
+  minValue = 0,
+}) {
+  function validate(nextValue) {
+    return (
+      typeof nextValue === "number" &&
+      !isNaN(nextValue) &&
+      nextValue >= minValue
+    );
+  }
+
+  function handleInteraction(e) {
+    const nextValue = Number(e.target.value);
+    const isValid = validate(nextValue);
+    if (!isValid) {
+      setValue(minValue);
+    } else {
+      setValue(nextValue);
+      setData({ [dataField]: nextValue });
+    }
+  }
+
+  return (
+    <OutlinedInput
+      type="number"
+      sx={{ mx: 2, height: "40px" }}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={(e) => handleInteraction(e)}
+    />
   );
 }

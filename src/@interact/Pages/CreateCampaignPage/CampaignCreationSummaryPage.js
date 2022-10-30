@@ -1,5 +1,6 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import InteractChip from "@interact/Components/Chips/InteractChip";
+import Loading from "@interact/Components/Loading/Loading";
 import { getDateFromTimestamp } from "@interact/Components/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -82,104 +83,111 @@ export default function CampaignCreationSummaryPage() {
     },
   ];
 
-  return (
-    <SoloPage>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-          width: "100%",
-          padding: 0,
-          backgroundColor: "background.default",
-        }}
-      >
-        <Container sx={{ display: "flex", justifyContent: "center" }}>
-          <ButtonBase
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              color: "text.hint",
-            }}
-            onClick={() => navigate("/interact/createCampaign")}
-          >
-            <ExpandLess />
-            <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>
-          </ButtonBase>
-        </Container>
-        <Typography
-          variant="h2"
-          mt={4}
-          sx={{ fontWeight: 500, alignSelf: "center" }}
+  if (!campaignData) {
+    return <Loading />;
+  } else {
+    return (
+      <SoloPage>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            width: "100%",
+            padding: 0,
+            backgroundColor: "background.default",
+          }}
         >
-          Are you sure you want to submit this campaign?
-        </Typography>
-        <Stack
-          direction="row"
-          alignSelf="center"
-          spacing={4}
-          mt={6}
-          sx={{ maxWidth: 800 }}
-        >
-          <Stack direction="column" spacing={3} sx={{ maxWidth: 350 }}>
-            <Stack
-              direction="column"
-              alignItems="center"
-              justifyContent="center"
-              spacing={2}
+          <Container sx={{ display: "flex", justifyContent: "center" }}>
+            <ButtonBase
               sx={{
-                bgcolor: "divider",
-                width: 350,
-                height: 180,
-                borderRadius: 2,
-                p: 2,
-                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                color: "text.hint",
               }}
+              onClick={() => navigate("/interact/createCampaign")}
             >
-              <img
-                alt="thumbnail"
-                src={campaignData?.campaignVideoThumbnailLink}
-              />
-              {/* <Typography>Click here to upload a thumbnail image.</Typography> */}
-            </Stack>
-            <FAQAccordian shouldAllowEdit={false} />
-          </Stack>
-          <Stack direction="column" spacing={3}>
-            <Stack spacing={2} sx={{ height: 180 }}>
-              <Typography variant="h3" sx={{ fontWeight: 500 }}>
-                {campaignData?.title}
-              </Typography>
-              <Typography flex={1}>
-                {campaignData?.description}
-                {/* Interact helps you bring joy to your most loyal fans who have
-                grown with you not only as a creator, but as a human being. */}
-              </Typography>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                {campaignData?.categories?.map((item, index) => (
-                  <InteractChip label={item} key={index} />
-                ))}
-              </Stack>
-            </Stack>
-            <Grid sx={{ width: "100%" }} container rowSpacing={3}>
-              {CAMPAIGN_SUMMARY_ITEMS?.map((item, index) => (
-                <CampaignSummaryItem
-                  key={index}
-                  label={item.label}
-                  value={item.value}
-                />
-              ))}
-            </Grid>
-          </Stack>
-        </Stack>
-        <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
-          <InteractFlashyButton
-            onClick={() => navigate("/interact/campaign-creation-confirmation")}
+              <ExpandLess />
+              <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>
+            </ButtonBase>
+          </Container>
+          <Typography
+            variant="h2"
+            mt={4}
+            sx={{ fontWeight: 500, alignSelf: "center" }}
           >
-            Submit ✓
-          </InteractFlashyButton>
+            Are you sure you want to submit this campaign?
+          </Typography>
+          <Stack
+            direction="row"
+            alignSelf="center"
+            spacing={4}
+            mt={6}
+            pb={10}
+            sx={{ maxWidth: 800 }}
+          >
+            <Stack direction="column" spacing={3} sx={{ maxWidth: 350 }}>
+              <Stack
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+                spacing={2}
+                sx={{
+                  bgcolor: "divider",
+                  width: 350,
+                  height: 180,
+                  borderRadius: 2,
+                  p: 2,
+                  textAlign: "center",
+                }}
+              >
+                <img
+                  alt="thumbnail"
+                  src={campaignData?.campaignVideoThumbnailLink}
+                />
+                {/* <Typography>Click here to upload a thumbnail image.</Typography> */}
+              </Stack>
+              <FAQAccordian data={campaignData} shouldAllowEdit={false} />
+            </Stack>
+            <Stack direction="column" spacing={3}>
+              <Stack spacing={2} sx={{ height: 180 }}>
+                <Typography variant="h3" sx={{ fontWeight: 500 }}>
+                  {campaignData?.title}
+                </Typography>
+                <Typography flex={1}>
+                  {campaignData?.description}
+                  {/* Interact helps you bring joy to your most loyal fans who have
+                grown with you not only as a creator, but as a human being. */}
+                </Typography>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  {campaignData?.categories?.map((item, index) => (
+                    <InteractChip label={item} key={index} />
+                  ))}
+                </Stack>
+              </Stack>
+              <Grid sx={{ width: "100%" }} container rowSpacing={3}>
+                {CAMPAIGN_SUMMARY_ITEMS?.map((item, index) => (
+                  <CampaignSummaryItem
+                    key={index}
+                    label={item.label}
+                    value={item.value}
+                  />
+                ))}
+              </Grid>
+            </Stack>
+          </Stack>
+          <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
+            <InteractFlashyButton
+              onClick={() =>
+                navigate("/interact/campaign-creation-confirmation")
+              }
+            >
+              Submit ✓
+            </InteractFlashyButton>
+          </Box>
         </Box>
-      </Box>
-    </SoloPage>
-  );
+      </SoloPage>
+    );
+  }
 }

@@ -29,7 +29,7 @@ export function SchedulingSlider({
   return (
     <Slider
       value={interactionWindowDuration}
-      onChangeCommitted={handleInteractionWindowChange}
+      onChange={handleInteractionWindowChange}
       valueLabelDisplay="auto"
       step={1}
       marks={marks}
@@ -39,7 +39,15 @@ export function SchedulingSlider({
   );
 }
 
-export function InteractionAvailabilitySlider() {
+export function InteractionAvailabilitySlider({ data, setData }) {
+  const [interactionAvailability, setInteractionAvailability] =
+    useState(data?.creatorWeeklyAvailability);
+
+  function handleInteractionAvailabilityChange(event, newValue) {
+    setInteractionAvailability(newValue);
+    setData({ creatorWeeklyAvailability: newValue });
+  }
+
   const marks = [
     {
       value: 1,
@@ -53,8 +61,9 @@ export function InteractionAvailabilitySlider() {
 
   return (
     <Slider
-      defaultValue={5}
+      value={interactionAvailability}
       valueLabelDisplay="auto"
+      onChangeCommitted={handleInteractionAvailabilityChange}
       step={1}
       marks={marks}
       min={1}
@@ -63,8 +72,11 @@ export function InteractionAvailabilitySlider() {
   );
 }
 
-export function InteractionDurationsSlider() {
-  const [interactionDurations, setInteractionDurations] = useState([30, 60]);
+export function InteractionDurationsSlider({ data, setData }) {
+  const [interactionDurations, setInteractionDurations] = useState([
+    data?.interactionDurationTime,
+    data?.interactionTopDurationTime,
+  ]);
 
   const marks = [
     {
@@ -77,52 +89,72 @@ export function InteractionDurationsSlider() {
     },
   ];
 
-  const handleInteractionDurationChange = (event, newValue, activeThumb) => {
-    const minDistance = 30;
+  const handleInteractionDurationChange = (
+    event,
+    newValue,
+    activeThumb
+  ) => {
+    let newMinValue = 0;
+    let newMaxValue = 0;
+    const minDistance = 30; // this needs to be 2 x min value
 
     if (!Array.isArray(newValue)) {
       return;
     }
 
     if (activeThumb === 0) {
-      setInteractionDurations([
-        Math.min(newValue[0], interactionDurations[1] - minDistance),
-        interactionDurations[1],
-      ]);
+      // activeThumb === 0 means the min slider
+      newMinValue = Math.min(
+        newValue[0],
+        interactionDurations[1] - minDistance
+      );
+      setInteractionDurations([newMinValue, interactionDurations[1]]);
+      setData({
+        interactionDurationTime: newMinValue,
+        interactionTopDurationTime: interactionDurations[1],
+      });
     } else {
-      setInteractionDurations([
-        interactionDurations[0],
-        Math.max(newValue[1], interactionDurations[0] + minDistance),
-      ]);
+      newMaxValue = Math.max(
+        newValue[1],
+        interactionDurations[0] + minDistance
+      );
+      setInteractionDurations([interactionDurations[0], newMaxValue]);
+      setData({
+        interactionDurationTime: interactionDurations[0],
+        interactionTopDurationTime: newMaxValue,
+      });
     }
   };
 
   // NOTE: the slider handling below is pretty finicky. don't recommend using
-  //   const handleInteractionDurationChange = (event, newValue, activeThumb) => {
-  //     console.log(newValue[0]);
-  //     const minDistance = newValue[0];
+  // const handleInteractionDurationChange = (
+  //   event,
+  //   newValue,
+  //   activeThumb
+  // ) => {
+  //   console.log(newValue[0]);
+  //   const minDistance = newValue[0];
 
-  //     if (!Array.isArray(newValue)) {
-  //       return;
-  //     }
+  //   if (!Array.isArray(newValue)) {
+  //     return;
+  //   }
 
-  //     if (newValue[1] - newValue[0] < minDistance) {
-  //       if (activeThumb === 0) {
-  //         const clamped = Math.min(newValue[0], 100 - minDistance);
-  //         setInteractionDurations([clamped, clamped + minDistance]);
-  //       } else {
-  //         const clamped = Math.max(newValue[1], minDistance);
-  //         setInteractionDurations([clamped - minDistance, clamped]);
-  //       }
+  //   if (newValue[1] - newValue[0] < minDistance) {
+  //     if (activeThumb === 0) {
+  //       const clamped = Math.min(newValue[0], 100 - minDistance);
+  //       setInteractionDurations([clamped, clamped + minDistance]);
   //     } else {
-  //       setInteractionDurations(newValue);
+  //       const clamped = Math.max(newValue[1], minDistance);
+  //       setInteractionDurations([clamped - minDistance, clamped]);
   //     }
-  //   };
+  //   } else {
+  //     setInteractionDurations(newValue);
+  //   }
+  // };
 
   return (
     <Box sx={{ width: 300 }}>
       <Slider
-        getAriaLabel={() => "Minimum distance shift"}
         max={150}
         min={15}
         marks={marks}

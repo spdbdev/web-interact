@@ -4,11 +4,14 @@ import useJumboLayout from "@jumbo/hooks/useJumboLayout";
 import layoutConfig from "./layoutConfig";
 
 const SoloPage = ({ children }) => {
-  const { setJumboLayoutOptions } = useJumboLayout();
+  const { jumboLayoutOptions, setJumboLayoutOptions } =
+    useJumboLayout();
 
   React.useEffect(() => {
-    setJumboLayoutOptions(layoutConfig);
-  }, [children]);
+    if (jumboLayoutOptions !== layoutConfig) {
+      setJumboLayoutOptions(layoutConfig);
+    }
+  }, [jumboLayoutOptions]);
 
   return <JumboLayout>{children}</JumboLayout>;
 };
