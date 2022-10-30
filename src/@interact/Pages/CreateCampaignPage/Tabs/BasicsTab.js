@@ -1,9 +1,11 @@
+import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CampaignCategorySelect from "../CampaignCategorySelect";
 import CampaignDropdownSelect from "../CampaignDropdownSelect";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
+import { TabNavigation } from "../TabNavigation";
 
 const CURRENCIES = [
   { value: "USD", label: "🇺🇸 USD United States Dollar" },
@@ -13,13 +15,35 @@ const CURRENCIES = [
   { value: "AUD", label: "🇦🇺 AUD Australian Dollar" },
 ];
 
-export default function BasicsTab({ data, setData }) {
+export default function BasicsTab({
+  data,
+  setData,
+  selectedTabIndex,
+  setSelectedTabIndex,
+}) {
+  const { title, description, categories, lastCompletedTabIndex } =
+    data;
+
+  const formValidationConditions =
+    0 < title?.length &&
+    title?.length <= 40 &&
+    description?.length > 0 &&
+    1 <= categories?.length &&
+    categories?.length <= 3;
+
+  const isTabValidated = useFormValidation({
+    selectedTabIndex,
+    lastCompletedTabIndex,
+    setData,
+    formValidationConditions,
+  });
+
   return (
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign Title">
-          Enter a title for your campaign. Include your name/alias in the title
-          so fans can find you more easily.
+          Enter a title for your campaign. Include your name/alias in
+          the title so fans can find you more easily.
         </TitleAndDesc>
         <TextField
           variant="outlined"
@@ -32,7 +56,6 @@ export default function BasicsTab({ data, setData }) {
           onChange={(e) => setData({ title: e.target.value })}
         />
       </CreateCampaignItemWrapper>
-
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign Info">
           Enter a short description of your campaign.
@@ -46,18 +69,16 @@ export default function BasicsTab({ data, setData }) {
           onChange={(e) => setData({ description: e.target.value })}
         />
       </CreateCampaignItemWrapper>
-
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Categories">
           Select 1-3 categories for your campaign.
         </TitleAndDesc>
         <CampaignCategorySelect data={data} setData={setData} />
       </CreateCampaignItemWrapper>
-
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Currency">
-          Set the currency for your campaign. This will apply to giveaway entry
-          prices, auction bids, and the campaign goal.
+          Set the currency for your campaign. This will apply to
+          giveaway entry prices, auction bids, and the campaign goal.
         </TitleAndDesc>
         <CampaignDropdownSelect
           placeholder="Currency"
@@ -66,6 +87,11 @@ export default function BasicsTab({ data, setData }) {
           setData={setData}
         />
       </CreateCampaignItemWrapper>
+      <TabNavigation
+        disableNext={!isTabValidated}
+        selectedTabIndex={selectedTabIndex}
+        setSelectedTabIndex={setSelectedTabIndex}
+      />
     </>
   );
 }

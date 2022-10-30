@@ -20,22 +20,37 @@ import TitleAndDesc from "../CampaignTitleAndDesc";
 import { Add, Close } from "@mui/icons-material";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import Span from "@jumbo/shared/Span";
+import { TabNavigation } from "../TabNavigation";
+import { useFormValidation } from "@interact/Hooks/use-form-validation";
+import { addTrailingZerosToDollarValue } from "@interact/Components/utils";
 
-export default function GoalVideoTab({ data, setData }) {
+export default function GoalVideoTab({
+  data,
+  setData,
+  selectedTabIndex,
+  setSelectedTabIndex,
+}) {
   const [isScriptExampleModalOpen, setIsScriptExampleModalOpen] =
     useState(false);
-  const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(data?.goalValue);
+  const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(
+    addTrailingZerosToDollarValue(data?.goalValue)
+  );
   const [campaignGoal, setCampaignGoal] = useState(data?.goal);
-  const [selectedVideo, setSelectedVideo] = useState(data?.campaignVideoLink);
+  const [selectedVideo, setSelectedVideo] = useState(
+    data?.campaignVideoLink
+  );
 
-  function handleCampaignMoneyGoalChange(e) {
-    if (e.target.value < 0) {
-      setCampaignMoneyGoal(0);
-    } else {
-      setCampaignMoneyGoal(e.target.value);
-      setData({ goalValue: e.target.value });
-    }
-  }
+  const { goal, lastCompletedTabIndex } = data;
+
+  const formValidationConditions =
+    goal.length <= 50 && goal.length > 0;
+
+  const isTabValidated = useFormValidation({
+    selectedTabIndex,
+    lastCompletedTabIndex,
+    setData,
+    formValidationConditions,
+  });
 
   return (
     <>
@@ -61,25 +76,30 @@ export default function GoalVideoTab({ data, setData }) {
               Sample campaign video script:
             </Typography>
 
-            <IconButton onClick={() => setIsScriptExampleModalOpen(false)}>
+            <IconButton
+              onClick={() => setIsScriptExampleModalOpen(false)}
+            >
               <Close />
             </IconButton>
           </Stack>
           <Typography sx={{ mt: 2 }}>
-            If you want to to meet & play with me, you have 2 options: enter the
-            giveaway for free or with a VIP entry for $3, to have a chance of
-            winning 50 interactions. At first, if only 50 people buy a ticket,
-            the chance of winning would be 100%; but of course this will go down
-            and you’ll see the live % chance of winning on the campaign page. If
-            you unfortunately don’t win, your chance to win will be doubled in
-            future campaigns, stacking up to 4x. If you’ve saved up some
-            birthday money or just won a tournament prize because you're so
-            good, bid in the auction where 50 interactions are being offered.
-            Pretty much the top 50 bids are on the leaderboard, and at the end
-            of the campaign on December 10th at 8pm, those on the leaderboard
-            win an interaction while the losers not on the leaderboard are not
-            charged. These interactions will occur first, and the top 3 will
-            have double the time to chat & game with me.
+            If you want to to meet & play with me, you have 2 options:
+            enter the giveaway for free or with a VIP entry for $3, to
+            have a chance of winning 50 interactions. At first, if
+            only 50 people buy a ticket, the chance of winning would
+            be 100%; but of course this will go down and you’ll see
+            the live % chance of winning on the campaign page. If you
+            unfortunately don’t win, your chance to win will be
+            doubled in future campaigns, stacking up to 4x. If you’ve
+            saved up some birthday money or just won a tournament
+            prize because you're so good, bid in the auction where 50
+            interactions are being offered. Pretty much the top 50
+            bids are on the leaderboard, and at the end of the
+            campaign on December 10th at 8pm, those on the leaderboard
+            win an interaction while the losers not on the leaderboard
+            are not charged. These interactions will occur first, and
+            the top 3 will have double the time to chat & game with
+            me.
           </Typography>
         </Box>
       </Modal>
@@ -87,21 +107,19 @@ export default function GoalVideoTab({ data, setData }) {
         <Typography variant="h2" sx={{ fontWeight: 500 }}>
           What's your goal for this campaign?
         </Typography>
-        <Stack direction="row" alignItems="center" mt={4} sx={{ fontSize: 18 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          mt={4}
+          sx={{ fontSize: 18 }}
+        >
           If we raise{" "}
-          <FormControl>
-            <OutlinedInput
-              type="number"
-              inputProps={{ step: ".50" }}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }
-              sx={{ mx: 2, mt: 2 }}
-              value={campaignMoneyGoal}
-              onChange={(e) => handleCampaignMoneyGoalChange(e)}
-            />
-            <FormHelperText sx={{ ml: 3 }}>Min. $10</FormHelperText>
-          </FormControl>
+          <GoalInput
+            value={campaignMoneyGoal}
+            setValue={setCampaignMoneyGoal}
+            setData={setData}
+            dataField={"goalValue"}
+          />
           I will
           <FormControl>
             <TextField
@@ -123,14 +141,15 @@ export default function GoalVideoTab({ data, setData }) {
 
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Introduction Video">
-          Upload a short video and thumbnail where you describe your campaign
-          and goal where you tell your fans about the goal, explain how
-          interactions work & how fans can acquire them in the campaign.
+          Upload a short video and thumbnail where you describe your
+          campaign and goal where you tell your fans about the goal,
+          explain how interactions work & how fans can acquire them in
+          the campaign.
           <br />
           <br />
-          After selecting a video and thumbnail, you can then click 'Upload to
-          YouTube'. A tab will open and you'll be prompted to login to your
-          YouTube account.
+          After selecting a video and thumbnail, you can then click
+          'Upload to YouTube'. A tab will open and you'll be prompted
+          to login to your YouTube account.
           <br />
           <br />
           <Button
@@ -161,7 +180,9 @@ export default function GoalVideoTab({ data, setData }) {
             }}
           >
             <Add />
-            <Typography>Click here to upload a thumbnail image.</Typography>
+            <Typography>
+              Click here to upload a thumbnail image.
+            </Typography>
           </Stack>
           <InteractButton>
             <Span
@@ -176,7 +197,10 @@ export default function GoalVideoTab({ data, setData }) {
               Browse for video
             </Span>
           </InteractButton>
-          <InteractButton variant="contained" disabled={!selectedVideo}>
+          <InteractButton
+            variant="contained"
+            disabled={!selectedVideo}
+          >
             <Span
               sx={{
                 fontWeight: 500,
@@ -192,6 +216,66 @@ export default function GoalVideoTab({ data, setData }) {
           </InteractButton>
         </Stack>
       </CreateCampaignItemWrapper>
+      <TabNavigation
+        disableNext={!isTabValidated}
+        selectedTabIndex={selectedTabIndex}
+        setSelectedTabIndex={setSelectedTabIndex}
+      />
     </>
+  );
+}
+
+// Note - worth refactoring with BitInput from InteractionTab.js
+function GoalInput({ value, setValue, setData, dataField }) {
+  // These are currently the same for both auctions and giveaway. If they change,
+  // pass these values in through props instead.
+  const increment = 0.5;
+  const minValue = 10;
+
+  function validate(nextValue) {
+    function isValidIncrement(nextIncrement) {
+      if (nextIncrement % increment === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return (
+      typeof nextValue === "number" &&
+      !isNaN(nextValue) &&
+      nextValue >= minValue &&
+      isValidIncrement(nextValue)
+    );
+  }
+
+  function handleBid(e) {
+    const nextValue = Number(e.target.value);
+    const isValid = validate(nextValue);
+    if (!isValid) {
+      setValue(addTrailingZerosToDollarValue(minValue));
+    } else {
+      setValue(addTrailingZerosToDollarValue(nextValue));
+      setData({ [dataField]: nextValue });
+    }
+  }
+
+  return (
+    <FormControl>
+      <OutlinedInput
+        type="number"
+        inputProps={{ step: ".50" }}
+        startAdornment={
+          <InputAdornment position="start">$</InputAdornment>
+        }
+        sx={{ mx: 2, height: "40px" }}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={(e) => handleBid(e)}
+      />
+      <FormHelperText sx={{ ml: 3 }}>
+        $0.50 increments. Min. $10.50
+      </FormHelperText>
+    </FormControl>
   );
 }

@@ -29,7 +29,7 @@ export function SchedulingSlider({
   return (
     <Slider
       value={interactionWindowDuration}
-      onChangeCommitted={handleInteractionWindowChange}
+      onChange={handleInteractionWindowChange}
       valueLabelDisplay="auto"
       step={1}
       marks={marks}
@@ -40,9 +40,8 @@ export function SchedulingSlider({
 }
 
 export function InteractionAvailabilitySlider({ data, setData }) {
-  const [interactionAvailability, setInteractionAvailability] = useState(
-    data?.creatorWeeklyAvailability
-  );
+  const [interactionAvailability, setInteractionAvailability] =
+    useState(data?.creatorWeeklyAvailability);
 
   function handleInteractionAvailabilityChange(event, newValue) {
     setInteractionAvailability(newValue);
@@ -90,7 +89,11 @@ export function InteractionDurationsSlider({ data, setData }) {
     },
   ];
 
-  const handleInteractionDurationChange = (event, newValue, activeThumb) => {
+  const handleInteractionDurationChange = (
+    event,
+    newValue,
+    activeThumb
+  ) => {
     let newMinValue = 0;
     let newMaxValue = 0;
     const minDistance = 30; // this needs to be 2 x min value
@@ -124,7 +127,11 @@ export function InteractionDurationsSlider({ data, setData }) {
   };
 
   // NOTE: the slider handling below is pretty finicky. don't recommend using
-  // const handleInteractionDurationChange = (event, newValue, activeThumb) => {
+  // const handleInteractionDurationChange = (
+  //   event,
+  //   newValue,
+  //   activeThumb
+  // ) => {
   //   console.log(newValue[0]);
   //   const minDistance = newValue[0];
 

@@ -7,9 +7,9 @@ import moment from "moment";
 
 const DEBOUNCE_SAVE_DELAY_MS = 1000;
 
-export default function useAutosaveCampaign(dataToSave) {
+export default function useAutosaveCampaign(campaignData) {
   // This UI state mirrors what's in the database.
-  const [data, setData] = useState(dataToSave);
+  const [data, setData] = useState(campaignData);
   const [isAutosaving, setIsAutosaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState(moment());
   const [autosaveError, setAutosaveError] = useState(false);
@@ -18,10 +18,14 @@ export default function useAutosaveCampaign(dataToSave) {
   // It is responsible for persisting the changes in the database.
   // In this example, we use localStorage for simplicity.
   const saveData = useCallback(async (newData) => {
-    console.warn(newData);
     setIsAutosaving(true);
     setAutosaveError(false);
-    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    const docRef = await doc(
+      db,
+      "campaigns",
+      "campaign-creation-test"
+    ); //this needs to be passed in programatically
+
     updateDoc(docRef, newData)
       .then(() => {
         setIsAutosaving(false);
