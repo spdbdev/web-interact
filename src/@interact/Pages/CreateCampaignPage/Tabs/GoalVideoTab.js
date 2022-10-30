@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -18,8 +18,7 @@ import {
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { Add, Close } from "@mui/icons-material";
-import InteractButton from "@interact/Components/Button/InteractButton";
-import Span from "@jumbo/shared/Span";
+import { getYoutubeIDFromURL } from "@interact/Components/utils";
 
 export default function GoalVideoTab({ data, setData }) {
   const [isScriptExampleModalOpen, setIsScriptExampleModalOpen] =
@@ -27,6 +26,20 @@ export default function GoalVideoTab({ data, setData }) {
   const [campaignMoneyGoal, setCampaignMoneyGoal] = useState(data?.goalValue);
   const [campaignGoal, setCampaignGoal] = useState(data?.goal);
   const [selectedVideo, setSelectedVideo] = useState(data?.campaignVideoLink);
+  const [videoThumbnailLink, setVideoThumbnailLink] = useState(
+    data?.campaignVideoThumbnailLink
+  );
+
+  useEffect(() => {
+    function getVideoThumbnailLink() {
+      const id = getYoutubeIDFromURL(selectedVideo);
+      const link = `http://i3.ytimg.com/vi/${id}/hqdefault.jpg`;
+      setVideoThumbnailLink(link);
+      setData({ campaignVideoThumbnailLink: link });
+    }
+
+    getVideoThumbnailLink();
+  }, [selectedVideo]);
 
   function handleCampaignMoneyGoalChange(e) {
     if (e.target.value < 0) {
@@ -123,14 +136,13 @@ export default function GoalVideoTab({ data, setData }) {
 
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Introduction Video">
-          Upload a short video and thumbnail where you describe your campaign
-          and goal where you tell your fans about the goal, explain how
+          Include a link to a short YouTube video where you describe your
+          campaign and goal where you tell your fans about the goal, explain how
           interactions work & how fans can acquire them in the campaign.
           <br />
           <br />
-          After selecting a video and thumbnail, you can then click 'Upload to
-          YouTube'. A tab will open and you'll be prompted to login to your
-          YouTube account.
+          We'll automatically get the thumbnail from your video link. This is
+          what users will see when looking for your campaign.
           <br />
           <br />
           <Button
@@ -145,51 +157,43 @@ export default function GoalVideoTab({ data, setData }) {
             Not sure what to say? See a sample script here
           </Button>
         </TitleAndDesc>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           <Stack
             direction="column"
             alignItems="center"
             justifyContent="center"
-            spacing={2}
+            position="relative"
             sx={{
               bgcolor: "divider",
               width: 280,
               height: 150,
               borderRadius: 2,
+              overflow: "hidden",
               p: 2,
               textAlign: "center",
             }}
           >
-            <Add />
-            <Typography>Click here to upload a thumbnail image.</Typography>
+            <img
+              style={{
+                width: "280px",
+                height: "150px",
+                objectFit: "cover",
+              }}
+              alt="video-thumbnail"
+              src={videoThumbnailLink}
+            />
           </Stack>
-          <InteractButton>
-            <Span
-              sx={{
-                fontWeight: 500,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                px: 2,
-              }}
-            >
-              Browse for video
-            </Span>
-          </InteractButton>
-          <InteractButton variant="contained" disabled={!selectedVideo}>
-            <Span
-              sx={{
-                fontWeight: 500,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                px: 2,
-                color: "#FFFFFF",
-              }}
-            >
-              Upload to Youtube
-            </Span>
-          </InteractButton>
+
+          <TextField
+            variant="outlined"
+            fullWidth
+            label="Video link"
+            value={selectedVideo}
+            onChange={(e) => {
+              setSelectedVideo(e.target.value);
+              setData({ campaignVideoLink: e.target.value });
+            }}
+          />
         </Stack>
       </CreateCampaignItemWrapper>
     </>

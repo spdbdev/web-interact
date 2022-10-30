@@ -53,51 +53,39 @@ export default function PromotionTab() {
             <Stack spacing={2} flex={1} justifyContent="space-between">
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="Discord server link"
               />
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="Youtube server link"
               />
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="Twitch server link"
               />
-              <TextField
-                variant="outlined"
-                inputProps={{ maxLength: 40 }}
-                fullWidth
-                label="Subreddit link"
-              />
+              <TextField variant="outlined" fullWidth label="Subreddit link" />
             </Stack>
             <Stack spacing={2} flex={1} justifyContent="space-between">
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="Twitter profile link"
               />
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="Facebook page link"
               />
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="Instagram page link"
               />
               <TextField
                 variant="outlined"
-                inputProps={{ maxLength: 40 }}
                 fullWidth
                 label="TikTok profile link"
               />

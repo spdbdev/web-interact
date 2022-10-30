@@ -138,15 +138,19 @@ export default function CampaignCreationSummaryPage() {
                   width: 350,
                   height: 180,
                   borderRadius: 2,
-                  p: 2,
                   textAlign: "center",
+                  overflow: "hidden",
                 }}
               >
                 <img
-                  alt="thumbnail"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                  alt="video-thumbnail"
                   src={campaignData?.campaignVideoThumbnailLink}
                 />
-                {/* <Typography>Click here to upload a thumbnail image.</Typography> */}
               </Stack>
               <FAQAccordian data={campaignData} shouldAllowEdit={false} />
             </Stack>
