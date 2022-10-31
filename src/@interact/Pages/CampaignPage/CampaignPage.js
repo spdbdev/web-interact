@@ -681,7 +681,7 @@ function CampaignPage(userData) {
         wrapper: {
           sx: {
             [theme.breakpoints.up("xl")]: {
-              px: 10,
+              px: 2,
             },
             [theme.breakpoints.up("xxl")]: {
               px: 30,

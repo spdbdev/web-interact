@@ -12,6 +12,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "./CampaignPage.css";
+import { formatMoney } from "@interact/Components/utils";
 
 export default function Giveaway({
   campaignData,
@@ -709,7 +710,7 @@ if(logged_user_stripe_customer_id){
               border: "2px dashed rgba(120, 47, 238, 1)",
             }}
           >
-            <span className="Highlight">${campaignData?.vipEntryPrice}0</span>
+            <span className="Highlight">${formatMoney(campaignData?.vipEntryPrice)}</span>
           </Box>
           {/* <form
           action="http://localhost:4242/create-raffle-session"

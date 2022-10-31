@@ -78,7 +78,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
             inputProps={{ step: ".50" }}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             style={{ height: 50 }}
-            value={maxBidAmount}
+            value={formatMoney(maxBidAmount)}
             label="Max Bid Amount"
             onChange={(e) => setMaxBidAmount(e.target.value)}
           />
@@ -125,7 +125,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
             inputProps={{ step: ".50" }}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             style={{ height: 50 }}
-            value={bidAmount}
+            value={formatMoney(bidAmount)}
             onChange={(e) => setBidAmount(e.target.value)}
           />
           <Typography>

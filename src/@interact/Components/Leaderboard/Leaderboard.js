@@ -26,21 +26,22 @@ import JumboDemoCard from "@jumbo/components/JumboDemoCard";
 import { formatMoney } from "../utils";
 
 const columns = [
-  { field: "id", headerName: "No", width: 90 },
+  { field: "id", headerName: "No", width: 50 },
   {
     field: "username",
     headerName: "Username",
-    width: 200,
+    width: 120,
   },
   {
     field: "bidPrice",
     headerName: "Bid price",
-    width: 150,
+    width: 90,
+    renderCell: (p) => <span>$ {p.value}</span>
   },
   {
     field: "bidTime",
     headerName: "Bid time",
-    width: 90,
+    width: 200,
   },
 ];
 
