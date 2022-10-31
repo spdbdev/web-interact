@@ -55,14 +55,8 @@ export default function Giveaway({
       const doc = await getDocs(q);
       const data = doc.docs[0].data();
       //console.log("thi is data"+ JSON.stringify(data));
-      console.log(data)
-      console.log(data.name)
-      console.log(data.email)
-      console.log(data.uid)
       setName(data.name);
       isClientEmail(data.email)
-
-      setName(data.name);
     } catch (err) {
       console.error(err);
       ///alert("An error occured while fetching user data");
