@@ -32,11 +32,11 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 		let data = snapshot.data();
 		functions.logger.info("campaign data:", data, {structuredData: true});
 
-		process_auction_list(campaign_id, Number(data.numBidSlots));
-		process_giveaway_list(campaign_id, Number(data.numRaffleSlots), data.person.id);
+		process_auction_list(campaign_id, Number(data.numAuctionInteractions));
+		process_giveaway_list(campaign_id, Number(data.numGiveawayInteractions), data.person.id);
 	});
 
-	function process_auction_list(campaign_id, numBidSlots)
+	function process_auction_list(campaign_id, numAuctionInteractions)
 	{
 		functions.logger.info("Collecting winners from bids", {structuredData: true});
 
@@ -46,6 +46,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 			snapshot.forEach(document => {
 				let doc = document.data();
+				doc.id = document.id;
 				doc.price = Number(doc.price);
 				bids.push(doc);
 			});
@@ -70,10 +71,13 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 	function saveAuctionWinners(campaign_id, collection, data) 
 	{
-		functions.logger.info("saving winners for "+collection, data, {structuredData: true});
+		//functions.logger.info("saving winners for "+collection, data, {structuredData: true});
+
 		let coll_ref = db.collection("campaigns").doc(campaign_id).collection(collection);
 		data.forEach(document => {
-			coll_ref.add(document)
+			let did = document.id;
+			delete document.id;
+			coll_ref.doc(did).set(document)
 			.then((docRef) => {
 				//console.log("Document written with ID: ", docRef.id);
 			})
@@ -84,7 +88,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 	}
 
 
-	async function process_giveaway_list(campaign_id, numRaffleSlots, creator_id)
+	async function process_giveaway_list(campaign_id, numGiveawayInteractions, creator_id)
 	{
 		functions.logger.info("Collecting winners from GiveAway", {structuredData: true});
 
@@ -104,7 +108,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 				if (docSnap.data()) {
 					let previousLossObj = docSnap.data();
 					previousLoss = previousLossObj.numOfLoss;
-					console.log('previousLoss', document.id, previousLoss);
+					//console.log('previousLoss', document.id, previousLoss);
 				}
 				
 				let noOfEntries = 1;
@@ -113,21 +117,19 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 				else if(previousLoss > 1) noOfEntries = noOfEntries * 4;
 
 				for (let index = 0; index < noOfEntries; index++) {
-					pool.push({'id':document.id, 'previousLoss':previousLoss});
+					pool.push({'id':document.id, 'previousLoss':previousLoss, 'obj':doc});
 				}
 
-				fans.push({'id':document.id, 'previousLoss':previousLoss, 'price':doc.price, 'noOfEntries':noOfEntries});
+				fans.push({'id':document.id, 'previousLoss':previousLoss, 'obj':doc});
 			}	
-			//console.log("pool-00:", pool);
-			//console.log("fans-00:", fans);
 
-			if(fans.length <= numRaffleSlots) selected = fans;
+			if(fans.length <= numGiveawayInteractions) selected = fans;
 			else{
 				loosers = fans;
 				shuffle_array(pool);
 				//console.log("pool:", pool);
 
-				while (selected.length < numRaffleSlots) 
+				while (selected.length < numGiveawayInteractions) 
 				{
 					let rendom_index = Math.floor(Math.random() * pool.length);
 					selected.push(pool[rendom_index]);
@@ -145,8 +147,8 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 			//console.log("selected:", selected);
 			//console.log("loosers:", loosers);
 
-			update_giveaway_users(campaign_id, selected, 1, creator_id);
-			update_giveaway_users(campaign_id, loosers, 0 , creator_id);
+			if(selected.length > 0) update_giveaway_users(campaign_id, selected, 1, creator_id);
+			if(loosers.length > 0) update_giveaway_users(campaign_id, loosers, 0 , creator_id);
 		}
 		catch(error) {
 			console.error("Error getting document:", error);
@@ -155,16 +157,27 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 	function update_giveaway_users(campaign_id, data, result, creator_id) 
 	{
-		var coll_ref = db.collection("campaigns").doc(campaign_id).collection("Giveaway");
+		var update_ref = db.collection("campaigns").doc(campaign_id).collection("Giveaway");
+
+		if(result = 1) var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayWinners");
+		else var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayLosers");
+
 		var loss_ref = db.collection("giveAwayLossHistory").doc(creator_id).collection('users');
 		
 		data.forEach(document => {
 
-			coll_ref.doc(document.id).update({
+			update_ref.doc(document.id).update({
 				"result": result,
 			})
 			.then((docRef) => {
 				//console.log("Document successfully updated!", docRef.id);
+			}).catch((error) => {
+				console.error("Error updating document: ", error);
+			});
+
+			add_ref.doc(document.id).set(document.obj)
+			.then((docRef) => {
+				//console.log("Document successfully added!", docRef.id);
 			}).catch((error) => {
 				console.error("Error adding document: ", error);
 			});
