@@ -41,7 +41,7 @@ const columns = [
   {
     field: "bidTime",
     headerName: "Bid time",
-    width: 200,
+    width: 230,
   },
 ];
 
@@ -66,6 +66,7 @@ const columns = [
 
 export default function Leaderboard({ campaignData, bids }) {
   const minBid = 1.0; // assume bids smaller than min bid will not be acceoted
+  const numAuctions = 20; // Number of bids to show on leaderboard
 
   const parseLeaderboard = (bids) => {
     console.log("parsing");
@@ -88,7 +89,7 @@ export default function Leaderboard({ campaignData, bids }) {
     });
 
     console.log(bids);
-
+    bids = bids.slice(0,numAuctions);
     return bids;
   };
   useEffect(()=>{

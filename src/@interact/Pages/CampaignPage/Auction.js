@@ -84,7 +84,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
           />
         </FormControl>
 
-        <InteractButton onClick={() => bidAction(bidAmount)}>
+        <InteractButton onClick={() => bidAction(bidAmount,true)}>
           Place auto-bid
         </InteractButton>
       </Stack>

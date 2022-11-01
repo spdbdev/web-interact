@@ -610,14 +610,22 @@ function CampaignPage(userData) {
     // setSupporters(DUMMY_SUPPORTERS)
   }, []);
 
-  const bid = async (amount, clientemail, auto = false) => {
+  const bid = async (amount, auto = false) => {
     console.log("bidding", amount);
-    console.log("email : " + clientemail);
-    await setDoc(doc(db, "campaigns", campaignId, "bids", userId), {
-      person: user,
+    console.log("User", user);
+    const usersRef = collection(db,'users');
+    const q = query(usersRef,where('uid','==',user.uid));
+    var userSnap = await getDocs(q);
+    userData = userSnap.docs[0];
+    await setDoc(doc(db, "campaigns", campaignId, "bids", userData.id), {
+      person: {
+        username:  userData.data().name,
+        id: userData.id,
+        photoUrl: user.photoURL
+      },
       price: amount,
       auto: auto,
-      email:clientemail,
+      email:user.email,
       time: serverTimestamp(),
     });
     getCampaignData();
