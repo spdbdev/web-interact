@@ -107,13 +107,13 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 				let docSnap = await db.collection("giveAwayLossHistory").doc(creator_id).collection('users').doc(document.id).get();
 				if (docSnap.data()) {
 					let previousLossObj = docSnap.data();
-					previousLoss = previousLossObj.numOfLoss;
+					previousLoss = Number(previousLossObj.numOfLoss);
 					//console.log('previousLoss', document.id, previousLoss);
 				}
 				
 				let noOfEntries = 1;
 				if(doc.price > 0) noOfEntries = 25;
-				if(previousLoss == 1) noOfEntries = noOfEntries * 2;
+				if(previousLoss === 1) noOfEntries = noOfEntries * 2;
 				else if(previousLoss > 1) noOfEntries = noOfEntries * 4;
 
 				for (let index = 0; index < noOfEntries; index++) {
@@ -135,10 +135,10 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 					selected.push(pool[rendom_index]);
 
 					let selected_obj_id = pool[rendom_index].id;
-					pool = pool.filter(obj => obj.id != selected_obj_id);
-					loosers = loosers.filter(obj => obj.id != selected_obj_id);
+					pool = pool.filter(obj => obj.id !== selected_obj_id);
+					loosers = loosers.filter(obj => obj.id !== selected_obj_id);
 
-					if(selected.length % 9 == 0) {
+					if(selected.length % 9 === 0) {
 						shuffle_array(pool);
 						//console.log("pool:", pool);
 					}
@@ -159,7 +159,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 	{
 		var update_ref = db.collection("campaigns").doc(campaign_id).collection("Giveaway");
 
-		if(result = 1) var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayWinners");
+		if(result === 1) var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayWinners");
 		else var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayLosers");
 
 		var loss_ref = db.collection("giveAwayLossHistory").doc(creator_id).collection('users');
@@ -183,7 +183,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 			});
 
 
-			if(result == 0) {
+			if(result === 0) {
 				loss_ref.doc(document.id).set({
 					"user_id":document.id,
 					"numOfLoss": document.previousLoss + 1
@@ -194,7 +194,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 					console.error("Error adding document: ", error);
 				});
 			}
-			else if(result == 1)
+			else if(result === 1)
 			{
 				loss_ref.doc(document.id).delete();
 			}
