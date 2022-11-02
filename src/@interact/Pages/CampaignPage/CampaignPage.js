@@ -492,8 +492,7 @@ function CampaignPage(userData) {
   const [bids, setBids] = useState([]);
   const [comments, setComments] = useState([]);
   const [supporters, setSupporters] = useState([]);
-  const [totalEntry,setTotalEntry] = useState(0);
-  const [winningChances,setWiningChances] = useState(100);
+  const [winningChances, setWiningChances] = useState({'vip':100, 'free':100});
   const [hasUserEnteredGiveaway, setHasUserEnteredGiveaway] = useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
@@ -506,8 +505,6 @@ function CampaignPage(userData) {
   //   username: "andrew123",
   // };
   let [user] = useAuthState(auth);
-  console.log("User>>",user);
-
 
   const { theme } = useJumboTheme();
 
@@ -522,11 +519,11 @@ function CampaignPage(userData) {
     // _bids.sort((a, b)=> a.price > b.price)
     return arr;
   };
+
   const getCampaignData = async () => {
     let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
-    // console.log('_campaignData', _campaignData)
     setCampaignData(_campaignData);
-    console.log("Campaign Data>>",campaignData);
+    //console.log("Campaign Data >>>>>>>>>>>", campaignData);
     if(Object.entries(_campaignData).length > 0) getChanceMultiplier()
 
     // let bidQuery = query(collection(db, 'campaigns', campaignId, 'bids'), orderBy("time"))
@@ -547,51 +544,75 @@ function CampaignPage(userData) {
     // );
   };
 
-  const getChanceMultiplier = async () => {
-    let lostHistory = await getUserLostHistory(campaignData.person.id);
-    lostHistory = parseInt(lostHistory);
+	const getChanceMultiplier = async () => 
+	{
+		let lostHistory = await getUserLostHistory(campaignData.person.id, user.uid);
 
-    let freeMultiplier = 1;
-    let vipMultiplier = 25;
+		let freeMultiplier = 1;
+		let vipMultiplier = 25;
 
-    if(lostHistory === 1){
-      freeMultiplier = 2;
-      vipMultiplier = 50;
-    }
-    else if(lostHistory > 1){
-      freeMultiplier = 4;
-      vipMultiplier = 100;
-    }
-    setVipChanceMultiplier(vipMultiplier);
-    setFreeChanceMultiplier(freeMultiplier);
+		if(lostHistory === 1){
+			freeMultiplier = 2;
+			vipMultiplier = 50;
+		}
+		else if(lostHistory > 1){
+			freeMultiplier = 4;
+			vipMultiplier = 100;
+		}
+		setVipChanceMultiplier(vipMultiplier);
+		setFreeChanceMultiplier(freeMultiplier);
 
-    console.log("Lost history",lostHistory,'vip chance',vipChanceMultiplier,'free chance',freeChanceMultiplier);
-  }
+		//console.log("Lost history",lostHistory, 'vip chance',vipChanceMultiplier, 'free chance',freeChanceMultiplier);
+		getTotalEntry(vipMultiplier, freeMultiplier);
+	}
 
-  const getUserLostHistory = async (creater_id) => {
-    const campaignHistoryUsers = await getDoc(doc(db, 'giveAwayLossHistory', creater_id, 'users', user.uid ));
-    const {numOfLoss} = campaignHistoryUsers.data();
-    if(numOfLoss) return numOfLoss;
-    return 0;
-  }
+	const getUserLostHistory = async (creator_id, user_id) => 
+	{
+		const campaignHistoryUsers = await getDoc(doc(db, 'giveAwayLossHistory', creator_id, 'users', user_id));
+		if (doc.exists) {
+			const {numOfLoss} = campaignHistoryUsers.data();
+			return parseInt(numOfLoss);
+		}
+		return 0;
+	}
 
-  const getTotalEntry = async () => {
-    let chances = 100;
-    const docSnap = await getDocs(collection(db, "campaigns", campaignId, 'Giveaway'));
-    console.log("doc snap", docSnap)
-    if (!docSnap.empty) {
-        const size = docSnap.size;
-        setTotalEntry(parseInt(size));        
-    } else {
-        console.log("No such document!");
-    }
-    if(totalEntry !== 0) chances = (1/totalEntry)*100;
-    setWiningChances(chances);
-  }
+	const getTotalEntry = async (vipMultiplier, freeMultiplier) => 
+	{
+		const docSnap = await getDocs(collection(db, "campaigns", campaignId, 'Giveaway'));
+		//console.log("doc snap", docSnap);
+
+		if (!docSnap.empty) {
+			let TotalPoolEntries = 0;
+			for (let document of docSnap.docs) {
+				let doc = document.data();
+				doc.price = Number(doc.price);
+
+				let noOfEntries = 1;
+				if(doc.price > 0) noOfEntries = 25;
+
+				let previousLoss = await getUserLostHistory(campaignData.person.id, document.id);
+				if(previousLoss === 1) noOfEntries = noOfEntries * 2;
+				else if(previousLoss > 1) noOfEntries = noOfEntries * 4;
+				
+				TotalPoolEntries = TotalPoolEntries + noOfEntries;
+			}
+			//const size = docSnap.size;
+			if(TotalPoolEntries !== 0){
+				let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
+				let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
+
+				setWiningChances({'vip':vipChances, 'free':freeChances});
+			}
+		} else {
+			console.log("No such collection!");
+		}
+		
+		//setWiningChances({'vip':100, 'free':100});
+  	}
 
   useEffect(() => {
     getCampaignData();
-    getTotalEntry();
+    
     // DUMMY_RAFFLES.forEach((x, i)=>{
     //   let raffle = {...DUMMY_RAFFLES[i]};
     //   raffle.time = serverTimestamp();

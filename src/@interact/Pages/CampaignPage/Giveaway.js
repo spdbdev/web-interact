@@ -49,33 +49,28 @@ export default function Giveaway({
 
   const Swal = useSwalWrapper();
 
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      //console.log("thi is data"+ JSON.stringify(data));
-      setName(data.name);
-      isClientEmail(data.email)
-    } catch (err) {
-      console.error(err);
-      ///alert("An error occured while fetching user data");
-    }
-  };
+	const fetchUserName = async () => {
+		try {
+			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const doc = await getDocs(q);
+			const data = doc.docs[0].data();
+			//console.log("thi is data"+ JSON.stringify(data));
+			setName(data.name);
+			isClientEmail(data.email)
+		} catch (err) {
+			console.error(err);
+			///alert("An error occured while fetching user data");
+		}
+	};
+  	fetchUserName();
 
-  fetchUserName();
     const getDataRaffle = async () => {
         const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
         const docSnap = await getDoc(docRef);
-        //console.log(docSnap);
         if (docSnap.exists()) {
-          //  alert('exist');
             const data = docSnap.data();
-            setLoggedInUserData(data);
-            //console.log("data is :" + JSON.stringify(data));
-            
+            setLoggedInUserData(data);            
         } else {
-            // doc.data() will be undefined in this case
             console.log("No such document!");
         }
     }
@@ -207,11 +202,6 @@ if(logged_user_stripe_customer_id){
     const CARD_ELEMENT_OPTIONS = {
         hidePostalCode: true,
     };
-
-    console.log("user.name : " + JSON.stringify(user));
-    console.log("user.name : " + user?.uid);
-
-    console.log("user.email : " + user?.email);
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -687,7 +677,7 @@ if(logged_user_stripe_customer_id){
           Chance multiplier: {vipChanceMultiplier}x
         </span>
         <Stack direction="row" spacing={1} alignItems="center">
-          <span>Chance of winning: {winningChances}%</span>
+          <span>Chance of winning: {winningChances.vip}%</span>
           <InfoTooltip
             title="Remember, the % chance of winning will go down as more fans
           join the giveaway."
@@ -735,7 +725,7 @@ if(logged_user_stripe_customer_id){
           Chance multiplier: {freeChanceMultiplier}x
         </span>
         <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
-          <span>Chance of winning: {winningChances}%</span>
+          <span>Chance of winning: {winningChances.free}%</span>
           <InfoTooltip
             title="Remember, the % chance of winning will go down as more fans
           join the giveaway."
