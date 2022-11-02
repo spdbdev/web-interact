@@ -15,6 +15,7 @@ import "./CampaignPage.css";
 import { formatMoney } from "@interact/Components/utils";
 
 export default function Giveaway({
+  isCampaignEnded,
   campaignData,
   hasUserClaimedFreeEntry,
   hasUserPurchasedVIPEntry,
@@ -163,7 +164,7 @@ if(logged_user_stripe_customer_id){
         return () => clearInterval(interval);
     }, [stripeError]);
 
-    var vipEntryPrice = "1.50";
+    var vipEntryPrice = campaignData?.vipEntryPrice ? campaignData.vipEntryPrice : 0;
     var freeEntryPrice = "0";
     //console.log(userData);
 
@@ -290,6 +291,7 @@ if(logged_user_stripe_customer_id){
 
                                         setHasUserClaimedFreeEntry(true);
                                         setHasUserPurchasedVIPEntry(true);
+                                        toggleModal();
 
                                         //console.log(data)
                                         saveDataInStripeCustomer(stripe_customer_data);
@@ -320,6 +322,7 @@ if(logged_user_stripe_customer_id){
 
                                     setHasUserClaimedFreeEntry(true);
                                     setHasUserPurchasedVIPEntry(true);
+                                    toggleModal();
 
                                     //console.log(data)
                                     saveDataInStripeCustomer(stripe_customer_data);
@@ -397,6 +400,7 @@ if(logged_user_stripe_customer_id){
 
                                                 setHasUserClaimedFreeEntry(true);
                                                 setHasUserPurchasedVIPEntry(true);
+                                                toggleModal();
 
                                                 //console.log(data)
                                                 saveDataInStripeCustomer(stripe_customer_data);
@@ -497,6 +501,7 @@ if(logged_user_stripe_customer_id){
 
                                             setHasUserClaimedFreeEntry(true);
                                             setHasUserPurchasedVIPEntry(true);
+                                            toggleModal();
 
                                             //console.log(data)
                                             saveDataInStripeCustomer(stripe_customer_data);
@@ -704,13 +709,13 @@ if(logged_user_stripe_customer_id){
               border: "2px dashed rgba(120, 47, 238, 1)",
             }}
           >
-            <span className="Highlight">${formatMoney(campaignData?.vipEntryPrice)}</span>
+            <span className="Highlight">${formatMoney(vipEntryPrice)}</span>
           </Box>
           {/* <form
           action="http://localhost:4242/create-raffle-session"
           method="POST"
         > */}
-          <InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry}>
+          <InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
             Buy VIP entry
           </InteractButton>
           {/* </form> */}
@@ -748,7 +753,7 @@ if(logged_user_stripe_customer_id){
         > */}
         <InteractButton
           onClick={freeGiveawayAlert}
-          disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry}
+          disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded}
         >
           Get a free entry
         </InteractButton>
@@ -759,7 +764,7 @@ if(logged_user_stripe_customer_id){
       <div className="modal" style={{zIndex:"1000",backgroundColor:"transparent"}}>
           <div onClick={toggleModal} className="overlay" style={{zIndex:"1001"}}></div>
           <div className="modal-content" style={{zIndex:"1002"}}>
-              <div className='card-body-text'>Price : "$1.50"</div>
+              <div className='card-body-text'>Price : "${formatMoney(vipEntryPrice)}"</div>
               <div className='ButtonsWrapper'>
                   <form onSubmit={handleSubmit}>
                       {customerSet
