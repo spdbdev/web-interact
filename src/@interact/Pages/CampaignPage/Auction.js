@@ -1,4 +1,4 @@
-import { formatMoney } from "@interact/Components/utils";
+import { formatMoney,sortBids } from "@interact/Components/utils";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
 import {
@@ -13,8 +13,32 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
   // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
 
   const [bidAmount, setBidAmount] = useState(0);
+  const [minBidAmount, setMinBidAmount] = useState(0);
   const [maxBidAmount, setMaxBidAmount] = useState(0);
+  const [numBidSlots,setNumBidSlots] = useState(0);
   const [desiredRanking, setDesiredRanking] = useState(0);
+
+  useEffect(()=>{
+    if(Object.entries(campaignData).length > 0 && bids.length > 0){
+      if(campaignData?.numBidSlots){
+        setNumBidSlots(campaignData.numBidSlots);
+      }
+      if(bids.length >= campaignData?.numBidSlots){
+        let sortedBids = sortBids(bids);
+        let lastPrice = sortedBids[sortedBids.length-1]?.price;
+        if(lastPrice >= campaignData.minBidPrice){
+          setBidAmount(parseFloat(lastPrice)+0.5);
+        }else{
+          setMinBidAmount(campaignData?.minBidPrice)
+          setBidAmount(campaignData?.minBidPrice);
+        }
+      }else{
+        console.log("campaignData.minBidPrice",campaignData.minBidPrice)
+        setMinBidAmount(campaignData?.minBidPrice)
+        setBidAmount(campaignData?.minBidPrice);
+      }
+    }
+  },[campaignData,bids]);
 
   useEffect(()=>{
     document.getElementById("auctionCard").onmousemove = e => {
@@ -29,6 +53,37 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
       };
     }
   })
+
+  const handleBidAmount = function(e){
+    if(e.target.value >= minBidAmount){
+      setBidAmount(e.target.value);
+    }
+  }
+
+  const handleDesiredRanking = function(e){
+    // prevent values less than 0 or higher than 20.
+    e.target.value < 0
+    ? (e.target.value = 0)
+    : e.target.value > 20
+    ? (e.target.value = 20)
+    : setDesiredRanking(e.target.value);
+    if(bids.length > 0){
+      let sortedBids = sortBids(bids);
+      let bidAtDesiredRanking = sortedBids[e.target.value - 1];
+      let thirtyPer = (bidAtDesiredRanking?.price/100) * 30;
+      let maxIncrement = 5;
+      if(thirtyPer > 5){
+        maxIncrement = thirtyPer;
+      }
+      maxIncrement = Math.round(maxIncrement*2)/2;
+
+      setMaxBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
+    }
+    if(e.target.value > bids.length){
+      setMaxBidAmount(0.00);
+    }
+  }
+
   return (
     <JumboCardQuick
       title={"Auction"}
@@ -60,14 +115,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
             style={{ height: 50 }}
             value={desiredRanking}
             label="Desired Ranking"
-            onChange={(e) => {
-              // prevent values less than 0 or higher than 20.
-              e.target.value < 0
-                ? (e.target.value = 0)
-                : e.target.value > 20
-                ? (e.target.value = 20)
-                : setDesiredRanking(e.target.value);
-            }}
+            onChange={(e) => handleDesiredRanking(e)}
           />
         </FormControl>
         <FormControl sx={{ my: 1 }}>
@@ -126,7 +174,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             style={{ height: 50 }}
             value={formatMoney(bidAmount)}
-            onChange={(e) => setBidAmount(e.target.value)}
+            onChange={(e) => handleBidAmount(e)}
           />
           <Typography>
             Current lowest price to win:{" "}

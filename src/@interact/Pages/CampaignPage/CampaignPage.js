@@ -534,7 +534,7 @@ function CampaignPage(userData) {
     let now = new Date();
     if(campaignEndDate - now < 0) setIsCampaignEnded(true);
 
-    if(Object.entries(_campaignData).length > 0) getChanceMultiplier()
+    if(Object.entries(_campaignData).length > 0) getChanceMultiplier(_campaignData)
 
     // let bidQuery = query(collection(db, 'campaigns', campaignId, 'bids'), orderBy("time"))
     // console.log('bidQuery', bidQuery)
@@ -554,8 +554,8 @@ function CampaignPage(userData) {
     // );
   };
 
-  const getChanceMultiplier = async () => {
-    let lostHistory = await getUserLostHistory(campaignData.person.id);
+  const getChanceMultiplier = async (_campaignData) => {
+    let lostHistory = await getUserLostHistory(_campaignData.person.id);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;
@@ -597,6 +597,7 @@ function CampaignPage(userData) {
     console.log("Winning chances",winningChances);
   }
 
+  
   useEffect(() => {
     getCampaignData();
     getWinningChances();

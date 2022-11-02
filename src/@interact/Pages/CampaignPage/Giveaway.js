@@ -90,13 +90,13 @@ export default function Giveaway({
           //  alert('exist');
             const data = docSnap.data();
             set_Stripe_customer_id_new(data);
-            console.log("data is :" + JSON.stringify(data));
-            console.log("set_Stripe_customer_id is :" + JSON.stringify(stripe_customer_id_new));
+            // console.log("data is :" + JSON.stringify(data));
+            // console.log("set_Stripe_customer_id is :" + JSON.stringify(stripe_customer_id_new));
 
             
         } else {
             // doc.data() will be undefined in this case
-            console.log("No such document!");
+            // console.log("No such document!");
             logged_user_stripe_customer_id =false;
         }  
     }
@@ -173,7 +173,7 @@ if(logged_user_stripe_customer_id){
     }
 
     const saveDataInStripeCustomer = (stripe_customer_data) => {
-        console.log(stripe_customer_data);
+        // console.log(stripe_customer_data);
         setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data)
         setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data)
     }
@@ -209,10 +209,10 @@ if(logged_user_stripe_customer_id){
         hidePostalCode: true,
     };
 
-    console.log("user.name : " + JSON.stringify(user));
-    console.log("user.name : " + user?.uid);
+    // console.log("user.name : " + JSON.stringify(user));
+    // console.log("user.name : " + user?.uid);
 
-    console.log("user.email : " + user?.email);
+    // console.log("user.email : " + user?.email);
 
     const handleSubmit = async (event) => {
       event.preventDefault();
