@@ -9,7 +9,7 @@ import InteractButton from "../../Components/Button/InteractButton";
 import InfoTooltip from "../../Components/InfoTooltip";
 import "./CampaignPage.css";
 
-export default function Auction({ bids, campaignData, bidAction }) {
+export default function Auction({isCampaignEnded, bids, campaignData, bidAction }) {
   // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
 
   const [bidAmount, setBidAmount] = useState(0);
@@ -84,7 +84,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
           />
         </FormControl>
 
-        <InteractButton onClick={() => bidAction(bidAmount,true)}>
+        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(maxBidAmount,true)}>
           Place auto-bid
         </InteractButton>
       </Stack>
@@ -144,7 +144,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
         </Stack>
 
         {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
-        <InteractButton onClick={() => bidAction(bidAmount)}>
+        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount)}>
           Place bid
         </InteractButton>
         {/* </form> */}

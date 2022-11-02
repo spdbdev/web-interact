@@ -496,6 +496,7 @@ function CampaignPage(userData) {
   const [hasUserEnteredGiveaway, setHasUserEnteredGiveaway] = useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
+  const [isCampaignEnded,setIsCampaignEnded] = useState(false);
   const campaignId = "test12345";
   let userId = 'user123456'; // dummy user id
   // let user = {
@@ -523,7 +524,13 @@ function CampaignPage(userData) {
   const getCampaignData = async () => {
     let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
     setCampaignData(_campaignData);
-    //console.log("Campaign Data >>>>>>>>>>>", campaignData);
+    //console.log("Campaign Data >>>>>>>>>>>", campaignData, campaignData.endDate);
+    
+    //Check Campaign End Time
+    let campaignEndDate = new Date(_campaignData.endDate.seconds*1000);
+    let now = new Date();
+    if(campaignEndDate - now < 0) setIsCampaignEnded(true);
+
     if(Object.entries(_campaignData).length > 0) getChanceMultiplier()
 
     // let bidQuery = query(collection(db, 'campaigns', campaignId, 'bids'), orderBy("time"))
@@ -675,7 +682,7 @@ function CampaignPage(userData) {
           >
             <UserCampaignStatus
               userAuctionPosition={8}
-              userGiveawayWinChance={20}
+              userGiveawayWinChance={winningChances}
               auctionLeaderboardSpots={31}
               showUserAvatar
             />
@@ -740,6 +747,7 @@ function CampaignPage(userData) {
 
           {num_giveaway > 0 ? (
              <Giveaway
+             isCampaignEnded={isCampaignEnded}
              campaignData={campaignData}
              hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
              hasUserPurchasedVIPEntry={hasUserEnteredGiveaway}
@@ -765,6 +773,7 @@ function CampaignPage(userData) {
           >
             <Leaderboard campaignData={campaignData} bids={bids} />
             <Auction
+              isCampaignEnded={isCampaignEnded}
               bidAction={bid}
               campaignData={campaignData}
               bids={bids}
