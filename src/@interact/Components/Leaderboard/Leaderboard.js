@@ -70,8 +70,8 @@ export default function Leaderboard({ campaignData, bids }) {
 
   const parseLeaderboard = (bids) => {
     console.log("parsing");
+
     bids = [...bids]?.sort((a, b) => {
-      // console.log( parseFloat(a.bidPrice) > parseFloat(b.bidPrice), a, b)
       return parseFloat(b.price) - parseFloat(a.price);
     });
     console.log("Leaderboard Bids>>",bids);
@@ -89,7 +89,7 @@ export default function Leaderboard({ campaignData, bids }) {
       };
     });
 
-    console.log(bids);
+    //console.log(bids);
     bids = bids.slice(0,numAuctions);
     return bids;
   };
