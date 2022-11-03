@@ -6,13 +6,15 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { query, collection, getDocs, where, startAt, endAt, orderBy } from "firebase/firestore";
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const SearchGlobal = ({ sx }) => {
+  let navigate = useNavigate();
 
   const [value, setValue] = React.useState('');
   const [searchValue, setSearchValue] = React.useState([]);
-
+  
     useEffect(() => {
 
         const fetchData = setTimeout( async () => {
@@ -29,7 +31,9 @@ const SearchGlobal = ({ sx }) => {
               doc.docs.map((user) => {
                 let obj = {
                   title: user.data().name,
-                  description: user.data().email
+                  description: user.data().email,
+                  id: user.data().uid,
+                  type:'profile'
                 }
                 tempValues.push(obj)
               })
@@ -44,7 +48,9 @@ const SearchGlobal = ({ sx }) => {
               docCampaign.docs.map((campaing) => {
                 let obj = {
                   title: campaing.data().header.title,
-                  description: campaing.data().header.tagline1
+                  description: campaing.data().header.tagline1,
+                  id: campaing.data().id,
+                  type:'campaign'
                 }
                 tempValues.push(obj)
               })
@@ -65,12 +71,12 @@ const SearchGlobal = ({ sx }) => {
     return (
         <Search sx={sx}>
             <SearchIconWrapper>
-                <SearchIcon />
+                <SearchIcon sx={{marginLeft:"20px"}} />
             </SearchIconWrapper>
 
             <Autocomplete
                 id="country-select-demo"
-                sx={{ width: 300 }}
+                sx={{ width: "100%" }}
                 loading={true}
                 options={searchValue}
                 autoHighlight
@@ -78,10 +84,24 @@ const SearchGlobal = ({ sx }) => {
                 onInputChange={(e) => changeSearch(e)}
                 getOptionLabel={(option) => option.title}
                 renderOption={(props, option) => (
-                  <>{option.title}</>
+                  <>
+                    <Box component="li" {...props} onClick={() => (option.type == "profile")?navigate("/interact/user/"+option.id):"" }>
+                      {/* <Link to={"/interact/user/"+option.id}> */}
+                      <img
+                        loading="lazy"
+                        width="30"
+                        src={`https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg`}
+                        srcSet={`https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg 2x`}
+                        alt=""
+                      />
+                      {" "+option.title}
+                      {/* </Link> */}
+                      </Box>
+                    </>
                 )}
                 renderInput={(params) => (
                     <TextField
+                    sx={{height:24,padding:"8px 8px 8px 0px",paddingLeft:"calc(1em + 32px)",borderWidth:0}}
                         {...params}
                         label="Search"
                     />

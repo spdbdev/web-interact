@@ -15,6 +15,7 @@ import authRoutes from "./authRoutes";
 import userRoutes from "./userRoutes";
 import listViewRoutes from "./listViewRoutes";
 import gridViewRoutes from "./gridViewRoutes";
+import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 
 const routes = [
     {
@@ -35,12 +36,15 @@ const routes = [
             "/signup",
         element: <Navigate to={"/interact/signup"}/>
     },
-
-
     {
         path:
             "/user",
         element: <Navigate to={"/interact/user"}/>
+    },
+    {
+        path:
+            "/user/:id",
+        element: <UserProfilePage />
     },
 
     {

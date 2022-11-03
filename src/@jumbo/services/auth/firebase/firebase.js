@@ -6,6 +6,9 @@ import { getAnalytics } from "firebase/analytics";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 
 import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
+import { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -47,6 +50,7 @@ const signInWithGoogle = async () => {
     alert(err.message);
   }
 };
+
 
 
 const loginWithEmailAndPassword = async (email, password) => {

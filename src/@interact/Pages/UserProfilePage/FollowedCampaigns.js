@@ -1,19 +1,61 @@
 import "./UserProfilePage.css";
 import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import MeetingBlocks from "./MeetingBlocks";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef,useState } from "react";
 import InteractButton from "@interact/Components/Button/InteractButton";
-import { useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate,useParams } from "react-router-dom";
 import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
+import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
+import { getDateFromTimestamp } from "@interact/Components/utils";
 
 function FollowedCampaigns() {
-  const currentCampaigns = [1, 2, 3];
+  const [user, loading, error] = useAuthState(auth);
+  
+  let { id } = useParams();
+  let user_id = id;
+  let currentCampaigns = [];
+ let campaignSnippets = []
   const navigate = useNavigate();
-
+  const [campaignsList,setCampaignsList] = useState([]);
+  const getCampaigns = async ()=>{
+    console.log('getCampaigns.user_id');
+      console.log(user_id);
+      let q = query(collection(db, "campaigns"), where("person.id", "==", user?.uid));
+      if(user_id){
+         q = query(collection(  db, "campaigns"), where("person.id", "==", user_id));  
+      }
+    
+    const doc =await getDocs(q);
+    console.log('compaign:');
+      console.log(doc);
+      
+    for (let i = 0; i < doc.docs.length; i++) {
+      console.log('compaigns:'+i);
+      console.log(doc.docs[i].data());
+      // currentCampaigns.push(doc.docs[i].data());
+      let endDate = doc.docs[i].data()?.endDate?.seconds;
+      currentCampaigns.push({
+        title:doc.docs[i].data().title,
+        endDateTime:getDateFromTimestamp({
+          timestamp: endDate
+        }),
+        goal:doc.docs[i].data().goal,
+        goalValue:doc.docs[i].data().goalValue,
+        username:doc.docs[i].data().person.username
+      })
+    }
+    console.log('currentCampaigns');
+    console.log(currentCampaigns);
+    setCampaignsList(currentCampaigns);
+  }
   const meetingBlockRef = useRef(null);
   useEffect(() => {
-    meetingBlockRef.current.scrollTo(360 * 4, 0);
-  }, []);
+    getCampaigns();
+    // currentCampaigns
+    // meetingBlockRef.current.scrollTo(360 * 4, 0);
+  }, [user,loading,id]);
 
   return (
     <div style={{ paddingLeft: 100 }}>
@@ -59,7 +101,7 @@ function FollowedCampaigns() {
             flexWrap: "wrap",
           }}
         >
-          {currentCampaigns.map((x, i) => (
+          {campaignsList.map((x, i) => (
             <CampaignSnippet key={i} info={x} />
           ))}
         </div>

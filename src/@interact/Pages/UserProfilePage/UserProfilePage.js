@@ -19,12 +19,15 @@ import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { FollowButton } from "../CampaignPage/Stats";
 
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  
+
 
   return (
     <div
@@ -52,12 +55,14 @@ function a11yProps(index) {
 
 function UserProfilePage() {
   const [tab, setTab] = React.useState(0);
-
+  let { id } = useParams();
+  
+  let user_id = id;
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
 
-  const isCreator = true;
+  const isCreator = auth.currentUser.uid == user_id?true:false;
 
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -67,8 +72,15 @@ function UserProfilePage() {
 
   const fetchUserName = async () => {
     try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+      //console.log('user_id');
+      //console.log(user_id);
+      let q = query(collection(db, "users"), where("uid", "==", user?.uid));
+      if(user_id){
+         q = query(collection(db, "users"), where("uid", "==", user_id));  
+      }
       const doc = await getDocs(q);
+      //console.log('doc');
+      //console.log(doc);
       const data = doc.docs[0].data();
       setName(data.name);
     } catch (err) {
@@ -77,10 +89,15 @@ function UserProfilePage() {
     }
   };
   useEffect(() => {
+    let user_id = id;
+
+    //console.log('username');
+    //console.log(user_id);
+    
     if (loading) return;
     if (!user) return navigate("/");
     fetchUserName();
-  }, [user, loading]);
+  }, [user, loading,id]);
 
   localStorage.setItem('name',name);
 
@@ -162,11 +179,13 @@ function UserProfilePage() {
               {...a11yProps(0)}
               style={{ color: "black" }}
             />
+            {isCreator &&
             <Tab
               label="Schedule"
               {...a11yProps(1)}
               style={{ color: "black" }}
             />
+}
             {isCreator ? (
               <Tab
                 label="Creator Schedule"

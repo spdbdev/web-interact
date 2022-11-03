@@ -14,14 +14,31 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import { SIDEBAR_STYLES } from "@jumbo/utils/constants";
 import { useJumboHeaderTheme } from "@jumbo/hooks";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import Button from "@mui/material/Button";
+import {auth } from "@jumbo/services/auth/firebase/firebase";
+import {useState,useEffect} from 'react'
+// import { useAuthState } from "react-firebase-hooks/auth";
 
 const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
   const [dropdownSearchVisibility, setDropdownSearchVisibility] =
     React.useState(false);
   const { headerTheme } = useJumboHeaderTheme();
+
+  auth.onAuthStateChanged(user=>{
+    console.log('onAuthStateChanged');
+    console.log(user);
+      setIsLoggedIn(!!user);
+  });
+// useEffect(() => {
+//   console.log('Logged In User Auth');
+//       console.log(auth);
+//       setIsLoggedIn(!!auth.currentUser);
+//         console.log(isLoggedIn);
+//       console.log(!isLoggedIn);
+// },[isLoggedIn,auth]);
 
   return (
     <React.Fragment>
@@ -53,6 +70,7 @@ const Header = () => {
             right: 0,
             position: "absolute",
             height: "100%",
+            width:"100%"
           }}
         >
           <SearchGlobal
@@ -60,6 +78,7 @@ const Header = () => {
               maxWidth: "none",
               height: "100%",
               display: "flex",
+              width:"100%",
 
               "& .MuiInputBase-root": {
                 flex: 1,
@@ -85,7 +104,7 @@ const Header = () => {
           </IconButton>
         </Div>
       </Slide>
-      <Link to="/campaign">
+      <Link to="/campaign" style={{textDecoration: 'none'}}>
         <Button variant={"contained"}>Start a campaign</Button>
       </Link>
 
@@ -102,8 +121,14 @@ const Header = () => {
           <SearchIcon fontSize={"small"} />
         </JumboIconButton>
 
+        {isLoggedIn &&
+        <>
         <NotificationsDropdown />
-        <AuthUserDropdown />
+        <AuthUserDropdown/>
+        </>}
+        {!isLoggedIn &&
+        <Link to="/interact/signin" style={{textDecoration: 'none'}}>
+          <Button variant={"contained"}>Sign In</Button></Link>}
       </Stack>
     </React.Fragment>
   );

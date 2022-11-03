@@ -24,7 +24,10 @@ const interactV1Routes = [
     element: <SignUpPage2/>,
   },
   {
-    path: "/interact/user",
+    path: [
+      "/interact/user/",
+      "/interact/user/:id"
+    ],
     element: <UserProfilePage />, 
   },
   {
