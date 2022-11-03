@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -183,6 +183,15 @@ function BidInput({ value, setValue, setData, dataField }) {
   const increment = 0.5;
   const minValue = 1.5;
 
+  // Used to update this components value as it changes,
+  // while still allowing for true validation on blur
+  // If not valid, default to the last setValue
+  const [tempValue, setTempValue] = useState(value);
+
+  useEffect(() => {
+    setTempValue(value);
+  }, [value]);
+
   function validate(nextValue) {
     function isValidIncrement(nextIncrement) {
       if (nextIncrement % increment === 0) {
@@ -203,11 +212,11 @@ function BidInput({ value, setValue, setData, dataField }) {
   function handleBid(e) {
     const nextValue = Number(e.target.value);
     const isValid = validate(nextValue);
-    if (!isValid) {
-      setValue(addTrailingZerosToDollarValue(minValue));
-    } else {
+    if (isValid) {
       setValue(addTrailingZerosToDollarValue(nextValue));
       setData({ [dataField]: nextValue });
+    } else {
+      setTempValue(addTrailingZerosToDollarValue(minValue));
     }
   }
 
@@ -220,8 +229,17 @@ function BidInput({ value, setValue, setData, dataField }) {
           <InputAdornment position="start">$</InputAdornment>
         }
         sx={{ mx: 2, height: "40px" }}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={tempValue}
+        onChange={(e) => {
+          if (e.nativeEvent.inputType == "insertReplacementText") {
+            // handles stepUp/arrowUp and stepDown/arrowDown
+            // without this, it's possible to step above or below the min/max values
+            setTempValue(e.target.value);
+            handleBid(e);
+          } else {
+            setTempValue(e.target.value);
+          }
+        }}
         onBlur={(e) => handleBid(e)}
       />
       <FormHelperText sx={{ ml: 3 }}>
@@ -239,6 +257,15 @@ function NumInteractionsInput({
   minValue = 0,
   helpText = " ",
 }) {
+  // Used to update this components value as it changes,
+  // while still allowing for true validation on blur
+  // If not valid, default to the last setValue
+  const [tempValue, setTempValue] = useState(value);
+
+  useEffect(() => {
+    setTempValue(value);
+  }, [value]);
+
   function validate(nextValue) {
     return (
       typeof nextValue === "number" &&
@@ -250,11 +277,11 @@ function NumInteractionsInput({
   function handleInteraction(e) {
     const nextValue = Number(e.target.value);
     const isValid = validate(nextValue);
-    if (!isValid) {
-      setValue(minValue);
-    } else {
+    if (isValid) {
       setValue(nextValue);
       setData({ [dataField]: nextValue });
+    } else {
+      setTempValue(minValue);
     }
   }
 
@@ -263,8 +290,17 @@ function NumInteractionsInput({
       <OutlinedInput
         type="number"
         sx={{ mx: 2, height: "40px" }}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={tempValue}
+        onChange={(e) => {
+          if (e.nativeEvent.inputType == "insertReplacementText") {
+            // handles stepUp/arrowUp and stepDown/arrowDown
+            // without this, it's possible to step above or below the min/max values
+            setTempValue(e.target.value);
+            handleInteraction(e);
+          } else {
+            setTempValue(e.target.value);
+          }
+        }}
         onBlur={(e) => handleInteraction(e)}
       />{" "}
       <FormHelperText sx={{ ml: 3 }}>{helpText}</FormHelperText>

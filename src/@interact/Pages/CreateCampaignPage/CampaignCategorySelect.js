@@ -24,7 +24,7 @@ const MenuProps = {
   },
 };
 
-const categories = [
+const CATEGORY_OPTIONS = [
   "Gaming",
   "Humor",
   "Just chatting, commentary",
@@ -36,26 +36,31 @@ const categories = [
   "Travel, vlogs & lifestyle",
 ];
 
-export default function CampaignCategorySelect({ data, setData }) {
-  const [selectedCategories, setSelectedCategories] = React.useState(
-    data?.categories
-  );
-
+export default function CampaignCategorySelect({
+  data,
+  setData,
+  categories,
+  setCategories,
+}) {
   const handleChange = (event) => {
-    if (selectedCategories.length < 3) {
-      const newCategories = [...selectedCategories, event.target.value];
-      setSelectedCategories(newCategories);
+    const newCategories = [...categories, event.target.value];
+
+    if (newCategories.length > 0 && newCategories.length <= 3) {
       setData({ categories: newCategories });
     }
+    setCategories(newCategories);
   };
 
   const handleDelete = (e, value) => {
     e.preventDefault();
-    const newCategories = selectedCategories.filter(
+
+    const newCategories = categories.filter(
       (category) => category !== value
     );
-    setSelectedCategories(newCategories);
-    setData({ categories: newCategories });
+    if (newCategories.length > 0 && newCategories.length <= 3) {
+      setData({ categories: newCategories });
+    }
+    setCategories(newCategories);
   };
 
   return (
@@ -63,7 +68,7 @@ export default function CampaignCategorySelect({ data, setData }) {
       <FormControl sx={{ width: 400 }}>
         <Select
           id="campaign-categories"
-          value={selectedCategories}
+          value={categories}
           onChange={handleChange}
           input={<OutlinedInput id="select-multiple-chip" />}
           renderValue={(selected) => (
@@ -72,7 +77,9 @@ export default function CampaignCategorySelect({ data, setData }) {
                 <InteractChip
                   key={value}
                   label={value}
-                  deleteIcon={<Close sx={{ color: "primary.main" }} />}
+                  deleteIcon={
+                    <Close sx={{ color: "primary.main" }} />
+                  }
                   onDelete={(e) => handleDelete(e, value)}
                 />
               ))}
@@ -80,9 +87,13 @@ export default function CampaignCategorySelect({ data, setData }) {
           )}
           MenuProps={MenuProps}
         >
-          {categories.map((category) => {
+          {CATEGORY_OPTIONS.map((category) => {
             return (
-              <MenuItem key={category} value={category}>
+              <MenuItem
+                key={category}
+                disabled={categories.includes(category)}
+                value={category}
+              >
                 {category}
               </MenuItem>
             );

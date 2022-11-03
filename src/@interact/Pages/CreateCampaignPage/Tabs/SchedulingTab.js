@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+  FormControl,
+  FormHelperText,
   OutlinedInput,
   Stack,
   TextField,
@@ -7,10 +9,7 @@ import {
 } from "@mui/material";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
-import {
-  DateTimePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment, { duration } from "moment";
 import { SchedulingSlider } from "../Sliders";
@@ -37,17 +36,20 @@ export default function SchedulingTab({
   const [campaignDurationDays, setCampaignDurationDays] = useState(
     data?.durationDays
   );
-  const [interactionWindowDuration, setInteractionWindowDuration] =
-    useState(data?.interactionWindow);
+  const [interactionWindowDuration, setInteractionWindowDuration] = useState(
+    data?.interactionWindow
+  );
+
+  const [errors, setErrors] = useState(false);
 
   const formValidationConditions =
-    typeof data?.durationDays == "number" &&
-    data?.durationDays > 0 &&
-    moment(data?.startDateTime).isValid() &&
-    moment(data?.endDateTime).isValid() &&
-    moment(data?.interactionEndDateTime).isValid() &&
-    typeof data?.interactionWindow == "number" &&
-    data?.interactionWindow > 0;
+    typeof campaignDurationDays == "number" &&
+    campaignDurationDays >= 5 &&
+    campaignDurationDays <= 20 &&
+    moment(startDateTime).isValid() &&
+    moment(endDateTime).isValid() &&
+    typeof interactionWindowDuration == "number" &&
+    interactionWindowDuration > 0;
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
@@ -67,14 +69,26 @@ export default function SchedulingTab({
     let newEndDate = null;
     let interactionWindowEndDate = null;
 
+    // If new changes contain errors, we don't write them to DB
+    let doesChangeContainErrors = false;
+
     if (action == "updateStart") {
       //calculate days from start and end dates
       durationDiff = end?.diff(start, "days");
       const startTimestampValue = moment(start).unix();
-      setData({
-        durationDays: Number(durationDiff),
-        startDateTime: startTimestampValue,
-      });
+
+      if (
+        durationDiff >= 5 &&
+        durationDiff <= 20 &&
+        moment(startTimestampValue).isValid()
+      ) {
+        setData({
+          durationDays: Number(durationDiff),
+          startDateTime: startTimestampValue,
+        });
+      } else {
+        doesChangeContainErrors = true;
+      }
 
       setStartDateTime(start);
       setCampaignDurationDays(durationDiff);
@@ -87,19 +101,23 @@ export default function SchedulingTab({
       const endTimestampValue = moment(end).unix();
 
       // calculate end date from interaction window
-      interactionWindowEndDate = moment(end).add(
-        windowDuration,
-        "weeks"
-      );
-      const interactionTimestampValue = moment(
-        interactionWindowEndDate
-      ).unix();
+      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
+      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
 
-      setData({
-        durationDays: Number(durationDiff),
-        endDateTime: endTimestampValue,
-        interactionEndDateTime: interactionTimestampValue,
-      });
+      if (
+        Number(durationDiff) >= 5 &&
+        Number(durationDiff) <= 20 &&
+        moment(endTimestampValue).isValid() &&
+        moment(interactionTimestampValue).isValid()
+      ) {
+        setData({
+          durationDays: Number(durationDiff),
+          endDateTime: endTimestampValue,
+          interactionEndDateTime: interactionTimestampValue,
+        });
+      } else {
+        doesChangeContainErrors = true;
+      }
 
       setCampaignDurationDays(durationDiff);
       setEndDateTime(end);
@@ -116,15 +134,22 @@ export default function SchedulingTab({
       );
 
       const endTimestampValue = moment(newEndDate).unix();
-      const interactionTimestampValue = moment(
-        interactionWindowEndDate
-      ).unix();
+      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
 
-      setData({
-        durationDays: Number(duration),
-        endDateTime: endTimestampValue,
-        interactionEndDateTime: interactionTimestampValue,
-      });
+      if (
+        Number(duration) >= 5 &&
+        Number(duration) <= 20 &&
+        moment(endTimestampValue).isValid() &&
+        moment(interactionTimestampValue).isValid()
+      ) {
+        setData({
+          durationDays: Number(duration),
+          endDateTime: endTimestampValue,
+          interactionEndDateTime: interactionTimestampValue,
+        });
+      } else {
+        doesChangeContainErrors = true;
+      }
 
       setCampaignDurationDays(duration);
       setEndDateTime(newEndDate);
@@ -132,33 +157,37 @@ export default function SchedulingTab({
 
     if (action == "updateWindow") {
       // calculate end date from interaction window
-      interactionWindowEndDate = moment(end).add(
-        windowDuration,
-        "weeks"
-      );
-      const interactionTimestampValue = moment(
-        interactionWindowEndDate
-      ).unix();
+      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
+      const interactionTimestampValue = moment(interactionWindowEndDate).unix();
 
-      setData({
-        interactionWindow: Number(windowDuration),
-        interactionEndDateTime: interactionTimestampValue,
-      });
+      if (
+        Number(windowDuration) >= 2 &&
+        Number(windowDuration) <= 20 &&
+        moment(interactionTimestampValue).isValid()
+      ) {
+        setData({
+          interactionWindow: Number(windowDuration),
+          interactionEndDateTime: interactionTimestampValue,
+        });
+      } else {
+        doesChangeContainErrors = true;
+      }
 
       setInteractionWindowDuration(windowDuration);
     }
+
+    setErrors(doesChangeContainErrors);
   }
 
   return (
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign Duration">
-          Set how long the campaign will be active. Enter a start date
-          & time, then duration in days OR the end date & time. <br />
+          Set how long the campaign will be active. Enter a start date & time,
+          then duration in days OR the end date & time. <br />
           <br />
-          Changing the duration will recalculate the end date, and
-          vice-versa. Campaigns can last 5 to 20 days. Recommended
-          duration: 10 days.
+          Changing the duration will recalculate the end date, and vice-versa.
+          Campaigns can last 5 to 20 days. Recommended duration: 10 days.
         </TitleAndDesc>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           {/* need this to use DateTimePicker. Date library used here is moment.js */}
@@ -181,57 +210,52 @@ export default function SchedulingTab({
               minutesStep={15}
             />
             <Stack direction="row" alignItems="center" spacing={2}>
-              <OutlinedInput
-                sx={{ width: 100 }}
-                type="number"
-                style={{ height: 50 }}
+              <NumDurationInput
                 value={campaignDurationDays}
-                onChange={(e) => {
-                  // prevent values less than 0 or higher than 20.
-                  if (e.target.value < 0) {
-                    setCampaignDurationDays(0);
-                  } else if (e.target.value > 20) {
-                    setCampaignDurationDays(20);
-                  } else {
-                    handleSchedulingChanges({
-                      duration: e.target.value,
-                      start: startDateTime,
-                      end: endDateTime,
-                      windowDuration: interactionWindowDuration,
-                      action: "updateDuration",
-                    });
-                  }
-                }}
+                setValue={setCampaignDurationDays}
+                setData={handleSchedulingChanges}
+                minValue={5}
+                maxValue={20}
+                startDateTime={startDateTime}
+                endDateTime={endDateTime}
+                interactionWindowDuration={interactionWindowDuration}
               />
               <Typography sx={{ fontSize: 16 }}>days</Typography>
             </Stack>
-
-            <DateTimePicker
-              label="End date & time"
-              InputProps={{ sx: { width: 300 } }}
-              value={endDateTime}
-              onChange={(newValue) =>
-                handleSchedulingChanges({
-                  start: startDateTime,
-                  end: newValue,
-                  windowDuration: interactionWindowDuration,
-                  action: "updateEnd",
-                })
-              }
-              renderInput={(params) => <TextField {...params} />}
-              minDateTime={moment()} // min date is current date/time
-              minutesStep={15}
-            />
+            <FormControl>
+              <DateTimePicker
+                label="End date & time"
+                InputProps={{ sx: { width: 300 } }}
+                value={endDateTime}
+                onChange={(newValue) =>
+                  handleSchedulingChanges({
+                    start: startDateTime,
+                    end: newValue,
+                    windowDuration: interactionWindowDuration,
+                    action: "updateEnd",
+                  })
+                }
+                renderInput={(params) => <TextField {...params} />}
+                minDateTime={startDateTime}
+                minutesStep={15}
+                maxDateTime={moment(startDateTime).add(20, "days")}
+              />
+              {errors ? (
+                <FormHelperText>
+                  Did not save - invalid selections.
+                </FormHelperText>
+              ) : null}
+            </FormControl>
           </Stack>
         </LocalizationProvider>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Interaction Window Duration">
-          Choose the number of weeks; interactions will be scheduled
-          with fans for X weeks after the campaign ends. <br /> <br />
-          Too many weeks = some fans will have to wait a long time,
-          but too few weeks = more interactions to complete every
-          week. Recommended: 10 weeks.
+          Choose the number of weeks; interactions will be scheduled with fans
+          for X weeks after the campaign ends. <br /> <br />
+          Too many weeks = some fans will have to wait a long time, but too few
+          weeks = more interactions to complete every week. Recommended: 10
+          weeks.
         </TitleAndDesc>
         <Stack sx={{ width: 300 }} spacing={3}>
           <SchedulingSlider
@@ -267,25 +291,46 @@ function NumDurationInput({
   value,
   setValue,
   setData,
-  dataField,
+  startDateTime,
+  endDateTime,
+  interactionWindowDuration,
   minValue = 0,
+  maxValue,
 }) {
+  // Used to update this components value as it changes,
+  // while still allowing for true validation on blur
+  // If not valid, default to the last setValue
+  const [tempValue, setTempValue] = useState(value);
+
+  useEffect(() => {
+    setTempValue(value);
+  }, [value]);
+
   function validate(nextValue) {
     return (
       typeof nextValue === "number" &&
       !isNaN(nextValue) &&
-      nextValue >= minValue
+      nextValue >= minValue &&
+      nextValue <= maxValue
     );
   }
 
   function handleInteraction(e) {
     const nextValue = Number(e.target.value);
     const isValid = validate(nextValue);
-    if (!isValid) {
-      setValue(minValue);
-    } else {
+
+    if (isValid) {
       setValue(nextValue);
-      setData({ [dataField]: nextValue });
+
+      setData({
+        duration: e.target.value,
+        start: startDateTime,
+        end: endDateTime,
+        windowDuration: interactionWindowDuration,
+        action: "updateDuration",
+      });
+    } else {
+      setTempValue(value);
     }
   }
 
@@ -293,8 +338,17 @@ function NumDurationInput({
     <OutlinedInput
       type="number"
       sx={{ mx: 2, height: "40px" }}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
+      value={tempValue}
+      onChange={(e) => {
+        if (e.nativeEvent.inputType == "insertReplacementText") {
+          // handles stepUp/arrowUp and stepDown/arrowDown
+          // without this, it's possible to step above or below the min/max values
+          setTempValue(e.target.value);
+          handleInteraction(e);
+        } else {
+          setTempValue(e.target.value);
+        }
+      }}
       onBlur={(e) => handleInteraction(e)}
     />
   );
