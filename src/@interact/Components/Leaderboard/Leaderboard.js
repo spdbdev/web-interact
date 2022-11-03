@@ -74,6 +74,7 @@ export default function Leaderboard({ campaignData, bids }) {
       // console.log( parseFloat(a.bidPrice) > parseFloat(b.bidPrice), a, b)
       return parseFloat(b.price) - parseFloat(a.price);
     });
+    console.log("Leaderboard Bids>>",bids);
 
     bids = bids?.map((x, i) => {
       return {

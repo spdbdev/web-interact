@@ -13,7 +13,7 @@ import Stats from "./Stats";
 import CreatorName from "./CreatorName";
 import { useEffect, useState } from "react";
 
-import {doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp} from "firebase/firestore";
+import {doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot} from "firebase/firestore";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
@@ -522,6 +522,13 @@ function CampaignPage(userData) {
   };
 
   const getCampaignData = async () => {
+    //campaign data change listener
+    let q = query(doc(db, "campaigns", campaignId));
+    const unsubscribe = onSnapshot(q,(querySnapshot)=>{
+      setCampaignData(querySnapshot.data())
+      console.log("Campaign Data>>",querySnapshot.data())
+    })
+
     let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
     setCampaignData(_campaignData);
     //console.log("Campaign Data >>>>>>>>>>>", campaignData, campaignData.endDate);
@@ -538,6 +545,16 @@ function CampaignPage(userData) {
     setBids(
       await getFirebaseArray(collection(db, "campaigns", campaignId, "bids"))
     );
+
+    //Bids change listener
+    let bidsQuery = query(collection(db, "campaigns", campaignId, "bids"));
+    const bidsListener = onSnapshot(bidsQuery,(querySnapshot)=>{
+      const bidsList = [];
+      querySnapshot.forEach((doc)=>{
+        bidsList.push(doc.data());
+      })
+      setBids(bidsList)
+    })
 
     // setComments(
     //   await getFirebaseArray(
@@ -639,7 +656,7 @@ function CampaignPage(userData) {
     // setSupporters(DUMMY_SUPPORTERS)
   }, []);
 
-  const bid = async (amount, auto = false) => {
+  const bid = async (amount, auto = false,desiredRanking = null,maxBidPrice = null,minBidPrice = null) => {
     console.log("bidding", amount);
     console.log("User", user);
     const usersRef = collection(db,'users');
@@ -652,12 +669,14 @@ function CampaignPage(userData) {
         id: userData.id,
         photoUrl: user.photoURL
       },
+      desiredRanking,
+      minBidPrice,
+      maxBidPrice,
       price: amount,
       auto: auto,
       email:user.email,
       time: serverTimestamp(),
     });
-    getCampaignData();
   };
 
   function renderUserCampaignStatus() {

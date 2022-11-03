@@ -159,7 +159,7 @@ if(logged_user_stripe_customer_id){
         return () => clearInterval(interval);
     }, [stripeError]);
 
-    var vipEntryPrice = campaignData?.vipEntryPrice ? campaignData.vipEntryPrice : 0;
+    var vipEntryPrice = campaignData?.giveawayVIPEntryCost ? campaignData.giveawayVIPEntryCost : 0;
     var freeEntryPrice = "0";
     //console.log(userData);
 

@@ -25,8 +25,9 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
       }
       if(bids.length >= campaignData?.numBidSlots){
         let sortedBids = sortBids(bids);
-        let lastPrice = sortedBids[sortedBids.length-1]?.price;
+        let lastPrice = sortedBids[campaignData?.numBidSlots-1]?.price;
         if(lastPrice >= campaignData.minBidPrice){
+          setMinBidAmount(parseFloat(lastPrice)+0.5);
           setBidAmount(parseFloat(lastPrice)+0.5);
         }else{
           setMinBidAmount(campaignData?.minBidPrice)
@@ -132,7 +133,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           />
         </FormControl>
 
-        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(maxBidAmount,true)}>
+        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(maxBidAmount,true,desiredRanking,maxBidAmount)}>
           Place auto-bid
         </InteractButton>
       </Stack>
@@ -180,19 +181,16 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
             Current lowest price to win:{" "}
             <Span sx={{ color: "primary.main", fontWeight: 500 }}>
               {"$"}
-              {bids && campaignData
-                ? `${ formatMoney(
-                    bids[
-                      Math.min(bids.length - 1, campaignData.numBidSlots - 1)
-                    ]?.price
-                  +"0")}`
-                : "0"}
+              {minBidAmount
+                && `${ formatMoney(
+                    minBidAmount
+                  )}`}
             </Span>
           </Typography>
         </Stack>
 
         {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
-        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount)}>
+        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
           Place bid
         </InteractButton>
         {/* </form> */}
