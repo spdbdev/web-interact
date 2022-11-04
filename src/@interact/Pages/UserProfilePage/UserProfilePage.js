@@ -62,7 +62,7 @@ function UserProfilePage() {
     setTab(newValue);
   };
 
-  const isCreator = auth.currentUser.uid == user_id?true:false;
+  const isCreator = auth?.currentUser?.uid == user_id?true:false;
 
   const [modalOpened, setModalOpened] = useState(false);
 

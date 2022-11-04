@@ -26,6 +26,15 @@ const Header = () => {
   const [dropdownSearchVisibility, setDropdownSearchVisibility] =
     React.useState(false);
   const { headerTheme } = useJumboHeaderTheme();
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
 
   auth.onAuthStateChanged(user=>{
     console.log('onAuthStateChanged');
@@ -104,8 +113,15 @@ const Header = () => {
           </IconButton>
         </Div>
       </Slide>
-      <Link to="/campaign" style={{textDecoration: 'none'}}>
-        <Button variant={"contained"}>Start a campaign</Button>
+      <Link to="/campaign"
+       style={{
+        color: isHovering ? '#782fee' : '#222',
+        textDecoration: isHovering ? 'underline' : 'none',
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      >
+        Start a campaign
       </Link>
 
       <Stack

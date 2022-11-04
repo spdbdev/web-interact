@@ -7,6 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { query, collection, getDocs, where, startAt, endAt, orderBy } from "firebase/firestore";
 import { Link, useNavigate } from 'react-router-dom';
+import { getDateFromTimestamp } from "@interact/Components/utils";
 
 
 const SearchGlobal = ({ sx }) => {
@@ -49,12 +50,19 @@ const SearchGlobal = ({ sx }) => {
                 let obj = {
                   title: campaing.data().header.title,
                   description: campaing.data().header.tagline1,
+                  endDate: getDateFromTimestamp({
+                    timestamp: campaing.data().endDate?.seconds
+                  }),
+                  goal:campaing.data().goal,
+                  goalValue:campaing.data().goalValue,
+                  username:campaing.data().person.name,
                   id: campaing.data().id,
                   type:'campaign'
                 }
                 tempValues.push(obj)
               })
               setSearchValue(tempValues)
+              console.log(tempValues)
             }
             
         })
@@ -71,7 +79,7 @@ const SearchGlobal = ({ sx }) => {
     return (
         <Search sx={sx}>
             <SearchIconWrapper>
-                <SearchIcon sx={{marginLeft:"20px"}} />
+                <SearchIcon sx={{marginLeft:"0px"}} />
             </SearchIconWrapper>
 
             <Autocomplete
@@ -82,9 +90,10 @@ const SearchGlobal = ({ sx }) => {
                 autoHighlight
                 freeSolo
                 onInputChange={(e) => changeSearch(e)}
-                getOptionLabel={(option) => option.title}
+                getOptionLabel={(option) => (option?.title)?option?.title:""}
                 renderOption={(props, option) => (
                   <>
+                  {(option.type === 'profile')?(
                     <Box component="li" {...props} onClick={() => (option.type == "profile")?navigate("/interact/user/"+option.id):"" }>
                       {/* <Link to={"/interact/user/"+option.id}> */}
                       <img
@@ -97,11 +106,24 @@ const SearchGlobal = ({ sx }) => {
                       {" "+option.title}
                       {/* </Link> */}
                       </Box>
+                  ):(
+                    <Box component="li" {...props} onClick={() => (option.type == "campaign")?"":"" }>
+                      {/* <Link to={"/interact/user/"+option.id}> */}
+                      <img
+                        loading="lazy"
+                        width="30"
+                        src={`https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg`}
+                        srcSet={`https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg 2x`}
+                        alt=""
+                      />
+                      {" "+option.title+" - "+option.endDate+" - "+option.goal+" - "+option.username}
+                      </Box>
+                  )}
                     </>
                 )}
                 renderInput={(params) => (
                     <TextField
-                    sx={{height:24,padding:"8px 8px 8px 0px",paddingLeft:"calc(1em + 32px)",borderWidth:0}}
+                    sx={{height:30,padding:"12px 0px 12px 0px",paddingLeft:"0px",borderWidth:0}}
                         {...params}
                         label="Search"
                     />
