@@ -1,4 +1,5 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import { Close, ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
@@ -8,11 +9,12 @@ import {
   Button,
   Container,
   IconButton,
+  Slide,
   Stack,
   Typography,
 } from "@mui/material";
 import SoloPage from "app/layouts/solo-page/SoloPage";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
 
@@ -54,14 +56,14 @@ const WhatIsInteractFAQs = [
         tedious requests nor formal lessons; there are no restrictions—you have
         complete freedom & control to stop talking to users and kick them at
         your discretion. Just chill with your fans on your own schedule.
-        Maximize profits with Interact’s two-pronged hybrid raffle + auction
+        Maximize profits with Interact’s two-pronged hybrid giveaway + auction
         campaign. Our first-of-a-kind multi-item automated auction bidding
         algorithm allows affluent fans to support the creator with more money &
         gives a 100% success-rate option to fans (for fairness’ sake); it's the
         premium option as auction interactions are scheduled to occur first. On
-        the other hand, any fan can spare a few dollars to buy 1 raffle ticket
-        (max of 1 per user) to support you; they didn’t have a compelling reason
-        to give some pocket change prior ("support me for the price of a
+        the other hand, any fan can spare a few dollars to buy 1 giveaway VIP
+        ticket (max of 1 per user) to support you; they didn’t have a compelling
+        reason to give some pocket change prior ("support me for the price of a
         coffee"). Now there’s a really attractive incentive—a chance to gain
         fame, gain recognition from an influencer, etc. They’ve invested
         numerous hours into this creator/topic, feel like a part of this special
@@ -122,7 +124,7 @@ const WhatIsInteractFAQs = [
         helps you & your fans plan ahead, organizing interactions with flexible
         scheduling (smart algo matching); this greatly increases demand since
         all fans have the opportunity to vie for an interaction via our unique
-        auction & raffle campaigns (moreover, Interact creates FOMO with 5-20
+        auction & giveaway campaigns (moreover, Interact creates FOMO with 5-20
         day campaigns + incentive to support you with a fun goal).
       </span>
     ),
@@ -183,7 +185,7 @@ export default function WhatIsInteractPage() {
   const navigate = useNavigate();
 
   return (
-    <SoloPage>
+    <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",
@@ -238,6 +240,6 @@ export default function WhatIsInteractPage() {
           </InteractFlashyButton>
         </Box>
       </Box>
-    </SoloPage>
+    </Slide>
   );
 }

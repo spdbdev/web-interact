@@ -40,7 +40,7 @@ const interactMenus = [
         icon: <PieChartOutlineOutlinedIcon sx={{ fontSize: 20 }} />,
       },
       {
-        uri: "/interact/createCampaign",
+        uri: "/interact/what-is-interact",
         label: "Create Campaign",
         type: "nav-item",
         icon: <ShoppingCartOutlinedIcon sx={{ fontSize: 20 }} />,

@@ -10,9 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
-import TitleAndDesc, {
-  TitleAndDescFullWidth,
-} from "../CampaignTitleAndDesc";
+import TitleAndDesc, { TitleAndDescFullWidth } from "../CampaignTitleAndDesc";
 import {
   InteractionAvailabilitySlider,
   InteractionDurationsSlider,
@@ -32,10 +30,12 @@ export default function InteractionTab({
   selectedTabIndex,
   setSelectedTabIndex,
 }) {
-  const [numAuctionInteractions, setNumAuctionInteractions] =
-    useState(data?.numAuctionInteractions);
-  const [numGiveawayInteractions, setNumGiveawayInteractions] =
-    useState(data?.numGiveawayInteractions);
+  const [numAuctionInteractions, setNumAuctionInteractions] = useState(
+    data?.numAuctionInteractions
+  );
+  const [numGiveawayInteractions, setNumGiveawayInteractions] = useState(
+    data?.numGiveawayInteractions
+  );
 
   const [auctionMinBidPrice, setAuctionMinBidPrice] = useState(
     addTrailingZerosToDollarValue(data?.auctionMinBid)
@@ -61,17 +61,13 @@ export default function InteractionTab({
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Availability">
-          How much time per week would you like to spend interacting
-          with fans?
+          How much time per week would you like to spend interacting with fans?
           <br />
           <br />
           How much time should each interaction take?
         </TitleAndDesc>
         <Stack spacing={3} sx={{ width: 300, pt: 4 }}>
-          <InteractionAvailabilitySlider
-            data={data}
-            setData={setData}
-          />
+          <InteractionAvailabilitySlider data={data} setData={setData} />
           <InteractionDurationsSlider data={data} setData={setData} />
         </Stack>
       </CreateCampaignItemWrapper>
@@ -128,11 +124,7 @@ export default function InteractionTab({
           boxShadow: "0px 0px 20px rgba(120, 47, 238, 0.15)",
         }}
       >
-        <img
-          alt="interaction-icon"
-          src={InteractionIcon}
-          width={60}
-        />
+        <img alt="interaction-icon" src={InteractionIcon} width={60} />
         <Typography
           sx={{
             color: "primary.main",
@@ -146,25 +138,23 @@ export default function InteractionTab({
           </Span>
           , you can get to know{" "}
           <Span sx={{ fontWeight: 600 }}>
-            {data?.numAuctionInteractions +
-              data?.numGiveawayInteractions}{" "}
-            fans
+            {data?.numAuctionInteractions + data?.numGiveawayInteractions} fans
           </Span>{" "}
           personally over the period of{" "}
           <Span sx={{ fontWeight: 600 }}>
-            {getDateFromTimestamp({ timestamp: data?.endDateTime })}
+            {getDateFromTimestamp({ timestamp: data?.endDateTime?.seconds })}
           </Span>{" "}
           to{" "}
           <Span sx={{ fontWeight: 600 }}>
             {getDateFromTimestamp({
-              timestamp: data?.interactionEndDateTime,
+              timestamp: data?.interactionEndDateTime?.seconds,
             })}
           </Span>
           .{" "}
           <Span sx={{ color: "primary.light", fontSize: 14 }}>
-            ({getNumStdLengthInteractions()} x{" "}
-            {data?.interactionDurationTime} min interactions and 3 x{" "}
-            {data?.interactionTopDurationTime} min interactions)
+            ({getNumStdLengthInteractions()} x {data?.interactionDurationTime}{" "}
+            min interactions and 3 x {data?.interactionTopDurationTime} min
+            interactions)
           </Span>
         </Typography>
       </Stack>
@@ -225,9 +215,7 @@ function BidInput({ value, setValue, setData, dataField }) {
       <OutlinedInput
         type="number"
         inputProps={{ step: ".50" }}
-        startAdornment={
-          <InputAdornment position="start">$</InputAdornment>
-        }
+        startAdornment={<InputAdornment position="start">$</InputAdornment>}
         sx={{ mx: 2, height: "40px" }}
         value={tempValue}
         onChange={(e) => {

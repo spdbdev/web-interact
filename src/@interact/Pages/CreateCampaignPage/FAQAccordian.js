@@ -180,7 +180,11 @@ export default function FAQAccordian({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography>What can we do in an interaction?</Typography>
-            {shouldAllowEdit ? <Chip label="Editable" /> : false}
+            {shouldAllowEdit ? (
+              <Chip sx={{ color: "red" }} label="Required" />
+            ) : (
+              false
+            )}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
@@ -194,7 +198,6 @@ export default function FAQAccordian({
                 onChange={(e) => handleEditFAQ(e, 0)}
                 variant="standard"
                 InputProps={{ readOnly: !shouldAllowEdit }}
-                //contentEditable={shouldAllowEdit}
               />
             ) : (
               FAQAnswers[0]
@@ -206,7 +209,11 @@ export default function FAQAccordian({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography>How are interactions carried out?</Typography>
-            {shouldAllowEdit ? <Chip label="Editable" /> : false}
+            {shouldAllowEdit ? (
+              <Chip sx={{ color: "red" }} label="Required" />
+            ) : (
+              false
+            )}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
@@ -219,7 +226,6 @@ export default function FAQAccordian({
                 onChange={(e) => handleEditFAQ(e, 1)}
                 variant="standard"
                 InputProps={{ readOnly: !shouldAllowEdit }}
-                //contentEditable={shouldAllowEdit}
               />
             ) : (
               FAQAnswers[1]

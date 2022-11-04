@@ -54,9 +54,7 @@ export default function CampaignCategorySelect({
   const handleDelete = (e, value) => {
     e.preventDefault();
 
-    const newCategories = categories.filter(
-      (category) => category !== value
-    );
+    const newCategories = categories.filter((category) => category !== value);
     if (newCategories.length > 0 && newCategories.length <= 3) {
       setData({ categories: newCategories });
     }
@@ -69,17 +67,19 @@ export default function CampaignCategorySelect({
         <Select
           id="campaign-categories"
           value={categories}
+          error={categories?.length < 1}
           onChange={handleChange}
+          SelectDisplayProps={{
+            style: { overflowX: "scroll" },
+          }}
           input={<OutlinedInput id="select-multiple-chip" />}
           renderValue={(selected) => (
-            <Stack direction="row" spacing={0.5}>
+            <Stack direction="row" mr={4} spacing={0.5}>
               {selected.map((value) => (
                 <InteractChip
                   key={value}
                   label={value}
-                  deleteIcon={
-                    <Close sx={{ color: "primary.main" }} />
-                  }
+                  deleteIcon={<Close sx={{ color: "primary.main" }} />}
                   onDelete={(e) => handleDelete(e, value)}
                 />
               ))}

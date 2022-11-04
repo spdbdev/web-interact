@@ -20,6 +20,7 @@ import {
 } from "../../../Components/utils.js";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
+import { Timestamp } from "firebase/firestore";
 
 export default function SchedulingTab({
   data,
@@ -28,10 +29,10 @@ export default function SchedulingTab({
   setSelectedTabIndex,
 }) {
   const [startDateTime, setStartDateTime] = useState(
-    moment.unix(data?.startDateTime) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
+    moment.unix(data?.startDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //    moment.unix(data?.startDateTime)
   const [endDateTime, setEndDateTime] = useState(
-    moment.unix(data?.endDateTime) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
+    moment.unix(data?.endDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //moment.unix(data?.endDateTime)
   const [campaignDurationDays, setCampaignDurationDays] = useState(
     data?.durationDays
@@ -84,7 +85,7 @@ export default function SchedulingTab({
       ) {
         setData({
           durationDays: Number(durationDiff),
-          startDateTime: startTimestampValue,
+          startDateTime: Timestamp.fromMillis(startTimestampValue * 1000),
         });
       } else {
         doesChangeContainErrors = true;
@@ -112,8 +113,10 @@ export default function SchedulingTab({
       ) {
         setData({
           durationDays: Number(durationDiff),
-          endDateTime: endTimestampValue,
-          interactionEndDateTime: interactionTimestampValue,
+          endDateTime: Timestamp.fromMillis(endTimestampValue * 1000),
+          interactionEndDateTime: Timestamp.fromMillis(
+            interactionTimestampValue * 1000
+          ),
         });
       } else {
         doesChangeContainErrors = true;
@@ -144,8 +147,10 @@ export default function SchedulingTab({
       ) {
         setData({
           durationDays: Number(duration),
-          endDateTime: endTimestampValue,
-          interactionEndDateTime: interactionTimestampValue,
+          endDateTime: Timestamp.fromMillis(endTimestampValue * 1000),
+          interactionEndDateTime: Timestamp.fromMillis(
+            interactionTimestampValue * 1000
+          ),
         });
       } else {
         doesChangeContainErrors = true;
@@ -167,7 +172,9 @@ export default function SchedulingTab({
       ) {
         setData({
           interactionWindow: Number(windowDuration),
-          interactionEndDateTime: interactionTimestampValue,
+          interactionEndDateTime: Timestamp.fromMillis(
+            interactionTimestampValue * 1000
+          ),
         });
       } else {
         doesChangeContainErrors = true;
@@ -271,7 +278,7 @@ export default function SchedulingTab({
             until{" "}
             <Span sx={{ fontWeight: 500 }}>
               {getDateFromTimestamp({
-                timestamp: data?.interactionEndDateTime,
+                timestamp: data?.interactionEndDateTime?.seconds,
               })}
             </Span>
             .

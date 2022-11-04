@@ -1,9 +1,5 @@
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
-import {
-  FormControl,
-  FormHelperText,
-  TextField,
-} from "@mui/material";
+import { FormControl, FormHelperText, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CampaignCategorySelect from "../CampaignCategorySelect";
 import CampaignDropdownSelect from "../CampaignDropdownSelect";
@@ -59,79 +55,73 @@ export default function BasicsTab({
 
   return (
     <>
-      <FormControl>
-        <CreateCampaignItemWrapper>
-          <TitleAndDesc title="Campaign Title">
-            Enter a title for your campaign. Include your name/alias
-            in the title so fans can find you more easily.
-          </TitleAndDesc>
-          <TextField
-            variant="outlined"
-            name="title"
-            defaultValue={data?.title}
-            inputProps={{ maxLength: 40 }}
-            helperText="Max. 40 characters."
-            sx={{ width: 400 }}
-            placeholder={`Get to know ${"name"} 1-on-1`}
-            onChange={(e) => {
-              const nextValue = e.target.value;
+      <CreateCampaignItemWrapper>
+        <TitleAndDesc title="Campaign Title">
+          Enter a title for your campaign. Include your name/alias in the title
+          so fans can find you more easily.
+        </TitleAndDesc>
+        <TextField
+          variant="outlined"
+          name="title"
+          defaultValue={data?.title}
+          error={title <= 0}
+          inputProps={{ maxLength: 40 }}
+          helperText="Max. 40 characters."
+          sx={{ width: 400 }}
+          placeholder={`Get to know ${"name"} 1-on-1`}
+          onChange={(e) => {
+            const nextValue = e.target.value;
 
-              if (nextValue?.length > 0) {
-                setData({ title: nextValue });
-              }
-              setTitle(nextValue);
-            }}
-          />
-        </CreateCampaignItemWrapper>
-        <CreateCampaignItemWrapper>
-          <TitleAndDesc title="Campaign Info">
-            Enter a short description of your campaign.
-          </TitleAndDesc>
-          <TextField
-            name="description"
-            multiline
-            rows={4}
-            defaultValue={data?.description}
-            sx={{ width: 400 }}
-            onChange={(e) => {
-              const nextValue = e.target.value;
-              if (nextValue?.length > 0) {
-                setData({ description: nextValue });
-              }
-              setDescription(nextValue);
-            }}
-          />
-        </CreateCampaignItemWrapper>
-        <CreateCampaignItemWrapper>
-          <TitleAndDesc title="Categories">
-            Select 1-3 categories for your campaign.
-          </TitleAndDesc>
-          <CampaignCategorySelect
-            data={data}
-            setData={setData}
-            categories={categories}
-            setCategories={setCategories}
-          />
-        </CreateCampaignItemWrapper>
-        <CreateCampaignItemWrapper>
-          <TitleAndDesc title="Currency">
-            Set the currency for your campaign. This will apply to
-            giveaway entry prices, auction bids, and the campaign
-            goal.
-          </TitleAndDesc>
-          <CampaignDropdownSelect
-            placeholder="Currency"
-            defaultValue={data?.currency}
-            items={CURRENCIES}
-            setData={setData}
-          />
-        </CreateCampaignItemWrapper>
-        {errors ? (
-          <FormHelperText>
-            Please complete all form fields.
-          </FormHelperText>
-        ) : null}
-      </FormControl>
+            if (nextValue?.length > 0) {
+              setData({ title: nextValue });
+            }
+            setTitle(nextValue);
+          }}
+        />
+      </CreateCampaignItemWrapper>
+      <CreateCampaignItemWrapper>
+        <TitleAndDesc title="Campaign Info">
+          Enter a short description of your campaign.
+        </TitleAndDesc>
+        <TextField
+          name="description"
+          multiline
+          rows={4}
+          error={description <= 0}
+          defaultValue={data?.description}
+          sx={{ width: 400 }}
+          onChange={(e) => {
+            const nextValue = e.target.value;
+            if (nextValue?.length > 0) {
+              setData({ description: nextValue });
+            }
+            setDescription(nextValue);
+          }}
+        />
+      </CreateCampaignItemWrapper>
+      <CreateCampaignItemWrapper>
+        <TitleAndDesc title="Categories">
+          Select 1-3 categories for your campaign.
+        </TitleAndDesc>
+        <CampaignCategorySelect
+          data={data}
+          setData={setData}
+          categories={categories}
+          setCategories={setCategories}
+        />
+      </CreateCampaignItemWrapper>
+      <CreateCampaignItemWrapper>
+        <TitleAndDesc title="Currency">
+          Set the currency for your campaign. This will apply to giveaway entry
+          prices, auction bids, and the campaign goal.
+        </TitleAndDesc>
+        <CampaignDropdownSelect
+          placeholder="Currency"
+          defaultValue={data?.currency}
+          items={CURRENCIES}
+          setData={setData}
+        />
+      </CreateCampaignItemWrapper>
       <TabNavigation
         disableNext={!isTabValidated}
         selectedTabIndex={selectedTabIndex}
