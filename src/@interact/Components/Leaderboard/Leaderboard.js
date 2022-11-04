@@ -85,7 +85,7 @@ export default function Leaderboard({ campaignData, bids }) {
             ? minBid
             : formatMoney(Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5))
           : formatMoney(x.price),
-        bidTime: new Date(x.time.seconds * 1000).toString(),
+        bidTime: new Date(x.time?.seconds * 1000).toString(),
       };
     });
 

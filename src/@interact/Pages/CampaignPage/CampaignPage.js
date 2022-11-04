@@ -22,6 +22,7 @@ import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaig
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { useJumboTheme } from "@jumbo/hooks";
+import { sortBids } from "@interact/Components/utils";
 
 
 function CampaignPage(userData) {
@@ -33,9 +34,10 @@ function CampaignPage(userData) {
 	const [comments, setComments] = useState([]);
 	const [supporters, setSupporters] = useState([]);
 	const [winningChances, setWiningChances] = useState({'vip':100, 'free':100});
-	const [hasUserEnteredGiveaway, setHasUserEnteredGiveaway] = useState(false);
+	const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] = useState(false);
 	const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
 	const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
+	const [userAuctionPosition,setUserAuctionPosition] = useState(0);
 	const [isCampaignEnded,setIsCampaignEnded] = useState(false);
 
 	const num_giveaway = 10;
@@ -44,6 +46,11 @@ function CampaignPage(userData) {
 	const navigate = useNavigate();
 	let [user, loading] = useAuthState(auth);
 	const { theme } = useJumboTheme();
+
+	const getBids = async () => {
+		const q = collection(db, "campaigns", campaignId, "bids");
+		return  await getDocs(q);
+	}
 
 	const getCampaignData = async () => 
 	{
@@ -166,7 +173,7 @@ function CampaignPage(userData) {
 		var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
 		let user_data = userSnap.docs[0];
 
-		await setDoc(doc(db, "campaigns", campaignId, "bids", user_data.id), {
+		setDoc(doc(db, "campaigns", campaignId, "bids", user_data.id), {
 			person: {
 				username: user_data.data().name,
 				id: user_data.id,
@@ -179,19 +186,43 @@ function CampaignPage(userData) {
 			auto: auto,
 			email: user.email,
 			time: serverTimestamp(),
+		}).then(async ()=>{
+			let allBids = await getBids();
+			const bidsList = [];
+			allBids.forEach((doc)=>{
+				bidsList.push(doc.data());
+			})
+			let position = 0;
+			sortBids(bidsList).forEach((bid,i)=>{
+				if(bid.email == user.email) position = i+1;
+			})
+			setUserAuctionPosition(position);
+			setHasUserEnteredAuction(true);
 		});
 	};
 
 	function renderUserCampaignStatus() 
 	{
-		if (hasUserEnteredAuction || hasUserEnteredGiveaway) {
+		if (hasUserEnteredAuction || hasUserPurchasedVIPEntry || hasUserClaimedFreeEntry) {
+			let statusType = 'bid';
+			let chances = 0;
+			if(hasUserPurchasedVIPEntry){
+				chances = winningChances.vip;
+				statusType = 'giveaway';
+			}else if(hasUserClaimedFreeEntry){
+				chances = winningChances.free;
+				statusType = 'giveaway'
+			}else if(hasUserEnteredAuction){
+				console.log("Is acution")
+			}
 			return (
 			<Stack alignItems="center"
 				sx={{position: "fixed", bottom: 10, left: 0, zIndex: 4000, width: "100%"}}>
 				<Box sx={{backgroundColor:"primary.translucent", boxShadow:"rgba(0, 0, 0, 0.24) 0px 3px 30px", p:1, borderRadius:2}}>
 				<UserCampaignStatus
-					userAuctionPosition={8}
-					userGiveawayWinChance={winningChances}
+				  statusType={statusType}
+					userAuctionPosition={userAuctionPosition}
+					userGiveawayWinChance={chances}
 					auctionLeaderboardSpots={31}
 					showUserAvatar
 				/>
@@ -259,10 +290,9 @@ function CampaignPage(userData) {
 				isCampaignEnded={isCampaignEnded}
 				campaignData={campaignData}
 				hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
-				hasUserPurchasedVIPEntry={hasUserEnteredGiveaway}
+				hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
 				setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
-				setHasUserEnteredGiveaway={setHasUserEnteredGiveaway}
-				setHasUserPurchasedVIPEntry={setHasUserEnteredGiveaway}
+				setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
 				vipChanceMultiplier={vipChanceMultiplier}
 				freeChanceMultiplier = {freeChanceMultiplier}
 				winningChances={winningChances}

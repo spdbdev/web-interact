@@ -34,7 +34,6 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           setBidAmount(campaignData?.minBidPrice);
         }
       }else{
-        console.log("campaignData.minBidPrice",campaignData.minBidPrice)
         setMinBidAmount(campaignData?.minBidPrice)
         setBidAmount(campaignData?.minBidPrice);
       }

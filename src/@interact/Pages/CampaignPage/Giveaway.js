@@ -21,7 +21,6 @@ export default function Giveaway({
   hasUserPurchasedVIPEntry,
   setHasUserClaimedFreeEntry,
   setHasUserPurchasedVIPEntry,
-  setHasUserEnteredGiveaway,
   vipChanceMultiplier,
   freeChanceMultiplier,
   winningChances,
