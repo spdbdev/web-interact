@@ -16,18 +16,18 @@ import FollowerListItem from "./FollowerList";
 import FollowerList from "./FollowerList";
 
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs, where, addDoc } from "firebase/firestore";
+import Storage from "./firebasestorage";
+
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate,useParams } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { FollowButton } from "../CampaignPage/Stats";
 
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-  
-
 
   return (
     <div
@@ -68,6 +68,9 @@ function UserProfilePage() {
 
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState("");
+  const [image, setImage] = React.useState(
+    "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+  );
   const navigate = useNavigate();
 
   const fetchUserName = async () => {
@@ -88,19 +91,73 @@ function UserProfilePage() {
       alert("An error occured while fetching user data");
     }
   };
-  useEffect(() => {
-    let user_id = id;
 
-    //console.log('username');
-    //console.log(user_id);
-    
+  const userProfile = async () => {
+    const q = query(collection(db, "userspicture"));
+    const doc = await getDocs(q);
+
+    if (doc.docs.length > 0) {
+      for (let index = 0; index < doc.docs.length; index++) {
+        const element = doc.docs[index].data();
+        if (element.uid === user?.uid) {
+            setImage(element.imageurl)
+        } else {
+          setImage(
+            "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+          );
+        }
+        console.log(element, doc.docs.length);
+      }
+    } else {
+      setImage(
+        "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+      );
+    }
+  };
+  useEffect(() => {
+    userProfile();
+  }, [user]);
+
+  useEffect(() => {
+    let user_id = id; 
     if (loading) return;
     if (!user) return navigate("/");
     fetchUserName();
   }, [user, loading,id]);
 
-  localStorage.setItem('name',name);
+  const handleChangeImage = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+        },
+        (err) => console.log(err),
+        async () => {
+          // download url
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            await addDoc(collection(db, "userspicture"), {
+              uid: user?.uid,
+              name: user.displayName,
+              imageurl: url,
+            });
+          });
+        }
+      );
 
+      var reader = new FileReader();
+      reader.onload = function () {
+        var dataURL = reader.result;
+        setImage(dataURL);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <div>
       <FollowerList open={modalOpened} setOpen={setModalOpened} />
@@ -115,11 +172,20 @@ function UserProfilePage() {
           borderRadius: 2,
         }}
       >
-        <img
-          className="profilePic"
-          alt="profile-pic"
-          src="https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-        />
+        <div className="image_item">
+          <form className="image_item-form">
+            <label className="image_item-form--lable"> Add Image</label>
+            <input
+              className="image-item-form-input"
+              type="file"
+              id="image-item-form--input-id"
+              onChange={handleChangeImage}
+            ></input>
+          </form>
+
+          {/* <input type="file" onChange={handleChangeImage} /> */}
+          <img className="profilePic" alt="profile-pic" src={image} />
+        </div>
         <div
           style={{
             color: "white",
