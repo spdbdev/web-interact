@@ -28,6 +28,7 @@ export default function Giveaway({
   const stripe = useStripe();
   const elements = useElements();
   const [priceToPay,setPriceToPay] = useState(0);
+  const [entryType,setEntryType] = useState(null);
   const [modal, setModal] = useState(false);
   const [clientemail, isClientEmail] = useState("");
   const [stripeError, setStripeError] = useState("");
@@ -219,6 +220,7 @@ if(logged_user_stripe_customer_id){
         price: priceToPay,
         stripe_customer_id: null,
         payment_id: null,
+        entryType:'free',
         status: 'succeeded',
         campaignId: campaignId,
         type: "Giveaway",
@@ -275,6 +277,7 @@ if(logged_user_stripe_customer_id){
                                             payment_id: result.id,
                                             status: result.status,
                                             campaignId: campaignId,
+                                            entryType:entryType,
                                             type: "Giveaway",
                                             time: serverTimestamp(),
     
@@ -305,6 +308,7 @@ if(logged_user_stripe_customer_id){
                                         stripe_customer_id: response.data.stripe_customer_id,
                                         payment_id: response.data.id,
                                         status: response.data.pi_status,
+                                        entryType:entryType,
                                         campaignId: campaignId,
                                         type: "Giveaway",
                                         time: serverTimestamp(),
@@ -382,6 +386,7 @@ if(logged_user_stripe_customer_id){
                                                     price: priceToPay,
                                                     stripe_customer_id: response.data.stripe_customer_id,
                                                     payment_id: result.paymentIntent.id,
+                                                    entryType:entryType,
                                                     status: result.paymentIntent.status,
                                                     campaignId: campaignId,
                                                     type: "Giveaway",
@@ -484,6 +489,7 @@ if(logged_user_stripe_customer_id){
                                                 stripe_customer_id: stripe_customer_id,
                                                 payment_id: result.paymentIntent.id,
                                                 status: result.paymentIntent.status,
+                                                entryType:entryType,
                                                 campaignId: campaignId,
                                                 type: "Giveaway",
                                                 time: serverTimestamp(),
@@ -590,6 +596,7 @@ if(logged_user_stripe_customer_id){
           "success"
         ).then(()=>{
           setPriceToPay(vipEntryPrice);
+          setEntryType('vip');
           toggleModal();
         });
       } else {
@@ -612,6 +619,7 @@ if(logged_user_stripe_customer_id){
     }).then((result) => {
       if (result.value) {
         setPriceToPay(freeEntryPrice);
+        setEntryType('free');
         if(!collectFreeEntryPayment()){
           return;
         };

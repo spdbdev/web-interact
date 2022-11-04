@@ -59,7 +59,7 @@ function CampaignPage(userData) {
 			let _campaignData = querySnapshot.data();
 			setCampaignData(_campaignData);
 			
-			//console.log("Campaign Data >>>>>>>>>>>", _campaignData);
+			// console.log("Campaign Data >>>>>>>>>>>", _campaignData);
 
 			//Check Campaign End Time
 			let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
@@ -159,12 +159,32 @@ function CampaignPage(userData) {
 		//setWiningChances({'vip':100, 'free':100});
   	}
 
+		const checkPurchasedEntry = async () => {
+			var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
+			let user_data = userSnap.docs[0];
+			const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user_data.data()?.uid);
+			const docSnap = await getDoc(docRef);
+			if (docSnap.exists()) {
+					const data = docSnap.data();
+					if(data.entryType === 'free'){
+						setHasUserClaimedFreeEntry(true);
+					}else if(data.entryType === 'vip'){
+						setHasUserClaimedFreeEntry(true);
+						setHasUserPurchasedVIPEntry(true);
+					}
+					console.log("User Giveaway",data);           
+			} else {
+					console.log("No such document!");
+			}
+		}
+
 	
 	useEffect(() => {
 		if (loading) return;
 		if (!user) return navigate("/");
 
 		getCampaignData();
+		checkPurchasedEntry();
 	}, [user, loading]);
 
 
@@ -173,7 +193,7 @@ function CampaignPage(userData) {
 		var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
 		let user_data = userSnap.docs[0];
 
-		setDoc(doc(db, "campaigns", campaignId, "bids", user_data.id), {
+		setDoc(doc(db, "campaigns", campaignId, "bids", user_data.data().uid), {
 			person: {
 				username: user_data.data().name,
 				id: user_data.id,
