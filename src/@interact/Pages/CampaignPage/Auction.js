@@ -13,10 +13,11 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
   // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
 
   const [bidAmount, setBidAmount] = useState(0);
+  const [autoBidAmount, setAutoBidAmount] = useState(0);
   const [minBidAmount, setMinBidAmount] = useState(0);
   const [maxBidAmount, setMaxBidAmount] = useState(0);
   const [numBidSlots,setNumBidSlots] = useState(0);
-  const [desiredRanking, setDesiredRanking] = useState(0);
+  const [desiredRanking, setDesiredRanking] = useState(1);
 
   useEffect(()=>{
     if(Object.entries(campaignData).length > 0 && bids.length > 0){
@@ -55,21 +56,21 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
   })
 
   const handleBidAmount = function(e){
-    if(e.target.value >= minBidAmount){
+    if(parseInt(e.target.value) >= parseInt(minBidAmount) && parseInt(e.target.value) <= parseInt(maxBidAmount)){
       setBidAmount(e.target.value);
     }
   }
 
-  const handleDesiredRanking = function(e){
-    // prevent values less than 0 or higher than 20.
-    e.target.value < 0
-    ? (e.target.value = 0)
-    : e.target.value > 20
-    ? (e.target.value = 20)
-    : setDesiredRanking(e.target.value);
+  const onAutoBidAmountChange = function(e){
+    if(parseInt(e.target.value) >= parseInt(minBidAmount) && parseInt(e.target.value) <= parseInt(maxBidAmount)){
+        setAutoBidAmount(e.target.value);
+    }
+  }
+
+  const handleMaxBidAmount = function(value){
     if(bids.length > 0){
       let sortedBids = sortBids(bids);
-      let bidAtDesiredRanking = sortedBids[e.target.value - 1];
+      let bidAtDesiredRanking = sortedBids[parseInt(value) - 1];
       let thirtyPer = (bidAtDesiredRanking?.price/100) * 30;
       let maxIncrement = 5;
       if(thirtyPer > 5){
@@ -78,11 +79,31 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
       maxIncrement = Math.round(maxIncrement*2)/2;
 
       setMaxBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
+      setAutoBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
+      if(!bidAtDesiredRanking){
+        setMaxBidAmount(0.00);
+        setAutoBidAmount(0.00);
+      }
     }
-    if(e.target.value > bids.length){
+    if(parseInt(value) > bids.length){
       setMaxBidAmount(0.00);
     }
   }
+
+  const handleDesiredRanking = function(e){
+    // prevent values less than 0 or higher than 20.
+    console.log("Num interactions",campaignData?.numAuctionInteractions)
+    e.target.value < 1
+    ? (e.target.value = 1)
+    : e.target.value > parseInt(campaignData?.numAuctionInteractions)
+    ? (e.target.value = campaignData?.numAuctionInteractions)
+    : setDesiredRanking(e.target.value);
+    handleMaxBidAmount(e.target.value);
+  }
+
+  useEffect(()=>{
+    handleMaxBidAmount(desiredRanking);
+  },[])
 
   return (
     <JumboCardQuick
@@ -126,13 +147,13 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
             inputProps={{ step: ".50" }}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             style={{ height: 50 }}
-            value={formatMoney(maxBidAmount)}
+            value={formatMoney(autoBidAmount)}
             label="Max Bid Amount"
-            onChange={(e) => setMaxBidAmount(e.target.value)}
+            onChange={(e) =>  onAutoBidAmountChange(e)}
           />
         </FormControl>
 
-        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(maxBidAmount,true,desiredRanking,maxBidAmount)}>
+        <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}>
           Place auto-bid
         </InteractButton>
       </Stack>
