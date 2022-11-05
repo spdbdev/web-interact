@@ -59,6 +59,25 @@ export default function SchedulingTab({
     formValidationConditions,
   });
 
+  function getNextMondayFromDate(date) {
+    const dayINeed = 1; // for Monday
+    const day = date.isoWeekday();
+
+    // if we haven't yet passed the day of the week that I need:
+    if (day <= dayINeed) {
+      // then just give me this week's instance of that day
+      return moment(date)
+        .isoWeekday(dayINeed)
+        .set({ hour: 0, minute: 0, second: 0 }); // set at Monday 12:00 AM (00:00)
+    } else {
+      // otherwise, give me *next week's* instance of that same day
+      return moment(date)
+        .add(1, "weeks")
+        .isoWeekday(dayINeed)
+        .set({ hour: 0, minute: 0, second: 0 }); // set at Monday 12:00 AM (00:00)
+    }
+  }
+
   function handleSchedulingChanges({
     start,
     end,
@@ -68,6 +87,7 @@ export default function SchedulingTab({
   }) {
     let durationDiff = null;
     let newEndDate = null;
+    let interactionWindowStartDate = null;
     let interactionWindowEndDate = null;
 
     // If new changes contain errors, we don't write them to DB
@@ -101,9 +121,19 @@ export default function SchedulingTab({
 
       const endTimestampValue = moment(end).unix();
 
-      // calculate end date from interaction window
-      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
+      //calculate new interaction start date (from campaign end date)
+      interactionWindowStartDate = getNextMondayFromDate(end);
+
+      // calculate new interaction end date (from interaction start date)
+      interactionWindowEndDate = moment(interactionWindowStartDate).add(
+        windowDuration,
+        "weeks"
+      );
+
       const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+      const interactionStartTimestampValue = moment(
+        interactionWindowStartDate
+      ).unix();
 
       if (
         Number(durationDiff) >= 5 &&
@@ -114,6 +144,9 @@ export default function SchedulingTab({
         setData({
           durationDays: Number(durationDiff),
           endDateTime: Timestamp.fromMillis(endTimestampValue * 1000),
+          interactionStartDateTime: Timestamp.fromMillis(
+            interactionStartTimestampValue * 1000
+          ),
           interactionEndDateTime: Timestamp.fromMillis(
             interactionTimestampValue * 1000
           ),
@@ -130,14 +163,20 @@ export default function SchedulingTab({
       //calculate new end date from duration
       newEndDate = moment(start)?.add(duration, "days");
 
-      // calculate end date from interaction window
-      interactionWindowEndDate = moment(newEndDate).add(
+      //calculate new interaction start date (from campaign end date)
+      interactionWindowStartDate = getNextMondayFromDate(newEndDate);
+
+      // calculate new interaction end date (from interaction start date)
+      interactionWindowEndDate = moment(interactionWindowStartDate).add(
         windowDuration,
         "weeks"
       );
 
       const endTimestampValue = moment(newEndDate).unix();
       const interactionTimestampValue = moment(interactionWindowEndDate).unix();
+      const interactionStartTimestampValue = moment(
+        interactionWindowStartDate
+      ).unix();
 
       if (
         Number(duration) >= 5 &&
@@ -148,6 +187,9 @@ export default function SchedulingTab({
         setData({
           durationDays: Number(duration),
           endDateTime: Timestamp.fromMillis(endTimestampValue * 1000),
+          interactionStartDateTime: Timestamp.fromMillis(
+            interactionStartTimestampValue * 1000
+          ),
           interactionEndDateTime: Timestamp.fromMillis(
             interactionTimestampValue * 1000
           ),
@@ -162,7 +204,10 @@ export default function SchedulingTab({
 
     if (action == "updateWindow") {
       // calculate end date from interaction window
-      interactionWindowEndDate = moment(end).add(windowDuration, "weeks");
+      interactionWindowEndDate = moment(getNextMondayFromDate(end)).add(
+        windowDuration,
+        "weeks"
+      );
       const interactionTimestampValue = moment(interactionWindowEndDate).unix();
 
       if (
@@ -273,15 +318,19 @@ export default function SchedulingTab({
           <Typography sx={{ fontSize: 12 }}>
             Interactions will be available from{" "}
             <Span sx={{ fontWeight: 500 }}>
-              {formatMomentDate({ date: endDateTime })}
+              {getDateFromTimestamp({
+                timestamp: data?.interactionStartDateTime?.seconds,
+                format: "MMM Do, YYYY h:mm a",
+              })}
             </Span>{" "}
-            until{" "}
+            EST until{" "}
             <Span sx={{ fontWeight: 500 }}>
               {getDateFromTimestamp({
                 timestamp: data?.interactionEndDateTime?.seconds,
+                format: "MMM Do, YYYY h:mm a",
               })}
-            </Span>
-            .
+            </Span>{" "}
+            EST.
           </Typography>
         </Stack>
       </CreateCampaignItemWrapper>
