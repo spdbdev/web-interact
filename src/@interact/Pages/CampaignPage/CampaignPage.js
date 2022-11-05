@@ -47,10 +47,6 @@ function CampaignPage(userData) {
 	let [user, loading] = useAuthState(auth);
 	const { theme } = useJumboTheme();
 
-	const getBids = async () => {
-		const q = collection(db, "campaigns", campaignId, "bids");
-		return  await getDocs(q);
-	}
 
 	const getCampaignData = async () => 
 	{
@@ -75,6 +71,16 @@ function CampaignPage(userData) {
 			querySnapshot.forEach((doc) => {
 				bidsList.push(doc.data());
 			});
+
+			let position = 0;
+			var index = sortBids(bidsList).map(function(e) {
+					return e.email;
+			}).indexOf(user.email);
+			position =  index + 1;
+
+			setUserAuctionPosition(position);
+			setHasUserEnteredAuction(true);
+
 			setBids(bidsList);
 		})
 
@@ -160,9 +166,8 @@ function CampaignPage(userData) {
   	}
 
 		const checkPurchasedEntry = async () => {
-			var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
-			let user_data = userSnap.docs[0];
-			const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user_data.data()?.uid);
+
+			const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user.uid);
 			const docSnap = await getDoc(docRef);
 			if (docSnap.exists()) {
 					const data = docSnap.data();
@@ -206,18 +211,6 @@ function CampaignPage(userData) {
 			auto: auto,
 			email: user.email,
 			time: serverTimestamp(),
-		}).then(async ()=>{
-			let allBids = await getBids();
-			const bidsList = [];
-			allBids.forEach((doc)=>{
-				bidsList.push(doc.data());
-			})
-			let position = 0;
-			sortBids(bidsList).forEach((bid,i)=>{
-				if(bid.email == user.email) position = i+1;
-			})
-			setUserAuctionPosition(position);
-			setHasUserEnteredAuction(true);
 		});
 	};
 
