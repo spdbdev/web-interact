@@ -116,20 +116,20 @@ export default function GoalVideoTab({
             </IconButton>
           </Stack>
           <Typography sx={{ mt: 2 }}>
-            If you want to to meet & play with me, you have 2 options: enter the
-            giveaway for free or with a VIP entry for $3, to have a chance of
-            winning 50 interactions. At first, if only 50 people buy a ticket,
-            the chance of winning would be 100%; but of course this will go down
-            and you’ll see the live % chance of winning on the campaign page. If
-            you unfortunately don’t win, your chance to win will be doubled in
-            future campaigns, stacking up to 4x. If you’ve saved up some
-            birthday money or just won a tournament prize because you're so
-            good, bid in the auction where 50 interactions are being offered.
-            Pretty much the top 50 bids are on the leaderboard, and at the end
-            of the campaign on December 10th at 8pm, those on the leaderboard
-            win an interaction while the losers not on the leaderboard are not
-            charged. These interactions will occur first, and the top 3 will
-            have double the time to chat & game with me.
+            Come show off your legendary skills to everyone; play with me for
+            ~45 minutes & let's get to know each other. Tell me about your life!
+            We live in a society. There are serveral ways to get an interaction
+            with me: Enter the giveaway to have a chance of getting to play with
+            me 1-on-1 (50 interactions as the prize). You can enter for free or
+            support my content by buying a VIP entry for $3 (25x higher chance).
+            If you don’t win, your chances will be doubled in future campaigns,
+            stacking up to 4x. There's also the auction. Show some love if
+            you've just landed a 6-figure job because you're so goddam smart, or
+            you won a LAN tournament with your godly skills. Place a bid & at
+            the end of the campaign at 8pm EST on March 14th, the top 50 bids
+            get an interaction. These interactions will occur first, before
+            giveaway winners, and the top 3 will get 90 minutes to chat, show
+            off, & game with me.
           </Typography>
         </Box>
       </Modal>

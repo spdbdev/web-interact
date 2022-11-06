@@ -286,7 +286,7 @@ exports.getCampaignImage = functions.https.onRequest((request, response) => {
 
     const CAMPAIGN_SUMMARY_IMAGE_HTML_TEMPLATE = getCampaignImageHTML({
       title,
-      categories: categories,
+      categories,
       creatorName,
       description,
       thumbnailUrl,
@@ -345,3 +345,36 @@ exports.getCampaignImage = functions.https.onRequest((request, response) => {
     }
   });
 });
+
+const axios = require("axios").default;
+
+// https://us-central1-interact2002.cloudfunctions.net/interact2002/us-central1/getCurrencyConversionRate
+exports.getCurrencyConversionRate = functions.https.onRequest(
+  (request, response) => {
+    cors(request, response, async () => {
+      const { currency } = request.body.data;
+
+      let config = {
+        headers: {
+          apikey: "bIlnJTPbNOzyGREdeHRjYatECy298T3q",
+        },
+      };
+
+      try {
+        const result = await axios.get(
+          `https://api.apilayer.com/fixer/convert?to=${currency}&from=USD&amount=1`,
+          config
+        );
+        response.send({
+          status: "success",
+          data: result?.data?.result,
+        });
+      } catch (e) {
+        response.send({
+          status: "error",
+          data: "An error occurred. Please try again later",
+        });
+      }
+    });
+  }
+);

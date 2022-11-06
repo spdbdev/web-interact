@@ -57,7 +57,7 @@ export default function CampaignCreationConfirmationPage() {
           fetchedData?.numAuctionInteractions +
             fetchedData?.numGiveawayInteractions
         ),
-        campaignUrl: campaignData?.customURL,
+        campaignUrl: fetchedData?.customURL,
       })
         .then((result) => {
           setCampaignImage(result?.data?.file?.url);
