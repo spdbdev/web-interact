@@ -6,13 +6,6 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 
 /* 
 	https://us-central1-interact2002.cloudfunctions.net/determineWinners?campaign_id=test12345
@@ -220,4 +213,100 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 	}
 
 	response.send("Collecting winners are done.");
+});
+
+
+
+
+exports.autoBidding = functions.firestore.document('/campaigns/{campaign_id}/bids/{bid_id}').onWrite(async (snap, context) => 
+{
+	// Exit when the data is deleted.
+    if (!snap.after) {
+		return null;
+    }
+
+	// Grab the current value of what was written to Firestore.
+	let original = snap.after.data();
+	let campaign_id = context.params.campaign_id;
+	let bid_id = context.params.bid_id;
+	console.log('autoBidding', campaign_id, bid_id, original);
+	
+	// Exit if this is not an auto bid.
+	if(original.auto === false) return null;
+
+	original.price = Number(original.price);
+	original.maxBidPrice = Number(original.maxBidPrice);
+	if (original.price >= original.maxBidPrice) {
+		console.log('Already at maxBidPrice. ....', original.price, original.maxBidPrice);
+		return null;
+	}
+
+
+
+	/* ***** start auto bidding process ***** */
+	var db = admin.firestore();
+	var bids_coll_ref = db.collection("campaigns").doc(campaign_id).collection('bids');
+	const snapshot = await db.collection("campaigns").doc(campaign_id).collection("bids").get();
+	
+	var bids = [];
+	var auto_bids = [];
+	snapshot.forEach(document => {
+		let doc = document.data();
+		doc.id = document.id;
+		doc.price = Number(doc.price);
+		doc.maxBidPrice = Number(doc.maxBidPrice);
+		doc.desiredRanking = Number(doc.desiredRanking);
+
+		bids.push(doc);
+		if (doc.auto && doc.price < doc.maxBidPrice) {
+			auto_bids.push(doc);
+		}
+	});
+	
+	auto_bids.sort((a, b)=> a.desiredRanking - b.desiredRanking);
+	auto_bids.forEach((document, index) => {
+		bids.sort((a, b)=> b.price - a.price);
+		//log_bids();
+
+		perform_auto_bidding(document, index);
+	});
+
+	async function perform_auto_bidding(document, index)
+	{
+		console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>', index, document.id);
+		const current_index = bids.findIndex(element => element.id == document.id);
+		if (current_index == -1) {
+			console.log('Error: unable to find index of current user in bids. findIndex is not working');
+			return null;
+		}
+
+		let desiredRanking = document.desiredRanking-1;
+		if (current_index <= desiredRanking){
+			console.log('Already have Desired Ranking. ....', current_index, desiredRanking);
+			return null;
+		}
+
+		let targetPrice = bids[desiredRanking].price;
+		console.log('current_index:',current_index, 'desiredRanking:',desiredRanking, 'targetPrice:',targetPrice);
+		if (targetPrice >= document.maxBidPrice) {
+			document.price = document.maxBidPrice;
+		} 
+		else {
+			document.price = (targetPrice + 0.5);
+		}
+
+		//bids[current_index].price = document.price;
+		bids_coll_ref.doc(document.id).set({price:document.price},{merge:true});
+	}
+
+	function log_bids(){
+		console.log('=========================== Sorted Auto Bids Start { ===========================');
+		auto_bids.forEach((doc, index) => console.log(index, doc.auto, doc.desiredRanking-1, doc.price, doc.maxBidPrice, doc.id));
+		console.log('--------');
+		bids.forEach((doc, index) => console.log(index, '------', doc.price, '------',doc.id));
+		console.log('=========================== Sorted Bids End { ===========================');
+	}
+
+
+	return null;
 });
