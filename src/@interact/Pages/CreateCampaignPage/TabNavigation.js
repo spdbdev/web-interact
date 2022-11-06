@@ -2,6 +2,7 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import InteractLogo from "@interact/Images/logo.png";
 
 export function TabNavigation({
   selectedTabIndex,
@@ -9,7 +10,6 @@ export function TabNavigation({
   disableNext,
 }) {
   const navigate = useNavigate();
-
   const Swal = useSwalWrapper();
 
   function handleNextButtonClick() {
@@ -41,17 +41,21 @@ export function TabNavigation({
   return (
     <Box
       sx={{
+        position: "absolute",
         width: "100%",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignSelf: "flex-end",
+        justifySelf: "flex-end",
         my: 4,
+        bottom: 20,
       }}
     >
       <InteractFlashyButton onClick={handleBackButtonClick}>
         ← Back
       </InteractFlashyButton>
+      <img alt="logo" src={InteractLogo} width={120} height={"100%"} />
       <InteractFlashyButton onClick={handleNextButtonClick}>
         Next →
       </InteractFlashyButton>

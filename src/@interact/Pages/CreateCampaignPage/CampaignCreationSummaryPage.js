@@ -1,7 +1,10 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import InteractChip from "@interact/Components/Chips/InteractChip";
 import Loading from "@interact/Components/Loading/Loading";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import {
+  getDateFromTimestamp,
+  getYoutubeIDFromURL,
+} from "@interact/Components/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
@@ -138,15 +141,24 @@ export default function CampaignCreationSummaryPage() {
                   width: 350,
                   height: 180,
                   borderRadius: 2,
-                  p: 2,
                   textAlign: "center",
+                  overflow: "hidden",
                 }}
               >
-                <img
-                  alt="thumbnail"
-                  src={campaignData?.campaignVideoThumbnailLink}
-                />
-                {/* <Typography>Click here to upload a thumbnail image.</Typography> */}
+                <iframe
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                  src={`https://www.youtube.com/embed/${getYoutubeIDFromURL(
+                    campaignData?.campaignVideoLink
+                  )}`}
+                  title="YouTube video player"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
               </Stack>
               <FAQAccordian data={campaignData} shouldAllowEdit={false} />
             </Stack>
@@ -155,11 +167,7 @@ export default function CampaignCreationSummaryPage() {
                 <Typography variant="h3" sx={{ fontWeight: 500 }}>
                   {campaignData?.title}
                 </Typography>
-                <Typography flex={1}>
-                  {campaignData?.description}
-                  {/* Interact helps you bring joy to your most loyal fans who have
-                grown with you not only as a creator, but as a human being. */}
-                </Typography>
+                <Typography flex={1}>{campaignData?.description}</Typography>
                 <Stack direction="row" alignItems="center" spacing={1}>
                   {campaignData?.categories?.map((item, index) => (
                     <InteractChip label={item} key={index} />

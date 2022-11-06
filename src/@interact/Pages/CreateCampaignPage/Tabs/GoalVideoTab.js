@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -18,8 +18,10 @@ import {
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { Add, Close } from "@mui/icons-material";
-import InteractButton from "@interact/Components/Button/InteractButton";
-import Span from "@jumbo/shared/Span";
+import {
+  getYoutubeIDFromURL,
+  isValidHttpUrl,
+} from "@interact/Components/utils";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { addTrailingZerosToDollarValue } from "@interact/Components/utils";
@@ -36,14 +38,26 @@ export default function GoalVideoTab({
     addTrailingZerosToDollarValue(data?.goalValue)
   );
   const [campaignGoal, setCampaignGoal] = useState(data?.goal);
-  const [selectedVideo, setSelectedVideo] = useState(
-    data?.campaignVideoLink
+  const [selectedVideo, setSelectedVideo] = useState(data?.campaignVideoLink);
+  const [videoThumbnailLink, setVideoThumbnailLink] = useState(
+    data?.campaignVideoThumbnailLink
   );
+
+  useEffect(() => {
+    function getVideoThumbnailLink() {
+      const id = getYoutubeIDFromURL(selectedVideo);
+      const link = `http://i3.ytimg.com/vi/${id}/hqdefault.jpg`;
+      setVideoThumbnailLink(link);
+      setData({ campaignVideoThumbnailLink: link });
+    }
+
+    getVideoThumbnailLink();
+  }, [selectedVideo]);
 
   const { goal, lastCompletedTabIndex } = data;
 
   const formValidationConditions =
-    goal.length <= 50 && goal.length > 0;
+    goal.length <= 50 && goal.length > 0 && isValidHttpUrl(selectedVideo);
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
@@ -76,30 +90,25 @@ export default function GoalVideoTab({
               Sample campaign video script:
             </Typography>
 
-            <IconButton
-              onClick={() => setIsScriptExampleModalOpen(false)}
-            >
+            <IconButton onClick={() => setIsScriptExampleModalOpen(false)}>
               <Close />
             </IconButton>
           </Stack>
           <Typography sx={{ mt: 2 }}>
-            If you want to to meet & play with me, you have 2 options:
-            enter the giveaway for free or with a VIP entry for $3, to
-            have a chance of winning 50 interactions. At first, if
-            only 50 people buy a ticket, the chance of winning would
-            be 100%; but of course this will go down and you’ll see
-            the live % chance of winning on the campaign page. If you
-            unfortunately don’t win, your chance to win will be
-            doubled in future campaigns, stacking up to 4x. If you’ve
-            saved up some birthday money or just won a tournament
-            prize because you're so good, bid in the auction where 50
-            interactions are being offered. Pretty much the top 50
-            bids are on the leaderboard, and at the end of the
-            campaign on December 10th at 8pm, those on the leaderboard
-            win an interaction while the losers not on the leaderboard
-            are not charged. These interactions will occur first, and
-            the top 3 will have double the time to chat & game with
-            me.
+            If you want to to meet & play with me, you have 2 options: enter the
+            giveaway for free or with a VIP entry for $3, to have a chance of
+            winning 50 interactions. At first, if only 50 people buy a ticket,
+            the chance of winning would be 100%; but of course this will go down
+            and you’ll see the live % chance of winning on the campaign page. If
+            you unfortunately don’t win, your chance to win will be doubled in
+            future campaigns, stacking up to 4x. If you’ve saved up some
+            birthday money or just won a tournament prize because you're so
+            good, bid in the auction where 50 interactions are being offered.
+            Pretty much the top 50 bids are on the leaderboard, and at the end
+            of the campaign on December 10th at 8pm, those on the leaderboard
+            win an interaction while the losers not on the leaderboard are not
+            charged. These interactions will occur first, and the top 3 will
+            have double the time to chat & game with me.
           </Typography>
         </Box>
       </Modal>
@@ -107,12 +116,7 @@ export default function GoalVideoTab({
         <Typography variant="h2" sx={{ fontWeight: 500 }}>
           What's your goal for this campaign?
         </Typography>
-        <Stack
-          direction="row"
-          alignItems="center"
-          mt={4}
-          sx={{ fontSize: 18 }}
-        >
+        <Stack direction="row" alignItems="center" mt={4} sx={{ fontSize: 18 }}>
           If we raise{" "}
           <GoalInput
             value={campaignMoneyGoal}
@@ -125,7 +129,8 @@ export default function GoalVideoTab({
             <TextField
               sx={{ mx: 2, mt: 2, width: 400 }}
               variant="outlined"
-              inputProps={{ maxLength: 40 }}
+              inputProps={{ maxLength: 50 }}
+              error={goal.length <= 0}
               value={campaignGoal}
               onChange={(e) => {
                 setData({ goal: e.target.value });
@@ -141,15 +146,13 @@ export default function GoalVideoTab({
 
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Introduction Video">
-          Upload a short video and thumbnail where you describe your
-          campaign and goal where you tell your fans about the goal,
-          explain how interactions work & how fans can acquire them in
-          the campaign.
+          Include a link to a short YouTube video where you describe your
+          campaign and goal where you tell your fans about the goal, explain how
+          interactions work & how fans can acquire them in the campaign.
           <br />
           <br />
-          After selecting a video and thumbnail, you can then click
-          'Upload to YouTube'. A tab will open and you'll be prompted
-          to login to your YouTube account.
+          We'll automatically get the thumbnail from your video link. This is
+          what users will see when looking for your campaign.
           <br />
           <br />
           <Button
@@ -164,56 +167,44 @@ export default function GoalVideoTab({
             Not sure what to say? See a sample script here
           </Button>
         </TitleAndDesc>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           <Stack
             direction="column"
             alignItems="center"
             justifyContent="center"
-            spacing={2}
+            position="relative"
             sx={{
               bgcolor: "divider",
               width: 280,
               height: 150,
               borderRadius: 2,
+              overflow: "hidden",
               p: 2,
               textAlign: "center",
             }}
           >
-            <Add />
-            <Typography>
-              Click here to upload a thumbnail image.
-            </Typography>
+            <img
+              style={{
+                width: "280px",
+                height: "150px",
+                objectFit: "cover",
+              }}
+              alt="video-thumbnail"
+              src={videoThumbnailLink}
+            />
           </Stack>
-          <InteractButton>
-            <Span
-              sx={{
-                fontWeight: 500,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                px: 2,
-              }}
-            >
-              Browse for video
-            </Span>
-          </InteractButton>
-          <InteractButton
-            variant="contained"
-            disabled={!selectedVideo}
-          >
-            <Span
-              sx={{
-                fontWeight: 500,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                px: 2,
-                color: "#FFFFFF",
-              }}
-            >
-              Upload to Youtube
-            </Span>
-          </InteractButton>
+
+          <TextField
+            variant="outlined"
+            fullWidth
+            error={!isValidHttpUrl(selectedVideo)}
+            label="Video link"
+            value={selectedVideo}
+            onChange={(e) => {
+              setSelectedVideo(e.target.value);
+              setData({ campaignVideoLink: e.target.value });
+            }}
+          />
         </Stack>
       </CreateCampaignItemWrapper>
       <TabNavigation
@@ -264,17 +255,16 @@ function GoalInput({ value, setValue, setData, dataField }) {
     <FormControl>
       <OutlinedInput
         type="number"
+        error={value < minValue}
         inputProps={{ step: ".50" }}
-        startAdornment={
-          <InputAdornment position="start">$</InputAdornment>
-        }
-        sx={{ mx: 2, height: "40px" }}
+        startAdornment={<InputAdornment position="start">$</InputAdornment>}
+        sx={{ mx: 2, mt: 2 }}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => handleBid(e)}
       />
       <FormHelperText sx={{ ml: 3 }}>
-        $0.50 increments. Min. $10.50
+        $0.50 increments. Min. $10.00
       </FormHelperText>
     </FormControl>
   );
