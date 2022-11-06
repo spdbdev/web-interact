@@ -39,11 +39,12 @@ export function SchedulingSlider({
   );
 }
 
-export function InteractionAvailabilitySlider({ data, setData }) {
-  const [interactionAvailability, setInteractionAvailability] = useState(
-    data?.creatorWeeklyAvailability
-  );
-
+export function InteractionAvailabilitySlider({
+  data,
+  setData,
+  interactionAvailability,
+  setInteractionAvailability,
+}) {
   function handleInteractionAvailabilityChange(event, newValue) {
     setInteractionAvailability(newValue);
     setData({ creatorWeeklyAvailability: newValue });
@@ -73,12 +74,12 @@ export function InteractionAvailabilitySlider({ data, setData }) {
   );
 }
 
-export function InteractionDurationsSlider({ data, setData }) {
-  const [interactionDurations, setInteractionDurations] = useState([
-    data?.interactionDurationTime,
-    data?.interactionTopDurationTime,
-  ]);
-
+export function InteractionDurationsSlider({
+  data,
+  setData,
+  interactionDurations,
+  setInteractionDurations,
+}) {
   const marks = [
     {
       value: 15,

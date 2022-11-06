@@ -255,8 +255,6 @@ exports.determineWinners = functions.https.onRequest((request, response) => {
   response.send("Collecting winners are done.");
 });
 
-// TODO
-
 const CloudConvert = require("cloudconvert");
 const getCampaignImageHTML = require("./CampaignSummaryImage");
 

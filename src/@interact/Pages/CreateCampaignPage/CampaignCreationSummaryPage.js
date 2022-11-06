@@ -6,6 +6,7 @@ import {
   getYoutubeIDFromURL,
 } from "@interact/Components/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { ExpandLess } from "@mui/icons-material";
 import {
   Box,
@@ -16,10 +17,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FAQAccordian from "./FAQAccordian";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../../firebase";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -49,6 +52,8 @@ export default function CampaignCreationSummaryPage() {
 
     getCampaign();
   }, []);
+
+  const Swal = useSwalWrapper();
 
   const CAMPAIGN_SUMMARY_ITEMS = [
     { label: "Goal Value", value: `$${campaignData?.goalValue}` },
@@ -82,6 +87,59 @@ export default function CampaignCreationSummaryPage() {
       value: `www.interact.vip/${campaignData?.customURL}`,
     },
   ];
+
+  async function submitCampaign() {
+    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      onOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+
+    // get conversion rate
+    const getConversionRate = httpsCallable(
+      functions,
+      "getCurrencyConversionRate"
+    );
+
+    const conversionResponse = await getConversionRate({
+      currency: campaignData?.currency,
+    });
+
+    console.log(conversionResponse?.data);
+
+    updateDoc(docRef, { currencyExchangeRate: conversionResponse?.data ?? 1 })
+      .then(() => {
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+      }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
+
+    // save as campaignStatus: "scheduled"
+
+    updateDoc(docRef, { campaignStatus: "scheduled" })
+      .then(() => {
+        navigate("/interact/campaign-creation-confirmation");
+        Toast.fire({
+          icon: "success",
+          title: "Campaign successfully created!",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "Failed to link server.",
+        });
+      }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
+  }
 
   if (!campaignData) {
     return <Loading />;
@@ -196,9 +254,9 @@ export default function CampaignCreationSummaryPage() {
           </Stack>
           <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
             <InteractFlashyButton
-              onClick={() =>
-                navigate("/interact/campaign-creation-confirmation")
-              }
+              onClick={() => {
+                submitCampaign();
+              }}
             >
               Submit ✓
             </InteractFlashyButton>

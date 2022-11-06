@@ -8,6 +8,7 @@ export function TabNavigation({
   selectedTabIndex,
   setSelectedTabIndex,
   disableNext,
+  customErrorMessage,
 }) {
   const navigate = useNavigate();
   const Swal = useSwalWrapper();
@@ -16,17 +17,17 @@ export function TabNavigation({
     if (disableNext) {
       Swal.fire({
         icon: "error",
-        text: "All form fields are required before moving to the next campaign creation step.",
+        text:
+          customErrorMessage ||
+          "All form fields are required before moving to the next campaign creation step.",
       });
       return;
     }
 
-    if (selectedTabIndex < 6) {
+    if (selectedTabIndex !== 7) {
       setSelectedTabIndex(selectedTabIndex + 1);
-    } else if (selectedTabIndex === 6) {
-      navigate("/interact/campaign-creation-summary");
     } else {
-      return;
+      navigate("/interact/campaign-creation-summary");
     }
   }
 
@@ -57,12 +58,7 @@ export function TabNavigation({
           ← Back
         </InteractFlashyButton>
       ) : null}
-      <img
-        alt="logo"
-        src={InteractLogo}
-        width={120}
-        height={"100%"}
-      />
+      <img alt="logo" src={InteractLogo} width={120} height={"100%"} />
       <InteractFlashyButton onClick={handleNextButtonClick}>
         Next →
       </InteractFlashyButton>

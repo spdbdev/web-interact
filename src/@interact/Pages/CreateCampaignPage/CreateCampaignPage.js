@@ -180,7 +180,7 @@ const FAQText = {
       add some spice?
     </FAQSidebarWrapper>
   ),
-  4: (
+  3: (
     <FAQSidebarWrapper title="Goal & Video">
       <Span sx={{ textDecoration: "underline", display: "block" }}>Goal:</Span>{" "}
       You must create a goal which is non-binding, i.e. interactions are still
@@ -209,6 +209,14 @@ const FAQText = {
       Bomb; the spice definitely exaggerated, I’m not worried. This campaign
       ends on December 10th, so don’t miss out! These are the only interactions
       we’ll have for the next few months. Go to interact.vip/cool "
+    </FAQSidebarWrapper>
+  ),
+  4: (
+    <FAQSidebarWrapper title="Interaction Method">
+      This is the FAQ your fans will see on your campaign. Most answers are
+      pre-filled, but you'll need to fill in custom details for some questions,
+      namely: "What can we do in an interaction?" and "How are interactions
+      carried out?"
     </FAQSidebarWrapper>
   ),
   5: (
@@ -367,9 +375,9 @@ function CreateCampaignPage() {
       case 2:
         return <InteractionTab {...tabProps} />;
       case 3:
-        return <InteractMethodTab {...tabProps} />;
-      case 4:
         return <GoalVideoTab {...tabProps} />;
+      case 4:
+        return <InteractMethodTab {...tabProps} />;
       case 5:
         return <FAQTab {...tabProps} />;
       case 6:
@@ -377,7 +385,7 @@ function CreateCampaignPage() {
       case 7:
         return <PromotionTab {...tabProps} />;
       default:
-        return <BasicsTab {...tabProps} />;
+        return <BasicsTab {...tabProps} selectedTabIndex={0} />;
     }
   }
 
