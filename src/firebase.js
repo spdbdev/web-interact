@@ -45,7 +45,7 @@ const db = getFirestore(app);
 const functions = getFunctions(app);
 
 // enable when testing local functions:
-connectFunctionsEmulator(functions, "localhost", 5001);
+// connectFunctionsEmulator(functions, "localhost", 5001);
 
 const googleProvider = new GoogleAuthProvider();
 

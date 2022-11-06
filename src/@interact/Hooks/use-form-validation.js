@@ -11,13 +11,16 @@ export function useFormValidation({
 
   useEffect(() => {
     if (formValidationConditions) {
-      if (
-        lastCompletedTabIndex < selectedTabIndex + 1 &&
-        !isFinalTab
-      ) {
-        setData({
-          lastCompletedTabIndex: selectedTabIndex,
-        });
+      if (lastCompletedTabIndex < selectedTabIndex + 1 && !isFinalTab) {
+        if (selectedTabIndex > 7) {
+          setData({
+            lastCompletedTabIndex: 7,
+          });
+        } else {
+          setData({
+            lastCompletedTabIndex: selectedTabIndex,
+          });
+        }
       }
       setIsTabValidated(true);
     } else {

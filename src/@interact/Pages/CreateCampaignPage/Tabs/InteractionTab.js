@@ -30,12 +30,20 @@ export default function InteractionTab({
   selectedTabIndex,
   setSelectedTabIndex,
 }) {
+  const [interactionAvailability, setInteractionAvailability] = useState(
+    data?.creatorWeeklyAvailability
+  );
+  const [interactionDurations, setInteractionDurations] = useState([
+    data?.interactionDurationTime,
+    data?.interactionTopDurationTime,
+  ]);
   const [numAuctionInteractions, setNumAuctionInteractions] = useState(
     data?.numAuctionInteractions
   );
   const [numGiveawayInteractions, setNumGiveawayInteractions] = useState(
     data?.numGiveawayInteractions
   );
+  const [interactionsLimit, setInteractionsLimit] = useState(null);
 
   const [auctionMinBidPrice, setAuctionMinBidPrice] = useState(
     addTrailingZerosToDollarValue(data?.auctionMinBid)
@@ -43,18 +51,61 @@ export default function InteractionTab({
   const [VIPEntryCost, setVIPEntryCost] = useState(
     addTrailingZerosToDollarValue(data?.giveawayVIPEntryCost)
   );
+  const [formValidationConditions, setFormValidationConditions] =
+    useState(true);
+
+  useEffect(() => {
+    calcNumOfInteractions();
+  }, [interactionAvailability, interactionDurations]);
+
+  useEffect(() => {
+    //due to the setup of this form inputs, it will always be valid
+    // except if this is not true
+
+    if (interactionsLimit) {
+      setFormValidationConditions(
+        numAuctionInteractions + numGiveawayInteractions <= interactionsLimit
+      );
+    }
+  }, [numAuctionInteractions, numGiveawayInteractions]);
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
     lastCompletedTabIndex: data?.lastCompletedTabIndex,
     setData,
-    formValidationConditions: true, //due to the setup of this form inputs, it will always be valid
+    formValidationConditions: formValidationConditions,
   });
 
   function getNumStdLengthInteractions() {
     const numStdLengthInteractions =
       numGiveawayInteractions + (numAuctionInteractions - 3); // interactions that take up std. time
     return numStdLengthInteractions;
+  }
+
+  function calcNumOfInteractions() {
+    // ex: 5hrs/week * 10 weeks = 50 hrs = 3000 min
+    const totMinsAvailable =
+      data?.interactionWindow * interactionAvailability * 60;
+
+    // ex: 15 min
+    const LOWER = interactionDurations[0];
+
+    // ex: 30 min
+    const UPPER = interactionDurations[1];
+
+    // 30 min * 3 interactions = 1.5hr
+    const upperLimitConsumed = UPPER * 3; //interactions;
+
+    const totMinsRemaining = totMinsAvailable - upperLimitConsumed;
+
+    // 2610 / 15 = Rest of interactions available MAXIMUM + 3
+    const totalPossibleInteractions = Math.ceil(totMinsRemaining / LOWER) + 3;
+
+    if (totalPossibleInteractions < 3) {
+      setInteractionsLimit(3);
+    } else {
+      setInteractionsLimit(totalPossibleInteractions);
+    }
   }
 
   return (
@@ -64,11 +115,24 @@ export default function InteractionTab({
           How much time per week would you like to spend interacting with fans?
           <br />
           <br />
-          How much time should each interaction take?
+          How much time should each interaction take? The left handle sets the
+          amount of time in a standard interaction. The right handle sets the
+          amount of time in a premium interaction, which are awarded to the top
+          3 auction winners.
         </TitleAndDesc>
         <Stack spacing={3} sx={{ width: 300, pt: 4 }}>
-          <InteractionAvailabilitySlider data={data} setData={setData} />
-          <InteractionDurationsSlider data={data} setData={setData} />
+          <InteractionAvailabilitySlider
+            data={data}
+            setData={setData}
+            interactionAvailability={interactionAvailability}
+            setInteractionAvailability={setInteractionAvailability}
+          />
+          <InteractionDurationsSlider
+            data={data}
+            setData={setData}
+            interactionDurations={interactionDurations}
+            setInteractionDurations={setInteractionDurations}
+          />
         </Stack>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
@@ -80,7 +144,8 @@ export default function InteractionTab({
             setData={setData}
             dataField={"numAuctionInteractions"}
             minValue={3}
-            helpText={"Min. 3 interactions"}
+            helpText={"Min. 3 interactions."}
+            maxValue={interactionsLimit - numGiveawayInteractions}
           />
           interactions, with a minimum bid price of
           <BidInput
@@ -102,7 +167,9 @@ export default function InteractionTab({
             setValue={setNumGiveawayInteractions}
             setData={setData}
             dataField={"numGiveawayInteractions"}
-            minValue={0}
+            minValue={3}
+            helpText={"Min. 3 interactions."}
+            maxValue={interactionsLimit - numAuctionInteractions}
           />
           interactions in the giveaway, where a VIP entry costs
           <BidInput
@@ -162,6 +229,7 @@ export default function InteractionTab({
         disableNext={!isTabValidated}
         selectedTabIndex={selectedTabIndex}
         setSelectedTabIndex={setSelectedTabIndex}
+        customErrorMessage={`Error. Please make sure you've completed all fields and that the sum of your Giveaway + Auction interactions are less than or equal to ${interactionsLimit}.`}
       />
     </>
   );
@@ -243,6 +311,7 @@ function NumInteractionsInput({
   setData,
   dataField,
   minValue = 0,
+  maxValue = 0,
   helpText = " ",
 }) {
   // Used to update this components value as it changes,
@@ -254,7 +323,7 @@ function NumInteractionsInput({
     setTempValue(value);
   }, [value]);
 
-  function validate(nextValue) {
+  function validateMin(nextValue) {
     return (
       typeof nextValue === "number" &&
       !isNaN(nextValue) &&
@@ -262,12 +331,24 @@ function NumInteractionsInput({
     );
   }
 
+  function validateMax(nextValue) {
+    return (
+      typeof nextValue === "number" &&
+      !isNaN(nextValue) &&
+      nextValue <= maxValue
+    );
+  }
+
   function handleInteraction(e) {
     const nextValue = Number(e.target.value);
-    const isValid = validate(nextValue);
-    if (isValid) {
+    const isValidMin = validateMin(nextValue);
+    const isValidMax = validateMax(nextValue);
+
+    if (isValidMin && isValidMax) {
       setValue(nextValue);
       setData({ [dataField]: nextValue });
+    } else if (isValidMin && !isValidMax) {
+      setTempValue(maxValue);
     } else {
       setTempValue(minValue);
     }
@@ -280,6 +361,7 @@ function NumInteractionsInput({
         sx={{ mx: 2, height: "40px" }}
         value={tempValue}
         onChange={(e) => {
+          // NOTE - THIS ONLY SEEMS TO WORK ON FIREFOX - need a fix for safari and chrome
           if (e.nativeEvent.inputType == "insertReplacementText") {
             // handles stepUp/arrowUp and stepDown/arrowDown
             // without this, it's possible to step above or below the min/max values

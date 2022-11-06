@@ -23,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractionIcon from "../../Images/interaction-icon.png";
 import InteractButton from "@interact/Components/Button/InteractButton.js";
+import Span from "@jumbo/shared/Span/Span.js";
 
 export default function CampaignCreationConfirmationPage() {
   const [campaignData, setCampaignData] = useState(null);
@@ -70,42 +71,6 @@ export default function CampaignCreationConfirmationPage() {
     getCampaign();
   }, []);
 
-  // useEffect(() => {
-  //   const getCampaignImage = async () => {
-  //     const getImage = httpsCallable(functions, "getCampaignImage");
-
-  //     console.log(campaignData?.categories);
-  //     getImage({
-  //       title: campaignData?.title,
-  //       categories: campaignData?.categories,
-  //       creatorName: campaignData?.creatorName,
-  //       description: campaignData?.description,
-  //       thumbnailUrl: campaignData?.campaignVideoThumbnailLink,
-  //       startDate: getDateFromTimestamp({
-  //         timestamp: campaignData?.startDateTime.seconds,
-  //       }),
-  //       endDate: getDateFromTimestamp({
-  //         timestamp: campaignData?.endDateTime.seconds,
-  //       }),
-  //       goal: campaignData?.goal,
-  //       goalValue: campaignData?.goalValue,
-  //       numInteractions: JSON.stringify(
-  //         campaignData?.numAuctionInteractions +
-  //           campaignData?.numGiveawayInteractions
-  //       ),
-  //       campaignUrl: campaignData?.customURL,
-  //     })
-  //       .then((result) => {
-  //         setCampaignImage(result?.data?.file?.url);
-  //       })
-  //       .catch((e) => {
-  //         console.log(e);
-  //       });
-  //   };
-
-  //   getCampaignImage();
-  // }, []);
-
   return (
     <Box
       sx={{
@@ -117,11 +82,11 @@ export default function CampaignCreationConfirmationPage() {
         backgroundColor: "background.default",
       }}
     >
-      <Box sx={{ alignSelf: "flex-end" }}>
+      <Box sx={{ position: "fixed", top: 10, right: 10 }}>
         <IconButton
           disableRipple
           disableFocusRipple
-          // onClick={() => navigate(-1)}
+          onClick={() => navigate("/interact/user")}
         >
           <Close sx={{ color: "text.secondary" }} />
         </IconButton>
@@ -154,20 +119,23 @@ export default function CampaignCreationConfirmationPage() {
             <Typography variant="h5" sx={{ pb: 4 }}>
               Your campaign will start on{" "}
               {getDateFromTimestamp({
-                timestamp: campaignData?.startDateTime,
+                timestamp: campaignData?.startDateTime.seconds,
                 format: "MMM Do, YYYY [at] h:mm a",
               })}
             </Typography>
-            <img alt="interaction-icon" src={InteractionIcon} width={120} />
-            <Typography textAlign="center" sx={{ maxWidth: 400 }}>
+            <Typography textAlign="center" sx={{ maxWidth: 500 }}>
               Until then, you can unsubmit and make changes to the campaign. You
               will not be able to make changes after the campaign goes live.
             </Typography>
+            <img alt="interaction-icon" src={InteractionIcon} width={120} />
 
-            <Typography>
-              add a message to the creator when this is generated, saying "If on
-              Twitch, add your campaign link https://www.interact.vip/url to the
-              'Image Links To' section when uploading a panel"
+            <Typography textAlign="center" sx={{ maxWidth: 500 }}>
+              You can now download a panel containing a summary of your campaign
+              details. If on Twitch, add your campaign link{" "}
+              <Span sx={{ fontWeight: 500 }}>
+                https://www.interact.vip/{campaignData?.customURL}
+              </Span>{" "}
+              to the 'Image Links To' section when uploading a panel
             </Typography>
             <Stack direction="row" alignItems="center" spacing={4}>
               <InteractFlashyButton
