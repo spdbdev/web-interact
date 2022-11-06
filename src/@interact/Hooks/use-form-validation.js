@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export function useFormValidation({
   selectedTabIndex,
+  isFinalTab = false,
   lastCompletedTabIndex,
   setData,
   formValidationConditions,
@@ -10,7 +11,10 @@ export function useFormValidation({
 
   useEffect(() => {
     if (formValidationConditions) {
-      if (lastCompletedTabIndex < selectedTabIndex + 1) {
+      if (
+        lastCompletedTabIndex < selectedTabIndex + 1 &&
+        !isFinalTab
+      ) {
         setData({
           lastCompletedTabIndex: selectedTabIndex,
         });

@@ -12,10 +12,10 @@ import {
   ButtonBase,
   Container,
   Grid,
+  Slide,
   Stack,
   Typography,
 } from "@mui/material";
-import SoloPage from "app/layouts/solo-page/SoloPage";
 import { doc, getDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -55,17 +55,21 @@ export default function CampaignCreationSummaryPage() {
     { label: "Goal", value: campaignData?.goal },
     {
       label: "Start Date",
-      value: getDateFromTimestamp({ timestamp: campaignData?.startDateTime }),
+      value: getDateFromTimestamp({
+        timestamp: campaignData?.startDateTime?.seconds,
+      }),
     },
     {
       label: "End Date",
-      value: getDateFromTimestamp({ timestamp: campaignData?.endDateTime }),
+      value: getDateFromTimestamp({
+        timestamp: campaignData?.endDateTime?.seconds,
+      }),
     },
     { label: "Duration", value: `${campaignData?.durationDays} days` },
     {
       label: "Interaction End Date",
       value: getDateFromTimestamp({
-        timestamp: campaignData?.interactionEndDateTime,
+        timestamp: campaignData?.interactionEndDateTime?.seconds,
       }),
     },
     { label: "Auction Min. Bid", value: `$${campaignData?.auctionMinBid}` },
@@ -83,7 +87,13 @@ export default function CampaignCreationSummaryPage() {
     return <Loading />;
   } else {
     return (
-      <SoloPage>
+      <Slide
+        direction="down"
+        timeout={1000}
+        in={true}
+        mountOnEnter
+        unmountOnExit
+      >
         <Box
           sx={{
             display: "flex",
@@ -148,12 +158,18 @@ export default function CampaignCreationSummaryPage() {
                     campaignData?.campaignVideoLink
                   )}`}
                   title="YouTube video player"
-                  frameborder="0"
+                  frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
+                  allowFullScreen
                 ></iframe>
               </Stack>
-              <FAQAccordian data={campaignData} shouldAllowEdit={false} />
+
+              <FAQAccordian
+                data={campaignData}
+                FAQAnswers={campaignData?.FAQAnswers}
+                setFAQAnswers={null}
+                shouldAllowEdit={false}
+              />
             </Stack>
             <Stack direction="column" spacing={3}>
               <Stack spacing={2} sx={{ height: 180 }}>
@@ -188,7 +204,7 @@ export default function CampaignCreationSummaryPage() {
             </InteractFlashyButton>
           </Box>
         </Box>
-      </SoloPage>
+      </Slide>
     );
   }
 }

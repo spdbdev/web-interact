@@ -9,18 +9,19 @@ import { Box, Chip, Stack, TextField } from "@mui/material";
 export default function FAQAccordian({
   data,
   setData,
+  FAQAnswers,
+  setFAQAnswers,
   shouldAllowEdit = true,
 }) {
-  const [FAQ1, setFAQ1] = useState(data?.FAQAnswers[0]);
-  const [FAQ2, setFAQ2] = useState(data?.FAQAnswers[1]);
+  function handleEditFAQ(e, FAQNumber) {
+    const nextValue = e.target.value;
 
-  function handleEditFAQ1(e) {
-    setFAQ1(e.target.value);
-    setData({ FAQAnswers: { 0: e.target.value, 1: FAQ2 } });
-  }
-  function handleEditFAQ2(e) {
-    setFAQ2(e.target.value);
-    setData({ FAQAnswers: { 0: FAQ1, 1: e.target.value } });
+    const nextObj = { ...FAQAnswers, [FAQNumber]: nextValue };
+    setFAQAnswers(nextObj);
+
+    if (nextValue?.length > 0) {
+      setData({ FAQAnswers: { ...FAQAnswers, [FAQNumber]: nextValue } });
+    }
   }
 
   const FAQs = [
@@ -179,7 +180,11 @@ export default function FAQAccordian({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography>What can we do in an interaction?</Typography>
-            {shouldAllowEdit ? <Chip label="Editable" /> : false}
+            {shouldAllowEdit ? (
+              <Chip sx={{ color: "red" }} label="Required" />
+            ) : (
+              false
+            )}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
@@ -188,14 +193,14 @@ export default function FAQAccordian({
               <TextField
                 fullWidth
                 multiline
-                value={FAQ1}
-                onChange={(e) => handleEditFAQ1(e)}
+                error={!FAQAnswers[0]?.length}
+                value={FAQAnswers[0]}
+                onChange={(e) => handleEditFAQ(e, 0)}
                 variant="standard"
                 InputProps={{ readOnly: !shouldAllowEdit }}
-                //contentEditable={shouldAllowEdit}
               />
             ) : (
-              FAQ1
+              FAQAnswers[0]
             )}
           </Typography>
         </AccordionDetails>
@@ -204,7 +209,11 @@ export default function FAQAccordian({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography>How are interactions carried out?</Typography>
-            {shouldAllowEdit ? <Chip label="Editable" /> : false}
+            {shouldAllowEdit ? (
+              <Chip sx={{ color: "red" }} label="Required" />
+            ) : (
+              false
+            )}
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
@@ -213,14 +222,13 @@ export default function FAQAccordian({
               <TextField
                 fullWidth
                 multiline
-                value={FAQ2}
-                onChange={(e) => handleEditFAQ2(e)}
+                value={FAQAnswers[1]}
+                onChange={(e) => handleEditFAQ(e, 1)}
                 variant="standard"
                 InputProps={{ readOnly: !shouldAllowEdit }}
-                //contentEditable={shouldAllowEdit}
               />
             ) : (
-              FAQ2
+              FAQAnswers[1]
             )}
           </Typography>
         </AccordionDetails>

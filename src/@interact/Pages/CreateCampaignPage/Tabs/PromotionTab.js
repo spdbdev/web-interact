@@ -33,23 +33,33 @@ export default function PromotionTab({
 
   const isTabValidated = useFormValidation({
     lastCompletedTabIndex: data?.lastCompletedTabIndex,
+    isLastTab: true,
     selectedTabIndex,
     setData,
     formValidationConditions: true,
   });
 
   function handleURLChange(e) {
-    setURL(e.target.value);
-    if (URL.match(/^[\w-]+$/) && URL.length > 3 && URL.length <= 30) {
+    const nextValue = e.target.value;
+    if (
+      nextValue.match(/^[\w-]+$/) &&
+      nextValue.length > 3 &&
+      nextValue.length <= 30
+    ) {
       // here we would also check if the URL already exists in the DB.
       if (shouldSaveURL) {
-        setData({ customURL: e.target.value, customSavedURL: e.target.value });
-      } else {
         setData({
-          customURL: e.target.value,
+          customURL: nextValue,
+          customSavedURL: nextValue,
+        });
+      } else {
+        console.log("Allowing url save");
+        setData({
+          customURL: nextValue,
         });
       }
     }
+    setURL(nextValue);
   }
 
   function handleURLSaveCheck(e) {
@@ -110,111 +120,74 @@ export default function PromotionTab({
             width="100%"
           >
             <Stack spacing={2} flex={1} justifyContent="space-between">
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Discord server link"
+              <SocialLinkTextField
+                label={"Discord server link"}
                 value={discord}
-                error={discord && !isValidHttpUrl(discord)}
-                onChange={(e) => {
-                  setDiscord(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, discord: e.target.value },
-                  });
-                }}
+                setValue={setDiscord}
+                data={data}
+                setData={setData}
+                dataField={"discord"}
               />
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Youtube channel link"
+
+              <SocialLinkTextField
+                label={"Youtube channel link"}
                 value={youtube}
-                error={youtube && !isValidHttpUrl(youtube)}
-                onChange={(e) => {
-                  setYoutube(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, youtube: e.target.value },
-                  });
-                }}
+                setValue={setYoutube}
+                data={data}
+                setData={setData}
+                dataField={"youtube"}
               />
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Twitch server link"
+              <SocialLinkTextField
+                label={"Twitch server link"}
                 value={twitch}
-                error={twitch && !isValidHttpUrl(twitch)}
-                onChange={(e) => {
-                  setTwitch(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, twitch: e.target.value },
-                  });
-                }}
+                setValue={setTwitch}
+                data={data}
+                setData={setData}
+                dataField={"twitch"}
               />
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Subreddit link"
+              <SocialLinkTextField
+                label={"Subreddit link"}
                 value={reddit}
-                error={reddit && !isValidHttpUrl(reddit)}
-                onChange={(e) => {
-                  setReddit(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, reddit: e.target.value },
-                  });
-                }}
+                setValue={setReddit}
+                data={data}
+                setData={setData}
+                dataField={"reddit"}
               />
             </Stack>
             <Stack spacing={2} flex={1} justifyContent="space-between">
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Twitter profile link"
+              <SocialLinkTextField
+                label={"Twitter profile link"}
                 value={twitter}
-                error={twitter && !isValidHttpUrl(twitter)}
-                onChange={(e) => {
-                  setTwitter(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, twitter: e.target.value },
-                  });
-                }}
+                setValue={setTwitter}
+                data={data}
+                setData={setData}
+                dataField={"twitter"}
               />
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Facebook page link"
+
+              <SocialLinkTextField
+                label={"Facebook page link"}
                 value={facebook}
-                error={facebook && !isValidHttpUrl(facebook)}
-                onChange={(e) => {
-                  setFacebook(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, facebook: e.target.value },
-                  });
-                }}
+                setValue={setFacebook}
+                data={data}
+                setData={setData}
+                dataField={"facebook"}
               />
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="Instagram page link"
+
+              <SocialLinkTextField
+                label={"Instagram page link"}
                 value={instagram}
-                error={instagram && !isValidHttpUrl(instagram)}
-                onChange={(e) => {
-                  setInstagram(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, instagram: e.target.value },
-                  });
-                }}
+                setValue={setInstagram}
+                data={data}
+                setData={setData}
+                dataField={"instagram"}
               />
-              <TextField
-                variant="outlined"
-                fullWidth
-                label="TikTok profile link"
+              <SocialLinkTextField
+                label={"TikTok profile link"}
                 value={tiktok}
-                error={tiktok && !isValidHttpUrl(tiktok)}
-                onChange={(e) => {
-                  setTiktok(e.target.value);
-                  setData({
-                    socials: { ...data?.socials, tiktok: e.target.value },
-                  });
-                }}
+                setValue={setTiktok}
+                data={data}
+                setData={setData}
+                dataField={"tiktok"}
               />
             </Stack>
           </Stack>
@@ -226,5 +199,37 @@ export default function PromotionTab({
         setSelectedTabIndex={setSelectedTabIndex}
       />
     </>
+  );
+}
+
+function SocialLinkTextField({
+  value,
+  setValue,
+  data,
+  setData,
+  label,
+  dataField,
+}) {
+  return (
+    <TextField
+      variant="outlined"
+      fullWidth
+      label={label}
+      value={value}
+      error={value && !isValidHttpUrl(value)}
+      onChange={(e) => {
+        const nextValue = e.target.value;
+
+        setValue(nextValue);
+
+        if (isValidHttpUrl(nextValue))
+          setData({
+            socials: {
+              ...data?.socials,
+              [dataField]: nextValue,
+            },
+          });
+      }}
+    />
   );
 }

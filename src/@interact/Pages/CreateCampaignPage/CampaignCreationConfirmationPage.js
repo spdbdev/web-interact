@@ -107,31 +107,38 @@ export default function CampaignCreationConfirmationPage() {
   // }, []);
 
   return (
-    <SoloPage>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-          width: "100%",
-          padding: 5,
-          backgroundColor: "background.default",
-        }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100%",
+        padding: 5,
+        backgroundColor: "background.default",
+      }}
+    >
+      <Box sx={{ alignSelf: "flex-end" }}>
+        <IconButton
+          disableRipple
+          disableFocusRipple
+          // onClick={() => navigate(-1)}
+        >
+          <Close sx={{ color: "text.secondary" }} />
+        </IconButton>
+      </Box>
+      <Stack
+        direction="column"
+        alignItems="center"
+        width={"100%"}
+        height={"100%"}
       >
-        <Box sx={{ alignSelf: "flex-end" }}>
-          <IconButton
-            disableRipple
-            disableFocusRipple
-            // onClick={() => navigate(-1)}
-          >
-            <Close sx={{ color: "text.secondary" }} />
-          </IconButton>
-        </Box>
         <Stack
           direction="column"
           alignItems="center"
-          width={"100%"}
-          height={"100%"}
+          flex={1}
+          spacing={4}
+          justifyContent="center"
+          sx={{ maxWidth: 1000 }}
         >
           <Stack
             direction="column"
@@ -185,7 +192,7 @@ export default function CampaignCreationConfirmationPage() {
             </Stack>
           </Stack>
         </Stack>
-      </Box>
-    </SoloPage>
+      </Stack>
+    </Box>
   );
 }

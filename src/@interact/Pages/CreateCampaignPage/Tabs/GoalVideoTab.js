@@ -42,26 +42,47 @@ export default function GoalVideoTab({
   const [videoThumbnailLink, setVideoThumbnailLink] = useState(
     data?.campaignVideoThumbnailLink
   );
+  const [formValidationConditions, setFormValidationConditions] =
+    useState(false);
+  const [errors, setErrors] = useState(false);
 
   useEffect(() => {
     function getVideoThumbnailLink() {
       const id = getYoutubeIDFromURL(selectedVideo);
       const link = `http://i3.ytimg.com/vi/${id}/hqdefault.jpg`;
       setVideoThumbnailLink(link);
-      setData({ campaignVideoThumbnailLink: link });
+      setData({
+        campaignVideoThumbnailLink: link,
+        campaignVideoLink: selectedVideo,
+      });
     }
 
-    getVideoThumbnailLink();
+    if (isValidHttpUrl(selectedVideo)) {
+      getVideoThumbnailLink();
+    } else {
+      setVideoThumbnailLink("incorrecturl");
+    }
   }, [selectedVideo]);
 
-  const { goal, lastCompletedTabIndex } = data;
+  useEffect(() => {
+    setFormValidationConditions(
+      campaignGoal?.length <= 50 &&
+        campaignGoal?.length > 0 &&
+        isValidHttpUrl(selectedVideo)
+    );
+  }, [campaignGoal, selectedVideo]);
 
-  const formValidationConditions =
-    goal.length <= 50 && goal.length > 0 && isValidHttpUrl(selectedVideo);
+  useEffect(() => {
+    if (!formValidationConditions) {
+      setErrors(true);
+    } else {
+      setErrors(false);
+    }
+  }, [formValidationConditions]);
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
-    lastCompletedTabIndex,
+    lastCompletedTabIndex: data?.lastCompletedTabIndex,
     setData,
     formValidationConditions,
   });
@@ -130,10 +151,13 @@ export default function GoalVideoTab({
               sx={{ mx: 2, mt: 2, width: 400 }}
               variant="outlined"
               inputProps={{ maxLength: 50 }}
-              error={goal.length <= 0}
+              error={campaignGoal.length == 0}
               value={campaignGoal}
               onChange={(e) => {
-                setData({ goal: e.target.value });
+                if (e.target.value.length > 0) {
+                  setData({ goal: e.target.value });
+                }
+
                 setCampaignGoal(e.target.value);
               }}
               helperText="Max. 50 characters."
@@ -189,7 +213,7 @@ export default function GoalVideoTab({
                 height: "150px",
                 objectFit: "cover",
               }}
-              alt="video-thumbnail"
+              alt={"video-thumbnail"}
               src={videoThumbnailLink}
             />
           </Stack>
@@ -197,16 +221,20 @@ export default function GoalVideoTab({
           <TextField
             variant="outlined"
             fullWidth
-            error={!isValidHttpUrl(selectedVideo)}
             label="Video link"
             value={selectedVideo}
+            error={!isValidHttpUrl(selectedVideo)}
             onChange={(e) => {
-              setSelectedVideo(e.target.value);
-              setData({ campaignVideoLink: e.target.value });
+              const nextValue = e.target.value;
+
+              setSelectedVideo(nextValue);
             }}
           />
         </Stack>
       </CreateCampaignItemWrapper>
+      {errors ? (
+        <FormHelperText>Please complete all form fields.</FormHelperText>
+      ) : null}
       <TabNavigation
         disableNext={!isTabValidated}
         selectedTabIndex={selectedTabIndex}

@@ -52,10 +52,17 @@ export function TabNavigation({
         bottom: 20,
       }}
     >
-      <InteractFlashyButton onClick={handleBackButtonClick}>
-        ← Back
-      </InteractFlashyButton>
-      <img alt="logo" src={InteractLogo} width={120} height={"100%"} />
+      {selectedTabIndex > 0 ? (
+        <InteractFlashyButton onClick={handleBackButtonClick}>
+          ← Back
+        </InteractFlashyButton>
+      ) : null}
+      <img
+        alt="logo"
+        src={InteractLogo}
+        width={120}
+        height={"100%"}
+      />
       <InteractFlashyButton onClick={handleNextButtonClick}>
         Next →
       </InteractFlashyButton>
