@@ -6,27 +6,19 @@ import {
   getYoutubeIDFromURL,
 } from "@interact/Components/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ExpandLess } from "@mui/icons-material";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
-  Button,
   ButtonBase,
-  Chip,
   Container,
   Grid,
-  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import SoloPage from "app/layouts/solo-page/SoloPage";
 import { doc, getDoc } from "firebase/firestore";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import InteractLogo from "../../Images/logo512.png";
 import FAQAccordian from "./FAQAccordian";
 
 export function CampaignSummaryItem({ label, value }) {
@@ -51,6 +43,7 @@ export default function CampaignCreationSummaryPage() {
       let fetchedData = (
         await getDoc(doc(db, "campaigns", "campaign-creation-test"))
       ).data();
+
       setCampaignData(fetchedData);
     };
 

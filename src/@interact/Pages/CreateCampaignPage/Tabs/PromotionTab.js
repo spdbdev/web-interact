@@ -32,8 +32,10 @@ export default function PromotionTab({
   const [shouldSaveURL, setShouldSaveURL] = useState(false);
 
   const isTabValidated = useFormValidation({
+    lastCompletedTabIndex: data?.lastCompletedTabIndex,
     selectedTabIndex,
     setData,
+    formValidationConditions: true,
   });
 
   function handleURLChange(e) {
