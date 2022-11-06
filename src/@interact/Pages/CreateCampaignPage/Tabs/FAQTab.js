@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Stack, Typography } from "@mui/material";
 import FAQAccordian from "../FAQAccordian";
 import { TabNavigation } from "../TabNavigation";
@@ -10,14 +10,19 @@ export default function FAQTab({
   selectedTabIndex,
   setSelectedTabIndex,
 }) {
-  const { FAQAnswers, lastCompletedTabIndex } = data;
+  const [formValidationConditions, setFormValidationConditions] =
+    useState(false);
+  const [FAQAnswers, setFAQAnswers] = useState(data?.FAQAnswers);
 
-  const formValidationConditions =
-    FAQAnswers[0]?.length > 0 && FAQAnswers[1]?.length > 0;
+  useEffect(() => {
+    setFormValidationConditions(
+      FAQAnswers[0]?.length > 0 && FAQAnswers[1]?.length > 0
+    );
+  }, [FAQAnswers]);
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
-    lastCompletedTabIndex,
+    lastCompletedTabIndex: data?.lastCompletedTabIndex,
     setData,
     formValidationConditions,
   });
@@ -28,7 +33,12 @@ export default function FAQTab({
         <Typography variant="h2" sx={{ fontWeight: 500 }}>
           Your campaign FAQ will look like this:
         </Typography>
-        <FAQAccordian data={data} setData={setData} />
+        <FAQAccordian
+          data={data}
+          setData={setData}
+          FAQAnswers={FAQAnswers}
+          setFAQAnswers={setFAQAnswers}
+        />
       </Stack>
       <TabNavigation
         disableNext={!isTabValidated}

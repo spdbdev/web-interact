@@ -1,9 +1,15 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
 
 // The Firebase Admin SDK to access Firestore.
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 admin.initializeApp();
+
+// Initialize express server with cors middleware to allow for http access from browser
+const express = require("express");
+const cors = require("cors")({ origin: true });
+const app = express();
+app.use(cors);
 
 
 
@@ -217,7 +223,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 
 
-
+// auto trigger function
 exports.autoBidding = functions.firestore.document('/campaigns/{campaign_id}/bids/{bid_id}').onWrite(async (snap, context) => 
 {
 	// Exit when the data is deleted.
@@ -310,3 +316,129 @@ exports.autoBidding = functions.firestore.document('/campaigns/{campaign_id}/bid
 
 	return null;
 });
+
+
+
+
+
+const CloudConvert = require("cloudconvert");
+const getCampaignImageHTML = require("./CampaignSummaryImage");
+
+// https://us-central1-interact2002.cloudfunctions.net/getCampaignImage?campaign_id=test12345
+exports.getCampaignImage = functions.https.onRequest((request, response) => {
+  cors(request, response, async () => {
+    const {
+      title,
+      categories,
+      creatorName,
+      description,
+      thumbnailUrl,
+      startDate,
+      endDate,
+      goal,
+      goalValue,
+      numInteractions,
+      campaignUrl,
+    } = request.body.data;
+
+    // THIS IS USING ALINA PAVELS API KEY, WHICH SHOULD BE SWITCHED TO ONE RUN BY INTERACT!!
+    // THIS WILL EVENTUALLY RUN INTO RATE LIMITS, AND WILL BE ROTATED ONE MONTH AFTER MY LAST DAY
+    const cloudConvert = new CloudConvert(
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZjBhNzQ5MzE4ZmJmZTRlNmQzZTBlODQ2ZTM4ZWZlMmViZjAzNGExZmFhMDFjNGYzNjIwNzAwMjVhYjhjNzViNTQ2NzBhM2NkYjU0NmRiYTQiLCJpYXQiOjE2Njc0NTU4MzguOTczMzgsIm5iZiI6MTY2NzQ1NTgzOC45NzMzODEsImV4cCI6NDgyMzEyOTQzOC45NjkxODUsInN1YiI6IjYwNTc1Nzg1Iiwic2NvcGVzIjpbInRhc2sud3JpdGUiLCJ0YXNrLnJlYWQiLCJ3ZWJob29rLnJlYWQiLCJ3ZWJob29rLndyaXRlIl19.l6CHQB5JyvpGLAkKZnZWqycjpomnp1FxdGoDR34FFl1rQO0H5J304xhy7zWT_pc2u7RoHqgfiL33Tb5uH-OGujJVXl0lSBnZaE5QainDQvKyDyjSXDzy2UqrvlTWwDGrcpT31vFpxPBYbF94ihxKpuD-gwUamPyXDVzPBlZdU8ipPnivv7kAox_e1EwKMInrhWwGfyW-F0J5kj_OlsTYpGeEjU6teNHw3XSEHkCWkQtLeacGYo-31UZaQ6diaG7UGrgqSVbXNQeo1hzYHbYrrvpNZEs-0Q7nn5mpvSShVAstZcxEcHA-2F5I3UD8t7pSsom4WclUS9sq0ZdA72o3q6hkqeaozf0eVHBQxeXDW05IB18iKcGMajfnRyUMs3C08A0_GnvQhEyCeJwlpM96-QU8OszzahJkKPBHlgsOKO7G-lzOwdX-85g2bhH5wlaX4pAYoMeEa8N8pl_ubhptaEZcndNwa6B36QCA9QQl0qoUsB80Kv2prKYkWXUUDD3JqK0FQVjX00i0N4I7Fb-ZhhUcxJIwDxLCgEv31593ECQB1Ip7HyJThBDtArJ6O1Yn08JEuQMWn14ziU_pMW--GNk_KLWH37ZR_vM44GmgSwrs71H4_QbEmk-GxvxFMeN4kQQiWWr-0dOs1uUOSda5Ygh8seUgPRV0buxnZe1gHrQ",
+      false
+    );
+
+    const CAMPAIGN_SUMMARY_IMAGE_HTML_TEMPLATE = getCampaignImageHTML({
+      title,
+      categories,
+      creatorName,
+      description,
+      thumbnailUrl,
+      startDate,
+      endDate,
+      goal,
+      goalValue,
+      numInteractions,
+      campaignUrl,
+    });
+
+    async function generateImgFromCampaignData() {
+      let jobInit = await cloudConvert.jobs.create({
+        tasks: {
+          "import-html": {
+            operation: "import/raw",
+            file: CAMPAIGN_SUMMARY_IMAGE_HTML_TEMPLATE,
+            filename: `Campaign-Panel-${creatorName}-${title}.html`,
+          },
+          "convert-html-to-png": {
+            operation: "convert",
+            input_format: "html",
+            output_format: "png",
+            engine: "chrome",
+            input: ["import-html"],
+            screen_width: 530,
+            screen_height: 1050,
+          },
+          "export-png-to-url": {
+            operation: "export/url",
+            input: ["convert-html-to-png"],
+            inline: false,
+            archive_multiple_files: false,
+          },
+        },
+        tag: "jobbuilder",
+      });
+      const job = await cloudConvert.jobs.wait(jobInit.id);
+
+      const pngConversionTask = job.tasks.filter(
+        (task) => task.name === "export-png-to-url"
+      )[0];
+
+      return pngConversionTask?.result?.files[0];
+    }
+
+    try {
+      const file = await generateImgFromCampaignData();
+
+      response.send({
+        status: "success",
+        data: { file },
+      });
+    } catch (error) {
+      return { error };
+    }
+  });
+});
+
+const axios = require("axios").default;
+
+// https://us-central1-interact2002.cloudfunctions.net/interact2002/us-central1/getCurrencyConversionRate
+exports.getCurrencyConversionRate = functions.https.onRequest(
+  (request, response) => {
+    cors(request, response, async () => {
+      const { currency } = request.body.data;
+
+      let config = {
+        headers: {
+          apikey: "bIlnJTPbNOzyGREdeHRjYatECy298T3q",
+        },
+      };
+
+      try {
+        const result = await axios.get(
+          `https://api.apilayer.com/fixer/convert?to=${currency}&from=USD&amount=1`,
+          config
+        );
+        response.send({
+          status: "success",
+          data: result?.data?.result,
+        });
+      } catch (e) {
+        response.send({
+          status: "error",
+          data: "An error occurred. Please try again later",
+        });
+      }
+    });
+  }
+);

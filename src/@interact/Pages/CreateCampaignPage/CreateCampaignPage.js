@@ -6,6 +6,7 @@ import {
   Container,
   IconButton,
   Input,
+  Slide,
   Stack,
   Typography,
 } from "@mui/material";
@@ -27,6 +28,7 @@ import { doc, getDoc } from "firebase/firestore";
 import moment from "moment";
 import Loading from "@interact/Components/Loading/Loading";
 import { useJumboLayoutSidebar } from "@jumbo/hooks";
+import InteractMethodTab from "./Tabs/InteractMethodTab";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -210,6 +212,14 @@ const FAQText = {
     </FAQSidebarWrapper>
   ),
   4: (
+    <FAQSidebarWrapper title="Interaction Method">
+      This is the FAQ your fans will see on your campaign. Most answers are
+      pre-filled, but you'll need to fill in custom details for some questions,
+      namely: "What can we do in an interaction?" and "How are interactions
+      carried out?"
+    </FAQSidebarWrapper>
+  ),
+  5: (
     <FAQSidebarWrapper title="FAQ">
       This is the FAQ your fans will see on your campaign. Most answers are
       pre-filled, but you'll need to fill in custom details for some questions,
@@ -235,7 +245,7 @@ const FAQText = {
       might have to make a new account)
     </FAQSidebarWrapper>
   ),
-  5: (
+  6: (
     <FAQSidebarWrapper title="Payment">
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How do fees work?
@@ -259,7 +269,7 @@ const FAQText = {
       Within 3 business days after the campaign is completed.
     </FAQSidebarWrapper>
   ),
-  6: (
+  7: (
     <FAQSidebarWrapper title="Promotion">
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
@@ -305,9 +315,9 @@ function CreateCampaignPage() {
   ] = useState(false);
   const [FAQSideBarText, setFAQSideBarText] = useState("");
   const [campaignData, setCampaignData] = useState(null);
+  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
 
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
 
   useEffect(() => {
     // Fixes a bug where sidebar is hidden but remains "open" when
@@ -367,20 +377,24 @@ function CreateCampaignPage() {
       case 3:
         return <GoalVideoTab {...tabProps} />;
       case 4:
-        return <FAQTab {...tabProps} />;
+        return <InteractMethodTab {...tabProps} />;
       case 5:
-        return <PaymentTab {...tabProps} />;
+        return <FAQTab {...tabProps} />;
       case 6:
+        return <PaymentTab {...tabProps} />;
+      case 7:
         return <PromotionTab {...tabProps} />;
       default:
-        return <BasicsTab {...tabProps} />;
+        return <BasicsTab {...tabProps} selectedTabIndex={0} />;
     }
   }
 
   if (!campaignData) {
     return <Loading />;
-  } else {
-    return (
+  }
+
+  return (
+    <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",
@@ -454,14 +468,14 @@ function CreateCampaignPage() {
           <IconButton
             disableRipple
             disableFocusRipple
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/interact/user")}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
         </Box>
       </Box>
-    );
-  }
+    </Slide>
+  );
 }
 
 export default CreateCampaignPage;

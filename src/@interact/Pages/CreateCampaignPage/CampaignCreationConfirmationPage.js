@@ -8,19 +8,28 @@ import {
   AccordionSummary,
   Box,
   Button,
+  ButtonBase,
   Container,
   IconButton,
+  Link,
   Stack,
   Typography,
 } from "@mui/material";
 import SoloPage from "app/layouts/solo-page/SoloPage";
 import { doc, getDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../../firebase.js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractionIcon from "../../Images/interaction-icon.png";
+import InteractButton from "@interact/Components/Button/InteractButton.js";
+import Span from "@jumbo/shared/Span/Span.js";
 
 export default function CampaignCreationConfirmationPage() {
   const [campaignData, setCampaignData] = useState(null);
+  const [campaignImage, setCampaignImage] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCampaign = async () => {
@@ -28,38 +37,73 @@ export default function CampaignCreationConfirmationPage() {
         await getDoc(doc(db, "campaigns", "campaign-creation-test"))
       ).data();
       setCampaignData(fetchedData);
+
+      const getImage = httpsCallable(functions, "getCampaignImage");
+
+      getImage({
+        title: fetchedData?.title,
+        categories: fetchedData?.categories,
+        creatorName: fetchedData?.creatorName,
+        description: fetchedData?.description,
+        thumbnailUrl: fetchedData?.campaignVideoThumbnailLink,
+        startDate: getDateFromTimestamp({
+          timestamp: fetchedData?.startDateTime.seconds,
+        }),
+        endDate: getDateFromTimestamp({
+          timestamp: fetchedData?.endDateTime.seconds,
+        }),
+        goal: fetchedData?.goal,
+        goalValue: fetchedData?.goalValue,
+        numInteractions: JSON.stringify(
+          fetchedData?.numAuctionInteractions +
+            fetchedData?.numGiveawayInteractions
+        ),
+        campaignUrl: fetchedData?.customURL,
+      })
+        .then((result) => {
+          setCampaignImage(result?.data?.file?.url);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     };
 
     getCampaign();
   }, []);
-  const navigate = useNavigate();
 
   return (
-    <SoloPage>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100vh",
-          width: "100%",
-          padding: 5,
-          backgroundColor: "background.default",
-        }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100%",
+        padding: 5,
+        backgroundColor: "background.default",
+      }}
+    >
+      <Box sx={{ position: "fixed", top: 10, right: 10 }}>
+        <IconButton
+          disableRipple
+          disableFocusRipple
+          onClick={() => navigate("/interact/user")}
+        >
+          <Close sx={{ color: "text.secondary" }} />
+        </IconButton>
+      </Box>
+      <Stack
+        direction="column"
+        alignItems="center"
+        width={"100%"}
+        height={"100%"}
       >
-        <Box sx={{ alignSelf: "flex-end" }}>
-          <IconButton
-            disableRipple
-            disableFocusRipple
-            // onClick={() => navigate(-1)}
-          >
-            <Close sx={{ color: "text.secondary" }} />
-          </IconButton>
-        </Box>
         <Stack
           direction="column"
           alignItems="center"
-          width={"100%"}
-          height={"100%"}
+          flex={1}
+          spacing={4}
+          justifyContent="center"
+          sx={{ maxWidth: 1000 }}
         >
           <Stack
             direction="column"
@@ -75,25 +119,48 @@ export default function CampaignCreationConfirmationPage() {
             <Typography variant="h5" sx={{ pb: 4 }}>
               Your campaign will start on{" "}
               {getDateFromTimestamp({
-                timestamp: campaignData?.startDateTime,
+                timestamp: campaignData?.startDateTime.seconds,
                 format: "MMM Do, YYYY [at] h:mm a",
               })}
             </Typography>
-            <img alt="interaction-icon" src={InteractionIcon} width={120} />
-            <Typography textAlign="center" sx={{ maxWidth: 400 }}>
+            <Typography textAlign="center" sx={{ maxWidth: 500 }}>
               Until then, you can unsubmit and make changes to the campaign. You
               will not be able to make changes after the campaign goes live.
             </Typography>
-            <Box>
+            <img alt="interaction-icon" src={InteractionIcon} width={120} />
+
+            <Typography textAlign="center" sx={{ maxWidth: 500 }}>
+              You can now download a panel containing a summary of your campaign
+              details. If on Twitch, add your campaign link{" "}
+              <Span sx={{ fontWeight: 500 }}>
+                https://www.interact.vip/{campaignData?.customURL}
+              </Span>{" "}
+              to the 'Image Links To' section when uploading a panel
+            </Typography>
+            <Stack direction="row" alignItems="center" spacing={4}>
               <InteractFlashyButton
                 onClick={() => navigate("/interact/campaign")}
               >
-                Got it
+                Go to campaign
               </InteractFlashyButton>
-            </Box>
+
+              <InteractButton sx={{ height: 40 }} disabled={!campaignImage}>
+                {!campaignImage ? (
+                  "Generating panel for download..."
+                ) : (
+                  <Link
+                    sx={{ textDecoration: "none" }}
+                    href={campaignImage}
+                    download
+                  >
+                    Get campaign panel
+                  </Link>
+                )}
+              </InteractButton>
+            </Stack>
           </Stack>
         </Stack>
-      </Box>
-    </SoloPage>
+      </Stack>
+    </Box>
   );
 }

@@ -39,10 +39,12 @@ export function SchedulingSlider({
   );
 }
 
-export function InteractionAvailabilitySlider({ data, setData }) {
-  const [interactionAvailability, setInteractionAvailability] =
-    useState(data?.creatorWeeklyAvailability);
-
+export function InteractionAvailabilitySlider({
+  data,
+  setData,
+  interactionAvailability,
+  setInteractionAvailability,
+}) {
   function handleInteractionAvailabilityChange(event, newValue) {
     setInteractionAvailability(newValue);
     setData({ creatorWeeklyAvailability: newValue });
@@ -72,12 +74,12 @@ export function InteractionAvailabilitySlider({ data, setData }) {
   );
 }
 
-export function InteractionDurationsSlider({ data, setData }) {
-  const [interactionDurations, setInteractionDurations] = useState([
-    data?.interactionDurationTime,
-    data?.interactionTopDurationTime,
-  ]);
-
+export function InteractionDurationsSlider({
+  data,
+  setData,
+  interactionDurations,
+  setInteractionDurations,
+}) {
   const marks = [
     {
       value: 15,
@@ -89,68 +91,42 @@ export function InteractionDurationsSlider({ data, setData }) {
     },
   ];
 
-  const handleInteractionDurationChange = (
-    event,
-    newValue,
-    activeThumb
-  ) => {
-    let newMinValue = 0;
-    let newMaxValue = 0;
-    const minDistance = 30; // this needs to be 2 x min value
+  const handleInteractionDurationChange = (event, newValue, activeThumb) => {
+    // minDistance should be at LEAST 2x the min duration
+    let minDistance;
+
+    if (newValue[0] >= 75) {
+      // At the midpoint, the minDuration slider cannot increase any further
+      // so pin min and max duration sliders at their highest values
+      setInteractionDurations([75, 150]);
+      setData({ interactionDurationTime: 75, interactionTopDurationTime: 150 });
+      return;
+    } else {
+      minDistance = 2 * newValue[0];
+    }
 
     if (!Array.isArray(newValue)) {
       return;
     }
 
-    if (activeThumb === 0) {
-      // activeThumb === 0 means the min slider
-      newMinValue = Math.min(
-        newValue[0],
-        interactionDurations[1] - minDistance
-      );
-      setInteractionDurations([newMinValue, interactionDurations[1]]);
+    // Creates a "doubling effect" of max duration value when sliding the min duration value
+    // towards increase. Allows for pinning of max duration and min duration when sliding before
+    // minDuration has been reached.
+    if (newValue[1] - newValue[0] < minDistance) {
+      const clamped = Math.max(newValue[1], minDistance);
+      setInteractionDurations([newValue[0], clamped]);
       setData({
-        interactionDurationTime: newMinValue,
-        interactionTopDurationTime: interactionDurations[1],
+        interactionDurationTime: newValue[0],
+        interactionTopDurationTime: clamped,
       });
     } else {
-      newMaxValue = Math.max(
-        newValue[1],
-        interactionDurations[0] + minDistance
-      );
-      setInteractionDurations([interactionDurations[0], newMaxValue]);
+      setInteractionDurations(newValue);
       setData({
-        interactionDurationTime: interactionDurations[0],
-        interactionTopDurationTime: newMaxValue,
+        interactionDurationTime: newValue[0],
+        interactionTopDurationTime: newValue[1],
       });
     }
   };
-
-  // NOTE: the slider handling below is pretty finicky. don't recommend using
-  // const handleInteractionDurationChange = (
-  //   event,
-  //   newValue,
-  //   activeThumb
-  // ) => {
-  //   console.log(newValue[0]);
-  //   const minDistance = newValue[0];
-
-  //   if (!Array.isArray(newValue)) {
-  //     return;
-  //   }
-
-  //   if (newValue[1] - newValue[0] < minDistance) {
-  //     if (activeThumb === 0) {
-  //       const clamped = Math.min(newValue[0], 100 - minDistance);
-  //       setInteractionDurations([clamped, clamped + minDistance]);
-  //     } else {
-  //       const clamped = Math.max(newValue[1], minDistance);
-  //       setInteractionDurations([clamped - minDistance, clamped]);
-  //     }
-  //   } else {
-  //     setInteractionDurations(newValue);
-  //   }
-  // };
 
   return (
     <Box sx={{ width: 300 }}>

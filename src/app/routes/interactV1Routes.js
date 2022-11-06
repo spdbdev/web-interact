@@ -26,9 +26,7 @@ const interactV1Routes = [
   },
   {
     path: "/interact/user",
-    element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
-    ),
+    element: <Page component={UserProfilePage} layout="vertical-default" />,
   },
   {
     path: "/interact/userold",
@@ -46,23 +44,25 @@ const interactV1Routes = [
 
   {
     path: "/interact/createCampaign",
-    element: (
-      <Page component={CreateCampaignPage} layout="solo-page" />
-    ),
+    element: <Page component={CreateCampaignPage} layout="solo-page" />,
   },
 
   {
     path: "/interact/what-is-interact",
-    element: <WhatIsInteractPage />,
+    element: <Page component={WhatIsInteractPage} layout="solo-page" />,
   },
 
   {
     path: "/interact/campaign-creation-summary",
-    element: <CampaignCreationSummaryPage />,
+    element: (
+      <Page component={CampaignCreationSummaryPage} layout="solo-page" />
+    ),
   },
   {
     path: "/interact/campaign-creation-confirmation",
-    element: <CampaignCreationConfirmationPage />,
+    element: (
+      <Page component={CampaignCreationConfirmationPage} layout="solo-page" />
+    ),
   },
 ];
 

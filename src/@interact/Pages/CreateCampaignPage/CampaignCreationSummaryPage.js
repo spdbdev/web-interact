@@ -6,28 +6,23 @@ import {
   getYoutubeIDFromURL,
 } from "@interact/Components/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { Close, ExpandLess, ExpandMore } from "@mui/icons-material";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
+import { ExpandLess } from "@mui/icons-material";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
-  Button,
   ButtonBase,
-  Chip,
   Container,
   Grid,
-  IconButton,
+  Slide,
   Stack,
   Typography,
 } from "@mui/material";
-import SoloPage from "app/layouts/solo-page/SoloPage";
-import { doc, getDoc } from "firebase/firestore";
-import moment from "moment";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import InteractLogo from "../../Images/logo512.png";
 import FAQAccordian from "./FAQAccordian";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../../firebase";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -51,28 +46,35 @@ export default function CampaignCreationSummaryPage() {
       let fetchedData = (
         await getDoc(doc(db, "campaigns", "campaign-creation-test"))
       ).data();
+
       setCampaignData(fetchedData);
     };
 
     getCampaign();
   }, []);
 
+  const Swal = useSwalWrapper();
+
   const CAMPAIGN_SUMMARY_ITEMS = [
     { label: "Goal Value", value: `$${campaignData?.goalValue}` },
     { label: "Goal", value: campaignData?.goal },
     {
       label: "Start Date",
-      value: getDateFromTimestamp({ timestamp: campaignData?.startDateTime }),
+      value: getDateFromTimestamp({
+        timestamp: campaignData?.startDateTime?.seconds,
+      }),
     },
     {
       label: "End Date",
-      value: getDateFromTimestamp({ timestamp: campaignData?.endDateTime }),
+      value: getDateFromTimestamp({
+        timestamp: campaignData?.endDateTime?.seconds,
+      }),
     },
     { label: "Duration", value: `${campaignData?.durationDays} days` },
     {
       label: "Interaction End Date",
       value: getDateFromTimestamp({
-        timestamp: campaignData?.interactionEndDateTime,
+        timestamp: campaignData?.interactionEndDateTime?.seconds,
       }),
     },
     { label: "Auction Min. Bid", value: `$${campaignData?.auctionMinBid}` },
@@ -86,11 +88,70 @@ export default function CampaignCreationSummaryPage() {
     },
   ];
 
+  async function submitCampaign() {
+    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      onOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+
+    // get conversion rate
+    const getConversionRate = httpsCallable(
+      functions,
+      "getCurrencyConversionRate"
+    );
+
+    const conversionResponse = await getConversionRate({
+      currency: campaignData?.currency,
+    });
+
+    console.log(conversionResponse?.data);
+
+    updateDoc(docRef, { currencyExchangeRate: conversionResponse?.data ?? 1 })
+      .then(() => {
+        console.log("success");
+      })
+      .catch((error) => {
+        console.log(error);
+      }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
+
+    // save as campaignStatus: "scheduled"
+
+    updateDoc(docRef, { campaignStatus: "scheduled" })
+      .then(() => {
+        navigate("/interact/campaign-creation-confirmation");
+        Toast.fire({
+          icon: "success",
+          title: "Campaign successfully created!",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "Failed to link server.",
+        });
+      }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
+  }
+
   if (!campaignData) {
     return <Loading />;
   } else {
     return (
-      <SoloPage>
+      <Slide
+        direction="down"
+        timeout={1000}
+        in={true}
+        mountOnEnter
+        unmountOnExit
+      >
         <Box
           sx={{
             display: "flex",
@@ -155,12 +216,18 @@ export default function CampaignCreationSummaryPage() {
                     campaignData?.campaignVideoLink
                   )}`}
                   title="YouTube video player"
-                  frameborder="0"
+                  frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
+                  allowFullScreen
                 ></iframe>
               </Stack>
-              <FAQAccordian data={campaignData} shouldAllowEdit={false} />
+
+              <FAQAccordian
+                data={campaignData}
+                FAQAnswers={campaignData?.FAQAnswers}
+                setFAQAnswers={null}
+                shouldAllowEdit={false}
+              />
             </Stack>
             <Stack direction="column" spacing={3}>
               <Stack spacing={2} sx={{ height: 180 }}>
@@ -187,15 +254,15 @@ export default function CampaignCreationSummaryPage() {
           </Stack>
           <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
             <InteractFlashyButton
-              onClick={() =>
-                navigate("/interact/campaign-creation-confirmation")
-              }
+              onClick={() => {
+                submitCampaign();
+              }}
             >
               Submit ✓
             </InteractFlashyButton>
           </Box>
         </Box>
-      </SoloPage>
+      </Slide>
     );
   }
 }
