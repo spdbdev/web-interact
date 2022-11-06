@@ -43,6 +43,7 @@ export default function CampaignCreationSummaryPage() {
       let fetchedData = (
         await getDoc(doc(db, "campaigns", "campaign-creation-test"))
       ).data();
+
       setCampaignData(fetchedData);
     };
 

@@ -3,11 +3,27 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+} from "firebase/auth";
 
-import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
+import {
+  getFirestore,
+  query,
+  getDocs,
+  collection,
+  where,
+  addDoc,
+} from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -18,7 +34,7 @@ const firebaseConfig = {
   storageBucket: "interact2002.appspot.com",
   messagingSenderId: "614264280566",
   appId: "1:614264280566:web:8644b5c9d6c9f8277c23d7",
-  measurementId: "G-LBQPPM4GPT"
+  measurementId: "G-LBQPPM4GPT",
 };
 
 // Initialize Firebase
@@ -26,6 +42,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+const functions = getFunctions(app);
+
+// enable when testing local functions:
+connectFunctionsEmulator(functions, "localhost", 5001);
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -49,7 +69,6 @@ const signInWithGoogle = async () => {
     alert(err.message);
   }
 };
-
 
 const loginWithEmailAndPassword = async (email, password) => {
   try {
@@ -86,11 +105,9 @@ const sendPasswordReset = async (email) => {
   }
 };
 
-
 const logout = () => {
   signOut(auth);
 };
-
 
 // export const createUserProfileDocument = async (userAuth, additionalData) => {
 //   if (!userAuth) return;
@@ -101,7 +118,7 @@ const logout = () => {
 
 //   if (!snapShot.exists) {
 //     const { displayName, email } = userAuth;
-//     const createdAt = new Date(); 
+//     const createdAt = new Date();
 
 //     try {
 //       await userRef.set({
@@ -116,12 +133,13 @@ const logout = () => {
 //   }
 
 //   return userRef;
-    
+
 // }
 
 export {
   auth,
   db,
+  functions,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
