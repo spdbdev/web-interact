@@ -1,5 +1,8 @@
 export const headerTheme = {
     type: "light",
+    typography: {
+        fontFamily: "Jost, Arial",
+    },
     components: {
         MuiAppBar: {
             styleOverrides: {
