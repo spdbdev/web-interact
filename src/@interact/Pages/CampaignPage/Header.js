@@ -15,8 +15,7 @@ import { getDateFromTimestamp } from "@interact/Components/utils";
 import Span from "@jumbo/shared/Span";
 
 export default function Header({ campaignData }) {
-  const numInteractions =
-    campaignData?.numBidSlots + campaignData?.numGiveaway;
+  const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
 
   return (
     // "50 interactions will be carried out from Aug 8th 2022 to Oct 3rd 2022, don't miss out!"

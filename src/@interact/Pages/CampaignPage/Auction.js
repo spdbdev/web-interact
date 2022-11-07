@@ -10,23 +10,22 @@ import InfoTooltip from "../../Components/InfoTooltip";
 import "./CampaignPage.css";
 
 export default function Auction({isCampaignEnded, bids, campaignData, bidAction }) {
-  // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
 
   const [bidAmount, setBidAmount] = useState(0);
   const [autoBidAmount, setAutoBidAmount] = useState(0);
   const [minBidAmount, setMinBidAmount] = useState(0);
   const [maxBidAmount, setMaxBidAmount] = useState(0);
-  const [numBidSlots,setNumBidSlots] = useState(0);
+  const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
   const [desiredRanking, setDesiredRanking] = useState(1);
 
   useEffect(()=>{
     if(Object.entries(campaignData).length > 0 && bids.length > 0){
-      if(campaignData?.numBidSlots){
-        setNumBidSlots(campaignData.numBidSlots);
+      if(campaignData?.numAuctionInteractions){
+        setNumAuctionInteractions(campaignData.numAuctionInteractions);
       }
-      if(bids.length >= campaignData?.numBidSlots){
+      if(bids.length >= campaignData?.numAuctionInteractions){
         let sortedBids = sortBids(bids);
-        let lastPrice = sortedBids[campaignData?.numBidSlots-1]?.price;
+        let lastPrice = sortedBids[campaignData?.numAuctionInteractions-1]?.price;
         if(lastPrice >= campaignData.minBidPrice){
           setMinBidAmount(parseFloat(lastPrice)+0.5);
           setBidAmount(parseFloat(lastPrice)+0.5);
