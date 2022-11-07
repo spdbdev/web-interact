@@ -40,11 +40,11 @@ export default function Stats({ campaignData }) {
           <FollowButton />
           <StatDisplay statValue={stats?.numFollowers} statTitle="Followers" />
           <StatDisplay
-            statValue={stats?.numRafflers}
+            statValue={campaignData.numGiveawayEntries ?? 0 }
             statTitle="Giveaway Entrants"
           />
           <StatDisplay
-            statValue={stats?.numBidders}
+            statValue={campaignData.numAuctionBids ?? 0}
             statTitle="Auction Bidders"
           />
           {stats?.category ? (
