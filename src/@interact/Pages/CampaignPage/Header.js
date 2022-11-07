@@ -60,7 +60,7 @@ export default function Header({ campaignData }) {
           </Span>
         </Typography>
       </Stack>
-
+      <br />
       <Box
         sx={{
           background: "linear-gradient(173.73deg, #782FEE, #DD00FF 117.43%)",
