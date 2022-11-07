@@ -45,7 +45,8 @@ const FAQText = {
   0: (
     <FAQSidebarWrapper title="Basics">
       Be true to yourself; fans want to talk to & create a symbiotic 2-way relationship. 
-      Have meaningful conversations & learn about them.
+      Have meaningful conversations & learn about your fans who have grown with you not
+      only as a creator but as a person.
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
