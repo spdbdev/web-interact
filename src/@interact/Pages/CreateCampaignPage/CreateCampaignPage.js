@@ -44,10 +44,8 @@ function FAQSidebarWrapper({ title, children }) {
 const FAQText = {
   0: (
     <FAQSidebarWrapper title="Basics">
-      Be yourself and be true to your personality; fans want to talk to the real
-      you and want to connect with you. Drive hype & FOMO: it’s a fan’s only
-      chance for a few months usually. If they miss out they’ll sit in envy of
-      other lucky fans who get to interact with a content creator they love.
+      Be true to yourself; fans want to talk to & create a symbiotic 2-way relationship. 
+      Have meaningful conversations & learn about them.
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
@@ -263,6 +261,9 @@ const FAQText = {
   ),
   7: (
     <FAQSidebarWrapper title="Promotion">
+      While promoting the campaign, the goal is to drive hype & FOMO: it’s a fan’s only
+      chance for a few months usually. If they miss out they’ll sit in envy of
+      other lucky fans who get to interact with a content creator they love.
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
