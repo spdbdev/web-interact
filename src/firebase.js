@@ -109,6 +109,27 @@ const logout = () => {
   signOut(auth);
 };
 
+export async function fetchUser(username) {
+  const q = query(collection(db, "users"), where("username", "==", username));
+  const querySnapshot = await getDocs(q);
+  const docSnapshots = querySnapshot.docs[0];
+  const data = docSnapshots.data()
+  return data
+}
+
+export const getFirebaseArray = async (col) => {
+  let arr = [];
+  let arrFirebaseObject = await getDocs(col);
+  arrFirebaseObject.forEach((x, i) => {
+    // console.log(i);
+    arr.push({ ...x.data() }); // order by price to be implemented
+  });
+  //order by price backend later
+  // _bids.sort((a, b)=> a.price > b.price)
+  return arr;
+};
+
+
 // export const createUserProfileDocument = async (userAuth, additionalData) => {
 //   if (!userAuth) return;
 

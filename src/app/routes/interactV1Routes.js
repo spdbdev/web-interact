@@ -25,8 +25,10 @@ const interactV1Routes = [
     element: <SignUpPage2 />,
   },
   {
-    path: "/interact/user",
-    element: <Page component={UserProfilePage} layout="vertical-default" />,
+    path: "/u/:username",
+    element: (
+      <Page component={UserProfilePage} layout="vertical-default" />
+    ),
   },
   {
     path: "/interact/userold",
@@ -34,7 +36,7 @@ const interactV1Routes = [
     element: <UserProfilePage />,
   },
   {
-    path: "/interact/campaign",
+    path: "/c/:campaignId",
     element: <CampaignPage />,
   },
   {

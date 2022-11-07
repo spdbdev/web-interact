@@ -19,9 +19,10 @@ import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { query, collection, getDocs, where } from "firebase/firestore";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { FollowButton } from "../CampaignPage/Stats";
+import { fetchUser } from "../../../firebase";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,6 +58,8 @@ function UserProfilePage() {
     setTab(newValue);
   };
 
+  const params = useParams();
+
   const isCreator = true;
 
   const [modalOpened, setModalOpened] = useState(false);
@@ -76,13 +79,19 @@ function UserProfilePage() {
       alert("An error occured while fetching user data");
     }
   };
+
+  useEffect(() => {
+    const userData = params.username && fetchUser(params.username);
+    console.log("User data is", userData)
+  }, [])
+
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate("/");
-    fetchUserName();
+
   }, [user, loading]);
 
-  localStorage.setItem('name',name);
+  localStorage.setItem('name', name);
 
   return (
     <div>
