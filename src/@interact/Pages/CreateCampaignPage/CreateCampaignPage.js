@@ -88,6 +88,10 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How does scheduling work?
       </Span>{" "}
+      You can sync with your Google, Outlook or iCloud calendar, where your scheduled 
+      events will show up as unavailable timeslots automatically on your creator 
+      schedule tab (in your Interact profile page); after you lock in your 
+      availability for a week, your interactions with fans are scheduled and can be exported to your calendar. 
       Fans can select their availability from Mon-Sun in general as long as they
       have an account, even before they've acquired any interactions (a minimum
       of 5 hours of the week have to be selected). Fans also select a preference
@@ -181,7 +185,7 @@ const FAQText = {
     </FAQSidebarWrapper>
   ),
   3: (
-    <FAQSidebarWrapper title="Goal & Video">
+    <FAQSidebarWrapper title="Goal & video">
       <Span sx={{ textDecoration: "underline", display: "block" }}>Goal:</Span>{" "}
       You must create a goal which is non-binding, i.e. interactions are still
       carried out with those who have supported you even if the goal is not
@@ -212,11 +216,8 @@ const FAQText = {
     </FAQSidebarWrapper>
   ),
   4: (
-    <FAQSidebarWrapper title="Interaction Method">
-      This is the FAQ your fans will see on your campaign. Most answers are
-      pre-filled, but you'll need to fill in custom details for some questions,
-      namely: "What can we do in an interaction?" and "How are interactions
-      carried out?"
+    <FAQSidebarWrapper title="Interaction method">
+      We highly recommend choosing Discord, as it's activities feature opens up quite a few possiblities for a more fun & enjoyable interaction, helping you bond with your fans.
     </FAQSidebarWrapper>
   ),
   5: (

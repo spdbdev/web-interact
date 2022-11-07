@@ -47,8 +47,8 @@ export default function CampaignCreationTabs({
         <StyledTab label="Basics" />
         <StyledTab label="Scheduling" />
         <StyledTab label="Interaction" />
-        <StyledTab label="Goal & Video" />
-        <StyledTab label="Method" />
+        <StyledTab label="Goal & video" />
+        <StyledTab label="Interaction method" />
         <StyledTab label="FAQ" />
         <StyledTab label="Payment" />
         <StyledTab label="Promotion" />

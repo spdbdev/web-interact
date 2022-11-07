@@ -36,29 +36,47 @@ export default function Auction({ bids, campaignData, bidAction }) {
       headerSx={{ pb: 0 }}
       className="auctionCard"
     >
+      <Stack direction="column">
+          <Typography>
+            The top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> get
+            60 min interactions
+          </Typography>
+
+          <Typography>
+            The <Span sx={{ color: "primary.main", fontWeight: 600 }}>17</Span> after get 30
+            min interactions
+          </Typography>
+
+          <Typography>
+            The top <Span sx={{ color: "primary.main", fontWeight: 600 }}>20</Span> bidders win at the end of the campaign
+          </Typography>
+        </Stack>
+        <br />
       <Stack id="autoBidSection" direction="column" spacing={2}>
         <Stack direction="row" alignItems="center" spacing={1} mb={1}>
           <Typography variant="h5" color="text.secondary" mb={0}>
-            Auto-bidding
+            Auto-bid
           </Typography>
           <InfoTooltip
             title="We'll automatically bid the lowest amount to stay at your desired
             rank on the leaderboard until your max bid is reached. If others bid
-            more & your max bid amount is exceeded, your rank will be lowered;
+            more & your max bid amount is exceeded, your rank will be lowered (we
+            will automatically bid your max bid price if it is exceeded and still
+            try to get you the highest rank possible;
             you might still be on the leaderboard or you might not be,
             meaning no interaction (you'll be sent an email to increase your
-            'Max bid amount')."
+            'Max bid amount')"
           />
         </Stack>
 
         <FormControl sx={{ my: 1 }}>
-          <InputLabel htmlFor="desired-ranking">Desired Ranking</InputLabel>
+          <InputLabel htmlFor="desired-ranking">Desired ranking</InputLabel>
           <OutlinedInput
             id="desired-ranking"
             type="number"
             style={{ height: 50 }}
             value={desiredRanking}
-            label="Desired Ranking"
+            label="Desired ranking"
             onChange={(e) => {
               // prevent values less than 0 or higher than 20.
               e.target.value < 0
@@ -70,7 +88,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
           />
         </FormControl>
         <FormControl sx={{ my: 1 }}>
-          <InputLabel htmlFor="max-bid-amount">Max Bid Amount</InputLabel>
+          <InputLabel htmlFor="max-bid-amount">Max bid amount</InputLabel>
           <OutlinedInput
             id="max-bid-amount"
             type="number"
@@ -78,7 +96,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             style={{ height: 50 }}
             value={maxBidAmount}
-            label="Max Bid Amount"
+            label="Max bid amount"
             onChange={(e) => setMaxBidAmount(e.target.value)}
           />
         </FormControl>
@@ -90,33 +108,15 @@ export default function Auction({ bids, campaignData, bidAction }) {
       <Divider sx={{ my: 2 }}>or</Divider>
       <Stack id="normalBidSection" direction="column" spacing={2}>
         <Typography variant="h5" color="text.secondary" mb={0}>
-          Manual bidding
+          Manual bid
         </Typography>
 
-        <Stack direction="column">
-          <Typography>
-            Top <Span sx={{ color: "primary.main", fontWeight: 500 }}>3</Span> x
-            60 min interactions
-          </Typography>
-
-          <Typography>
-            <Span sx={{ color: "primary.main", fontWeight: 500 }}>17</Span> x 30
-            min interactions
-          </Typography>
-
-          <Typography>
-            The top 20 bidders win at the end of the campaign.
-          </Typography>
-        </Stack>
-
         {/* <div>Original Price: <span class='Highlight'>{'$'}20</span></div> */}
-
         <Stack direction="column" spacing={0.5}>
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography>Enter bid price (total)</Typography>
+            <Typography>Enter bid price</Typography>
             <InfoTooltip
-              title="If multiple parties bid the same price, the ones who bid first will
-            have higher rankings."
+              title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking"
             />
           </Stack>
           <OutlinedInput

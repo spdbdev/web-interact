@@ -120,20 +120,23 @@ export default function Giveaway({
       className="giveawayCard"
     >
       <Box>
+      <br />
         <div>
-          <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
+          <Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span> x 30
           minute interactions
         </div>
         <div>
-          <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
-          winners will be randomly chosen from the ticketholders at the end of
-          the campaign
+          <Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span>{" "}
+          winners will be randomly chosen from all entrants when campaign ends
         </div>
       </Box>
 
       <Box id="VIPGiveawaySection">
         <Typography variant="h5" color="text.secondary" mt={2}>
-          VIP entry
+          <span>VIP entry </span> 
+          <InfoTooltip 
+            title="Get a 25x increased chance of winning"
+          />
         </Typography>
 
         <span>
@@ -141,9 +144,12 @@ export default function Giveaway({
         </span>
         <Stack direction="row" spacing={1} alignItems="center">
           <span>Chance of winning: 2.5%</span>
-          <InfoTooltip
-            title="Remember, the % chance of winning will go down as more fans
-          join the giveaway."
+          <InfoTooltip 
+            title="You can ugrade to a VIP entry at any time before the 
+          campaign ends. Each time a user loses, their next giveaway with the
+          same creator will have DOUBLE the chances of winning, stacking twice, 
+          4x loss multiplier (meaning up to a total 4x chance with a free entry).
+          Remember, the % chance of winning will go down as more fans join the giveaway"
           />
         </Stack>
 
@@ -191,8 +197,11 @@ export default function Giveaway({
         <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
           <span>Chance of winning: 0.1%</span>
           <InfoTooltip
-            title="Remember, the % chance of winning will go down as more fans
-          join the giveaway."
+            title="Only 1 entry is allowed per user. Each time a user loses, their 
+          next giveaway with the same creator will have DOUBLE the chances of
+          winning, stacking twice, 4x loss multiplier (meaning up to a total 100x
+          chance with a VIP entry). Remember, the % chance of winning will go down
+          as more fans join the giveaway"
           />
         </Stack>
 
