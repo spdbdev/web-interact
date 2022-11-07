@@ -53,23 +53,13 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How are interactions carried out?
       </Span>{" "}
-      Via Google Meet, each interaction box has a ‘Join’ button that will go to
-      the unique link of this interaction. You may also stream it live and/or
-      record it (fans have already agreed to a photo/video release form) If a
-      fan wants to join the content creator in a game but they are in different
-      regions, either the fan or the content creator can create an account in a
-      different region. <br />
+      Via Discord (fans link their Discord accounts; when it’s their turn to interact, fans join the creator’s
+       server and are given a special role automatically) or Google Meet (unique Google Meet link).
+      You may also stream it live and/or record it (users have agreed to photo/video release in the terms & conditions).
+      If a fan wants to join the content creator in a game but they are in different regions, either the
+       fan or the content creator can create an account in a different region. <br />
       <br />
-      <Span sx={{ textDecoration: "underline", display: "block" }}>
-        What activities can I do with a fan in an interaction?{" "}
-      </Span>{" "}
-      Playing games (from competitive games like Valorant to Chess to….
-      Geoguessr) Discussing topics fans are passionate about, commentating on
-      that, and learning from each other (fans can screen share: they might show
-      off their own creations, favorite clips of your content and ask for advice
-      in your field of expertise, or just anime & bad dad jokes. You can spice
-      it up with a challenge like Try Not to Laugh)
-    </FAQSidebarWrapper>
+          </FAQSidebarWrapper>
   ),
   1: (
     <FAQSidebarWrapper title="Scheduling">
@@ -117,17 +107,24 @@ const FAQText = {
   2: (
     <FAQSidebarWrapper title="Interaction">
       <Span sx={{ textDecoration: "underline", display: "block" }}>
+        Why giveaway + auction format?
+      </Span>{" "}
+      Both affluent & everyday fans have an opportunity to interact: The
+      giveaway allows all of your fans—for free or for a few dollars—to support
+      you & achieve the campaign goal while getting a chance to interact with a
+      content creator they love. The auction makes it fair by giving your most
+      loyal fans the option to get an interaction with 100% certainty; your most
+      loyal fans who want to tell you, their favorite creator, about themselves
+      will save up birthday money / holiday wishes for an interaction with you.
+      <br />
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+      <br />
         How does the giveaway work?
       </Span>{" "}
       Anyone can join the giveaway with a free entry or support a creator with a
-      few dollars for a VIP entry that increases your chances of winning by 25x
-      (but first, you have to correctly answer a skill based math question).
+      few dollars for a VIP entry that increases your chances of winning by 25x.
       Users can upgrade from the free to VIP entry (only 1 entry is allowed per
-      user). Winners are drawn at the end of the campaign. Each time a user
-      loses, their next giveaway with the same creator will have DOUBLE the
-      chances of winning, stacking twice, 4x loss multiplier (meaning up to a
-      total 4x chance for a free entry or a total 100x chance if it is a VIP
-      entry; this only resets on winning an interaction in the giveaway). <br />
+      user).<br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How does the auction & leaderboard work?
@@ -138,50 +135,15 @@ const FAQText = {
       top 3 on the leaderboard, their interaction will be longer in duration
       compared to a normal interaction.
       <br />
-      <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
-        Why giveaway + auction format?
-      </Span>{" "}
-      Both affluent & everyday fans have an opportunity to interact: The
-      giveaway allows all of your fans—for free or for a few dollars—to support
-      you & achieve the campaign goal while getting a chance to interact with a
-      content creator they love. The auction makes it fair by giving your most
-      loyal fans the option to get an interaction with 100% certainty; your most
-      loyal fans who want to tell you, their favorite creator, about themselves
-      will save up birthday money / holiday wishes for an interaction with you.
-      What can you do in an interaction? Playing games (from competitive games
-      like Valorant to Chess to…. Geoguessr) Discussing topics fans are
-      passionate about, commentating on that, and learning from each other (fans
-      can screen share: they might show off their own creations, favorite clips
-      of your content and ask for advice in your field of expertise, or just
-      anime & bad dad jokes. You can spice it up with a challenge like Try Not
-      to Laugh)
       <br />
-      <br />
-      <Span sx={{ textDecoration: "underline", display: "block" }}>
-        Why do fans want personal interactions?
+      Additional giveaway info
       </Span>{" "}
-      As social platforms are so one-sided, fans give you attention weekly or
-      even daily without being able to receive any meaningful attention or
-      recognition back. They treat you as someone they trust and/or a relatable
-      friend, but have never been able to fulfill that relationship. Thus, fans
-      want to be recognized by you & build a relationship by showing off their
-      talents (e.g. best X-main in this game, astute questions & insights in X,
-      musical/artistic talent, athleticism, or comedic genius). Fans want to
-      discuss & make their own viewpoints known on subjects they are deeply
-      passionate about, where you’re one of the leaders in that
-      subject/community (from anime to politics, from history to frontier tech,
-      from reviews & tier lists to educational animations). Fame—if a fan’s
-      interaction was interesting, creators can post highlights of it or the
-      interaction is part of a live-streaming/podcasting scenario where the fan
-      is recognized by many fellow fans & viewers (react to content together,
-      try not to laugh challenge, etc. even if you don’t create that type of
-      content yet, expand your variety—fans love to watch drama & discourse, or
-      just something new). Interacting with fans as part of your content is
-      effective & appealing since other fans are envious & garners large
-      popularity (Mr. Beast, fans who don’t make money are still ecstatic).
-      Creating fresh content is one of the largest challenges we face, why not
-      add some spice?
+      Winners are drawn at the end of the campaign. Each time a user
+      loses, their next giveaway with the same creator will have DOUBLE the
+      chances of winning, stacking twice, 4x loss multiplier (meaning up to a
+      total 4x chance for a free entry or a total 100x chance if it is a VIP
+      entry; this only resets on winning an interaction in the giveaway). <br />
     </FAQSidebarWrapper>
   ),
   3: (
@@ -217,7 +179,39 @@ const FAQText = {
   ),
   4: (
     <FAQSidebarWrapper title="Interaction method">
-      We highly recommend choosing Discord, as it's activities feature opens up quite a few possiblities for a more fun & enjoyable interaction, helping you bond with your fans.
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+        What activities can I do with a fan in an interaction?{" "}
+      </Span>{" "}
+      Playing games (from competitive games like Valorant & Chess to…. GeoGuessr or mini putt in Discord activities).
+      Discussing topics fans are passionate about, commentating, and learning from each other (fans can screen share: 
+      they might show off their own creations, favorite clips of your content and ask for advice in your field of 
+      expertise… or just anime. You could also spice it up with a Try Not to Laugh challenge, watching funny YouTube videos via Discord activities).
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+      <br />
+        Why do fans want personal interactions?
+      </Span>{" "}
+      As social platforms are so one-sided, fans give you attention weekly or
+      even daily without being able to receive any meaningful attention or
+      recognition back. They treat you as someone they trust and/or a relatable
+      friend, but have never been able to fulfill that relationship. Thus, fans
+      want to be recognized by you & build a relationship by showing off their
+      talents (e.g. best X-main in this game, astute questions & insights in X,
+      musical/artistic talent, athleticism, or comedic genius). Fans want to
+      discuss & make their own viewpoints known on subjects they are deeply
+      passionate about, where you’re one of the leaders in that
+      subject/community (from anime to politics, from history to frontier tech,
+      from reviews & tier lists to educational animations). Fame—if a fan’s
+      interaction was interesting, creators can post highlights of it or the
+      interaction is part of a live-streaming/podcasting scenario where the fan
+      is recognized by many fellow fans & viewers (react to content together,
+      try not to laugh challenge, etc. even if you don’t create that type of
+      content yet, expand your variety—fans love to watch drama & discourse, or
+      just something new). Interacting with fans as part of your content is
+      effective & appealing since other fans are envious & garners large
+      popularity (Mr. Beast, fans who don’t make money are still ecstatic).
+      Creating fresh content is one of the largest challenges we face, why not
+      add some spice?
+      
     </FAQSidebarWrapper>
   ),
   5: (
@@ -237,13 +231,10 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         "How are interactions carried out?"
       </Span>{" "}
-      Here, you can tell your fans how they'll be able to interact with you.
-      Zoom, Discord, In-Person, etc. Via Google Meet, each interaction box has a
-      ‘Join’ button that will go to the unique link of this interaction The
-      content creator may stream the interaction live and/or record it (If you
-      wish to play a game, write down the name & region/server if it has region
-      restrictions, where you can only play with those on your server; fans
-      might have to make a new account)
+      Here, you can tell your fans how they'll be able to interact with you
+      via Discord (fans link their Discord accounts; when it’s their turn to interact, fans join the creator’s server and are given a special role automatically) or Google Meet (unique Google Meet link).
+      Are you going to stream the interaction live and/or record it (If you
+      wish to play a game, what is the game? Which region/server?)
     </FAQSidebarWrapper>
   ),
   6: (
