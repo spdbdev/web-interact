@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import { Container, Divider, Link, Stack, Typography } from "@mui/material";
+import { Container, Divider, Link, Stack, Typography,Grid } from "@mui/material";
 import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
@@ -125,10 +125,10 @@ export default function Leaderboard({ campaignData, bids }) {
         </Typography>
         <InfoTooltip title="If you’re on the leaderboard at the end of the campaign, you will receive a premium interaction (occurs before raffled interactions) otherwise, if you are overthrown from the leaderboard, you are not charged" />
       </Box>
-      <Box>
+      <Box style={{marginTop:'1rem'}}>
         {bids?.length > 0 ? (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ py: 1 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={3}>
               {/* <span style={{fontWeight:'bold', color:'#782FEE', textDecoration:'underline'}}>Congrats, you're 8th!</span> */}
               {/* <span
                 style={{
@@ -142,35 +142,30 @@ export default function Leaderboard({ campaignData, bids }) {
 
               <Stack
                 spacing={2}
-                direction="row"
+                direction="column"
                 justifyContent="space-evenly"
-                divider={<Divider orientation="vertical" flexItem />}
+                divider={<Divider orientation="horizontal" flexItem />}
                 sx={{ my: 2 }}
               >
                 <RankComponent data={rows[0]} />
                 <RankComponent data={rows[1]} />
                 <RankComponent data={rows[2]} />
               </Stack>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: 400,
-              }}
-            >
+            </Grid>
+            <Grid item xs={9} style={{height:'400px'}}>
               <DataGrid
                 sx={{ flex: 1, height: "100%", borderColor: "divider" }}
                 rows={rows}
                 columns={columns}
-                pageSize={10}
+                // pageSize={rows.length}
+                hideFooter
                 disableColumnMenu
                 // rowsPerPageOptions={[7]}
                 // checkboxSelection
                 disableSelectionOnClick
               />
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         ) : (
           <Box
             sx={{
