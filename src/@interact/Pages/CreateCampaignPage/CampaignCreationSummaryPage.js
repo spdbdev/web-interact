@@ -22,7 +22,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FAQAccordian from "./FAQAccordian";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../../firebase";
+import { functions, publishCampaign } from "../../../firebase";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -40,6 +41,7 @@ export function CampaignSummaryItem({ label, value }) {
 export default function CampaignCreationSummaryPage() {
   const [campaignData, setCampaignData] = useState(null);
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
 
   useEffect(() => {
     const getCampaign = async () => {
@@ -124,7 +126,7 @@ export default function CampaignCreationSummaryPage() {
 
     // save as campaignStatus: "scheduled"
 
-    updateDoc(docRef, { campaignStatus: "scheduled" })
+    publishCampaign("campaign-creation-test", user.id)
       .then(() => {
         navigate("/a/campaign-creation-confirmation");
         Toast.fire({

@@ -22,9 +22,11 @@ import {
   getDocs,
   collection,
   where,
-  addDoc,
+  setDoc,
   doc,
-  getDoc
+  getDoc,
+  addDoc,
+  updateDoc
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -140,6 +142,15 @@ export async function fetchUserByUid(uid) {
   return { ...data, id }
 }
 
+export const addCampaign = async (user) => {
+  let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
+  let newCampaignId = `${user.name}_${campaignCounter}`;
+
+  let newCampaign = (await setDoc(doc(db, "campaigns", newCampaignId), {}));
+  await updateDoc(doc(db, "users", user.id), { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] });
+  return newCampaign;
+}
+
 export async function fetchCampaign(campaignId) {
   // Check for the customURL first
   const customURLQ = query(collection(db, "campaigns"), where("customURL", "==", campaignId));
@@ -153,6 +164,27 @@ export async function fetchCampaign(campaignId) {
     data = (await getDoc(doc(db, "campaigns", campaignId))).data();
   }
   return data
+}
+
+export function createCampaignURL(campaign) {
+  return `${campaign.campaignStatus === "draft" ? "/d" : "/c"}/${campaign.campaignId}`
+}
+
+export async function publishCampaign(campaignId, userId) {
+  let docRef = doc(db, "campaigns", campaignId); //this needs to be passed in programatically
+  let userDocRef = doc(db, "users", userId); //this needs to be passed in programatically
+  let userData = (
+    await getDoc(userDocRef)
+  ).data();
+  let selectedCampaign = userData.campaigns.find((c) => c.campaignId === campaignId);
+  selectedCampaign.campaignStatus = "scheduled";
+  await updateDoc(docRef, { campaignStatus: "scheduled" });
+  await updateDoc(userDocRef, { campaigns: userData.campaigns });
+}
+
+export const checkCustomURLAgainstOtherCampaigns = async (url) => {
+  const campaign = await fetchCampaign(url);
+  return campaign;
 }
 
 export const getFirebaseArray = async (col) => {

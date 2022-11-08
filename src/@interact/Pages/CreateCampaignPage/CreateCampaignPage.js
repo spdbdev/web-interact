@@ -29,7 +29,7 @@ import moment from "moment";
 import Loading from "@interact/Components/Loading/Loading";
 import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import InteractMethodTab from "./Tabs/InteractMethodTab";
-import { fetchCampaign } from "../../../firebase";
+import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 
 function FAQSidebarWrapper({ title, children }) {
@@ -340,19 +340,21 @@ function CreateCampaignPage() {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
     const getCampaign = async (campaignId) => {
-      let fetchedData = await fetchCampaign(campaignId);
+      let fetchedData = (
+        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+      ).data();
+      // let fetchedData = await fetchCampaign(campaignId);
 
       if (fetchedData) {
         setCampaignData(fetchedData);
       }
     };
 
-    const addCampaign = async () => {
+    const handleAddCampaign = async () => {
       // To be changed to generated campaign creation once the deeper functionality works
-      let newCampaign = await getDoc(db, "campaigns", "campaign-creation-test");
-      // let newCampaign = (await addDoc(collection(db, "campaigns"), {}));
-      await updateDoc(doc(db, "users", user.id), { campaigns: [{ campaignId: newCampaign.id, campaignStatus: "draft" }] });
-      await getCampaign(newCampaign.id);
+      // let newCampaign = await getDoc(db, "campaigns", "campaign-creation-test");
+      let newCampaign = addCampaign(user)
+      await getCampaign(newCampaign.campaignId);
     }
 
     if (user) {
@@ -360,9 +362,9 @@ function CreateCampaignPage() {
         return
       } else if (!user.campaigns || user.campaigns.length === 0) {
         campaignAddedRef.current = true
-        addCampaign();
+        handleAddCampaign();
       } else {
-        getCampaign(user.campaigns[0]);
+        getCampaign(user.campaigns[0].campaignId);
       }
     }
 

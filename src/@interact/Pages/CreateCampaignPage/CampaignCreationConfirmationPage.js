@@ -18,7 +18,7 @@ import {
 import SoloPage from "app/layouts/solo-page/SoloPage";
 import { doc, getDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../../firebase.js";
+import { createCampaignURL, functions } from "../../../firebase.js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractionIcon from "../../Images/interaction-icon.png";
@@ -144,7 +144,7 @@ export default function CampaignCreationConfirmationPage() {
             </Typography>
             <Stack direction="row" alignItems="center" spacing={4}>
               <InteractFlashyButton
-                onClick={() => navigate(`/c/${user.campaigns[0]}`)}
+                onClick={() => navigate(createCampaignURL(user.campaigns[0]))}
               >
                 Go to campaign
               </InteractFlashyButton>

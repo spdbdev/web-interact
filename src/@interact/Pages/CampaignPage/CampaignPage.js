@@ -30,6 +30,7 @@ import { useJumboTheme } from "@jumbo/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import Loading from "@interact/Components/Loading/Loading";
+import { createCampaignURL } from "../../../firebase";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [
@@ -571,14 +572,23 @@ function CampaignPage(userData) {
 
     // setComments(DUMMY_COMMENT_DATA)
     // setSupporters(DUMMY_SUPPORTERS)
-    if (!params.campaignId) {
-      if (user) {
-        console.log("user", user)
-        navigate(user.campaigns && user.campaigns[0] ? `/c/${user.campaigns[0]}` : "/a/create-campaign")
-        getCampaignData(params.campaignId)
+
+    // Check if there is a campaignId in params
+    if (params.campaignId) {
+      // Then, check if the campaign is a draft, 
+      if (user && user.campaigns && user.campaigns[0] && user.campaigns[0].campaignStatus === "draft") {
+        // then redirect the user to /d/
+        navigate(createCampaignURL(user.campaigns[0]))
+      } else {
+        // otherwise, proceed with getting campaign data
+        getCampaignData(params.campaignId);
       }
     } else {
-      getCampaignData(params.campaignId);
+      // otherwise, check if user is authenticated
+      if (user) {
+        // then redirect either to appropriate campaign, or to create campaign page
+        navigate(user.campaigns && user.campaigns[0] ? createCampaignURL(user.campaigns[0]) : "/a/create-campaign")
+      }
     }
     console.log(params, !params.campaignId, user)
 
