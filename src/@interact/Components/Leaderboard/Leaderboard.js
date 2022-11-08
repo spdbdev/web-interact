@@ -23,7 +23,7 @@ import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboDemoCard from "@jumbo/components/JumboDemoCard";
-import { formatMoney } from "../utils";
+import { formatDate, formatMoney } from "../utils";
 
 const columns = [
   { field: "id", headerName: "No", width: 50 },
@@ -42,6 +42,7 @@ const columns = [
     field: "bidTime",
     headerName: "Bid time",
     width: 230,
+    renderCell: (d) => formatDate(d.value)
   },
 ];
 
@@ -74,7 +75,6 @@ export default function Leaderboard({ campaignData, bids }) {
     bids = [...bids]?.sort((a, b) => {
       return parseFloat(b.price) - parseFloat(a.price);
     });
-    console.log("Leaderboard Bids>>",bids);
 
     bids = bids?.map((x, i) => {
       return {

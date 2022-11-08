@@ -6,6 +6,10 @@ import Tab from "@mui/material/Tab";
 import { Box } from "@mui/material";
 import ReactModal from "react-modal";
 
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 import "./UserProfilePage.css";
 import Scheduler from "../../Components/Scheduler/Scheduler";
 import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
