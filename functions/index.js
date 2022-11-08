@@ -46,7 +46,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 			snapshot.forEach(document => {
 				let doc = document.data();
 				doc.id = document.id;
-				doc.price = Number(doc.price);
+				doc.price = parseFloat(doc.price);
 				bids.push(doc);
 			});
 			bids.sort((a, b)=> b.price - a.price);
@@ -259,8 +259,8 @@ exports.autoBidding = functions.firestore.document('/campaigns/{campaign_id}/bid
 	snapshot.forEach(document => {
 		let doc = document.data();
 		doc.id = document.id;
-		doc.price = Number(doc.price);
-		doc.maxBidPrice = Number(doc.maxBidPrice);
+		doc.price = parseFloat(doc.price);
+		doc.maxBidPrice = parseFloat(doc.maxBidPrice);
 		doc.desiredRanking = Number(doc.desiredRanking);
 
 		bids.push(doc);
@@ -280,7 +280,7 @@ exports.autoBidding = functions.firestore.document('/campaigns/{campaign_id}/bid
 	async function perform_auto_bidding(document, index)
 	{
 		console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>', index, document.id);
-		const current_index = bids.findIndex(element => element.id == document.id);
+		const current_index = bids.findIndex(element => element.id === document.id);
 		if (current_index == -1) {
 			console.log('Error: unable to find index of current user in bids. findIndex is not working');
 			return null;

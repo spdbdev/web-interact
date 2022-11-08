@@ -1,4 +1,4 @@
-import { formatMoney,sortBids } from "@interact/Components/utils";
+import { formatMoney } from "@interact/Components/utils";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
 import {
@@ -24,7 +24,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         setNumAuctionInteractions(campaignData.numAuctionInteractions);
       }
       if(bids.length >= campaignData?.numAuctionInteractions){
-        let sortedBids = sortBids(bids);
+        let sortedBids = bids;
         let lastPrice = sortedBids[campaignData?.numAuctionInteractions-1]?.price;
         if(lastPrice >= campaignData.minBidPrice){
           setMinBidAmount(parseFloat(lastPrice)+0.5);
@@ -68,7 +68,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 
   const handleMaxBidAmount = function(value){
     if(bids.length > 0){
-      let sortedBids = sortBids(bids);
+      let sortedBids = bids;
       let bidAtDesiredRanking = sortedBids[parseInt(value) - 1];
       let thirtyPer = (bidAtDesiredRanking?.price/100) * 30;
       let maxIncrement = 5;

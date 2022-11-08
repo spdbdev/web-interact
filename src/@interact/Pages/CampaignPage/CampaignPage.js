@@ -42,10 +42,18 @@ function CampaignPage(userData) {
 
 	const num_giveaway = 10;
 	const num_auction = 10;
-	const campaignId = "test12345";
-	const navigate = useNavigate();
-	let [user, loading] = useAuthState(auth);
 	const { theme } = useJumboTheme();
+	const campaignId = "test12345";
+	//const navigate = useNavigate();
+	//let [user, loading] = useAuthState(auth);
+	let user = {
+  		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
+  		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+  		name: "biby",
+		email: "bibyliss@gmail.com",
+		customerId: "cus_MlMuNeDDsNVt2Z",
+	};
+	console.log('IRFAN', user);
 
 
 	const getCampaignData = async () => 
@@ -67,18 +75,15 @@ function CampaignPage(userData) {
 		
 		//Bids change listener
 		const bidsListener = onSnapshot(query(collection(db, "campaigns", campaignId, "bids")), (querySnapshot) => {
-			const bidsList = [];
+			let bidsList = [];
 			querySnapshot.forEach((doc) => {
 				bidsList.push(doc.data());
 			});
+			bidsList = sortBids(bidsList);
 
-			let position = 0;
-			var index = sortBids(bidsList).map(function(e) {
-					return e.email;
-			}).indexOf(user.email);
-			position =  index + 1;
+			let position = bidsList.findIndex(element => element.email === user.email);
 
-			setUserAuctionPosition(position);
+			setUserAuctionPosition(++position);
 			setHasUserEnteredAuction(true);
 
 			setBids(bidsList);
@@ -151,7 +156,7 @@ function CampaignPage(userData) {
 				
 				TotalPoolEntries = TotalPoolEntries + noOfEntries;
 			}
-			//const size = docSnap.size;
+
 			if(TotalPoolEntries !== 0){
 				let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
 				let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
@@ -160,37 +165,35 @@ function CampaignPage(userData) {
 			}
 		} else {
 			console.log("No such collection!");
-		}		
-		
-		//setWiningChances({'vip':100, 'free':100});
+		}				
   	}
 
-		const checkPurchasedEntry = async () => {
+	const checkPurchasedEntry = async () => {
 
-			const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user.uid);
-			const docSnap = await getDoc(docRef);
-			if (docSnap.exists()) {
-					const data = docSnap.data();
-					if(data.entryType === 'free'){
-						setHasUserClaimedFreeEntry(true);
-					}else if(data.entryType === 'vip'){
-						setHasUserClaimedFreeEntry(true);
-						setHasUserPurchasedVIPEntry(true);
-					}
-					console.log("User Giveaway",data);           
-			} else {
-					console.log("No such document!");
-			}
+		const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user.uid);
+		const docSnap = await getDoc(docRef);
+		if (docSnap.exists()) {
+				const data = docSnap.data();
+				if(data.entryType === 'free'){
+					setHasUserClaimedFreeEntry(true);
+				}else if(data.entryType === 'vip'){
+					setHasUserClaimedFreeEntry(true);
+					setHasUserPurchasedVIPEntry(true);
+				}
+				console.log("User Giveaway",data);           
+		} else {
+				console.log("No such document!");
 		}
+	}
 
 	
 	useEffect(() => {
-		if (loading) return;
-		if (!user) return navigate("/");
+		//if (loading) return;
+		//if (!user) return navigate("/");
 
 		getCampaignData();
 		checkPurchasedEntry();
-	}, [user, loading]);
+	}, []);
 
 
 	const bid = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => 
@@ -198,7 +201,7 @@ function CampaignPage(userData) {
 		var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
 		let user_data = userSnap.docs[0];
 
-		setDoc(doc(db, "campaigns", campaignId, "bids", user_data.data().uid), {
+		setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
 			person: {
 				username: user_data.data().name,
 				id: user_data.id,

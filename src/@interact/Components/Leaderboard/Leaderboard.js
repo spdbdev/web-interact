@@ -72,10 +72,6 @@ export default function Leaderboard({ campaignData, bids }) {
   const parseLeaderboard = (bids) => {
     console.log("parsing");
 
-    bids = [...bids]?.sort((a, b) => {
-      return parseFloat(b.price) - parseFloat(a.price);
-    });
-
     bids = bids?.map((x, i) => {
       return {
         id: i + 1,

@@ -40,11 +40,11 @@ export default function Stats({ campaignData }) {
           <FollowButton />
           <StatDisplay statValue={stats?.numFollowers} statTitle="Followers" />
           <StatDisplay
-            statValue={stats?.numGiveawayEntries}
+            statValue={campaignData.numGiveawayEntries ?? 0}
             statTitle="Giveaway entries"
           />
           <StatDisplay
-            statValue={stats?.numBidders}
+            statValue={campaignData.numAuctionBids ?? 0}
             statTitle="Auction bidders"
           />
           {stats?.category ? (
@@ -100,7 +100,7 @@ export function GoalDisplay({ stats }) {
           variant="h1"
           sx={{ color: "primary.main", fontSize: 32, fontWeight: 500 }}
         >
-          ${formatMoney(stats?.currRaised)}
+          ${Math.round(stats.currRaised ?? 0)}
         </Typography>
         <Box
           sx={{
