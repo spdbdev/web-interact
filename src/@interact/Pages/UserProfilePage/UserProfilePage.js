@@ -125,6 +125,7 @@ function UserProfilePage() {
     fetchUserName();
   }, [user, loading,id]);
 
+  localStorage.setItem("name", name);
   const handleChangeImage = async (e) => {
     const file = e.target.files[0];
     if (file) {
