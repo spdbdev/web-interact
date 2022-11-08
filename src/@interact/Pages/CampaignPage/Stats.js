@@ -45,7 +45,7 @@ export default function Stats({ campaignData }) {
           />
           <StatDisplay
             statValue={campaignData.numAuctionBids ?? 0}
-            statTitle="Auction bidders"
+            statTitle="Auction bids"
           />
           {stats?.category ? (
             <StatDisplay statValue={stats?.category} statTitle="Category" />
