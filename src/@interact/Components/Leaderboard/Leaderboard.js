@@ -113,6 +113,7 @@ export default function Leaderboard({ campaignData, bids }) {
 
   return (
     <JumboCardQuick sx={{ flex: 1 }} className="jumboCardQuick" id="jumboCardQuick">
+      <Box style={{height:"100%"}}>
       <Box
         sx={{
           display: "flex",
@@ -125,9 +126,9 @@ export default function Leaderboard({ campaignData, bids }) {
         </Typography>
         <InfoTooltip title="If you’re on the leaderboard at the end of the campaign, you will receive a premium interaction (occurs before raffled interactions) otherwise, if you are overthrown from the leaderboard, you are not charged" />
       </Box>
-      <Box style={{marginTop:'1rem'}}>
+      <Box style={{marginTop:'1rem',height:"100%"}}>
         {bids?.length > 0 ? (
-          <Grid container spacing={1}>
+          <Grid container spacing={1} style={{height:"95%"}}>
             <Grid item xs={3}>
               {/* <span style={{fontWeight:'bold', color:'#782FEE', textDecoration:'underline'}}>Congrats, you're 8th!</span> */}
               {/* <span
@@ -152,7 +153,7 @@ export default function Leaderboard({ campaignData, bids }) {
                 <RankComponent data={rows[2]} />
               </Stack>
             </Grid>
-            <Grid item xs={9} style={{height:'400px'}}>
+            <Grid item xs={9} style={{height:'100%'}}>
               <DataGrid
                 sx={{ flex: 1, height: "100%", borderColor: "divider" }}
                 rows={rows}
@@ -177,6 +178,7 @@ export default function Leaderboard({ campaignData, bids }) {
             <Typography style={{ padding: 20 }}>Be the first to bid</Typography>
           </Box>
         )}
+      </Box>
       </Box>
     </JumboCardQuick>
   );

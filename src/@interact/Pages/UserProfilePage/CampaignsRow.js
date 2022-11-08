@@ -32,10 +32,10 @@ function CampaignsRow({currentCampaigns,heading}) {
           slidesPerView: 2,
         },
         1280: {
-          slidesPerView: 3,
+          slidesPerView: 4,
         },
       }}
-      slidesPerView={3}
+      slidesPerView={4}
       modules={[Navigation]}
       navigation={{
         prevEl: prevRef?.current,

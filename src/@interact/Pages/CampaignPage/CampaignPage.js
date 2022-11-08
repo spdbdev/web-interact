@@ -72,11 +72,8 @@ function CampaignPage(userData) {
 				bidsList.push(doc.data());
 			});
 
-			let position = 0;
-			var index = sortBids(bidsList).map(function(e) {
-					return e.email;
-			}).indexOf(user.email);
-			position =  index + 1;
+			let position = sortBids(bidsList).findIndex(element => element.email === user.email);
+			position =  position + 1;
 
 			setUserAuctionPosition(position);
 			setHasUserEnteredAuction(true);
@@ -225,8 +222,6 @@ function CampaignPage(userData) {
 			}else if(hasUserClaimedFreeEntry){
 				chances = winningChances.free;
 				statusType = 'giveaway'
-			}else if(hasUserEnteredAuction){
-				console.log("Is acution")
 			}
 			return (
 			<Stack alignItems="center"

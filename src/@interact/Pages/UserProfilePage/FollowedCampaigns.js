@@ -53,23 +53,6 @@ function FollowedCampaigns() {
       </div>
       <CampaignsRow currentCampaigns={currentCampaigns} heading="Live campaigns" />
       <CampaignsRow currentCampaigns={currentCampaigns} heading="Your campaigns"/>
-      <div>
-        <div style={{ marginLeft: 20, textDecorationLine: "underline" }}>
-          Supported campaigns
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
-          {currentCampaigns.map((x, i) => (
-            <CampaignSnippet key={i} info={x} />
-          ))}
-        </div>
-        <br />
-      </div>
     </div>
   );
 }
