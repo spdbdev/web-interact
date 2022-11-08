@@ -1,3 +1,4 @@
+import React from "react";
 import "./UserProfilePage.css";
 import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import MeetingBlocks from "./MeetingBlocks";
@@ -5,18 +6,20 @@ import { useEffect, useRef } from "react";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { useNavigate } from "react-router-dom";
 import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
+import CampaignsRow from "./CampaignsRow";
 
 function FollowedCampaigns() {
-  const currentCampaigns = [1, 2, 3];
+  const currentCampaigns = [1, 2, 3,4,5,6,7];
   const navigate = useNavigate();
 
   const meetingBlockRef = useRef(null);
+
   useEffect(() => {
     meetingBlockRef.current.scrollTo(360 * 4, 0);
   }, []);
 
   return (
-    <div style={{ paddingLeft: 100 }}>
+    <div style={{ paddingLeft: 100,paddingRight: 100 }}>
       <div
         ref={meetingBlockRef}
         className="horizontalScroll"
@@ -48,40 +51,8 @@ function FollowedCampaigns() {
           + Create New Campaign
         </InteractButton>
       </div>
-      <div>
-        <div style={{ marginLeft: 20, textDecorationLine: "underline" }}>
-          Interactions acquired
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
-          {currentCampaigns.map((x, i) => (
-            <CampaignSnippet key={i} info={x} />
-          ))}
-        </div>
-        <br />
-      </div>
-      <div>
-        <div style={{ marginLeft: 20, textDecorationLine: "underline" }}>
-          Following campaigns
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
-          {currentCampaigns.map((x, i) => (
-            <CampaignSnippet key={i} info={x} />
-          ))}
-        </div>
-        <br />
-      </div>
+      <CampaignsRow currentCampaigns={currentCampaigns} heading="Live campaigns" />
+      <CampaignsRow currentCampaigns={currentCampaigns} heading="Your campaigns"/>
       <div>
         <div style={{ marginLeft: 20, textDecorationLine: "underline" }}>
           Supported campaigns
