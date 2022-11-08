@@ -15,52 +15,57 @@ import "./CampaignPage.css";
 import { formatMoney } from "@interact/Components/utils";
 
 export default function Giveaway({
-  isCampaignEnded,
-  campaignData,
-  hasUserClaimedFreeEntry,
-  hasUserPurchasedVIPEntry,
-  setHasUserClaimedFreeEntry,
-  setHasUserPurchasedVIPEntry,
-  vipChanceMultiplier,
-  freeChanceMultiplier,
-  winningChances,
+	isCampaignEnded,
+	campaignData,
+	hasUserClaimedFreeEntry,
+	hasUserPurchasedVIPEntry,
+	setHasUserClaimedFreeEntry,
+	setHasUserPurchasedVIPEntry,
+	vipChanceMultiplier,
+	freeChanceMultiplier,
+	winningChances,
 }) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [priceToPay,setPriceToPay] = useState(0);
-  const [entryType,setEntryType] = useState(null);
-  const [modal, setModal] = useState(false);
-  const [clientemail, isClientEmail] = useState("");
-  const [stripeError, setStripeError] = useState("");
-  const [name, setName] = useState("");
-  const [loggedInUserData, setLoggedInUserData] = useState("");
-  const [stripe_customer_id_new, set_Stripe_customer_id_new] = useState(false);
+	const stripe = useStripe();
+	const elements = useElements();
+	const [priceToPay,setPriceToPay] = useState(0);
+	const [entryType,setEntryType] = useState(null);
+	const [modal, setModal] = useState(false);
+	const [clientemail, isClientEmail] = useState("");
+	const [stripeError, setStripeError] = useState("");
+	const [name, setName] = useState("");
+	const [loggedInUserData, setLoggedInUserData] = useState("");
+	const [stripe_customer_id_new, set_Stripe_customer_id_new] = useState(false);
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [customerSet, isCustomerSet] = useState(false);
-  const [isActive, setIsActive] = useState(true);
-  const [cardBrand, setCardBrand] = useState(true);
-  const [last4, setLast4] = useState(true);
-  const [useSaveCard, setUseSaveCard] = useState(false);
-  const campaignId = 'test12345';
-  const [user] = useAuthState(auth); 
+	const [isSubscribed, setIsSubscribed] = useState(false);
+	const [customerSet, isCustomerSet] = useState(false);
+	const [isActive, setIsActive] = useState(true);
+	const [cardBrand, setCardBrand] = useState(true);
+	const [last4, setLast4] = useState(true);
+	const [useSaveCard, setUseSaveCard] = useState(false);
+	const campaignId = 'test12345';
+	//const [user] = useAuthState(auth); 
+	let user = {
+		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
+		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+		name: "biby",
+	  	email: "bibyliss@gmail.com",
+	  	customerId: "cus_MlMuNeDDsNVt2Z",
+  	};
 
-  const navigate = useNavigate();
-  var logged_user_stripe_customer_id = false;
+	const navigate = useNavigate();
+	var logged_user_stripe_customer_id = false;
 
-  const Swal = useSwalWrapper();
+	const Swal = useSwalWrapper();
 
 	const fetchUserName = async () => {
 		try {
 			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
 			const doc = await getDocs(q);
 			const data = doc.docs[0].data();
-			//console.log("thi is data"+ JSON.stringify(data));
 			setName(data.name);
 			isClientEmail(data.email)
 		} catch (err) {
 			console.error(err);
-			///alert("An error occured while fetching user data");
 		}
 	};
   	fetchUserName();
@@ -76,7 +81,6 @@ export default function Giveaway({
         }
     }
 
-    
     const get_stripe_customer_id = async () => {
         const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user?.uid);
         const docSnap = await getDoc(docRef);
@@ -105,50 +109,49 @@ export default function Giveaway({
         get_stripe_customer_id();
     }, [])
     
-const payment_method = () => {
-   // console.log('callling api');
-    //console.log("getting data" +logged_user_stripe_customer_id )
+	const payment_method = () => {
+		// console.log('callling api');
+		//console.log("getting data" +logged_user_stripe_customer_id )
 
-    if(logged_user_stripe_customer_id){
-        axios.post('http://localhost:4242/get_payment_methods', {
-        stripe_customer_id:logged_user_stripe_customer_id 
-    }) 
-        .then(function (response) {
-            var data = response.data;
-            if (data.status) {
-                isCustomerSet(true);  
-                var brand = data.brand;
-                var last4 = data.last4;
-                setCardBrand(brand);
-                setLast4(last4);
-                setUseSaveCard(true);
-                //console.log("getting data" +logged_user_stripe_customer_id )
-            } else {
-                isCustomerSet(false);
-                //setUseSaveCard(false);
-                console.log("not getting data")
-            }
-        }) 
-        .catch(function (error) {
-            console.log(error);
-        });
-    }else{
-        isCustomerSet(false);
-    }
-}
-
-
+		if (logged_user_stripe_customer_id) {
+			axios.post('http://localhost:4242/get_payment_methods', {
+					stripe_customer_id: logged_user_stripe_customer_id
+				})
+				.then(function (response) {
+					var data = response.data;
+					if (data.status) {
+						isCustomerSet(true);
+						var brand = data.brand;
+						var last4 = data.last4;
+						setCardBrand(brand);
+						setLast4(last4);
+						setUseSaveCard(true);
+						//console.log("getting data" +logged_user_stripe_customer_id )
+					} else {
+						isCustomerSet(false);
+						//setUseSaveCard(false);
+						console.log("not getting data")
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		} else {
+			isCustomerSet(false);
+		}
+	}
 
 
-if(logged_user_stripe_customer_id){
-    payment_method();
 
-}
+
+	if(logged_user_stripe_customer_id){
+		payment_method();
+	}
 
     useEffect(() => {
-        if (!user?.uid) return navigate("/");
+        //if (!user?.uid) return navigate("/");
         //fetchUserName();
-    }, [user]);
+    }, []);
     localStorage.setItem('name', name);
 
     useEffect(() => {
@@ -164,13 +167,13 @@ if(logged_user_stripe_customer_id){
     //console.log(userData);
 
     const saveDataInGiveaway = (data) => {
-        setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data)
+        setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
     }
 
     const saveDataInStripeCustomer = (stripe_customer_data) => {
         // console.log(stripe_customer_data);
-        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data)
-        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data)
+        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data);
+        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data);
     }
 
 
@@ -179,10 +182,6 @@ if(logged_user_stripe_customer_id){
         event.preventDefault();
         setUseSaveCard(current_a => !current_a);
         setIsActive(current_b => !current_b);
-        //console.log("useSaveCard : "+useSaveCard);
-        //console.log("isActive : "+isActive);
-
-
     };
      
 
@@ -204,354 +203,349 @@ if(logged_user_stripe_customer_id){
         hidePostalCode: true,
     };
 
-    // console.log("user.name : " + JSON.stringify(user));
-    // console.log("user.name : " + user?.uid);
-
-    // console.log("user.email : " + user?.email);
-
     const handleSubmit = async (event) => {
-      event.preventDefault();
-      await collectPayment();
+      	event.preventDefault();
+      	await collectPayment();
     }
 
     const collectFreeEntryPayment = async () => {
-      var data = {
-        email: clientemail,
-        price: priceToPay,
-        stripe_customer_id: null,
-        payment_id: null,
-        entryType:'free',
-        status: 'succeeded',
-        campaignId: campaignId,
-        type: "Giveaway",
-        time: serverTimestamp(),
-      }
+    	var data = {
+    		email: clientemail,
+    		price: priceToPay,
+    		stripe_customer_id: null,
+    		payment_id: null,
+    		entryType: 'free',
+    		status: 'succeeded',
+    		campaignId: campaignId,
+    		type: "Giveaway",
+    		time: serverTimestamp(),
+    	}
 
-      saveDataInGiveaway(data);
+    	saveDataInGiveaway(data);
 
-      return true;
+    	return true;
     }
 
     const collectPayment = async () => {
-        if(clientemail === "" || name ===""){
-            setStripeError("All fields are required");
-            return
-          }
-        if (customerSet) {
-            alert(isActive);
-            // logged users
-            if (isActive) {
-                //already saved card
-                axios.post('http://localhost:4242/payment_intent_already_save_card', {
-                    name: name,
-                    email: clientemail,
-                    price: priceToPay,
-                    isChecked: isSubscribed,
-                    useSaveCard: isActive,
-                    stripe_customer_id:logged_user_stripe_customer_id,
+    	if (clientemail === "" || name === "") {
+    		setStripeError("All fields are required");
+    		return
+    	}
+    	if (customerSet) {
+    		alert(isActive);
+    		// logged users
+    		if (isActive) {
+    			//already saved card
+    			axios.post('http://localhost:4242/payment_intent_already_save_card', {
+    					name: name,
+    					email: clientemail,
+    					price: priceToPay,
+    					isChecked: isSubscribed,
+    					useSaveCard: isActive,
+    					stripe_customer_id: logged_user_stripe_customer_id,
 
-                })
-                    .then(function (response) {
-                        //console.log(response);
-                        if (response.data.pi_status !== 'succeeded') {
-                            stripe
-                                .confirmCardPayment(response.data.secret, {
-                                    payment_method: {
-                                        card: elements.getElement(CardElement),
-                                        billing_details: {
-                                            name: name,
-                                            email: clientemail,
-                                        }
-                                    },
-                                }).then(function (result) {
-                                    if (result.error) {
-                                        setStripeError(result.error.message);
-                
-                                    }else{
-                                        //console.log(result);
-                                        alert('Payment Successful');
-                                        var data = {
-                                            email: response.data.email,
-                                            price: priceToPay,
-                                            stripe_customer_id: response.data.stripe_customer_id,
-                                            payment_id: result.id,
-                                            status: result.status,
-                                            campaignId: campaignId,
-                                            entryType:entryType,
-                                            type: "Giveaway",
-                                            time: serverTimestamp(),
-    
-                                        }
-                                        var stripe_customer_data = {
-                                            customer_id: response.data.stripe_customer_id,
-                                        }
+    				})
+    				.then(function (response) {
+    					//console.log(response);
+    					if (response.data.pi_status !== 'succeeded') {
+    						stripe
+    							.confirmCardPayment(response.data.secret, {
+    								payment_method: {
+    									card: elements.getElement(CardElement),
+    									billing_details: {
+    										name: name,
+    										email: clientemail,
+    									}
+    								},
+    							}).then(function (result) {
+    								if (result.error) {
+    									setStripeError(result.error.message);
 
-                                        setHasUserClaimedFreeEntry(true);
-                                        setHasUserPurchasedVIPEntry(true);
-                                        toggleModal();
+    								} else {
+    									//console.log(result);
+    									alert('Payment Successful');
+    									var data = {
+    										email: response.data.email,
+    										price: priceToPay,
+    										stripe_customer_id: response.data.stripe_customer_id,
+    										payment_id: result.id,
+    										status: result.status,
+    										campaignId: campaignId,
+    										entryType: entryType,
+    										type: "Giveaway",
+    										time: serverTimestamp(),
 
-                                        //console.log(data)
-                                        saveDataInStripeCustomer(stripe_customer_data);
+    									}
+    									var stripe_customer_data = {
+    										customer_id: response.data.stripe_customer_id,
+    									}
 
+    									setHasUserClaimedFreeEntry(true);
+    									setHasUserPurchasedVIPEntry(true);
+    									toggleModal();
 
-                                     
-                                        //console.log(data)
-                                        saveDataInGiveaway(data);
-                                    }
-                                   
-                                });
-
-                        } else if(response.data.pi_status === 'succeeded') {
-                             var data = {
-                                        email: response.data.email,
-                                        price: priceToPay,
-                                        stripe_customer_id: response.data.stripe_customer_id,
-                                        payment_id: response.data.id,
-                                        status: response.data.pi_status,
-                                        entryType:entryType,
-                                        campaignId: campaignId,
-                                        type: "Giveaway",
-                                        time: serverTimestamp(),
-
-                                    } 
-                                    var stripe_customer_data = {
-                                        customer_id: response.data.stripe_customer_id,
-                                    }
-
-                                    setHasUserClaimedFreeEntry(true);
-                                    setHasUserPurchasedVIPEntry(true);
-                                    toggleModal();
-
-                                    //console.log(data)
-                                    saveDataInStripeCustomer(stripe_customer_data);
-
-
-                                    //console.log(data)
-                                    saveDataInGiveaway(data);
-                            setStripeError(response.data.msg);
-                        }
-                    })
-                    .catch(function (error) {
-                        setStripeError(error.message);
-
-                    });
-            } else {
-                //use new card/change card
-                if (!stripe || !elements) {
-                    return 'Fail to load';
-                }
-                await stripe.createPaymentMethod({
-                    type: 'card',
-                    card: elements.getElement(CardElement),
-                    billing_details: {
-                        name: name,
-                    },
-                }).then(function (result) {
-                    if (result.error) {
-                        setStripeError(result.error.message);
-
-                    }
-                    if (result.paymentMethod) {
-                        axios.post('http://localhost:4242/payment_intent_save_new_card', {
-                            email: clientemail,
-                            name: name,
-                            price: priceToPay,
-                            isChecked: isSubscribed,
-                            useSaveCard: isActive,
-                            stripe_customer_id:logged_user_stripe_customer_id,
-                        })
-                            .then(response => {
-                                if (response.data.success === true) {
-                                    var clientSecret = response.data.secret;
-                                    var name = response.data.name;
-                                    var email = response.data.email;
-                                    stripe
-                                        .confirmCardPayment(clientSecret, {
-                                            payment_method: {
-                                                card: elements.getElement(CardElement),
-                                                billing_details: {
-                                                    name: name,
-                                                    email: email,
-                                                }
-                                            },
-                                        }).then(function (result) {
-                                            if (result.error) {
-                                                setStripeError(result.error.message);
-
-                                            }
-                                            if (result.paymentIntent) {
-                                                alert("Payment Successful");
-                                                var data = {
-                                                    email: response.data.email,
-                                                    price: priceToPay,
-                                                    stripe_customer_id: response.data.stripe_customer_id,
-                                                    payment_id: result.paymentIntent.id,
-                                                    entryType:entryType,
-                                                    status: result.paymentIntent.status,
-                                                    campaignId: campaignId,
-                                                    type: "Giveaway",
-                                                    time: serverTimestamp(),
-    
-                                                }
-                                                var stripe_customer_data = {
-                                                    customer_id: response.data.stripe_customer_id,
-                                                }
-
-                                                setHasUserClaimedFreeEntry(true);
-                                                setHasUserPurchasedVIPEntry(true);
-                                                toggleModal();
-
-                                                //console.log(data)
-                                                saveDataInStripeCustomer(stripe_customer_data);
-                                                saveDataInGiveaway(data);
-                                                //console.log(result);
-                                                axios.post('http://localhost:4242/set_as_default', {
-                                                    payment_method: result.paymentIntent.payment_method,
-                                                    payment_intent: result.paymentIntent.id,
-                                                    isChecked: isSubscribed,
-                                                    useSaveCard: isActive,
-                                                    stripe_customer_id:logged_user_stripe_customer_id,
-
-                                                })
-                                                    .then(function (response) {
-                                                        //console.log(response);
-                                                    })
-                                                    .catch(function (error) {
-                                                        setStripeError(error.message);
-
-                                                    });
-                                            }
-                                        });
-                                } else {
-                                    setStripeError(response.data.msg);
-                                }
-                            })
-                            .catch(function (error) {
-                                setStripeError(error.message);
-
-                            });
-                    }
-                });
-            }
-        } else {
-            // non logged user / direct payment
-            if (!stripe || !elements) {
-                return 'Fail to load';
-            } 
-
-            await stripe.createPaymentMethod({
-                type: 'card',
-                card: elements.getElement(CardElement),
-                billing_details: {
-                    name: name,
-                }, 
-            }).then(function (result) {
-                if (result.error) {
-                    setStripeError(result.error.message);
-
-                }
-                if (result.paymentMethod) {
-                    axios.post('http://localhost:4242/payment_intent', {
-                        email: clientemail,
-                        name: name,
-                        price: priceToPay,
-                        isChecked: isSubscribed,
-                        useSaveCard: isActive,
-                    })
-                        .then(response => {
-                            //console.log(response);
-                            if (response.data.success === true) {
-                                var clientSecret = response.data.secret;
-                                var name = response.data.name;
-                                var email = response.data.email;
-                                var stripe_customer_id = response.data.stripe_customer_id;
-                                stripe
-                                    .confirmCardPayment(clientSecret, {
-                                        payment_method: {
-                                            card: elements.getElement(CardElement),
-                                            billing_details: {
-                                                name: name,
-                                                email: email,
-                                            }
-                                        },
-                                    }).then(function (result) {
-                                        if (result.error) {
-                                            setStripeError(result.error.message);
-
-
-                                        }
-                                        if (result.paymentIntent) {
-                                            //console.log("this is one time payment result  : " + JSON.stringify(result));
-                                            alert("Payment Successful");
-                                            var data = {
-                                                email: email,
-                                                price: priceToPay,
-                                                stripe_customer_id: stripe_customer_id,
-                                                payment_id: result.paymentIntent.id,
-                                                status: result.paymentIntent.status,
-                                                entryType:entryType,
-                                                campaignId: campaignId,
-                                                type: "Giveaway",
-                                                time: serverTimestamp(),
-
-                                            }
-                                            var stripe_customer_data = {
-                                                customer_id: response.data.stripe_customer_id,
-                                            }
-
-                                            setHasUserClaimedFreeEntry(true);
-                                            setHasUserPurchasedVIPEntry(true);
-                                            toggleModal();
-
-                                            //console.log(data)
-                                            saveDataInStripeCustomer(stripe_customer_data);
-
-                                            //console.log(data)
-                                            saveDataInGiveaway(data);
-                                            //console.log('data save successful')
-                                            // setDoc(doc(db, "campaigns", campaignId, 'giveaway', userId), {
-                                            //     person: user,
-                                            //     price: "1.5",
-                                            //     auto: false,
-                                            //     time: serverTimestamp(),
-                                            // })
-                                            //console.log(isSubscribed);
-                                            if (isSubscribed) {
-                                                axios.post('http://localhost:4242/set_as_default', {
-                                                    payment_method: result.paymentIntent.payment_method,
-                                                    payment_intent: result.paymentIntent.id,
-                                                    isChecked: isSubscribed,
-                                                    useSaveCard: isActive,
-
-                                                })
-                                                    .then(function (response) {
-                                                        //console.log(response);
-                                                    })
-                                                    .catch(function (error) {
-                                                        setStripeError(error.message);
-
-                                                    });
-                                            } else {
-
-                                            }
-
-
-                                        }
-                                    });
-                            } else {
-                                setStripeError(response.data.msg);
-                            }
-                        })
-                        .catch(function (error) {
-                            setStripeError(error.message);
-
-                        });
-                }
-            });
+    									//console.log(data)
+    									saveDataInStripeCustomer(stripe_customer_data);
 
 
 
-        }
+    									//console.log(data)
+    									saveDataInGiveaway(data);
+    								}
+
+    							});
+
+    					} else if (response.data.pi_status === 'succeeded') {
+    						var data = {
+    							email: response.data.email,
+    							price: priceToPay,
+    							stripe_customer_id: response.data.stripe_customer_id,
+    							payment_id: response.data.id,
+    							status: response.data.pi_status,
+    							entryType: entryType,
+    							campaignId: campaignId,
+    							type: "Giveaway",
+    							time: serverTimestamp(),
+
+    						}
+    						var stripe_customer_data = {
+    							customer_id: response.data.stripe_customer_id,
+    						}
+
+    						setHasUserClaimedFreeEntry(true);
+    						setHasUserPurchasedVIPEntry(true);
+    						toggleModal();
+
+    						//console.log(data)
+    						saveDataInStripeCustomer(stripe_customer_data);
+
+
+    						//console.log(data)
+    						saveDataInGiveaway(data);
+    						setStripeError(response.data.msg);
+    					}
+    				})
+    				.catch(function (error) {
+    					setStripeError(error.message);
+
+    				});
+    		} else {
+    			//use new card/change card
+    			if (!stripe || !elements) {
+    				return 'Fail to load';
+    			}
+    			await stripe.createPaymentMethod({
+    				type: 'card',
+    				card: elements.getElement(CardElement),
+    				billing_details: {
+    					name: name,
+    				},
+    			}).then(function (result) {
+    				if (result.error) {
+    					setStripeError(result.error.message);
+
+    				}
+    				if (result.paymentMethod) {
+    					axios.post('http://localhost:4242/payment_intent_save_new_card', {
+    							email: clientemail,
+    							name: name,
+    							price: priceToPay,
+    							isChecked: isSubscribed,
+    							useSaveCard: isActive,
+    							stripe_customer_id: logged_user_stripe_customer_id,
+    						})
+    						.then(response => {
+    							if (response.data.success === true) {
+    								var clientSecret = response.data.secret;
+    								var name = response.data.name;
+    								var email = response.data.email;
+    								stripe
+    									.confirmCardPayment(clientSecret, {
+    										payment_method: {
+    											card: elements.getElement(CardElement),
+    											billing_details: {
+    												name: name,
+    												email: email,
+    											}
+    										},
+    									}).then(function (result) {
+    										if (result.error) {
+    											setStripeError(result.error.message);
+
+    										}
+    										if (result.paymentIntent) {
+    											alert("Payment Successful");
+    											var data = {
+    												email: response.data.email,
+    												price: priceToPay,
+    												stripe_customer_id: response.data.stripe_customer_id,
+    												payment_id: result.paymentIntent.id,
+    												entryType: entryType,
+    												status: result.paymentIntent.status,
+    												campaignId: campaignId,
+    												type: "Giveaway",
+    												time: serverTimestamp(),
+
+    											}
+    											var stripe_customer_data = {
+    												customer_id: response.data.stripe_customer_id,
+    											}
+
+    											setHasUserClaimedFreeEntry(true);
+    											setHasUserPurchasedVIPEntry(true);
+    											toggleModal();
+
+    											//console.log(data)
+    											saveDataInStripeCustomer(stripe_customer_data);
+    											saveDataInGiveaway(data);
+    											//console.log(result);
+    											axios.post('http://localhost:4242/set_as_default', {
+    													payment_method: result.paymentIntent.payment_method,
+    													payment_intent: result.paymentIntent.id,
+    													isChecked: isSubscribed,
+    													useSaveCard: isActive,
+    													stripe_customer_id: logged_user_stripe_customer_id,
+
+    												})
+    												.then(function (response) {
+    													//console.log(response);
+    												})
+    												.catch(function (error) {
+    													setStripeError(error.message);
+
+    												});
+    										}
+    									});
+    							} else {
+    								setStripeError(response.data.msg);
+    							}
+    						})
+    						.catch(function (error) {
+    							setStripeError(error.message);
+
+    						});
+    				}
+    			});
+    		}
+    	} else {
+    		// non logged user / direct payment
+    		if (!stripe || !elements) {
+    			return 'Fail to load';
+    		}
+
+    		await stripe.createPaymentMethod({
+    			type: 'card',
+    			card: elements.getElement(CardElement),
+    			billing_details: {
+    				name: name,
+    			},
+    		}).then(function (result) {
+    			if (result.error) {
+    				setStripeError(result.error.message);
+
+    			}
+    			if (result.paymentMethod) {
+    				axios.post('http://localhost:4242/payment_intent', {
+    						email: clientemail,
+    						name: name,
+    						price: priceToPay,
+    						isChecked: isSubscribed,
+    						useSaveCard: isActive,
+    					})
+    					.then(response => {
+    						//console.log(response);
+    						if (response.data.success === true) {
+    							var clientSecret = response.data.secret;
+    							var name = response.data.name;
+    							var email = response.data.email;
+    							var stripe_customer_id = response.data.stripe_customer_id;
+    							stripe
+    								.confirmCardPayment(clientSecret, {
+    									payment_method: {
+    										card: elements.getElement(CardElement),
+    										billing_details: {
+    											name: name,
+    											email: email,
+    										}
+    									},
+    								}).then(function (result) {
+    									if (result.error) {
+    										setStripeError(result.error.message);
+
+
+    									}
+    									if (result.paymentIntent) {
+    										//console.log("this is one time payment result  : " + JSON.stringify(result));
+    										alert("Payment Successful");
+    										var data = {
+    											email: email,
+    											price: priceToPay,
+    											stripe_customer_id: stripe_customer_id,
+    											payment_id: result.paymentIntent.id,
+    											status: result.paymentIntent.status,
+    											entryType: entryType,
+    											campaignId: campaignId,
+    											type: "Giveaway",
+    											time: serverTimestamp(),
+
+    										}
+    										var stripe_customer_data = {
+    											customer_id: response.data.stripe_customer_id,
+    										}
+
+    										setHasUserClaimedFreeEntry(true);
+    										setHasUserPurchasedVIPEntry(true);
+    										toggleModal();
+
+    										//console.log(data)
+    										saveDataInStripeCustomer(stripe_customer_data);
+
+    										//console.log(data)
+    										saveDataInGiveaway(data);
+    										//console.log('data save successful')
+    										// setDoc(doc(db, "campaigns", campaignId, 'giveaway', userId), {
+    										//     person: user,
+    										//     price: "1.5",
+    										//     auto: false,
+    										//     time: serverTimestamp(),
+    										// })
+    										//console.log(isSubscribed);
+    										if (isSubscribed) {
+    											axios.post('http://localhost:4242/set_as_default', {
+    													payment_method: result.paymentIntent.payment_method,
+    													payment_intent: result.paymentIntent.id,
+    													isChecked: isSubscribed,
+    													useSaveCard: isActive,
+
+    												})
+    												.then(function (response) {
+    													//console.log(response);
+    												})
+    												.catch(function (error) {
+    													setStripeError(error.message);
+
+    												});
+    										} else {
+
+    										}
+
+
+    									}
+    								});
+    						} else {
+    							setStripeError(response.data.msg);
+    						}
+    					})
+    					.catch(function (error) {
+    						setStripeError(error.message);
+
+    					});
+    			}
+    		});
+
+
+
+    	}
     };
 
     const toggleModal = () => {
