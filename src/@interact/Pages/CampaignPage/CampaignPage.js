@@ -8,7 +8,6 @@ import Faq from "@interact/Components/Faq/Faq";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "./Header";
 import Stats from "./Stats";
-import CreatorName from "./CreatorName";
 import { useEffect, useState } from "react";
 import {
   doc,
@@ -698,7 +697,7 @@ function CampaignPage(userData) {
           }}
         >
           <Box sx={{ flex: 1, mr: 3 }}>
-            <CreatorName campaignData={campaignData} />
+            <br></br>
             <CampaignInfo
               campaignData={campaignData}
               comments={comments}

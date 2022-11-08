@@ -30,11 +30,10 @@ export default function Header({ campaignData }) {
         mb={0}
         style={{ fontSize: 30, fontWeight: 400 }}
       >
-        Game &#38; Chat with{" "}
-        <span style={{ color: "#782eee" }}>Pattedevelours</span> 1-on-1
+        Game &#38; Chat with Blahblahblah 1-on-1
       </Typography>
       <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
-        {campaignData?.header?.tagline1}
+        Created by<span style={{ color: "#782eee", fontWeight:600}}>addUserName</span>
       </Typography>
       <Divider />
       <Stack direction="column">
