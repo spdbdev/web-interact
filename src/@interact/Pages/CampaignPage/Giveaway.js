@@ -65,7 +65,7 @@ export default function Giveaway({
 	};
   	fetchUserName();
 
-    const getDataRaffle = async () => {
+    const getDataGiveaway = async () => {
         const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -101,7 +101,7 @@ export default function Giveaway({
 
     useEffect(() => {
         
-        getDataRaffle();
+        getDataGiveaway();
         get_stripe_customer_id();
     }, [])
     
@@ -163,7 +163,7 @@ if(logged_user_stripe_customer_id){
     var freeEntryPrice = "0";
     //console.log(userData);
 
-    const saveDataInRaffle = (data) => {
+    const saveDataInGiveaway = (data) => {
         setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data)
     }
 
@@ -227,7 +227,7 @@ if(logged_user_stripe_customer_id){
         time: serverTimestamp(),
       }
 
-      saveDataInRaffle(data);
+      saveDataInGiveaway(data);
 
       return true;
     }
@@ -296,7 +296,7 @@ if(logged_user_stripe_customer_id){
 
                                      
                                         //console.log(data)
-                                        saveDataInRaffle(data);
+                                        saveDataInGiveaway(data);
                                     }
                                    
                                 });
@@ -327,7 +327,7 @@ if(logged_user_stripe_customer_id){
 
 
                                     //console.log(data)
-                                    saveDataInRaffle(data);
+                                    saveDataInGiveaway(data);
                             setStripeError(response.data.msg);
                         }
                     })
@@ -403,7 +403,7 @@ if(logged_user_stripe_customer_id){
 
                                                 //console.log(data)
                                                 saveDataInStripeCustomer(stripe_customer_data);
-                                                saveDataInRaffle(data);
+                                                saveDataInGiveaway(data);
                                                 //console.log(result);
                                                 axios.post('http://localhost:4242/set_as_default', {
                                                     payment_method: result.paymentIntent.payment_method,
@@ -507,9 +507,9 @@ if(logged_user_stripe_customer_id){
                                             saveDataInStripeCustomer(stripe_customer_data);
 
                                             //console.log(data)
-                                            saveDataInRaffle(data);
+                                            saveDataInGiveaway(data);
                                             //console.log('data save successful')
-                                            // setDoc(doc(db, "campaigns", campaignId, 'raffles', userId), {
+                                            // setDoc(doc(db, "campaigns", campaignId, 'giveaway', userId), {
                                             //     person: user,
                                             //     price: "1.5",
                                             //     auto: false,
@@ -714,7 +714,7 @@ if(logged_user_stripe_customer_id){
             <span className="Highlight">${formatMoney(vipEntryPrice)}</span>
           </Box>
           {/* <form
-          action="http://localhost:4242/create-raffle-session"
+          action="http://localhost:4242/create-giveaway-session"
           method="POST"
         > */}
           <InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
@@ -750,7 +750,7 @@ if(logged_user_stripe_customer_id){
         </Stack>
 
         {/* <form
-        //   action="http://localhost:4242/create-raffle-session"
+        //   action="http://localhost:4242/create-giveaway-session"
         //   method="POST"
         > */}
         <InteractButton
