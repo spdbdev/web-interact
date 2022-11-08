@@ -1,5 +1,6 @@
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
+import { getDateFromTimestamp } from "@interact/Components/utils";
 import {
   Divider, FormControl, InputAdornment, InputLabel, OutlinedInput, Stack, Typography
 } from "@mui/material";
@@ -38,19 +39,28 @@ export default function Auction({ bids, campaignData, bidAction }) {
     >
       <Stack direction="column">
           <Typography>
-            The top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> get
+            Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x
             60 min interactions
           </Typography>
 
           <Typography>
-            The <Span sx={{ color: "primary.main", fontWeight: 600 }}>17</Span> after get 30
-            min interactions
+            <Span sx={{ color: "primary.main", fontWeight: 600 }}>17</Span> x 30
+            min interactions 
           </Typography>
-
+          
           <Typography>
-            The top <Span sx={{ color: "primary.main", fontWeight: 600 }}>20</Span> bidders win at the end of the campaign
+            In total, the top <Span sx={{ color: "primary.main", fontWeight: 600 }}>20</Span> bidders at the end of the campaign
+          </Typography>
+          <Typography>
+            (
+              {getDateFromTimestamp({
+              timestamp: campaignData?.endDate?.seconds,
+              format: "h:mm a [EST on] dddd, MMMM Do",
+              })}
+            ) win interactions
           </Typography>
         </Stack>
+
         <br />
       <Stack id="autoBidSection" direction="column" spacing={2}>
         <Stack direction="row" alignItems="center" spacing={1} mb={1}>

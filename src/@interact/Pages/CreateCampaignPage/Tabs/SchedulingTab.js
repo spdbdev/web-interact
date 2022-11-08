@@ -235,11 +235,14 @@ export default function SchedulingTab({
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign Duration">
+          All times on the campaign are in EST (Eastern Standard Time).
           Set how long the campaign will be active. Enter a start date & time,
           then duration in days OR the end date & time. <br />
           <br />
           Changing the duration will recalculate the end date, and vice-versa.
-          Campaigns can last 5 to 20 days. Recommended duration: 10 days.
+          Campaigns can last 5 to 20 days. Recommended duration: 10 days. <br />
+          <br />
+          (You can customize your timezone in the scheduling process, when setting your available timeslots weekly; so can fans)
         </TitleAndDesc>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           {/* need this to use DateTimePicker. Date library used here is moment.js */}

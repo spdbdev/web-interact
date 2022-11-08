@@ -55,7 +55,7 @@ export default function Header({ campaignData }) {
             Campaign ends at{" "}
             {getDateFromTimestamp({
               timestamp: campaignData?.endDate?.seconds,
-              format: " h:mm a [on] dddd, MMMM Do YYYY",
+              format: " h:mm a [EST on] dddd, MMMM Do YYYY",
             })}
           </Span>
         </Typography>
