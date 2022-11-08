@@ -24,10 +24,13 @@ import { useNavigate } from "react-router-dom";
 import InteractionIcon from "../../Images/interaction-icon.png";
 import InteractButton from "@interact/Components/Button/InteractButton.js";
 import Span from "@jumbo/shared/Span/Span.js";
+import useCurrentUser from "@interact/Hooks/use-current-user.js";
+import Loading from "@interact/Components/Loading/Loading.js";
 
 export default function CampaignCreationConfirmationPage() {
   const [campaignData, setCampaignData] = useState(null);
   const [campaignImage, setCampaignImage] = useState(null);
+  const { user } = useCurrentUser();
 
   const navigate = useNavigate();
 
@@ -56,7 +59,7 @@ export default function CampaignCreationConfirmationPage() {
         goalValue: fetchedData?.goalValue,
         numInteractions: JSON.stringify(
           fetchedData?.numAuctionInteractions +
-            fetchedData?.numGiveawayInteractions
+          fetchedData?.numGiveawayInteractions
         ),
         campaignUrl: fetchedData?.customURL,
       })
@@ -70,6 +73,8 @@ export default function CampaignCreationConfirmationPage() {
 
     getCampaign();
   }, []);
+
+  if (!user) return <Loading></Loading>
 
   return (
     <Box
@@ -86,7 +91,7 @@ export default function CampaignCreationConfirmationPage() {
         <IconButton
           disableRipple
           disableFocusRipple
-          onClick={() => navigate("/interact/user")}
+          onClick={() => navigate(`/u/${user.username}`)}
         >
           <Close sx={{ color: "text.secondary" }} />
         </IconButton>
@@ -139,7 +144,7 @@ export default function CampaignCreationConfirmationPage() {
             </Typography>
             <Stack direction="row" alignItems="center" spacing={4}>
               <InteractFlashyButton
-                onClick={() => navigate("/interact/campaign")}
+                onClick={() => navigate(`/c/${user.campaigns[0]}`)}
               >
                 Go to campaign
               </InteractFlashyButton>

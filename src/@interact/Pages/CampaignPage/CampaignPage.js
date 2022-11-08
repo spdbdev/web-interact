@@ -27,6 +27,9 @@ import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaig
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { useJumboTheme } from "@jumbo/hooks";
+import { useNavigate, useParams } from "react-router-dom";
+import useCurrentUser from "@interact/Hooks/use-current-user";
+import Loading from "@interact/Components/Loading/Loading";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [
@@ -496,16 +499,19 @@ function CampaignPage(userData) {
   const [hasUserEnteredGiveaway, setHasUserEnteredGiveaway] = useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
-  const campaignId = "test12345";
+  const TEST_CAMPAIGN_ID = "test12345";
   let userId = 'user123456'; // dummy user id
-  let user = {
-    id: "user1234",
-    photoUrl:
-      "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-    username: "andrew123",
-  };
+  // let user = {
+  //   id: "user1234",
+  //   photoUrl:
+  //     "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+  //   username: "andrew123",
+  // };
 
+  const { user } = useCurrentUser();
   const { theme } = useJumboTheme();
+  const params = useParams();
+  const navigate = useNavigate();
 
   const getFirebaseArray = async (col) => {
     let arr = [];
@@ -518,8 +524,14 @@ function CampaignPage(userData) {
     // _bids.sort((a, b)=> a.price > b.price)
     return arr;
   };
-  const getCampaignData = async () => {
-    let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
+  const getCampaignData = async (campaignId) => {
+    // To be changed to real campaign
+    let _campaignData = (await getDoc(doc(db, "campaigns", TEST_CAMPAIGN_ID))).data();
+    // let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
+    console.log(_campaignData)
+    if (!_campaignData) {
+      _campaignData = (await getDoc(doc(db, "campaigns", TEST_CAMPAIGN_ID))).data();
+    }
     // console.log('_campaignData', _campaignData)
     setCampaignData(_campaignData);
 
@@ -542,7 +554,7 @@ function CampaignPage(userData) {
   };
 
   useEffect(() => {
-    getCampaignData();
+
     // DUMMY_RAFFLES.forEach((x, i)=>{
     //   let raffle = {...DUMMY_RAFFLES[i]};
     //   raffle.time = serverTimestamp();
@@ -559,16 +571,28 @@ function CampaignPage(userData) {
 
     // setComments(DUMMY_COMMENT_DATA)
     // setSupporters(DUMMY_SUPPORTERS)
-  }, []);
+    if (!params.campaignId) {
+      if (user) {
+        console.log("user", user)
+        navigate(user.campaigns && user.campaigns[0] ? `/c/${user.campaigns[0]}` : "/a/create-campaign")
+        getCampaignData(params.campaignId)
+      }
+    } else {
+      getCampaignData(params.campaignId);
+    }
+    console.log(params, !params.campaignId, user)
+
+  }, [user, params]);
+
 
   const bid = async (amount, clientemail, auto = false) => {
     console.log("bidding", amount);
     console.log("email : " + clientemail);
-    await setDoc(doc(db, "campaigns", campaignId, "bids", userId), {
+    await setDoc(doc(db, "campaigns", params.campaignId, "bids", userId), {
       person: user,
       price: amount,
       auto: auto,
-      email:clientemail,
+      email: clientemail,
       time: serverTimestamp(),
     });
     getCampaignData();
@@ -702,7 +726,7 @@ function CampaignPage(userData) {
             <CampaignInfo
               campaignData={campaignData}
               comments={comments}
-              campaignId={campaignId}
+              campaignId={params.campaignId}
               supporters={supporters}
             />
           </Box>

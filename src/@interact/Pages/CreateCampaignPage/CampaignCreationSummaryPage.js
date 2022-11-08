@@ -126,7 +126,7 @@ export default function CampaignCreationSummaryPage() {
 
     updateDoc(docRef, { campaignStatus: "scheduled" })
       .then(() => {
-        navigate("/interact/campaign-creation-confirmation");
+        navigate("/a/campaign-creation-confirmation");
         Toast.fire({
           icon: "success",
           title: "Campaign successfully created!",
@@ -170,7 +170,7 @@ export default function CampaignCreationSummaryPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/interact/createCampaign")}
+              onClick={() => navigate("/a/create-campaign")}
             >
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>

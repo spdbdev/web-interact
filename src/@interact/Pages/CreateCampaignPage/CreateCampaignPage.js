@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -24,11 +24,13 @@ import { Close, ExpandLess } from "@mui/icons-material";
 import Span from "@jumbo/shared/Span";
 import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import Loading from "@interact/Components/Loading/Loading";
 import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import InteractMethodTab from "./Tabs/InteractMethodTab";
+import { fetchCampaign } from "../../../firebase";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -316,6 +318,8 @@ function CreateCampaignPage() {
   const [FAQSideBarText, setFAQSideBarText] = useState("");
   const [campaignData, setCampaignData] = useState(null);
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
+  const { user } = useCurrentUser();
+  const campaignAddedRef = useRef(false);
 
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 
@@ -335,16 +339,34 @@ function CreateCampaignPage() {
   useEffect(() => {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
-    const getCampaign = async () => {
-      let fetchedData = (
-        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
-      ).data();
+    const getCampaign = async (campaignId) => {
+      let fetchedData = await fetchCampaign(campaignId);
 
-      setCampaignData(fetchedData);
+      if (fetchedData) {
+        setCampaignData(fetchedData);
+      }
     };
 
-    getCampaign();
-  }, [data, lastSavedAt]);
+    const addCampaign = async () => {
+      // To be changed to generated campaign creation once the deeper functionality works
+      let newCampaign = await getDoc(db, "campaigns", "campaign-creation-test");
+      // let newCampaign = (await addDoc(collection(db, "campaigns"), {}));
+      await updateDoc(doc(db, "users", user.id), { campaigns: [{ campaignId: newCampaign.id, campaignStatus: "draft" }] });
+      await getCampaign(newCampaign.id);
+    }
+
+    if (user) {
+      if (campaignAddedRef.current === true) {
+        return
+      } else if (!user.campaigns || user.campaigns.length === 0) {
+        campaignAddedRef.current = true
+        addCampaign();
+      } else {
+        getCampaign(user.campaigns[0]);
+      }
+    }
+
+  }, [data, lastSavedAt, user]);
 
   useEffect(() => {
     setFAQSideBarText(FAQText[selectedTabIndex]);
@@ -433,7 +455,7 @@ function CreateCampaignPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/interact/what-is-interact")}
+              onClick={() => navigate("/a/what-is-interact")}
             >
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
@@ -468,7 +490,7 @@ function CreateCampaignPage() {
           <IconButton
             disableRipple
             disableFocusRipple
-            onClick={() => navigate("/interact/user")}
+            onClick={() => navigate(`/u/${user.name}`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>

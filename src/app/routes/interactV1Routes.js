@@ -17,15 +17,21 @@ import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage
 
 const interactV1Routes = [
   {
-    path: "/interact/signin",
+    path: "/a/signin",
     element: <SignInPage />,
   },
   {
-    path: "/interact/signup",
+    path: "/a/signup",
     element: <SignUpPage2 />,
   },
   {
     path: "/u/:username",
+    element: (
+      <Page component={UserProfilePage} layout="vertical-default" />
+    ),
+  },
+  {
+    path: "/u/",
     element: (
       <Page component={UserProfilePage} layout="vertical-default" />
     ),
@@ -40,28 +46,40 @@ const interactV1Routes = [
     element: <CampaignPage />,
   },
   {
+    path: "/c/",
+    element: <CampaignPage />,
+  },
+  {
+    path: "/d/",
+    element: <CampaignPage />,
+  },
+  {
+    path: "/d/:campaignId",
+    element: <CampaignPage />,
+  },
+  {
     path: "/interact/capture",
     element: <CaptureAuction />,
   },
 
   {
-    path: "/interact/createCampaign",
+    path: "/a/create-campaign",
     element: <Page component={CreateCampaignPage} layout="solo-page" />,
   },
 
   {
-    path: "/interact/what-is-interact",
+    path: "/a/what-is-interact",
     element: <Page component={WhatIsInteractPage} layout="solo-page" />,
   },
 
   {
-    path: "/interact/campaign-creation-summary",
+    path: "/a/campaign-creation-summary",
     element: (
       <Page component={CampaignCreationSummaryPage} layout="solo-page" />
     ),
   },
   {
-    path: "/interact/campaign-creation-confirmation",
+    path: "/a/campaign-creation-confirmation",
     element: (
       <Page component={CampaignCreationConfirmationPage} layout="solo-page" />
     ),

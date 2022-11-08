@@ -42,7 +42,7 @@ function FollowedCampaigns() {
       </div>
       <div style={{ margin: 20 }}>
         <InteractButton
-          onClick={() => navigate("/interact/createcampaign")}
+          onClick={() => navigate("/a/create-campaign")}
           style={{ paddingLeft: 200 }}
         >
           + Create New Campaign

@@ -23,6 +23,8 @@ import {
   collection,
   where,
   addDoc,
+  doc,
+  getDoc
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -109,11 +111,47 @@ const logout = () => {
   signOut(auth);
 };
 
-export async function fetchUser(username) {
+export async function fetchUserByUsername(username) {
   const q = query(collection(db, "users"), where("username", "==", username));
   const querySnapshot = await getDocs(q);
   const docSnapshots = querySnapshot.docs[0];
   const data = docSnapshots.data()
+  return data
+}
+
+export async function fetchUser(id) {
+  const docRef = doc(db, "users", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const data = docSnap.data()
+    return data
+  } else {
+    // doc.data() will be undefined in this case
+    return
+  }
+}
+
+export async function fetchUserByUid(uid) {
+  const q = query(collection(db, "users"), where("uid", "==", uid));
+  const querySnapshot = await getDocs(q);
+  const docSnapshots = querySnapshot.docs[0];
+  const id = docSnapshots.id;
+  const data = docSnapshots.data()
+  return { ...data, id }
+}
+
+export async function fetchCampaign(campaignId) {
+  // Check for the customURL first
+  const customURLQ = query(collection(db, "campaigns"), where("customURL", "==", campaignId));
+  const customURLQuerySnapshot = await getDocs(customURLQ);
+  var docSnapshots = customURLQuerySnapshot.docs[0];
+  var data;
+  if (docSnapshots) {
+    data = docSnapshots.data()
+  } else if (!docSnapshots) {
+    // If there is no customURL, check for the id
+    data = (await getDoc(doc(db, "campaigns", campaignId))).data();
+  }
   return data
 }
 

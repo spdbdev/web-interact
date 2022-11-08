@@ -27,7 +27,7 @@ export function TabNavigation({
     if (selectedTabIndex !== 7) {
       setSelectedTabIndex(selectedTabIndex + 1);
     } else {
-      navigate("/interact/campaign-creation-summary");
+      navigate("/a/campaign-creation-summary");
     }
   }
 
