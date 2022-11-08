@@ -84,6 +84,42 @@ const interactV1Routes = [
       <Page component={CampaignCreationConfirmationPage} layout="solo-page" />
     ),
   },
+  {
+    path: "/a/faq",
+    element: (
+      <Page component={<></>} layout="solo-page" />
+    ),
+  },
+  {
+    path: "/a/settings",
+    element: (
+      <Page component={<></>} layout="solo-page" />
+    ),
+  },
+  {
+    path: "/a/receipts-and-paystubs",
+    element: (
+      <Page component={<></>} layout="solo-page" />
+    ),
+  },
+  {
+    path: "/a/campaigncreatorfaq",
+    element: (
+      <Page component={<></>} layout="solo-page" />
+    ),
+  },
+  {
+    path: "/a/privacy-policy",
+    element: (
+      <Page component={<></>} layout="solo-page" />
+    ),
+  },
+  {
+    path: "/a/terms-and-conditions",
+    element: (
+      <Page component={<></>} layout="solo-page" />
+    ),
+  },
 ];
 
 export default interactV1Routes;
