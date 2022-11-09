@@ -31,6 +31,7 @@ function CampaignPage(userData) {
 	const [freeChanceMultiplier, setFreeChanceMultiplier] = useState(1);
 	const [campaignData, setCampaignData] = useState({});
 	const [bids, setBids] = useState([]);
+	const [giveaways,setGiveaways] = useState([]);
 	const [comments, setComments] = useState([]);
 	const [supporters, setSupporters] = useState([]);
 	const [winningChances, setWiningChances] = useState({'vip':100, 'free':100});
@@ -85,6 +86,31 @@ function CampaignPage(userData) {
 			setUserAuctionPosition(++position);
 			setHasUserEnteredAuction(true);
 		})
+
+		const commentsListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "comments")),(querySnapshot)=>{
+			let commentsList = [];
+			querySnapshot.forEach((doc) => {
+				commentsList.push(doc.data());
+			});
+			setComments(commentsList);
+		})
+
+		const giveawayListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "Giveaway")),(querySnapshot)=>{
+			let giveawayList = [];
+			querySnapshot.forEach((doc) => {
+				giveawayList.push(doc.data());
+			});
+			setGiveaways(giveawayList);
+		})
+
+		// Using giveaways and bids instead of supporters.
+		// const supportersListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "supporters")),(querySnapshot)=>{
+		// 	let supportersList = [];
+		// 	querySnapshot.forEach((doc) => {
+		// 		supportersList.push(doc.data());
+		// 	});
+		// 	setSupporters(supportersList[0].supporters);
+		// })
 
 		/* 
 		// replace these with listeners
@@ -348,10 +374,13 @@ function CampaignPage(userData) {
 			<Box sx={{ flex: 1, mr: 3 }}>
 				<CreatorName campaignData={campaignData} />
 				<CampaignInfo
+				isCampaignEnded={isCampaignEnded}
 				campaignData={campaignData}
+				giveaways={giveaways}
+				bids={bids}
 				comments={comments}
 				campaignId={campaignId}
-				supporters={supporters}
+				// supporters={supporters}
 				/>
 			</Box>
 			<Box sx={{ flex: 1, mt: 3 }}>
