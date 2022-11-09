@@ -9,7 +9,6 @@ import {
   Box,
   Stack,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import moment from "moment";
 import { getDateFromTimestamp } from "@interact/Components/utils";
 import Span from "@jumbo/shared/Span";
@@ -18,10 +17,6 @@ export default function Header({ campaignData }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
 
   return (
-    // "50 interactions will be carried out from Aug 8th 2022 to Oct 3rd 2022, don't miss out!"
-    // "Campaign ends at 8:00 pm EST on Aug 5th 2022"
-    // "Ends in X days" or "Ends in X hours" or "Ends in X minutes"
-
     <div className="Description">
       <Typography
         variant="h3"
@@ -29,11 +24,13 @@ export default function Header({ campaignData }) {
         mb={0}
         style={{ fontSize: 30, fontWeight: 400 }}
       >
-        Game &#38; Chat with Blahblahblah 1-on-1
+        {campaignData?.title}
       </Typography>
       <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
         Created by
-        <span style={{ color: "#782eee", fontWeight: 600 }}>addUserName</span>
+        <span style={{ color: "#782eee", fontWeight: 600 }}>
+          {campaignData?.creatorName}
+        </span>
       </Typography>
       <Divider />
       <Stack direction="column">
