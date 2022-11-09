@@ -1,7 +1,7 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InteractLogo from "@interact/Images/logo.png";
 
 export function TabNavigation({
@@ -12,6 +12,7 @@ export function TabNavigation({
 }) {
   const navigate = useNavigate();
   const Swal = useSwalWrapper();
+  const { campaignId } = useParams();
 
   function handleNextButtonClick() {
     if (disableNext) {
@@ -27,7 +28,7 @@ export function TabNavigation({
     if (selectedTabIndex !== 7) {
       setSelectedTabIndex(selectedTabIndex + 1);
     } else {
-      navigate("/a/campaign-creation-summary");
+      navigate(`/a/campaign-creation-summary/${campaignId}`);
     }
   }
 

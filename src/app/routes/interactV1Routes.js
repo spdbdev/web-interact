@@ -69,13 +69,13 @@ const interactV1Routes = [
   },
 
   {
-    path: "/a/campaign-creation-summary",
+    path: "/a/campaign-creation-summary/:campaignId",
     element: (
       <Page component={CampaignCreationSummaryPage} layout="solo-page" />
     ),
   },
   {
-    path: "/a/campaign-creation-confirmation",
+    path: "/a/campaign-creation-confirmation/:campaignId",
     element: (
       <Page component={CampaignCreationConfirmationPage} layout="solo-page" />
     ),

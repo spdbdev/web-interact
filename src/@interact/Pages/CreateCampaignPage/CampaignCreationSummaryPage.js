@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FAQAccordian from "./FAQAccordian";
 import { httpsCallable } from "firebase/functions";
 import { functions, publishCampaign } from "../../../firebase";
@@ -43,11 +43,12 @@ export default function CampaignCreationSummaryPage() {
   const [submitClicked, setSubmitClicked] = useState(false);
   const navigate = useNavigate();
   const { user } = useCurrentUser();
+  const { campaignId } = useParams();
 
   useEffect(() => {
     const getCampaign = async () => {
       let fetchedData = (
-        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+        await getDoc(doc(db, "campaigns", campaignId))
       ).data();
 
       setCampaignData(fetchedData);
@@ -92,7 +93,7 @@ export default function CampaignCreationSummaryPage() {
   ];
 
   async function submitCampaign() {
-    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    const docRef = await doc(db, "campaigns", campaignId); //this needs to be passed in programatically
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -126,9 +127,9 @@ export default function CampaignCreationSummaryPage() {
 
     // save as campaignStatus: "scheduled"
 
-    publishCampaign("campaign-creation-test", user.id)
+    publishCampaign(campaignId, user.id)
       .then(() => {
-        navigate("/a/campaign-creation-confirmation");
+        navigate(`/a/campaign-creation-confirmation/${campaignId}`);
         Toast.fire({
           icon: "success",
           title: "Campaign successfully created!",

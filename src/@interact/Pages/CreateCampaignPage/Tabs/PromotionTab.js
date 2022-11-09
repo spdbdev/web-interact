@@ -59,6 +59,7 @@ export default function PromotionTab({
         } else {
           setErrors(false);
           setCustomURLDescription("3 to 30 characters. Letters, numbers, and dashes only.");
+          setData({ customURL: URL })
         }
         setFormValidationConditions(
           campaign === undefined
