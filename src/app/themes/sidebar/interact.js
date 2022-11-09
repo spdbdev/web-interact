@@ -2,6 +2,9 @@ import {alpha} from "@mui/material/styles";
 
 export const sidebarTheme = {
     type: "light",
+    typography: {
+        fontFamily: "Jost",
+    },
     palette: {
         primary: {
             main: '#7352C7',

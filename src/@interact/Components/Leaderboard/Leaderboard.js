@@ -119,7 +119,10 @@ export default function Leaderboard({ campaignData, bids }) {
         <Typography variant="h4" sx={{ mr: 1, mb: 0 }}>
           Leaderboard
         </Typography>
-        <InfoTooltip title="If you’re on the leaderboard at the end of the campaign, you will receive a premium interaction (occurs before raffled interactions) otherwise, if you are overthrown from the leaderboard, you are not charged" />
+        <InfoTooltip title="If you’re on the leaderboard at the end of the campaign, 
+        you will receive a premium interaction, occurring before all other interactions
+        (before winners from the giveaway); otherwise, if you are overthrown from the
+        leaderboard by the end of the campaign, you are not charged" />
       </Box>
       <Box>
         {bids?.length > 0 ? (

@@ -169,10 +169,7 @@ export default function FAQAccordian({
             general availability from Mon-Sun (editable on their profile page
             too). After the campaign ends, selected fans (winners) will have
             interactions assigned to them over the interaction window duration,
-            10 weeks by default (with auction winners having priority). The
-            creator selects when they are available week-by-week (creators have
-            to lock in their availability by Friday midnight for the next week);
-            from this, with our matching algorithm, interactions are scheduled.
+            10 weeks by default (with auction winners having priority). The creator selects when they are available week-by-week (creators have to lock in their availability by Friday midnight for the next week, and can sync with their personal Google, Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.
           </Typography>
         </AccordionDetails>
       </Accordion>

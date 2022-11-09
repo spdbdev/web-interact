@@ -19,7 +19,7 @@ import FAQTab from "./Tabs/FAQTab";
 import PaymentTab from "./Tabs/PaymentTab";
 import PromotionTab from "./Tabs/PromotionTab";
 import SideBar from "./SideBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Close, ExpandLess } from "@mui/icons-material";
 import Span from "@jumbo/shared/Span";
 import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
@@ -46,31 +46,22 @@ function FAQSidebarWrapper({ title, children }) {
 const FAQText = {
   0: (
     <FAQSidebarWrapper title="Basics">
-      Be yourself and be true to your personality; fans want to talk to the real
-      you and want to connect with you. Drive hype & FOMO: it’s a fan’s only
-      chance for a few months usually. If they miss out they’ll sit in envy of
-      other lucky fans who get to interact with a content creator they love.
+      Be true to yourself; fans want to talk to & create a symbiotic 2-way
+      relationship. Have meaningful conversations & learn about your fans who
+      have grown with you not only as a creator but as a person.
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How are interactions carried out?
       </Span>{" "}
-      Via Google Meet, each interaction box has a ‘Join’ button that will go to
-      the unique link of this interaction. You may also stream it live and/or
-      record it (fans have already agreed to a photo/video release form) If a
-      fan wants to join the content creator in a game but they are in different
-      regions, either the fan or the content creator can create an account in a
-      different region. <br />
+      Via Discord (fans link their Discord accounts; when it’s their turn to
+      interact, fans join the creator’s server and are given a special role
+      automatically) or Google Meet (unique Google Meet link). You may also
+      stream it live and/or record it (users have agreed to photo/video release
+      in the terms & conditions). If a fan wants to join the content creator in
+      a game but they are in different regions, either the fan or the content
+      creator can create an account in a different region. <br />
       <br />
-      <Span sx={{ textDecoration: "underline", display: "block" }}>
-        What activities can I do with a fan in an interaction?{" "}
-      </Span>{" "}
-      Playing games (from competitive games like Valorant to Chess to….
-      Geoguessr) Discussing topics fans are passionate about, commentating on
-      that, and learning from each other (fans can screen share: they might show
-      off their own creations, favorite clips of your content and ask for advice
-      in your field of expertise, or just anime & bad dad jokes. You can spice
-      it up with a challenge like Try Not to Laugh)
     </FAQSidebarWrapper>
   ),
   1: (
@@ -90,53 +81,34 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How does scheduling work?
       </Span>{" "}
-      Fans can select their availability from Mon-Sun in general as long as they
-      have an account, even before they've acquired any interactions (a minimum
-      of 5 hours of the week have to be selected). Fans also select a preference
-      for time of day (in their timezone), morning (6am to 10:30 am), noon
-      (10:30 am to 1:30 pm), afternoon (1:30pm to 6pm), evening (6pm to
-      10:30pm), midnight (10:30pm to 1:30am), gremlin time (1:30 am to 6am). The
-      first week after the campaign (starting Monday) is when interactions will
-      start to be booked. When the campaign ends, creators are shown the
-      availability of all of their fans continuously (shown X number of fans
-      that are available for each time slot), and release a specific schedule
-      week-by-week on Friday 11:59 pm at the latest (except for the first week
-      where creators have until Sunday 11:59pm to lock in a schedule for the
-      next week starting Monday), with the ability to choose how many
-      interactions to do that week. We then allocate the best fitting fans as
-      soon as the creator locks in their schedule for each week. Fans & creators
-      can reschedule. Rescheduled fans will be added back into the matching
-      algorithm pool & matched accordingly once again. By the last week, fans
-      that creators are not able to meet are refunded. This means that if a fan
-      or creator reschedules an interaction in the last week, the fan is
-      refunded.
+      You can sync with your Google, Outlook or iCloud calendar, where your
+      scheduled events will show up as unavailable timeslots automatically on
+      your creator schedule tab (in your Interact profile page); after you lock
+      in your availability for a week, your interactions with fans are scheduled
+      and can be exported to your calendar. Fans can select their availability
+      from Mon-Sun in general as long as they have an account, even before
+      they've acquired any interactions (a minimum of 5 hours of the week have
+      to be selected). Fans also select a preference for time of day (in their
+      timezone), morning (6am to 10:30 am), noon (10:30 am to 1:30 pm),
+      afternoon (1:30pm to 6pm), evening (6pm to 10:30pm), midnight (10:30pm to
+      1:30am), gremlin time (1:30 am to 6am). The first week after the campaign
+      (starting Monday) is when interactions will start to be booked. When the
+      campaign ends, creators are shown the availability of all of their fans
+      continuously (shown X number of fans that are available for each time
+      slot), and release a specific schedule week-by-week on Friday 11:59 pm at
+      the latest (except for the first week where creators have until Sunday
+      11:59pm to lock in a schedule for the next week starting Monday), with the
+      ability to choose how many interactions to do that week. We then allocate
+      the best fitting fans as soon as the creator locks in their schedule for
+      each week. Fans & creators can reschedule. Rescheduled fans will be added
+      back into the matching algorithm pool & matched accordingly once again. By
+      the last week, fans that creators are not able to meet are refunded. This
+      means that if a fan or creator reschedules an interaction in the last
+      week, the fan is refunded.
     </FAQSidebarWrapper>
   ),
   2: (
     <FAQSidebarWrapper title="Interaction">
-      <Span sx={{ textDecoration: "underline", display: "block" }}>
-        How does the giveaway work?
-      </Span>{" "}
-      Anyone can join the giveaway with a free entry or support a creator with a
-      few dollars for a VIP entry that increases your chances of winning by 25x
-      (but first, you have to correctly answer a skill based math question).
-      Users can upgrade from the free to VIP entry (only 1 entry is allowed per
-      user). Winners are drawn at the end of the campaign. Each time a user
-      loses, their next giveaway with the same creator will have DOUBLE the
-      chances of winning, stacking twice, 4x loss multiplier (meaning up to a
-      total 4x chance for a free entry or a total 100x chance if it is a VIP
-      entry; this only resets on winning an interaction in the giveaway). <br />
-      <br />
-      <Span sx={{ textDecoration: "underline", display: "block" }}>
-        How does the auction & leaderboard work?
-      </Span>{" "}
-      Fans place a bid to be on the leaderboard. If the fan is still on the
-      leaderboard when the campaign ends, they'll win an interaction & their
-      previously selected payment method will be charged. If a fan places in the
-      top 3 on the leaderboard, their interaction will be longer in duration
-      compared to a normal interaction.
-      <br />
-      <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Why giveaway + auction format?
       </Span>{" "}
@@ -147,43 +119,39 @@ const FAQText = {
       loyal fans the option to get an interaction with 100% certainty; your most
       loyal fans who want to tell you, their favorite creator, about themselves
       will save up birthday money / holiday wishes for an interaction with you.
-      What can you do in an interaction? Playing games (from competitive games
-      like Valorant to Chess to…. Geoguessr) Discussing topics fans are
-      passionate about, commentating on that, and learning from each other (fans
-      can screen share: they might show off their own creations, favorite clips
-      of your content and ask for advice in your field of expertise, or just
-      anime & bad dad jokes. You can spice it up with a challenge like Try Not
-      to Laugh)
+      <br />
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+        <br />
+        How does the giveaway work?
+      </Span>{" "}
+      Anyone can join the giveaway with a free entry or support a creator with a
+      few dollars for a VIP entry that increases your chances of winning by 25x.
+      Users can upgrade from the free to VIP entry (only 1 entry is allowed per
+      user).
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
-        Why do fans want personal interactions?
+        How does the auction & leaderboard work?
       </Span>{" "}
-      As social platforms are so one-sided, fans give you attention weekly or
-      even daily without being able to receive any meaningful attention or
-      recognition back. They treat you as someone they trust and/or a relatable
-      friend, but have never been able to fulfill that relationship. Thus, fans
-      want to be recognized by you & build a relationship by showing off their
-      talents (e.g. best X-main in this game, astute questions & insights in X,
-      musical/artistic talent, athleticism, or comedic genius). Fans want to
-      discuss & make their own viewpoints known on subjects they are deeply
-      passionate about, where you’re one of the leaders in that
-      subject/community (from anime to politics, from history to frontier tech,
-      from reviews & tier lists to educational animations). Fame—if a fan’s
-      interaction was interesting, creators can post highlights of it or the
-      interaction is part of a live-streaming/podcasting scenario where the fan
-      is recognized by many fellow fans & viewers (react to content together,
-      try not to laugh challenge, etc. even if you don’t create that type of
-      content yet, expand your variety—fans love to watch drama & discourse, or
-      just something new). Interacting with fans as part of your content is
-      effective & appealing since other fans are envious & garners large
-      popularity (Mr. Beast, fans who don’t make money are still ecstatic).
-      Creating fresh content is one of the largest challenges we face, why not
-      add some spice?
+      Fans place a bid to be on the leaderboard. If the fan is still on the
+      leaderboard when the campaign ends, they'll win an interaction & their
+      previously selected payment method will be charged. If a fan places in the
+      top 3 on the leaderboard, their interaction will be longer in duration
+      compared to a normal interaction.
+      <br />
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+        <br />
+        Additional giveaway info
+      </Span>{" "}
+      Winners are drawn at the end of the campaign. Each time a user loses,
+      their next giveaway with the same creator will have DOUBLE the chances of
+      winning, stacking twice, 4x loss multiplier (meaning up to a total 4x
+      chance for a free entry or a total 100x chance if it is a VIP entry; this
+      only resets on winning an interaction in the giveaway). <br />
     </FAQSidebarWrapper>
   ),
   3: (
-    <FAQSidebarWrapper title="Goal & Video">
+    <FAQSidebarWrapper title="Goal & video">
       <Span sx={{ textDecoration: "underline", display: "block" }}>Goal:</Span>{" "}
       You must create a goal which is non-binding, i.e. interactions are still
       carried out with those who have supported you even if the goal is not
@@ -214,11 +182,42 @@ const FAQText = {
     </FAQSidebarWrapper>
   ),
   4: (
-    <FAQSidebarWrapper title="Interaction Method">
-      This is the FAQ your fans will see on your campaign. Most answers are
-      pre-filled, but you'll need to fill in custom details for some questions,
-      namely: "What can we do in an interaction?" and "How are interactions
-      carried out?"
+    <FAQSidebarWrapper title="Interaction method">
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+        What activities can I do with a fan in an interaction?{" "}
+      </Span>{" "}
+      Playing games (from competitive games like Valorant & Chess to…. GeoGuessr
+      or mini putt in Discord activities). Discussing topics fans are passionate
+      about, commentating, and learning from each other (fans can screen share:
+      they might show off their own creations, favorite clips of your content
+      and ask for advice in your field of expertise… or just anime. You could
+      also spice it up with a Try Not to Laugh challenge, watching funny YouTube
+      videos via Discord activities).
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
+        <br />
+        Why do fans want personal interactions?
+      </Span>{" "}
+      As social platforms are so one-sided, fans give you attention weekly or
+      even daily without being able to receive any meaningful attention or
+      recognition back. They treat you as someone they trust and/or a relatable
+      friend, but have never been able to fulfill that relationship. Thus, fans
+      want to be recognized by you & build a relationship by showing off their
+      talents (e.g. best X-main in this game, astute questions & insights in X,
+      musical/artistic talent, athleticism, or comedic genius). Fans want to
+      discuss & make their own viewpoints known on subjects they are deeply
+      passionate about, where you’re one of the leaders in that
+      subject/community (from anime to politics, from history to frontier tech,
+      from reviews & tier lists to educational animations). Fame—if a fan’s
+      interaction was interesting, creators can post highlights of it or the
+      interaction is part of a live-streaming/podcasting scenario where the fan
+      is recognized by many fellow fans & viewers (react to content together,
+      try not to laugh challenge, etc. even if you don’t create that type of
+      content yet, expand your variety—fans love to watch drama & discourse, or
+      just something new). Interacting with fans as part of your content is
+      effective & appealing since other fans are envious & garners large
+      popularity (Mr. Beast, fans who don’t make money are still ecstatic).
+      Creating fresh content is one of the largest challenges we face, why not
+      add some spice?
     </FAQSidebarWrapper>
   ),
   5: (
@@ -238,13 +237,12 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         "How are interactions carried out?"
       </Span>{" "}
-      Here, you can tell your fans how they'll be able to interact with you.
-      Zoom, Discord, In-Person, etc. Via Google Meet, each interaction box has a
-      ‘Join’ button that will go to the unique link of this interaction The
-      content creator may stream the interaction live and/or record it (If you
-      wish to play a game, write down the name & region/server if it has region
-      restrictions, where you can only play with those on your server; fans
-      might have to make a new account)
+      Here, you can tell your fans how they'll be able to interact with you via
+      Discord (fans link their Discord accounts; when it’s their turn to
+      interact, fans join the creator’s server and are given a special role
+      automatically) or Google Meet (unique Google Meet link). Are you going to
+      stream the interaction live and/or record it (If you wish to play a game,
+      what is the game? Which region/server?)
     </FAQSidebarWrapper>
   ),
   6: (
@@ -273,6 +271,10 @@ const FAQText = {
   ),
   7: (
     <FAQSidebarWrapper title="Promotion">
+      While promoting the campaign, the goal is to drive hype & FOMO: it’s a
+      fan’s only chance for a few months usually. If they miss out they’ll sit
+      in envy of other lucky fans who get to interact with a content creator
+      they love.
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
@@ -310,6 +312,7 @@ const FAQText = {
 
 function CreateCampaignPage() {
   // initialize lastCompleteTabIndex to -1 in firestore
+  const { docId } = useParams();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [
     hasInitialTabBeenSetFromDatabase,

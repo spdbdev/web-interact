@@ -23,7 +23,7 @@ export default function Stats({ campaignData }) {
       alignItems="center"
       spacing={4}
     >
-      <GoalDisplay stats={stats} />
+      <GoalDisplay campaignData={campaignData} />
       <Stack
         flex={1}
         direction="row"
@@ -79,7 +79,7 @@ export function FollowButton({ selected }) {
   );
 }
 
-export function GoalDisplay({ stats }) {
+export function GoalDisplay({ campaignData }) {
   return (
     <Box id="goalDisplay" sx={{ width: 400 }}>
       <LinearProgress
@@ -99,7 +99,7 @@ export function GoalDisplay({ stats }) {
           variant="h1"
           sx={{ color: "primary.main", fontSize: 32, fontWeight: 500 }}
         >
-          ${stats?.currRaised}
+          ${campaignData?.currRaised}
         </Typography>
         <Box
           sx={{
@@ -121,10 +121,10 @@ export function GoalDisplay({ stats }) {
             //   WebkitLineClamp: 2,
             // }}
           >
-            {stats?.targetTagline}
+            {campaignData?.goal}
             <Span sx={{ color: "primary.main", fontWeight: 500, mr: 0.5 }}>
               {" "}
-              ${stats?.target}
+              ${campaignData?.goalValue}
             </Span>
             <InfoTooltip title="Interactions will still occur even if the goal is not reached, the goal is non-binding." />
           </Typography>

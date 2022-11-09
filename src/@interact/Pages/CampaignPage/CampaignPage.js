@@ -8,7 +8,6 @@ import Faq from "@interact/Components/Faq/Faq";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "./Header";
 import Stats from "./Stats";
-import CreatorName from "./CreatorName";
 import { useEffect, useState } from "react";
 import {
   doc,
@@ -555,24 +554,6 @@ function CampaignPage(userData) {
   };
 
   useEffect(() => {
-
-    // DUMMY_RAFFLES.forEach((x, i)=>{
-    //   let raffle = {...DUMMY_RAFFLES[i]};
-    //   raffle.time = serverTimestamp();
-    //   // console.log(raffle)
-    //   addDoc(collection(db, "campaigns", "test12345", 'raffles'), raffle);
-
-    // })
-    // setDoc(doc(db, "campaigns", "test12345", 'raffles', 'dummySupporterId3'), DUMMY_SUPPORTERS[1]);
-    // // console.log('doc shouldve been setted')
-
-    // setCampaignData(DUMMY_DATA);
-
-    // setBids(DUMMY_BIDS);
-
-    // setComments(DUMMY_COMMENT_DATA)
-    // setSupporters(DUMMY_SUPPORTERS)
-
     // Check if there is a campaignId in params
     if (params.campaignId) {
       // Then, check if the campaign is a draft, 
@@ -591,9 +572,7 @@ function CampaignPage(userData) {
       }
     }
     console.log(params, !params.campaignId, user)
-
   }, [user, params]);
-
 
   const bid = async (amount, clientemail, auto = false) => {
     console.log("bidding", amount);
@@ -661,7 +640,7 @@ function CampaignPage(userData) {
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
         <Header campaignData={campaignData} />
-        <p>{localStorage.getItem('data')}</p>
+        <p>{localStorage.getItem("data")}</p>
         <Box
           sx={{
             position: "relative",
@@ -684,7 +663,7 @@ function CampaignPage(userData) {
           >
             <iframe
               style={{ flex: 1, position: "absolute" }}
-              src={campaignData?.videoUrl}
+              src={campaignData?.campaignVideoLink}
               title="YouTube video player"
               width="100%"
               height="100%"
@@ -732,7 +711,7 @@ function CampaignPage(userData) {
           }}
         >
           <Box sx={{ flex: 1, mr: 3 }}>
-            <CreatorName campaignData={campaignData} />
+            <br></br>
             <CampaignInfo
               campaignData={campaignData}
               comments={comments}

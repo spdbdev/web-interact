@@ -1,4 +1,7 @@
 export const footerTheme = {
+    typography: {
+        fontFamily: "Jost, Arial",
+    },
     palette: {
         primary: {
             main: '#7352C7',

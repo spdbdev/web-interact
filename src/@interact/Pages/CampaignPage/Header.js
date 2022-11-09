@@ -16,7 +16,8 @@ import Span from "@jumbo/shared/Span";
 
 export default function Header({ campaignData }) {
   const numInteractions =
-    campaignData?.numBidSlots + campaignData?.numRaffleSlots;
+    campaignData?.numAuctionInteractions +
+    campaignData?.numGiveawayInteractions;
 
   return (
     // "50 interactions will be carried out from Aug 8th 2022 to Oct 3rd 2022, don't miss out!"
@@ -30,11 +31,11 @@ export default function Header({ campaignData }) {
         mb={0}
         style={{ fontSize: 30, fontWeight: 400 }}
       >
-        Game &#38; Chat with{" "}
-        <span style={{ color: "#782eee" }}>Pattedevelours</span> 1-on-1
+        Game &#38; Chat with Blahblahblah 1-on-1
       </Typography>
       <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
-        {campaignData?.header?.tagline1}
+        Created by
+        <span style={{ color: "#782eee", fontWeight: 600 }}>addUserName</span>
       </Typography>
       <Divider />
       <Stack direction="column">
@@ -42,11 +43,11 @@ export default function Header({ campaignData }) {
           <Span>
             {numInteractions} interactions will be carried out from{" "}
             {getDateFromTimestamp({
-              timestamp: campaignData?.startDate?.seconds,
+              timestamp: campaignData?.interactionStartDateTime?.seconds,
             })}{" "}
             to{" "}
             {getDateFromTimestamp({
-              timestamp: campaignData?.endDate?.seconds,
+              timestamp: campaignData?.interactionEndDateTime?.seconds,
             })}
             , don't miss out!
           </Span>
@@ -54,13 +55,13 @@ export default function Header({ campaignData }) {
           <Span>
             Campaign ends at{" "}
             {getDateFromTimestamp({
-              timestamp: campaignData?.endDate?.seconds,
-              format: " h:mm a [on] dddd, MMMM Do YYYY",
+              timestamp: campaignData?.endDateTime?.seconds,
+              format: " h:mm a [EST on] dddd, MMMM Do YYYY",
             })}
           </Span>
         </Typography>
       </Stack>
-
+      <br />
       <Box
         sx={{
           background: "linear-gradient(173.73deg, #782FEE, #DD00FF 117.43%)",
@@ -75,7 +76,7 @@ export default function Header({ campaignData }) {
           p={0}
           sx={{ color: "secondary.contrastText" }}
         >
-          Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
+          Ends {moment.unix(campaignData?.endDateTime?.seconds).fromNow()}
         </Typography>
       </Box>
     </div>
