@@ -41,29 +41,11 @@ const columns = [
   {
     field: "bidTime",
     headerName: "Bid time",
-    width: 230,
+    width: 180,
     renderCell: (d) => formatDate(d.value)
   },
 ];
 
-// const rows = [
-//   { id: 1, username: 'Snow2', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 2, username: 'Snow23', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 3, username: 'Snow4', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 4, username: 'Snow5', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 5, username: 'Snow6', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 6, username: 'Sno6w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 7, username: 'Sno5w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 8, username: 'Sno56w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 9, username: 'Sno5w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 10, username: 'Sno55w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 11, username: 'Sn4ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 12, username: 'Sn3ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 13, username: 'Sn3ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 14, username: 'Sn3ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 15, username: 'Sn2ow', bidPrice: '$8.00', bidTime: 'Just now' },
-
-// ];
 
 export default function Leaderboard({ campaignData, bids }) {
   const minBid = 1.0; // assume bids smaller than min bid will not be acceoted
@@ -86,7 +68,7 @@ export default function Leaderboard({ campaignData, bids }) {
     });
 
     //console.log(bids);
-    bids = bids.slice(0,numAuctions);
+    bids = bids.slice(0, campaignData.numAuctionInteractions);
     return bids;
   };
   useEffect(()=>{
@@ -152,7 +134,7 @@ export default function Leaderboard({ campaignData, bids }) {
             <Grid item xs={9} style={{height:'100%'}}>
               <DataGrid
                 sx={{ flex: 1, height: "100%", borderColor: "divider" }}
-                rows={rows}
+                rows={rows.slice(3, campaignData.numAuctionInteractions)}
                 columns={columns}
                 // pageSize={rows.length}
                 hideFooter

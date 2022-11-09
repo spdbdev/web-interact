@@ -7,7 +7,7 @@ import InteractButton from "../../Components/Button/InteractButton";
 import InfoTooltip from "../../Components/InfoTooltip";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { db, auth } from '../../../firebase';
-import { doc, setDoc, serverTimestamp, getDoc,query,collection,where,getDocs } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc, query, collection, where, getDocs, getCountFromServer } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -166,8 +166,14 @@ export default function Giveaway({
     var freeEntryPrice = "0";
     //console.log(userData);
 
-    const saveDataInGiveaway = (data) => {
-        setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
+    const saveDataInGiveaway = async (data) => {
+        await setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
+
+		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, 'Giveaway'));
+		const counter = snapshot.data().count;
+		console.log('Giveaway count: ', counter);
+
+		setDoc(doc(db, "campaigns", campaignId), {numGiveawayEntries:counter}, { merge: true });
     }
 
     const saveDataInStripeCustomer = (stripe_customer_data) => {

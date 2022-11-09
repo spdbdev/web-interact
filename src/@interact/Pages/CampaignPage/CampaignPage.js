@@ -15,7 +15,7 @@ import Stats from "./Stats";
 import CreatorName from "./CreatorName";
 import { useEffect, useState } from "react";
 
-import {doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot} from "firebase/firestore";
+import {doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot, getCountFromServer} from "firebase/firestore";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
@@ -53,7 +53,6 @@ function CampaignPage(userData) {
 		email: "bibyliss@gmail.com",
 		customerId: "cus_MlMuNeDDsNVt2Z",
 	};
-	console.log('IRFAN', user);
 
 
 	const getCampaignData = async () => 
@@ -80,13 +79,11 @@ function CampaignPage(userData) {
 				bidsList.push(doc.data());
 			});
 			bidsList = sortBids(bidsList);
+			setBids(bidsList);
 
 			let position = bidsList.findIndex(element => element.email === user.email);
-
 			setUserAuctionPosition(++position);
 			setHasUserEnteredAuction(true);
-
-			setBids(bidsList);
 		})
 
 		/* 
@@ -201,7 +198,7 @@ function CampaignPage(userData) {
 		var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
 		let user_data = userSnap.docs[0];
 
-		setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
+		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
 			person: {
 				username: user_data.data().name,
 				id: user_data.id,
@@ -215,6 +212,12 @@ function CampaignPage(userData) {
 			email: user.email,
 			time: serverTimestamp(),
 		});
+
+		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, 'bids'));
+		const counter = snapshot.data().count;
+		console.log('bids count: ', counter);
+
+		setDoc(doc(db, "campaigns", campaignId), {numAuctionBids:counter}, { merge: true });
 	};
 
 	function renderUserCampaignStatus() 
