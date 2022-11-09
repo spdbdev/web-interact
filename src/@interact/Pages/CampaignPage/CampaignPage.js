@@ -283,7 +283,7 @@ function CampaignPage(userData) {
 				mr: 1,
 				borderRadius: 3,
 				overflow: "hidden",
-				paddingBottom: "41.25%",
+				paddingBottom: "38.25%",
 				position: "relative",
 				}}
 			>

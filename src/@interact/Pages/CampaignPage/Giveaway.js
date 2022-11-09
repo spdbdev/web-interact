@@ -680,7 +680,7 @@ export default function Giveaway({
       </Box>
 
       <Box id="VIPGiveawaySection">
-        <Typography variant="h5" color="text.secondary" mt={2}>
+        <Typography variant="h5" color="text.secondary" mt={1}>
           VIP entry
         </Typography>
 
@@ -694,7 +694,7 @@ export default function Giveaway({
           join the giveaway."
           />
         </Stack>
-        <Box sx={{ display: "flex", flexDirection: "row", mb: 2, mt: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "row", mb: 1, mt: 1 }}>
           <Box
             sx={{
               flex: 1,
@@ -725,7 +725,7 @@ export default function Giveaway({
         style={{
           display: "flex",
           flexDirection: "column",
-          margin: "10px 0",
+          marginTop: "10px",
         }}
       >
         <Typography variant="h5" color="text.secondary">
