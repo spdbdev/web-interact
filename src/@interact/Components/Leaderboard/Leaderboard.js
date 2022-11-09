@@ -108,7 +108,7 @@ export default function Leaderboard({ campaignData, bids }) {
   }, [bids]);
 
   return (
-    <JumboCardQuick sx={{ flex: 1 }} className="jumboCardQuick" id="jumboCardQuick">
+    <JumboCardQuick sx={{ flex: 1,mr:1 }} className="jumboCardQuick" id="jumboCardQuick">
       <Box style={{height:"100%"}}>
       <Box
         sx={{

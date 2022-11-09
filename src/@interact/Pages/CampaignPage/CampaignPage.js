@@ -324,7 +324,7 @@ function CampaignPage(userData) {
 				padding: "20px 0",
 				}}
 			>
-				<Leaderboard campaignData={campaignData} bids={bids} />
+				<Leaderboard campaignData={campaignData} bids={bids}/>
 				<Auction
 				isCampaignEnded={isCampaignEnded}
 				bidAction={bid}
