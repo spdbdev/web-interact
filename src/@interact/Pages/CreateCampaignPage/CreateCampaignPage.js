@@ -31,7 +31,6 @@ import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import InteractMethodTab from "./Tabs/InteractMethodTab";
 import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
-import { initCampaignDoc } from "./utils";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -320,7 +319,7 @@ function CreateCampaignPage() {
     setHasInitialTabBeenSetFromDatabase,
   ] = useState(false);
   const [FAQSideBarText, setFAQSideBarText] = useState("");
-  const [campaignData, setCampaignData] = useState(null);
+  const [campaignData, setCampaignData] = useState(campaignId);
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
   const { user } = useCurrentUser();
   const campaignAddedRef = useRef(false);
@@ -343,33 +342,8 @@ function CreateCampaignPage() {
   useEffect(() => {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
-    const getCampaign = async (campaignId) => {
-      let fetchedData = await fetchCampaign(campaignId);
 
-      if (fetchedData) {
-        setCampaignData(fetchedData);
-      }
-    };
-
-    const handleAddCampaign = async () => {
-      let newCampaignId = await addCampaign(user);
-      navigate(`/d/${newCampaignId}`)
-    }
-
-    if (user) {
-      if (campaignAddedRef.current === true) {
-        return
-      } else if (data && !(data.lastCompletedTabIndex && Object.keys(data).length === 1) && !campaignId) {
-        campaignAddedRef.current = true;
-        console.log("creating a new campaign")
-        handleAddCampaign();
-      } else if (!user.campaigns || user.campaigns.length === 0) {
-        getCampaign("campaign-creation-test");
-      } else {
-        getCampaign(user.campaigns[0].campaignId);
-      }
-    }
-
+    handleCampaign();
   }, [data, lastSavedAt, user]);
 
   useEffect(() => {
@@ -384,6 +358,31 @@ function CreateCampaignPage() {
       setHasInitialTabBeenSetFromDatabase(true);
     }
   }, [campaignData]);
+
+  const handleCampaign = () => {
+    const getCampaign = async (campaignId) => {
+      let fetchedData = await fetchCampaign(campaignId);
+
+      if (fetchedData) {
+        setCampaignData({ ...fetchedData, campaignId });
+      }
+    };
+
+    const handleAddCampaign = async () => {
+      let newCampaignId = await addCampaign(user);
+      navigate(`/d/${newCampaignId}`)
+    }
+    if (user) {
+      if (campaignAddedRef.current === true) {
+        return
+      } else if (data && !(data.lastCompletedTabIndex !== undefined && Object.keys(data).length === 1) && !campaignId) {
+        campaignAddedRef.current = true;
+        handleAddCampaign();
+      } else {
+        getCampaign("campaign-creation-test");
+      }
+    }
+  }
 
   function renderTab() {
     const tabProps = {
@@ -478,7 +477,7 @@ function CreateCampaignPage() {
             pb={10}
             position="relative"
           >
-            {renderTab()}
+            {campaignData !== campaignId ? renderTab() : null}
           </Stack>
         </Container>
         <Box sx={{ position: "absolute", top: 10, right: 10 }}>

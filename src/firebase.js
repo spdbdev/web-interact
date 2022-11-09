@@ -148,8 +148,14 @@ export const addCampaign = async (user) => {
   let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
   let newCampaignId = `${user.name}_${campaignCounter}`;
 
+  let updatedUserData =
+    user.campaigns
+      ?
+      { campaigns: [...user.campaigns, { campaignId: newCampaignId, campaignStatus: "draft" }] }
+      :
+      { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] }
   await setDoc(doc(db, "campaigns", newCampaignId), DUMMY_CAMPAIGN);
-  await updateDoc(doc(db, "users", user.id), { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] });
+  await updateDoc(doc(db, "users", user.id), updatedUserData);
   return newCampaignId;
 }
 

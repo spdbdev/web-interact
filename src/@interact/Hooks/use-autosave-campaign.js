@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 
 import { db } from "@jumbo/services/auth/firebase/firebase";
@@ -7,8 +7,10 @@ import moment from "moment";
 
 const DEBOUNCE_SAVE_DELAY_MS = 1000;
 
-export default function useAutosaveCampaign(campaignData) {
+export default function useAutosaveCampaign
+  (campaignData) {
   // This UI state mirrors what's in the database.
+  const campaignIdRef = useRef(campaignData)
   const [data, setData] = useState(campaignData);
   const [isAutosaving, setIsAutosaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState(moment());
@@ -20,7 +22,8 @@ export default function useAutosaveCampaign(campaignData) {
   const saveData = useCallback(async (newData) => {
     setIsAutosaving(true);
     setAutosaveError(false);
-    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    if (!campaignIdRef.current) return;
+    const docRef = await doc(db, "campaigns", campaignIdRef.current); //this needs to be passed in programatically
 
     updateDoc(docRef, newData)
       .then(() => {

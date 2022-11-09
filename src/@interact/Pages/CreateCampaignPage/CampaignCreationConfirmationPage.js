@@ -20,7 +20,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { createCampaignURL, functions } from "../../../firebase.js";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InteractionIcon from "../../Images/interaction-icon.png";
 import InteractButton from "@interact/Components/Button/InteractButton.js";
 import Span from "@jumbo/shared/Span/Span.js";
@@ -31,13 +31,14 @@ export default function CampaignCreationConfirmationPage() {
   const [campaignData, setCampaignData] = useState(null);
   const [campaignImage, setCampaignImage] = useState(null);
   const { user } = useCurrentUser();
+  const { campaignId } = useParams();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const getCampaign = async () => {
       let fetchedData = (
-        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+        await getDoc(doc(db, "campaigns", campaignId))
       ).data();
       setCampaignData(fetchedData);
 
@@ -144,7 +145,7 @@ export default function CampaignCreationConfirmationPage() {
             </Typography>
             <Stack direction="row" alignItems="center" spacing={4}>
               <InteractFlashyButton
-                onClick={() => navigate(createCampaignURL(user.campaigns[0]))}
+                onClick={() => navigate(`/c/${(campaignData?.customURL !== "custom-campaign" && campaignData?.customURL) ?? campaignId}`)}
               >
                 Go to campaign
               </InteractFlashyButton>
