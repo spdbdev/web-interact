@@ -15,6 +15,7 @@ export default function PaymentTab() {
       // This is the cleanup function
     }
   },[]);
+  //bruh
   // const handleLinkStripeClick = async (event)=> {
   //   event.preventDefault();
   //   // const formData = new FormData();
