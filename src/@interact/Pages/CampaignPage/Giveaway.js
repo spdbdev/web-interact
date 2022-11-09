@@ -7,7 +7,7 @@ import InteractButton from "../../Components/Button/InteractButton";
 import InfoTooltip from "../../Components/InfoTooltip";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { db, auth } from '../../../firebase';
-import { doc, setDoc, serverTimestamp, getDoc, query, collection, where, getDocs, getCountFromServer } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc, query, collection, where, getDocs, getCountFromServer, increment } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -141,9 +141,6 @@ export default function Giveaway({
 		}
 	}
 
-
-
-
 	if(logged_user_stripe_customer_id){
 		payment_method();
 	}
@@ -162,7 +159,7 @@ export default function Giveaway({
         return () => clearInterval(interval);
     }, [stripeError]);
 
-    var vipEntryPrice = campaignData?.giveawayVIPEntryCost ? campaignData.giveawayVIPEntryCost : 0;
+    var vipEntryPrice = campaignData.giveawayVIPEntryCost ?? 0;
     var freeEntryPrice = "0";
     //console.log(userData);
 
@@ -174,6 +171,16 @@ export default function Giveaway({
 		console.log('Giveaway count: ', counter);
 
 		setDoc(doc(db, "campaigns", campaignId), {numGiveawayEntries:counter}, { merge: true });
+
+
+		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
+		{
+			setDoc(
+				doc(db, "contributionAndGiveawayLossHistory", campaignData.person.id, 'users', user.uid), 
+				{contributionTotal: increment(data.price)}, 
+				{ merge: true }
+			);
+		}
     }
 
     const saveDataInStripeCustomer = (stripe_customer_data) => {

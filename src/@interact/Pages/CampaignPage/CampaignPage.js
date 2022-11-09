@@ -102,7 +102,7 @@ function CampaignPage(userData) {
 
 	const getUserLostHistory = async (creator_id, user_id) => 
 	{
-		const campaignHistoryUsers = await getDoc(doc(db, 'giveAwayLossHistory', creator_id, 'users', user_id));
+		const campaignHistoryUsers = await getDoc(doc(db, 'contributionAndGiveawayLossHistory', creator_id, 'users', user_id));
 		if (doc.exists) {
 			const {numOfLoss} = campaignHistoryUsers.data();
 			return parseInt(numOfLoss);

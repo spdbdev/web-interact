@@ -103,7 +103,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 				doc.price = Number(doc.price);
 				
 				let previousLoss = 0;
-				let docSnap = await db.collection("giveAwayLossHistory").doc(creator_id).collection('users').doc(document.id).get();
+				let docSnap = await db.collection("contributionAndGiveawayLossHistory").doc(creator_id).collection('users').doc(document.id).get();
 				if (docSnap.data()) {
 					let previousLossObj = docSnap.data();
 					previousLoss = Number(previousLossObj.numOfLoss);
@@ -161,7 +161,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 		if(result === 1) var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayWinners");
 		else var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayLosers");
 
-		var loss_ref = db.collection("giveAwayLossHistory").doc(creator_id).collection('users');
+		var loss_ref = db.collection("contributionAndGiveawayLossHistory").doc(creator_id).collection('users');
 		
 		data.forEach(document => {
 
@@ -184,9 +184,8 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 			if(result === 0) {
 				loss_ref.doc(document.id).set({
-					"user_id":document.id,
 					"numOfLoss": document.previousLoss + 1
-				})
+				}, { merge: true })
 				.then((docRef) => {
 					//console.log("Document successfully updated!", docRef.id);
 				}).catch((error) => {
