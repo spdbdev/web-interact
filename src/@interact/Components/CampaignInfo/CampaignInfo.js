@@ -4,6 +4,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import {Accordion,  AccordionSummary, AccordionDetails} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // import TableComponent from "../TableComponent/TableComponent";
 // import Faq from "../Faq/Faq";
 // import Comments from "../Comments/Comments";
@@ -36,49 +38,33 @@ function CampaignInfo({ campaignData, comments, supporters, campaignId }) {
     setValue(newValue);
   };
 
+
   return (
     <div className="InfoContainer">
-      <Box sx={{ borderBottom: 1, borderColor: "divider", color: "#782eee" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          textColor="inherit"
-          indicatorColor="primary.main"
-        >
-          <Tab label="Campaign Info" color="inherit" />
-          <Tab label="Comments" />
-          <Tab label="Supporters" />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0}>
-        <div>
-          {campaignData?.info?.description}
-          {/* <ul>
-                  <li>
-                    Voice chat via Discord or Zoom meeting; you get to appear on stream! 
-                  </li>
-                  <li>
-                    30 minute interactions allow us to play a full game of Smite
-                  </li>
-                  <li>
-                      If goal is reached I'll make a special crit madness video for yall {'&'} blow you a kiss. If the goal isn't reached we'll still personally interact if you won an interaction, just no kisses :{'('}
-                  </li>
-              </ul>
+      <Accordion style={{backgroundColor:"transparent"}} defaultExpanded={true}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
+          Campaign Info
+        </AccordionSummary>
+        <AccordionDetails>{campaignData?.info?.description}</AccordionDetails>
+      </Accordion>
 
-              Hi squad fam! I'm Pav, your favorite french Smite streamer. I'd love to connect and learn more about you (tell me your life story) while we own some baguette-hating scrubs in Smite or play a 1v1 (hehe, I won't lose). The money raised from this campaign will support my stream, and allow me to keep making you guys laugh everyday.
-              <br /><br />
-              Beware that I have no obligation to carry out these interactions if a fan is rude {'&'} can ban a fan at any time if there is, what I deem, inappropriate behavior (e.g. racism, homophobia, sexism). No place for hate
-                
-                   */}
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {/* <Comments comments={comments} campaignId={campaignId}/> */}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <Supporters supporters={supporters} campaignId={campaignId} />
-      </TabPanel>
+      <Accordion style={{backgroundColor:"transparent"}}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
+          Comments
+        </AccordionSummary>
+        <AccordionDetails>
+          {/* <Comments comments={comments} campaignId={campaignId}/> */}
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion style={{backgroundColor:"transparent"}}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
+          Supporters
+        </AccordionSummary>
+        <AccordionDetails>
+          <Supporters supporters={supporters} campaignId={campaignId} />
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 }

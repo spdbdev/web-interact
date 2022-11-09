@@ -14,8 +14,8 @@ function Faq({ campaignData }) {
   return (
     <Box>
       <Typography variant="h2">FAQs</Typography>
-      {FAQs?.map((faq) => (
-        <FaqElem faq={faq} />
+      {FAQs?.map((faq,i) => (
+        <FaqElem key={i} faq={faq} />
       ))}
     </Box>
   );

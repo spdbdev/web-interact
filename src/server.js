@@ -14,7 +14,7 @@ app.use(express.static('public'));
 
 const YOUR_DOMAIN = 'http://localhost:3000';
 
-app.post('/create-raffle-session', async (req, res) => {
+app.post('/create-giveaway-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -23,7 +23,7 @@ app.post('/create-raffle-session', async (req, res) => {
       unit_amount: 150,
       tax_behavior: "exclusive",
       product_data: {
-        name: 'Raffle Ticket'
+        name: 'Giveaway Ticket'
       },
     },
     quantity: 1,

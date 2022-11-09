@@ -5,8 +5,8 @@ import Sidebar from "../shared/sidebars/Sidebar";
 import Footer from "../shared/footers/Footer";
 import useJumboLayout from "@jumbo/hooks/useJumboLayout";
 import layoutConfig from "./layoutConfig";
-import JumboCustomizer from "../../shared/JumboCustomizer/JumboCustomizer";
-import JumboCustomizerButton from "../../shared/JumboCustomizer/JumboCustomizerButton";
+// import JumboCustomizer from "../../shared/JumboCustomizer/JumboCustomizer";
+// import JumboCustomizerButton from "../../shared/JumboCustomizer/JumboCustomizerButton";
 import {useJumboHeaderTheme, useJumboLayoutSidebar, useJumboTheme} from "@jumbo/hooks";
 import {SIDEBAR_STYLES} from "@jumbo/utils/constants";
 import {headerTheme as theme4} from "../../themes/header/theme4";
@@ -48,8 +48,8 @@ const VerticalDefault = ({children}) => {
             }}
         >
             {children}
-            <JumboCustomizer/>
-            <JumboCustomizerButton/>
+            {/* <JumboCustomizer/>
+            <JumboCustomizerButton/> */}
         </JumboLayout>
     );
 };
