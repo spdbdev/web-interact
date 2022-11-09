@@ -204,7 +204,7 @@ function RankComponent({ data }) {
       />
       <Stack direction="column">
         <Typography variant="h4">
-          <Link href="/interact/user">{data?.username}</Link>
+          <Link href={`/u/${data?.username}`}>{data?.username}</Link>
         </Typography>
         <Typography variant="body">${data?.bidPrice}</Typography>
         <Typography variant="caption" color="text.hint">

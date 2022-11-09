@@ -43,11 +43,9 @@ function FollowedCampaigns() {
       </div>
       <div style={{ margin: 20 }}>
         <InteractButton
-          onClick={() =>
-            initCampaignDoc().then((result) => {
-              navigate(`/interact/createCampaign/${result}`); // creates a new doc with initaliized values, gets the id as a result and passes that into route params
-            })
-          }
+          onClick={() => {
+              navigate(`/a/create-campaign/`); // creates a new doc with initaliized values, gets the id as a result and passes that into route params
+          }}
           style={{ paddingLeft: 200 }}
         >
           + Create New Campaign

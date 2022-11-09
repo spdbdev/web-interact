@@ -12,6 +12,7 @@ import InfoTooltip from "@interact/Components/InfoTooltip";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { isValidHttpUrl } from "@interact/Components/utils";
+import { checkCustomURLAgainstOtherCampaigns } from "../../../../firebase";
 
 export default function PromotionTab({
   data,
@@ -30,14 +31,41 @@ export default function PromotionTab({
   const [URL, setURL] = useState(data?.customURL);
   const [savedURL, setSavedURL] = useState(data?.savedCustomURL);
   const [shouldSaveURL, setShouldSaveURL] = useState(false);
-
+  const [formValidationConditions, setFormValidationConditions] =
+    useState(false);
   const isTabValidated = useFormValidation({
     lastCompletedTabIndex: data?.lastCompletedTabIndex,
     isLastTab: true,
     selectedTabIndex,
     setData,
-    formValidationConditions: true,
+    formValidationConditions,
   });
+  const [errors, setErrors] = useState(false);
+
+  const [customURLDescription, setCustomURLDescription] = useState("3 to 30 characters. Letters, numbers, and dashes only.")
+
+  useEffect(() => {
+    if (data.customURL === URL) {
+      setErrors(false);
+      setCustomURLDescription("3 to 30 characters. Letters, numbers, and dashes only.");
+      setFormValidationConditions(true);
+      return
+    }
+    checkCustomURLAgainstOtherCampaigns(URL)
+      .then((campaign) => {
+        if (campaign) {
+          setCustomURLDescription("URL is already taken. Have another go!");
+          setErrors(true);
+        } else {
+          setErrors(false);
+          setCustomURLDescription("3 to 30 characters. Letters, numbers, and dashes only.");
+        }
+        setFormValidationConditions(
+          campaign === undefined
+        );
+      })
+  }, [URL]);
+
 
   function handleURLChange(e) {
     const nextValue = e.target.value;
@@ -90,9 +118,9 @@ export default function PromotionTab({
             <TextField
               variant="outlined"
               inputProps={{ maxLength: 30 }}
-              helperText="3 to 30 characters. Letters, numbers, and dashes only."
+              helperText={customURLDescription}
               value={URL}
-              error={!URL.match(/^[\w-]+$/) || URL.length < 3}
+              error={!URL.match(/^[\w-]+$/) || URL.length < 3 || errors}
               onChange={(e) => handleURLChange(e)}
             />
           </Stack>

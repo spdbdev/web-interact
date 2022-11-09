@@ -235,7 +235,7 @@ export default function WhatIsInteractPage() {
         </Stack>
         <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
           <InteractFlashyButton
-            onClick={() => navigate("/interact/createcampaign")}
+            onClick={() => navigate("/a/create-campaign")}
           >
             Next →
           </InteractFlashyButton>

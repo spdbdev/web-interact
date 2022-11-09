@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -24,11 +24,14 @@ import { Close, ExpandLess } from "@mui/icons-material";
 import Span from "@jumbo/shared/Span";
 import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import Loading from "@interact/Components/Loading/Loading";
 import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import InteractMethodTab from "./Tabs/InteractMethodTab";
+import { fetchCampaign, addCampaign } from "../../../firebase";
+import useCurrentUser from "@interact/Hooks/use-current-user";
+import { initCampaignDoc } from "./utils";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -310,7 +313,7 @@ const FAQText = {
 
 function CreateCampaignPage() {
   // initialize lastCompleteTabIndex to -1 in firestore
-  const { docId } = useParams();
+  const { campaignId } = useParams();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [
     hasInitialTabBeenSetFromDatabase,
@@ -319,6 +322,8 @@ function CreateCampaignPage() {
   const [FAQSideBarText, setFAQSideBarText] = useState("");
   const [campaignData, setCampaignData] = useState(null);
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
+  const { user } = useCurrentUser();
+  const campaignAddedRef = useRef(false);
 
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 
@@ -338,14 +343,34 @@ function CreateCampaignPage() {
   useEffect(() => {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
-    const getCampaign = async () => {
-      let fetchedData = (await getDoc(doc(db, "campaigns", docId))).data();
+    const getCampaign = async (campaignId) => {
+      let fetchedData = await fetchCampaign(campaignId);
 
-      setCampaignData(fetchedData);
+      if (fetchedData) {
+        setCampaignData(fetchedData);
+      }
     };
 
-    getCampaign();
-  }, [data, lastSavedAt]);
+    const handleAddCampaign = async () => {
+      let newCampaignId = await addCampaign(user);
+      navigate(`/d/${newCampaignId}`)
+    }
+
+    if (user) {
+      if (campaignAddedRef.current === true) {
+        return
+      } else if (data && !(data.lastCompletedTabIndex && Object.keys(data).length === 1) && !campaignId) {
+        campaignAddedRef.current = true;
+        console.log("creating a new campaign")
+        handleAddCampaign();
+      } else if (!user.campaigns || user.campaigns.length === 0) {
+        getCampaign("campaign-creation-test");
+      } else {
+        getCampaign(user.campaigns[0].campaignId);
+      }
+    }
+
+  }, [data, lastSavedAt, user]);
 
   useEffect(() => {
     setFAQSideBarText(FAQText[selectedTabIndex]);
@@ -434,7 +459,7 @@ function CreateCampaignPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/interact/what-is-interact")}
+              onClick={() => navigate("/a/what-is-interact")}
             >
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
@@ -469,7 +494,7 @@ function CreateCampaignPage() {
           <IconButton
             disableRipple
             disableFocusRipple
-            onClick={() => navigate("/interact/user")}
+            onClick={() => navigate(`/u/${user.name}`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>

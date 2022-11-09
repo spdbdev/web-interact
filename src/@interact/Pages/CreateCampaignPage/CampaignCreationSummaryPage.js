@@ -22,7 +22,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FAQAccordian from "./FAQAccordian";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../../firebase";
+import { functions, publishCampaign } from "../../../firebase";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -41,6 +42,7 @@ export default function CampaignCreationSummaryPage() {
   const [campaignData, setCampaignData] = useState(null);
   const [submitClicked, setSubmitClicked] = useState(false);
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
 
   useEffect(() => {
     const getCampaign = async () => {
@@ -124,9 +126,9 @@ export default function CampaignCreationSummaryPage() {
 
     // save as campaignStatus: "scheduled"
 
-    updateDoc(docRef, { campaignStatus: "scheduled" })
+    publishCampaign("campaign-creation-test", user.id)
       .then(() => {
-        navigate("/interact/campaign-creation-confirmation");
+        navigate("/a/campaign-creation-confirmation");
         Toast.fire({
           icon: "success",
           title: "Campaign successfully created!",
@@ -171,7 +173,7 @@ export default function CampaignCreationSummaryPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/interact/createCampaign")}
+              onClick={() => navigate("/a/create-campaign")}
             >
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>
