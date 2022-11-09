@@ -19,13 +19,9 @@ function SignInPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // if (user) navigate(`/u/${user.name}`);
+    if (user) navigate(`/u/${user.name}`);
   }, [user]);
 
-
-  if (user) {
-    return <Loading />;
-  }
 
   return (
     <div className='SignUpPage'>

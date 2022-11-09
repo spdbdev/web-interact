@@ -31,6 +31,7 @@ import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import InteractMethodTab from "./Tabs/InteractMethodTab";
 import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import { initCampaignDoc } from "./utils";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -312,7 +313,7 @@ const FAQText = {
 
 function CreateCampaignPage() {
   // initialize lastCompleteTabIndex to -1 in firestore
-  const { docId } = useParams();
+  const { campaignId } = useParams();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [
     hasInitialTabBeenSetFromDatabase,
@@ -343,10 +344,7 @@ function CreateCampaignPage() {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
     const getCampaign = async (campaignId) => {
-      let fetchedData = (
-        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
-      ).data();
-      // let fetchedData = await fetchCampaign(campaignId);
+      let fetchedData = await fetchCampaign(campaignId);
 
       if (fetchedData) {
         setCampaignData(fetchedData);
@@ -354,18 +352,19 @@ function CreateCampaignPage() {
     };
 
     const handleAddCampaign = async () => {
-      // To be changed to generated campaign creation once the deeper functionality works
-      // let newCampaign = await getDoc(db, "campaigns", "campaign-creation-test");
-      let newCampaign = addCampaign(user)
-      await getCampaign(newCampaign.campaignId);
+      let newCampaignId = await addCampaign(user);
+      navigate(`/d/${newCampaignId}`)
     }
 
     if (user) {
       if (campaignAddedRef.current === true) {
         return
-      } else if (!user.campaigns || user.campaigns.length === 0) {
-        campaignAddedRef.current = true
+      } else if (data && !(data.lastCompletedTabIndex && Object.keys(data).length === 1) && !campaignId) {
+        campaignAddedRef.current = true;
+        console.log("creating a new campaign")
         handleAddCampaign();
+      } else if (!user.campaigns || user.campaigns.length === 0) {
+        getCampaign("campaign-creation-test");
       } else {
         getCampaign(user.campaigns[0].campaignId);
       }

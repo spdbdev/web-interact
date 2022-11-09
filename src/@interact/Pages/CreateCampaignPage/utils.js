@@ -2,7 +2,7 @@ const { db } = require("@jumbo/services/auth/firebase/firebase");
 const { addDoc, collection } = require("firebase/firestore");
 
 // this is where we set the init values for the campaign creation
-export async function initCampaignDoc() {
+export async function initCampaignDoc(user) {
   var docRef = {};
   try {
     docRef = await addDoc(collection(db, "campaigns"), {
@@ -55,6 +55,7 @@ export async function initCampaignDoc() {
       title: "I will eat 100 hotdogs at $3000.00",
       youtube: "linkdjfnskdjfnkjdsnf",
     });
+    
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);

@@ -28,6 +28,7 @@ import {
   addDoc,
   updateDoc
 } from "firebase/firestore";
+import { DUMMY_CAMPAIGN } from "./config";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -143,12 +144,13 @@ export async function fetchUserByUid(uid) {
 }
 
 export const addCampaign = async (user) => {
+  console.log(user)
   let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
   let newCampaignId = `${user.name}_${campaignCounter}`;
 
-  let newCampaign = (await setDoc(doc(db, "campaigns", newCampaignId), {}));
+  await setDoc(doc(db, "campaigns", newCampaignId), DUMMY_CAMPAIGN);
   await updateDoc(doc(db, "users", user.id), { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] });
-  return newCampaign;
+  return newCampaignId;
 }
 
 export async function fetchCampaign(campaignId) {

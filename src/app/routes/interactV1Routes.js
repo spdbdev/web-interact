@@ -49,21 +49,17 @@ const interactV1Routes = [
     path: "/c/",
     element: <CampaignPage />,
   },
-  {
-    path: "/d/",
-    element: <CampaignPage />,
-  },
+
   {
     path: "/d/:campaignId",
-    element: <CampaignPage />,
+    element: <Page component={CreateCampaignPage} layout="solo-page" />,
   },
   {
     path: "/interact/capture",
     element: <CaptureAuction />,
   },
-
   {
-    path: "/a/createCampaign/:docId",
+    path: "/a/create-campaign/",
     element: <Page component={CreateCampaignPage} layout="solo-page" />,
   },
 
