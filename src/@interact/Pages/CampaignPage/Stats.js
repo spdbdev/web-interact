@@ -99,7 +99,7 @@ export function GoalDisplay({ campaignData }) {
           variant="h1"
           sx={{ color: "primary.main", fontSize: 32, fontWeight: 500 }}
         >
-          ${campaignData?.currRaised}
+          ${campaignData?.campaignGoalTotal}
         </Typography>
         <Box
           sx={{
