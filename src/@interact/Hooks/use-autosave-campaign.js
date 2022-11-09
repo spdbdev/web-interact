@@ -4,6 +4,7 @@ import debounce from "lodash.debounce";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
+import { useParams } from "react-router-dom";
 
 const DEBOUNCE_SAVE_DELAY_MS = 1000;
 
@@ -13,14 +14,14 @@ export default function useAutosaveCampaign(campaignData) {
   const [isAutosaving, setIsAutosaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState(moment());
   const [autosaveError, setAutosaveError] = useState(false);
-
+  const { docId } = useParams();
   // This is the side effect we want to run on users' changes.
   // It is responsible for persisting the changes in the database.
   // In this example, we use localStorage for simplicity.
   const saveData = useCallback(async (newData) => {
     setIsAutosaving(true);
     setAutosaveError(false);
-    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    const docRef = await doc(db, "campaigns", docId);
 
     updateDoc(docRef, newData)
       .then(() => {
