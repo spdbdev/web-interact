@@ -81,20 +81,19 @@ export default function Giveaway({
       }
     });
   };
-  useEffect(()=>{
-    document.getElementById("giveawayCard").onmousemove = e => {
-      for(const card of document.getElementsByClassName("giveawayCard")) {
+  useEffect(() => {
+    document.getElementById("giveawayCard").onmousemove = (e) => {
+      for (const card of document.getElementsByClassName("giveawayCard")) {
         const rect = card.getBoundingClientRect(),
-       
-              x = e.clientX - rect.left,
-              y = e.clientY - rect.top;
-    
+          x = e.clientX - rect.left,
+          y = e.clientY - rect.top;
+
         card.style.setProperty("--mouse-x", `${x}px`);
         card.style.setProperty("--mouse-y", `${y}px`);
-      };
-    }
-  })
- 
+      }
+    };
+  });
+
   // these are dummy values and will be replaced with legit DB variables
   const chanceMultiplier = 1;
   const lossChanceMultiplier = 2; // this can be 2 or 4, corresponding to 1 or 2 past losses in a giveaway (for same creator)
@@ -102,7 +101,6 @@ export default function Giveaway({
     <JumboCardQuick
       title={"Giveaway"}
       sx={{
-        
         ml: 2,
         display: "flex",
         flexDirection: "column",
@@ -120,23 +118,25 @@ export default function Giveaway({
       className="giveawayCard"
     >
       <Box>
-      <br />
+        <br />
         <div>
-          <Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span> x 30
-          minute interactions
+          <Span sx={{ color: "primary.main", fontWeight: 600 }}>
+            {campaignData?.numGiveawayInteractions}
+          </Span>{" "}
+          x {campaignData?.interactionDurationTime} min interactions
         </div>
         <div>
-          <Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span>{" "}
+          <Span sx={{ color: "primary.main", fontWeight: 600 }}>
+            {campaignData?.numGiveawayInteractions}
+          </Span>{" "}
           winners will be randomly chosen from all entrants when campaign ends
         </div>
       </Box>
 
       <Box id="VIPGiveawaySection">
         <Typography variant="h5" color="text.secondary" mt={2}>
-          <span>VIP entry </span> 
-          <InfoTooltip 
-            title="Get a 25x increased chance of winning"
-          />
+          <span>VIP entry </span>
+          <InfoTooltip title="Get a 25x increased chance of winning" />
         </Typography>
 
         <span>
@@ -144,7 +144,7 @@ export default function Giveaway({
         </span>
         <Stack direction="row" spacing={1} alignItems="center">
           <span>Chance of winning: 2.5%</span>
-          <InfoTooltip 
+          <InfoTooltip
             title="You can ugrade to a VIP entry at any time before the 
           campaign ends. Each time a user loses, their next giveaway with the
           same creator will have DOUBLE the chances of winning, stacking twice, 
@@ -164,7 +164,9 @@ export default function Giveaway({
               border: "2px dashed rgba(120, 47, 238, 1)",
             }}
           >
-            <span className="Highlight">${campaignData?.rafflePrice}0</span>
+            <span className="Highlight">
+              ${campaignData?.giveawayVIPEntryCost}0
+            </span>
           </Box>
           {/* <form
           action="http://localhost:4242/create-raffle-session"

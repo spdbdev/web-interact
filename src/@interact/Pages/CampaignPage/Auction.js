@@ -2,7 +2,13 @@ import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
 import { getDateFromTimestamp } from "@interact/Components/utils";
 import {
-  Divider, FormControl, InputAdornment, InputLabel, OutlinedInput, Stack, Typography
+  Divider,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import InteractButton from "../../Components/Button/InteractButton";
@@ -16,19 +22,18 @@ export default function Auction({ bids, campaignData, bidAction }) {
   const [maxBidAmount, setMaxBidAmount] = useState(0);
   const [desiredRanking, setDesiredRanking] = useState(0);
 
-  useEffect(()=>{
-    document.getElementById("auctionCard").onmousemove = e => {
-      for(const card of document.getElementsByClassName("auctionCard")) {
+  useEffect(() => {
+    document.getElementById("auctionCard").onmousemove = (e) => {
+      for (const card of document.getElementsByClassName("auctionCard")) {
         const rect = card.getBoundingClientRect(),
-       
-              x = e.clientX - rect.left,
-              y = e.clientY - rect.top;
-    
+          x = e.clientX - rect.left,
+          y = e.clientY - rect.top;
+
         card.style.setProperty("--mouse-x", `${x}px`);
         card.style.setProperty("--mouse-y", `${y}px`);
-      };
-    }
-  })
+      }
+    };
+  });
   return (
     <JumboCardQuick
       title={"Auction"}
@@ -38,30 +43,34 @@ export default function Auction({ bids, campaignData, bidAction }) {
       className="auctionCard"
     >
       <Stack direction="column">
-          <Typography>
-            Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x
-            60 min interactions
-          </Typography>
+        <Typography>
+          Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x{" "}
+          {campaignData?.interactionTopDurationTime} min interactions
+        </Typography>
 
-          <Typography>
-            <Span sx={{ color: "primary.main", fontWeight: 600 }}>17</Span> x 30
-            min interactions 
-          </Typography>
-          
-          <Typography>
-            In total, the top <Span sx={{ color: "primary.main", fontWeight: 600 }}>20</Span> bidders at the end of the campaign
-          </Typography>
-          <Typography>
-            (
-              {getDateFromTimestamp({
-              timestamp: campaignData?.endDate?.seconds,
-              format: "h:mm a [EST on] dddd, MMMM Do",
-              })}
-            ) win interactions
-          </Typography>
-        </Stack>
+        <Typography>
+          <Span sx={{ color: "primary.main", fontWeight: 600 }}>
+            {campaignData?.numAuctionInteractions - 3}
+          </Span>{" "}
+          x {campaignData?.interactionDurationTime} min interactions
+        </Typography>
 
-        <br />
+        <Typography>
+          In total, the top{" "}
+          <Span sx={{ color: "primary.main", fontWeight: 600 }}>20</Span>{" "}
+          bidders at the end of the campaign
+        </Typography>
+        <Typography>
+          (
+          {getDateFromTimestamp({
+            timestamp: campaignData?.endDateTime?.seconds,
+            format: "h:mm a [EST on] dddd, MMMM Do",
+          })}
+          ) win interactions
+        </Typography>
+      </Stack>
+
+      <br />
       <Stack id="autoBidSection" direction="column" spacing={2}>
         <Stack direction="row" alignItems="center" spacing={1} mb={1}>
           <Typography variant="h5" color="text.secondary" mb={0}>
@@ -125,9 +134,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
         <Stack direction="column" spacing={0.5}>
           <Stack direction="row" alignItems="center" spacing={1}>
             <Typography>Enter bid price</Typography>
-            <InfoTooltip
-              title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking"
-            />
+            <InfoTooltip title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking" />
           </Stack>
           <OutlinedInput
             type="number"

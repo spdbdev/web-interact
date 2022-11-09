@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { useNavigate } from "react-router-dom";
 import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
+import { initCampaignDoc } from "../CreateCampaignPage/utils";
 
 function FollowedCampaigns() {
   const currentCampaigns = [1, 2, 3];
@@ -42,7 +43,11 @@ function FollowedCampaigns() {
       </div>
       <div style={{ margin: 20 }}>
         <InteractButton
-          onClick={() => navigate("/interact/createcampaign")}
+          onClick={() =>
+            initCampaignDoc().then((result) => {
+              navigate(`/interact/createCampaign/${result}`); // creates a new doc with initaliized values, gets the id as a result and passes that into route params
+            })
+          }
           style={{ paddingLeft: 200 }}
         >
           + Create New Campaign

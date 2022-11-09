@@ -43,7 +43,7 @@ const interactV1Routes = [
   },
 
   {
-    path: "/interact/createCampaign",
+    path: "/interact/createCampaign/:docId",
     element: <Page component={CreateCampaignPage} layout="solo-page" />,
   },
 

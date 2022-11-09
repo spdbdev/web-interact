@@ -207,9 +207,7 @@ export default function InteractMethodTab({
           }}
           variant={isGoogleMeetLinked ? "contained" : "outlined"}
         >
-          {isGoogleMeetLinked
-            ? "Linked to Google Meet ✓"
-            : "Link to Google Meet"}
+          {isGoogleMeetLinked ? "Use Google Meet ✓" : "Use Google Meet"}
         </InteractButton>
       </CreateCampaignItemWrapper>
 

@@ -19,7 +19,7 @@ import FAQTab from "./Tabs/FAQTab";
 import PaymentTab from "./Tabs/PaymentTab";
 import PromotionTab from "./Tabs/PromotionTab";
 import SideBar from "./SideBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Close, ExpandLess } from "@mui/icons-material";
 import Span from "@jumbo/shared/Span";
 import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
@@ -44,21 +44,23 @@ function FAQSidebarWrapper({ title, children }) {
 const FAQText = {
   0: (
     <FAQSidebarWrapper title="Basics">
-      Be true to yourself; fans want to talk to & create a symbiotic 2-way relationship. 
-      Have meaningful conversations & learn about your fans who have grown with you not
-      only as a creator but as a person.
+      Be true to yourself; fans want to talk to & create a symbiotic 2-way
+      relationship. Have meaningful conversations & learn about your fans who
+      have grown with you not only as a creator but as a person.
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How are interactions carried out?
       </Span>{" "}
-      Via Discord (fans link their Discord accounts; when it’s their turn to interact, fans join the creator’s
-       server and are given a special role automatically) or Google Meet (unique Google Meet link).
-      You may also stream it live and/or record it (users have agreed to photo/video release in the terms & conditions).
-      If a fan wants to join the content creator in a game but they are in different regions, either the
-       fan or the content creator can create an account in a different region. <br />
+      Via Discord (fans link their Discord accounts; when it’s their turn to
+      interact, fans join the creator’s server and are given a special role
+      automatically) or Google Meet (unique Google Meet link). You may also
+      stream it live and/or record it (users have agreed to photo/video release
+      in the terms & conditions). If a fan wants to join the content creator in
+      a game but they are in different regions, either the fan or the content
+      creator can create an account in a different region. <br />
       <br />
-          </FAQSidebarWrapper>
+    </FAQSidebarWrapper>
   ),
   1: (
     <FAQSidebarWrapper title="Scheduling">
@@ -77,30 +79,30 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How does scheduling work?
       </Span>{" "}
-      You can sync with your Google, Outlook or iCloud calendar, where your scheduled 
-      events will show up as unavailable timeslots automatically on your creator 
-      schedule tab (in your Interact profile page); after you lock in your 
-      availability for a week, your interactions with fans are scheduled and can be exported to your calendar. 
-      Fans can select their availability from Mon-Sun in general as long as they
-      have an account, even before they've acquired any interactions (a minimum
-      of 5 hours of the week have to be selected). Fans also select a preference
-      for time of day (in their timezone), morning (6am to 10:30 am), noon
-      (10:30 am to 1:30 pm), afternoon (1:30pm to 6pm), evening (6pm to
-      10:30pm), midnight (10:30pm to 1:30am), gremlin time (1:30 am to 6am). The
-      first week after the campaign (starting Monday) is when interactions will
-      start to be booked. When the campaign ends, creators are shown the
-      availability of all of their fans continuously (shown X number of fans
-      that are available for each time slot), and release a specific schedule
-      week-by-week on Friday 11:59 pm at the latest (except for the first week
-      where creators have until Sunday 11:59pm to lock in a schedule for the
-      next week starting Monday), with the ability to choose how many
-      interactions to do that week. We then allocate the best fitting fans as
-      soon as the creator locks in their schedule for each week. Fans & creators
-      can reschedule. Rescheduled fans will be added back into the matching
-      algorithm pool & matched accordingly once again. By the last week, fans
-      that creators are not able to meet are refunded. This means that if a fan
-      or creator reschedules an interaction in the last week, the fan is
-      refunded.
+      You can sync with your Google, Outlook or iCloud calendar, where your
+      scheduled events will show up as unavailable timeslots automatically on
+      your creator schedule tab (in your Interact profile page); after you lock
+      in your availability for a week, your interactions with fans are scheduled
+      and can be exported to your calendar. Fans can select their availability
+      from Mon-Sun in general as long as they have an account, even before
+      they've acquired any interactions (a minimum of 5 hours of the week have
+      to be selected). Fans also select a preference for time of day (in their
+      timezone), morning (6am to 10:30 am), noon (10:30 am to 1:30 pm),
+      afternoon (1:30pm to 6pm), evening (6pm to 10:30pm), midnight (10:30pm to
+      1:30am), gremlin time (1:30 am to 6am). The first week after the campaign
+      (starting Monday) is when interactions will start to be booked. When the
+      campaign ends, creators are shown the availability of all of their fans
+      continuously (shown X number of fans that are available for each time
+      slot), and release a specific schedule week-by-week on Friday 11:59 pm at
+      the latest (except for the first week where creators have until Sunday
+      11:59pm to lock in a schedule for the next week starting Monday), with the
+      ability to choose how many interactions to do that week. We then allocate
+      the best fitting fans as soon as the creator locks in their schedule for
+      each week. Fans & creators can reschedule. Rescheduled fans will be added
+      back into the matching algorithm pool & matched accordingly once again. By
+      the last week, fans that creators are not able to meet are refunded. This
+      means that if a fan or creator reschedules an interaction in the last
+      week, the fan is refunded.
     </FAQSidebarWrapper>
   ),
   2: (
@@ -117,13 +119,14 @@ const FAQText = {
       will save up birthday money / holiday wishes for an interaction with you.
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
-      <br />
+        <br />
         How does the giveaway work?
       </Span>{" "}
       Anyone can join the giveaway with a free entry or support a creator with a
       few dollars for a VIP entry that increases your chances of winning by 25x.
       Users can upgrade from the free to VIP entry (only 1 entry is allowed per
-      user).<br />
+      user).
+      <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How does the auction & leaderboard work?
@@ -135,14 +138,14 @@ const FAQText = {
       compared to a normal interaction.
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
-      <br />
-      Additional giveaway info
+        <br />
+        Additional giveaway info
       </Span>{" "}
-      Winners are drawn at the end of the campaign. Each time a user
-      loses, their next giveaway with the same creator will have DOUBLE the
-      chances of winning, stacking twice, 4x loss multiplier (meaning up to a
-      total 4x chance for a free entry or a total 100x chance if it is a VIP
-      entry; this only resets on winning an interaction in the giveaway). <br />
+      Winners are drawn at the end of the campaign. Each time a user loses,
+      their next giveaway with the same creator will have DOUBLE the chances of
+      winning, stacking twice, 4x loss multiplier (meaning up to a total 4x
+      chance for a free entry or a total 100x chance if it is a VIP entry; this
+      only resets on winning an interaction in the giveaway). <br />
     </FAQSidebarWrapper>
   ),
   3: (
@@ -181,12 +184,15 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         What activities can I do with a fan in an interaction?{" "}
       </Span>{" "}
-      Playing games (from competitive games like Valorant & Chess to…. GeoGuessr or mini putt in Discord activities).
-      Discussing topics fans are passionate about, commentating, and learning from each other (fans can screen share: 
-      they might show off their own creations, favorite clips of your content and ask for advice in your field of 
-      expertise… or just anime. You could also spice it up with a Try Not to Laugh challenge, watching funny YouTube videos via Discord activities).
+      Playing games (from competitive games like Valorant & Chess to…. GeoGuessr
+      or mini putt in Discord activities). Discussing topics fans are passionate
+      about, commentating, and learning from each other (fans can screen share:
+      they might show off their own creations, favorite clips of your content
+      and ask for advice in your field of expertise… or just anime. You could
+      also spice it up with a Try Not to Laugh challenge, watching funny YouTube
+      videos via Discord activities).
       <Span sx={{ textDecoration: "underline", display: "block" }}>
-      <br />
+        <br />
         Why do fans want personal interactions?
       </Span>{" "}
       As social platforms are so one-sided, fans give you attention weekly or
@@ -210,7 +216,6 @@ const FAQText = {
       popularity (Mr. Beast, fans who don’t make money are still ecstatic).
       Creating fresh content is one of the largest challenges we face, why not
       add some spice?
-      
     </FAQSidebarWrapper>
   ),
   5: (
@@ -230,10 +235,12 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         "How are interactions carried out?"
       </Span>{" "}
-      Here, you can tell your fans how they'll be able to interact with you
-      via Discord (fans link their Discord accounts; when it’s their turn to interact, fans join the creator’s server and are given a special role automatically) or Google Meet (unique Google Meet link).
-      Are you going to stream the interaction live and/or record it (If you
-      wish to play a game, what is the game? Which region/server?)
+      Here, you can tell your fans how they'll be able to interact with you via
+      Discord (fans link their Discord accounts; when it’s their turn to
+      interact, fans join the creator’s server and are given a special role
+      automatically) or Google Meet (unique Google Meet link). Are you going to
+      stream the interaction live and/or record it (If you wish to play a game,
+      what is the game? Which region/server?)
     </FAQSidebarWrapper>
   ),
   6: (
@@ -262,9 +269,10 @@ const FAQText = {
   ),
   7: (
     <FAQSidebarWrapper title="Promotion">
-      While promoting the campaign, the goal is to drive hype & FOMO: it’s a fan’s only
-      chance for a few months usually. If they miss out they’ll sit in envy of
-      other lucky fans who get to interact with a content creator they love.
+      While promoting the campaign, the goal is to drive hype & FOMO: it’s a
+      fan’s only chance for a few months usually. If they miss out they’ll sit
+      in envy of other lucky fans who get to interact with a content creator
+      they love.
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
@@ -302,6 +310,7 @@ const FAQText = {
 
 function CreateCampaignPage() {
   // initialize lastCompleteTabIndex to -1 in firestore
+  const { docId } = useParams();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [
     hasInitialTabBeenSetFromDatabase,
@@ -330,9 +339,7 @@ function CreateCampaignPage() {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
     const getCampaign = async () => {
-      let fetchedData = (
-        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
-      ).data();
+      let fetchedData = (await getDoc(doc(db, "campaigns", docId))).data();
 
       setCampaignData(fetchedData);
     };

@@ -496,7 +496,7 @@ function CampaignPage(userData) {
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const campaignId = "test12345";
-  let userId = 'user123456'; // dummy user id
+  let userId = "user123456"; // dummy user id
   let user = {
     id: "user1234",
     photoUrl:
@@ -518,7 +518,9 @@ function CampaignPage(userData) {
     return arr;
   };
   const getCampaignData = async () => {
-    let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
+    let _campaignData = (
+      await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+    ).data(); // SET AS TEST DOC FOR NOW, NEED TO GET THIS WIRED UP TO USE CAMPAIGN ID FROM ROUTE PARAM
     // console.log('_campaignData', _campaignData)
     setCampaignData(_campaignData);
 
@@ -542,22 +544,6 @@ function CampaignPage(userData) {
 
   useEffect(() => {
     getCampaignData();
-    // DUMMY_RAFFLES.forEach((x, i)=>{
-    //   let raffle = {...DUMMY_RAFFLES[i]};
-    //   raffle.time = serverTimestamp();
-    //   // console.log(raffle)
-    //   addDoc(collection(db, "campaigns", "test12345", 'raffles'), raffle);
-
-    // })
-    // setDoc(doc(db, "campaigns", "test12345", 'raffles', 'dummySupporterId3'), DUMMY_SUPPORTERS[1]);
-    // // console.log('doc shouldve been setted')
-
-    // setCampaignData(DUMMY_DATA);
-
-    // setBids(DUMMY_BIDS);
-
-    // setComments(DUMMY_COMMENT_DATA)
-    // setSupporters(DUMMY_SUPPORTERS)
   }, []);
 
   const bid = async (amount, clientemail, auto = false) => {
@@ -567,7 +553,7 @@ function CampaignPage(userData) {
       person: user,
       price: amount,
       auto: auto,
-      email:clientemail,
+      email: clientemail,
       time: serverTimestamp(),
     });
     getCampaignData();
@@ -626,7 +612,7 @@ function CampaignPage(userData) {
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
         <Header campaignData={campaignData} />
-        <p>{localStorage.getItem('data')}</p>
+        <p>{localStorage.getItem("data")}</p>
         <Box
           sx={{
             position: "relative",
@@ -649,7 +635,7 @@ function CampaignPage(userData) {
           >
             <iframe
               style={{ flex: 1, position: "absolute" }}
-              src={campaignData?.videoUrl}
+              src={campaignData?.campaignVideoLink}
               title="YouTube video player"
               width="100%"
               height="100%"

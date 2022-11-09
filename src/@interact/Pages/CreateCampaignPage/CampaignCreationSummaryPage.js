@@ -39,6 +39,7 @@ export function CampaignSummaryItem({ label, value }) {
 
 export default function CampaignCreationSummaryPage() {
   const [campaignData, setCampaignData] = useState(null);
+  const [submitClicked, setSubmitClicked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,14 +113,13 @@ export default function CampaignCreationSummaryPage() {
       currency: campaignData?.currency,
     });
 
-    console.log(conversionResponse?.data);
-
     updateDoc(docRef, { currencyExchangeRate: conversionResponse?.data ?? 1 })
       .then(() => {
         console.log("success");
       })
       .catch((error) => {
         console.log(error);
+        setSubmitClicked(false);
       }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
 
     // save as campaignStatus: "scheduled"
@@ -138,6 +138,7 @@ export default function CampaignCreationSummaryPage() {
           icon: "error",
           title: "Failed to link server.",
         });
+        setSubmitClicked(false);
       }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
   }
 
@@ -254,7 +255,9 @@ export default function CampaignCreationSummaryPage() {
           </Stack>
           <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
             <InteractFlashyButton
+              disabled={submitClicked}
               onClick={() => {
+                setSubmitClicked(true);
                 submitCampaign();
               }}
             >
