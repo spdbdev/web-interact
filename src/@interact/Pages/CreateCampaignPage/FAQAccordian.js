@@ -39,9 +39,13 @@ export default function FAQAccordian({
       question: "How do I get an interaction?",
       answer: (
         <span>
-          2 options: auction or giveaway. A max of 2 interactions per user can
-          be acquired from every campaign, one from the auction & one from the
-          giveaway. Auction: place a bid to be on the leaderboard or use
+          2 options: auction or giveaway. A max of 2 interactions per user can 
+          be acquired from every campaign, one from the auction & one from the 
+          giveaway; only 1 interaction is actually carried out, except the 
+          duration is longer than a normal interaction (duration would become 
+          the sum of the 2 interactions won, meaning if you place in the top 3 
+          in the auction & you win in the giveaway, you get a super duper long 
+          interaction). Auction: place a bid to be on the leaderboard or use
           auto-bid (select a max bid and your preferred ranking); if you are
           still on the leaderboard when the campaign ends, you will acquire an
           interaction. If you place in the top 3 on the leaderboard, your
