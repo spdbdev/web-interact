@@ -12,6 +12,7 @@ import {
 import InteractButton from "@interact/Components/Button/InteractButton";
 import InfoTooltip from "@interact/Components/InfoTooltip";
 import Span from "@jumbo/shared/Span";
+import { formatMoney } from "@interact/Components/utils";
 
 export default function Stats({ campaignData }) {
   let stats = campaignData?.stats ? campaignData.stats : {};
@@ -39,12 +40,12 @@ export default function Stats({ campaignData }) {
           <FollowButton />
           <StatDisplay statValue={stats?.numFollowers} statTitle="Followers" />
           <StatDisplay
-            statValue={stats?.numRafflers}
-            statTitle="Giveaway Entrants"
+            statValue={campaignData.numGiveawayEntries ?? 0}
+            statTitle="Giveaway entries"
           />
           <StatDisplay
-            statValue={stats?.numBidders}
-            statTitle="Auction Bidders"
+            statValue={campaignData.numAuctionBids ?? 0}
+            statTitle="Auction bids"
           />
           {stats?.category ? (
             <StatDisplay statValue={stats?.category} statTitle="Category" />
@@ -99,7 +100,7 @@ export function GoalDisplay({ campaignData }) {
           variant="h1"
           sx={{ color: "primary.main", fontSize: 32, fontWeight: 500 }}
         >
-          ${campaignData?.currRaised}
+          ${Math.round(campaignData.stats.currRaised ?? 0)}
         </Typography>
         <Box
           sx={{
@@ -124,7 +125,7 @@ export function GoalDisplay({ campaignData }) {
             {campaignData?.goal}
             <Span sx={{ color: "primary.main", fontWeight: 500, mr: 0.5 }}>
               {" "}
-              ${campaignData?.goalValue}
+              ${formatMoney(campaignData.stats?.target)}
             </Span>
             <InfoTooltip title="Interactions will still occur even if the goal is not reached, the goal is non-binding." />
           </Typography>

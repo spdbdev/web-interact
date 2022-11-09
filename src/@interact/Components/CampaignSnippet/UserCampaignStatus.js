@@ -4,6 +4,7 @@ import { ASSET_AVATARS } from "app/utils/constants/paths";
 import { Icon } from "@iconify/react";
 
 export default function UserCampaignStatus({
+  statusType,
   userAuctionPosition,
   userGiveawayWinChance,
   auctionLeaderboardSpots,
@@ -45,7 +46,7 @@ export default function UserCampaignStatus({
                   color: "primary.main",
                 }}
               >
-                {isCampaignFinished
+                {isCampaignFinished && statusType === 'bid'
                   ? `You finished in ${userAuctionPosition}th place, you've received an
                 interaction!`
                   : `You're in ${userAuctionPosition}th place, you'll receive an
@@ -78,7 +79,7 @@ export default function UserCampaignStatus({
                     : "text.primary",
               }}
             >
-              {isCampaignFinished
+              {isCampaignFinished && statusType === 'giveaway'
                 ? hasUserWonGiveaway
                   ? "You've won the giveaway, so you get an interaction!"
                   : "Sorry, looks like you didn't win the giveaway."

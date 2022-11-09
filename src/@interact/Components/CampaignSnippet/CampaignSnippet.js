@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import { Avatar, Box, Chip, Link, Stack, Typography } from "@mui/material";
 import ChipWithIconAvatar from "app/pages/components/mui/Chips/ChipWithIconAvatar";
+import { formatMoney } from "../utils";
 import "./CampaignSnippet.css";
 import UserCampaignStatus from "./UserCampaignStatus";
 export default function CampaignSnippet() {
@@ -41,7 +42,7 @@ export default function CampaignSnippet() {
 
       <Stack sx={{ p: 2 }}>
         <Typography sx={{ fontWeight: 500 }}>
-          I will eat 100 hotdogs at $5000
+          I will eat 100 hotdogs at ${formatMoney(5000)}
         </Typography>
         <Typography variant="caption" sx={{ color: "text.secondary" }}>
           by Friday, 26 August 2022

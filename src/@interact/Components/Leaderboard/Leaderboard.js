@@ -18,59 +18,41 @@ import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import { Container, Divider, Link, Stack, Typography } from "@mui/material";
+import { Container, Divider, Link, Stack, Typography,Grid } from "@mui/material";
 import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboDemoCard from "@jumbo/components/JumboDemoCard";
+import { formatDate, formatMoney } from "../utils";
 
 const columns = [
-  { field: "id", headerName: "No", width: 90 },
+  { field: "id", headerName: "No", width: 50 },
   {
     field: "username",
     headerName: "Username",
-    width: 200,
+    width: 120,
   },
   {
     field: "bidPrice",
     headerName: "Bid price",
-    width: 150,
+    width: 90,
+    renderCell: (p) => <span>$ {p.value}</span>
   },
   {
     field: "bidTime",
     headerName: "Bid time",
-    width: 90,
+    width: 180,
+    renderCell: (d) => formatDate(d.value)
   },
 ];
 
-// const rows = [
-//   { id: 1, username: 'Snow2', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 2, username: 'Snow23', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 3, username: 'Snow4', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 4, username: 'Snow5', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 5, username: 'Snow6', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 6, username: 'Sno6w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 7, username: 'Sno5w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 8, username: 'Sno56w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 9, username: 'Sno5w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 10, username: 'Sno55w', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 11, username: 'Sn4ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 12, username: 'Sn3ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 13, username: 'Sn3ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 14, username: 'Sn3ow', bidPrice: '$8.00', bidTime: 'Just now' },
-//   { id: 15, username: 'Sn2ow', bidPrice: '$8.00', bidTime: 'Just now' },
-
-// ];
 
 export default function Leaderboard({ campaignData, bids }) {
   const minBid = 1.0; // assume bids smaller than min bid will not be acceoted
+  const numAuctions = 20; // Number of bids to show on leaderboard
 
   const parseLeaderboard = (bids) => {
     console.log("parsing");
-    bids = [...bids]?.sort((a, b) => {
-      // console.log( parseFloat(a.bidPrice) > parseFloat(b.bidPrice), a, b)
-      return parseFloat(b.price) - parseFloat(a.price);
-    });
 
     bids = bids?.map((x, i) => {
       return {
@@ -79,14 +61,14 @@ export default function Leaderboard({ campaignData, bids }) {
         bidPrice: x.auto
           ? i == bids.length - 1
             ? minBid
-            : Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5)
-          : x.price,
-        bidTime: new Date(x.time.seconds * 1000).toString(),
+            : formatMoney(Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5))
+          : formatMoney(x.price),
+        bidTime: new Date(x.time?.seconds * 1000).toString(),
       };
     });
 
-    console.log(bids);
-
+    //console.log(bids);
+    bids = bids.slice(0, campaignData.numAuctionInteractions);
     return bids;
   };
   useEffect(()=>{
@@ -108,7 +90,8 @@ export default function Leaderboard({ campaignData, bids }) {
   }, [bids]);
 
   return (
-    <JumboCardQuick sx={{ flex: 1 }} className="jumboCardQuick" id="jumboCardQuick">
+    <JumboCardQuick sx={{ flex: 1,mr:1 }} className="jumboCardQuick" id="jumboCardQuick">
+      <Box style={{height:"100%"}}>
       <Box
         sx={{
           display: "flex",
@@ -124,10 +107,10 @@ export default function Leaderboard({ campaignData, bids }) {
         (before winners from the giveaway); otherwise, if you are overthrown from the
         leaderboard by the end of the campaign, you are not charged" />
       </Box>
-      <Box>
+      <Box style={{marginTop:'1rem',height:"100%"}}>
         {bids?.length > 0 ? (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box sx={{ py: 1 }}>
+          <Grid container spacing={1} style={{height:"95%"}}>
+            <Grid item xs={3}>
               {/* <span style={{fontWeight:'bold', color:'#782FEE', textDecoration:'underline'}}>Congrats, you're 8th!</span> */}
               {/* <span
                 style={{
@@ -141,35 +124,30 @@ export default function Leaderboard({ campaignData, bids }) {
 
               <Stack
                 spacing={2}
-                direction="row"
+                direction="column"
                 justifyContent="space-evenly"
-                divider={<Divider orientation="vertical" flexItem />}
+                divider={<Divider orientation="horizontal" flexItem />}
                 sx={{ my: 2 }}
               >
                 <RankComponent data={rows[0]} />
                 <RankComponent data={rows[1]} />
                 <RankComponent data={rows[2]} />
               </Stack>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: 400,
-              }}
-            >
+            </Grid>
+            <Grid item xs={9} style={{height:'100%'}}>
               <DataGrid
                 sx={{ flex: 1, height: "100%", borderColor: "divider" }}
-                rows={rows}
+                rows={rows.slice(3, campaignData.numAuctionInteractions)}
                 columns={columns}
-                pageSize={10}
+                // pageSize={rows.length}
+                hideFooter
                 disableColumnMenu
                 // rowsPerPageOptions={[7]}
                 // checkboxSelection
                 disableSelectionOnClick
               />
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         ) : (
           <Box
             sx={{
@@ -181,6 +159,7 @@ export default function Leaderboard({ campaignData, bids }) {
             <Typography style={{ padding: 20 }}>Be the first to bid</Typography>
           </Box>
         )}
+      </Box>
       </Box>
     </JumboCardQuick>
   );
@@ -206,7 +185,7 @@ function RankComponent({ data }) {
         <Typography variant="h4">
           <Link href={`/u/${data?.username}`}>{data?.username}</Link>
         </Typography>
-        <Typography variant="body">${data?.bidPrice}</Typography>
+        <Typography variant="body">${formatMoney(data?.bidPrice)}</Typography>
         <Typography variant="caption" color="text.hint">
           {data?.bidTime?.slice(0, 10)}
         </Typography>
