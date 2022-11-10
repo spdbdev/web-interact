@@ -11,6 +11,7 @@ import Scheduler from "../../Components/Scheduler/Scheduler";
 import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import FollowedCampaigns from "./FollowedCampaigns";
 import CreatorSchedules from "./CreatorSchedule";
+import Setting from "./Settings";
 import MeetingBlocks from "./MeetingBlocks";
 import FollowerListItem from "./FollowerList";
 import FollowerList from "./FollowerList";
@@ -22,7 +23,7 @@ import Storage from "./firebasestorage";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { FollowButton } from "../CampaignPage/Stats";
 
@@ -56,13 +57,13 @@ function a11yProps(index) {
 function UserProfilePage() {
   const [tab, setTab] = React.useState(0);
   let { id } = useParams();
-  
+
   let user_id = id;
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
 
-  const isCreator = auth?.currentUser?.uid == user_id?true:false;
+  const isCreator = auth?.currentUser?.uid == user_id ? true : false;
 
   const [modalOpened, setModalOpened] = useState(false);
 
@@ -75,17 +76,13 @@ function UserProfilePage() {
 
   const fetchUserName = async () => {
     try {
-      //console.log('user_id');
-      //console.log(user_id);
-      let q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      if(user_id){
-         q = query(collection(db, "users"), where("uid", "==", user_id));  
-      }
-      const doc = await getDocs(q);
-      //console.log('doc');
-      //console.log(doc);
-      const data = doc.docs[0].data();
+      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+
+      const colledoc = await getDocs(q);
+
+      const data = colledoc.docs[0].data();
       setName(data.name);
+    
     } catch (err) {
       console.error(err);
       alert("An error occured while fetching user data");
@@ -93,21 +90,11 @@ function UserProfilePage() {
   };
 
   const userProfile = async () => {
-    const q = query(collection(db, "userspicture"));
-    const doc = await getDocs(q);
-
-    if (doc.docs.length > 0) {
-      for (let index = 0; index < doc.docs.length; index++) {
-        const element = doc.docs[index].data();
-        if (element.uid === user?.uid) {
-            setImage(element.imageurl)
-        } else {
-          setImage(
-            "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-          );
-        }
-        console.log(element, doc.docs.length);
-      }
+    let q = query(collection(db, "userspicture"), where("uid", "==", user?.uid));
+    const userProfileDoc = await getDocs(q);
+    const userProfiledata = userProfileDoc.docs[0].data();
+    if (userProfiledata.imageurl) {
+      setImage(userProfiledata.imageurl);
     } else {
       setImage(
         "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
@@ -119,11 +106,11 @@ function UserProfilePage() {
   }, [user]);
 
   useEffect(() => {
-    let user_id = id; 
+    let user_id = id;
     if (loading) return;
     if (!user) return navigate("/");
     fetchUserName();
-  }, [user, loading,id]);
+  }, [user, loading, id]);
 
   localStorage.setItem("name", name);
   const handleChangeImage = async (e) => {
@@ -246,31 +233,42 @@ function UserProfilePage() {
               {...a11yProps(0)}
               style={{ color: "black" }}
             />
-            {isCreator &&
-            <Tab
-              label="Schedule"
+             <Tab
+              label="Settings"
               {...a11yProps(1)}
               style={{ color: "black" }}
             />
-}
-            {isCreator ? (
+            {/* {isCreator && ( */}
               <Tab
-                label="Creator Schedule"
-                {...a11yProps(1)}
+                label="Schedule"
+                {...a11yProps(2)}
                 style={{ color: "black" }}
               />
-            ) : null}
+            {/* )}
+            {isCreator ? ( */}
+              <Tab
+                label="Creator Schedule"
+                {...a11yProps(3)}
+                style={{ color: "black" }}
+              />
+            {/* ) : null} */}
+          
           </Tabs>
         </Box>
         <TabPanel value={tab} index={0}>
           <FollowedCampaigns />
         </TabPanel>
-        <TabPanel value={tab} index={1}>
-          <Scheduler />
+         <TabPanel value={tab} index={1}>
+          <Setting />
         </TabPanel>
         <TabPanel value={tab} index={2}>
+          <Scheduler />
+        </TabPanel>
+        <TabPanel value={tab} index={3}>
           {isCreator ? <CreatorSchedules /> : null}
         </TabPanel>
+
+       
       </Box>
     </div>
   );

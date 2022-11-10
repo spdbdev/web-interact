@@ -27,6 +27,8 @@ import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaig
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { useJumboTheme } from "@jumbo/hooks";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, logout } from "@jumbo/services/auth/firebase/firebase";
 // import { db } from "firebase";
 
 // const DUMMY_COMMENT_DATA = [

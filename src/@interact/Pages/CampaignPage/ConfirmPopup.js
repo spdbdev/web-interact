@@ -1,0 +1,186 @@
+import { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Typography from "@mui/material/Typography";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import { postRequest } from "../../../utils/api";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
+import InfoTooltip from "../../Components/InfoTooltip";
+import "./popupstyle.css";
+import { Stack } from "@mui/material";
+
+export default function ConfirmPopup({
+  openstate,
+  closefunction,
+  allprimarymethod,
+  title,
+  belowtext,
+  undertitle,
+  onchangeclick,
+  settheOpenPopup,
+  price,
+  userCostomerId,
+  hovereffect,
+  hovertext,
+  bidAction,
+  bidActionstatus,
+}) {
+  const [paymentId, setpaymentId] = useState();
+  const [showtext, setShowText] = useState(false);
+  const Swal = useSwalWrapper();
+  const hidepopUp = () => {
+    // settheOpenPopup(false);
+    onchangeclick();
+  };
+
+  const selectPaymentId = (pmid) => {
+    setpaymentId(pmid);
+  };
+
+  useEffect(() => {
+    setShowText(false);
+    allprimarymethod.forEach((element, index) => {
+      if (index === 0) {
+        setpaymentId(element.id);
+      }
+    });
+  }, [allprimarymethod]);
+
+  const confirmFuncion = () => {
+    console.log(paymentId, userCostomerId);
+    const formData = new FormData();
+    formData.append("price", price);
+    formData.append("paymentmethodid", paymentId);
+    formData.append("customerId", userCostomerId);
+
+    postRequest("/make_payment_on_stripe", formData)
+      .then(async (resp) => {
+        console.log(resp.data);
+        if (resp.data.paymentstatus) {
+          settheOpenPopup(false);
+          Swal.fire(
+            "Correct!",
+            "Your payment has been made. Thanks",
+            "success"
+          );
+          if (bidActionstatus) {
+            bidAction(price);
+          }
+        } else {
+          settheOpenPopup(false);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "An error occured",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const mouseOver = () => {
+    setTimeout(setShowText(true), 5000);
+  };
+
+  const onMouseLeave = () => {
+    setTimeout(setShowText(false), 5000);
+  };
+
+  return (
+    <div>
+      <Dialog
+        open={openstate}
+        onClose={closefunction}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" style={{ background: "#FAFAFA" }}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="h4" gutterBottom>
+              {" "}
+              {title}
+            </Typography>
+            {hovereffect && <InfoTooltip title={hovertext} />}
+          </Stack>
+          
+
+          <Typography variant="subtitle1" gutterBottom>
+            {undertitle}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+            style={{ marginBottom: "10px", marginTop: "5px" }}
+          >
+            <Typography variant="h4" gutterBottom>
+              {hovereffect ? "Your Bid Amount" : "VIP entry amount"}: ${price}
+            </Typography>
+            {allprimarymethod.length > 0 ? (
+              allprimarymethod.map((item, index) => {
+                return (
+                  <>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        margin: "7px 0px",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value={item.id}
+                        name="paymentid"
+                        checked={index === 0 && "checked"}
+                        onChange={() => selectPaymentId(item.id)}
+                      />
+                      <Typography variant="h5" gutterBottom>
+                        Payment Method
+                      </Typography>
+
+                      <Typography variant="h5" gutterBottom>
+                        {item.card.brand} ending in {item.card.last4}
+                      </Typography>
+
+                      <div onClick={hidepopUp} style={{ cursor: "pointer" }}>
+                        <Typography variant="h5" gutterBottom>
+                          Change
+                        </Typography>
+                      </div>
+                    </div>
+                  </>
+                );
+              })
+            ) : (
+              <></>
+            )}
+          </DialogContentText>
+
+          <InteractFlashyButton onClick={confirmFuncion}>
+            Confirm
+          </InteractFlashyButton>
+        </DialogContent>
+        <div style={{ background: "#FAFAFA" }}>
+          {belowtext.map((item) => {
+            return (
+              <>
+                <Typography
+                  variant="subtitle2"
+                  gutterBottom
+                  style={{ margin: "10px 0px 0px 0px", padding: "2px 12px" }}
+                >
+                  {item}
+                </Typography>
+              </>
+            );
+          })}
+        </div>
+      </Dialog>
+    </div>
+  );
+}

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import { getDateFromTimestamp } from "@interact/Components/utils";
 import Span from "@jumbo/shared/Span";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 
 export default function Header({ campaignData }) {
   const numInteractions =
@@ -61,7 +62,16 @@ export default function Header({ campaignData }) {
         </Typography>
       </Stack>
 
-      <Box
+      <InteractFlashyButton
+          // variant="h4"
+          // m={0}
+          // p={0}
+          // sx={{ color: "secondary.contrastText" }}
+        >
+          Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
+        </InteractFlashyButton>
+
+      {/* <Box
         sx={{
           background: "linear-gradient(173.73deg, #782FEE, #DD00FF 117.43%)",
           borderRadius: 2,
@@ -69,15 +79,8 @@ export default function Header({ campaignData }) {
           mb: 4,
         }}
       >
-        <Typography
-          variant="h4"
-          m={0}
-          p={0}
-          sx={{ color: "secondary.contrastText" }}
-        >
-          Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
-        </Typography>
-      </Box>
+       
+      </Box> */}
     </div>
   );
 }

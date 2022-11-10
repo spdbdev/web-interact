@@ -50,13 +50,13 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import InteractButton from "../../Components/Button/InteractButton";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 700,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -103,6 +103,7 @@ function Settings() {
     country: "",
     state: "",
     city: "",
+    postalCode: "",
   });
 
   const [locations, setLocations] = useState({
@@ -196,6 +197,9 @@ function Settings() {
             : "",
           city: detail.billing_details.address.city
             ? detail.billing_details.address.city
+            : "",
+          postalCode: detail.billing_details.address.postal_code
+            ? detail.billing_details.address.postal_code
             : "",
         });
         console.log("detail", detail);
@@ -313,6 +317,7 @@ function Settings() {
     formData.append("country", updateCardInfo.country);
     formData.append("state", updateCardInfo.state);
     formData.append("city", updateCardInfo.city);
+    formData.append("postal", updateCardInfo.postalCode);
     formData.append("customerid", customerid);
 
     postRequest("/update_customer_payment_method", formData)
@@ -363,22 +368,24 @@ function Settings() {
         })
         .then((resp) => {
           const pmid = resp.paymentMethod.id;
-          getRequest(`/method/attach/${userCostomerId}/${pmid}`)
-            .then((resp) => {
-              setOpen(false);
-              if (resp.data.added) {
-                setPaymentMethods(resp.data.paymentmethod.data);
-              } else {
-                Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "An error occured",
-                });
-              }
-            })
-            .catch((err) => {
-              /*Handle Error */
-            });
+          if (pmid && userCostomerId) {
+            getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+              .then((resp) => {
+                setOpen(false);
+                if (resp.data.added) {
+                  setPaymentMethods(resp.data.paymentmethod.data);
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "An error occured",
+                  });
+                }
+              })
+              .catch((err) => {
+                /*Handle Error */
+              });
+          }
           console.log(resp);
         });
     } catch (err) {
@@ -386,6 +393,26 @@ function Settings() {
     }
     setsetMLoaded(MLoaded++);
   };
+
+  const userProfile = async () => {
+    let q = query(
+      collection(db, "userspicture"),
+      where("uid", "==", user?.uid)
+    );
+    const userProfileDoc = await getDocs(q);
+    const userProfiledata = userProfileDoc.docs[0].data();
+    if (userProfiledata.imageurl) {
+      setImage(userProfiledata.imageurl);
+    } else {
+      setImage(
+        "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+      );
+    }
+  };
+
+  useEffect(() => {
+    userProfile();
+  }, [user]);
 
   useEffect(() => {
     if (loading) return;
@@ -482,7 +509,7 @@ function Settings() {
 
               <div className="addressWrapper">
                 <div className="row">
-                  <label>Country</label>
+                  <label>Postal Code</label>
                   <input
                     onChange={(e) =>
                       setUpdateCardInfo({
@@ -491,9 +518,9 @@ function Settings() {
                       })
                     }
                     type="text"
-                    name="country"
-                    value={updateCardInfo.country}
-                    placeholder="Enter country"
+                    name="postalCode"
+                    value={updateCardInfo.postalCode}
+                    placeholder="Enter Postal Code"
                   />
                 </div>
                 <div className="row">
@@ -512,7 +539,7 @@ function Settings() {
                   />
                 </div>
                 <div className="row">
-                  <label>State</label>
+                  <label>City</label>
                   <input
                     onChange={(e) =>
                       setUpdateCardInfo({
@@ -584,77 +611,6 @@ function Settings() {
         </Box>
       </Modal>
 
-      <FollowerList open={modalOpened} setOpen={setModalOpened} />
-      <Stack
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        sx={{
-          backgroundColor: "primary.main",
-          width: "100%",
-          py: 4,
-          borderRadius: 2,
-        }}
-      >
-        <div className="image_item">
-          <form className="image_item-form">
-            <label className="image_item-form--lable"> Add Image</label>
-            <input
-              className="image-item-form-input"
-              type="file"
-              id="image-item-form--input-id"
-              onChange={handleChangeImage}
-            ></input>
-          </form>
-
-          {/* <input type="file" onChange={handleChangeImage} /> */}
-          <img className="profilePic" alt="profile-pic" src={image} />
-        </div>
-        <div
-          style={{
-            color: "white",
-            fontSize: 20,
-            fontWeight: "bold",
-            paddingTop: 10,
-          }}
-        >
-          {name}
-        </div>
-        <div style={{ marginTop: 10, color: "white", marginBottom: 10 }}>
-          I love playing Smite and Minecraft
-        </div>
-        <div
-          style={{
-            display: "flex",
-            boxShadow: "1px 1px 2px rgba(0, 0, 0, 0.5)",
-            marginTop: 10,
-            padding: 10,
-            marginBottom: 5,
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: "0 11px 0 11px",
-            alignItems: "center",
-            backgroundColor: "white",
-          }}
-        >
-          {/* <MeetingBlocks /> */}
-          <div
-            onClick={() => setModalOpened(true)}
-            style={{
-              fontSize: 20,
-              color: "#782fee",
-              marginRight: 20,
-              fontWeight: "bold",
-              cursor: "pointer",
-              borderRadius: 2,
-            }}
-          >
-            23k followers
-          </div>
-          <FollowButton />
-        </div>
-      </Stack>
-      <br />
       <br />
 
       <Link to="/campaign" style={{ textDecoration: "none" }}>
@@ -837,9 +793,11 @@ function Settings() {
           })
         ) : (
           <>
-            <Typography variant="h1" component="h2">
-              No Primary Method
-            </Typography>
+            <CardContent>
+              <Typography variant="h4" component="h2">
+                No Primary Method
+              </Typography>
+            </CardContent>
           </>
         )}
 
@@ -1031,9 +989,11 @@ function Settings() {
           })
         ) : (
           <>
-            <Typography variant="h1" component="h2">
-              No Additional Method
-            </Typography>
+            <CardContent>
+              <Typography variant="h4" component="h2">
+                No Additional Method
+              </Typography>
+            </CardContent>
           </>
         )}
       </Card>

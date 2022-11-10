@@ -50,25 +50,6 @@ app.get("/method/attach/:cid/:pm", async (req, res) => {
   }
 });
 
-
-
-// CREATE STRIPE ACCOUNT
-
-// app.use("/create_stripe_account", async (req, res) => {
-//   try {
-//     const account = await stripe.accounts.create({type: 'express'});
-//     console.log(account);
-//     // const { cid } = req.params;
-//     // const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
-//     //   type: "card",
-//     // });
-//     // res.status(200).json({ paymentmethod: paymentMethods });
-//   } catch (err) {
-//     console.log(err);
-//     // res.status(400).json({ message: "An error occured" });
-//   }
-// });
-
 // all payments method
 
 app.get("/customer/method/:cid", async (req, res) => {
@@ -172,13 +153,15 @@ app.post("/delete_customer_payment_method", async (req, res) => {
 
 app.post("/update_customer_payment_method", async (req, res) => {
   try {
-    const { paymid, customerid, data,name, city} = req.body;
+    const { paymid, customerid, data,name, city, state, postal} = req.body;
     console.log(data)
     await stripe.paymentMethods.update(paymid, {
         billing_details:{
           name:name,
           address:{
             city:city,
+            postal_code:postal,
+            state:state,
           }
         }
     });
@@ -192,6 +175,32 @@ app.post("/update_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
+
+
+app.post("/make_payment_on_stripe", async (req, res) => {
+  const {price,paymentmethodid,customerId} = req.body
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: price*100,
+      currency: 'usd',
+      customer: customerId,
+      payment_method: paymentmethodid,
+      off_session: true,
+      confirm: true,
+    });
+    res.status(200).json({ paymentstatus:true, paymentIntent });
+  } catch (err) {
+    // Error code will be authentication_required if authentication is needed
+    console.log('Error code is: ', err.code);
+    const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
+    console.log('PI retrieved: ', paymentIntentRetrieved.id );
+    res.status(400).json({paymentstatus:false})
+  }
+  
+});
+
+
+
 
 
 
@@ -208,6 +217,9 @@ app.get("/allusers", async (req, res) => {
   });
   res.send(paymentMethod);
 });
+
+
+
 
 app.post("/create-raffle-session", async (req, res) => {
   const session = await stripe.checkout.sessions.create({

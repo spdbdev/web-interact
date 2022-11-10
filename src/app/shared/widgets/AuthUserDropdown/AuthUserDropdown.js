@@ -12,6 +12,7 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import SettingsIcon from '@mui/icons-material/Settings';
 import RepeatOutlinedIcon from "@mui/icons-material/RepeatOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
@@ -70,16 +71,16 @@ const AuthUserDropdown = () => {
               </ListItemIcon>
               <ListItemText primary="Profile" sx={{ my: 0 }} />
             </ListItemButton>
-            <ListItemButton>
+            {/* <ListItemButton>
               <ListItemIcon sx={{ minWidth: 36 }}>
-                {/* <EditOutlinedIcon/> */}
+                <SettingsIcon/>
               </ListItemIcon>
               <ListItemText
                 onClick={() => navigate("/a/settings")}
                 primary="Settings"
                 sx={{ my: 0 }}
               />
-            </ListItemButton>
+            </ListItemButton> */}
             <ListItemButton>
               <ListItemIcon sx={{ minWidth: 36 }}>
                 <RepeatOutlinedIcon />
