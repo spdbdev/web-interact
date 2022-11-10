@@ -12,6 +12,7 @@ import { db } from "@jumbo/services/auth/firebase/firebase";
 // import Comments from "../Comments/Comments";
 import Supporters from "../Supporters/Supporters";
 import { getDocs,collection } from "firebase/firestore";
+import Comments from "../Comments/Comments";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -96,6 +97,7 @@ function CampaignInfo({ campaignData, comments, campaignId,bids,giveaways,isCamp
           Comments
         </AccordionSummary>
         <AccordionDetails>
+          <Comments comments={comments} campaignId={campaignId}/>
           {/* <Comments comments={comments} campaignId={campaignId}/> */}
         </AccordionDetails>
       </Accordion>
