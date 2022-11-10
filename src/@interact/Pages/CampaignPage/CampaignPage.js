@@ -209,16 +209,6 @@ function CampaignPage(userData) {
 		}
 	}
 
-	
-	useEffect(() => {
-		//if (loading) return;
-		//if (!user) return navigate("/");
-
-		getCampaignData();
-		checkPurchasedEntry();
-	}, []);
-
-
 	const bid = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => 
 	{
 		var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
@@ -245,6 +235,37 @@ function CampaignPage(userData) {
 
 		setDoc(doc(db, "campaigns", campaignId), {numAuctionBids:counter}, { merge: true });
 	};
+
+	
+	useEffect(() => {
+		//if (loading) return;
+		//if (!user) return navigate("/");
+
+		getCampaignData();
+		checkPurchasedEntry();
+	}, []);
+
+	/* useEffect(() => {
+		// Check if there is a campaignId in params
+		if (params.campaignId) {
+		  // Then, check if the campaign is a draft, 
+		  if (user && user.campaigns && user.campaigns[0] && user.campaigns[0].campaignStatus === "draft") {
+			// then redirect the user to /d/
+			navigate(createCampaignURL(user.campaigns[0]))
+		  } else {
+			// otherwise, proceed with getting campaign data
+			getCampaignData(params.campaignId);
+		  }
+		} else {
+		  // otherwise, check if user is authenticated
+		  if (user) {
+			// then redirect either to appropriate campaign, or to create campaign page
+			navigate(user.campaigns && user.campaigns[0] ? createCampaignURL(user.campaigns[0]) : "/a/create-campaign")
+		  }
+		}
+		console.log(params, !params.campaignId, user)
+	}, [user, params]); */
+
 
 	function renderUserCampaignStatus() 
 	{
@@ -343,7 +364,7 @@ function CampaignPage(userData) {
 			) : null}
 			</Box>
 
-			<Stats campaignData={campaignData} />
+			<Stats campaignData={campaignData} bids={bids} />
 
 			{num_auction > 0 ? (
 			<Box

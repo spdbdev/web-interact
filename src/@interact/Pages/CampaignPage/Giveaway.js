@@ -180,6 +180,8 @@ export default function Giveaway({
 				{contributionTotal: increment(data.price)}, 
 				{ merge: true }
 			);
+
+			setDoc(doc(db, "campaigns", campaignId), {campaignVIPtotal: increment(data.price)}, { merge: true });
 		}
     }
 
@@ -571,269 +573,269 @@ export default function Giveaway({
         document.body.classList.remove('active-modal')
     }
 
-  const buyGiveawayAlert = () => {
-    Swal.fire({
-      title: "Skill-testing question",
-      text: "Before you make this purchase, you must correctly answer the math question below:",
-      icon: "warning",
-      html: (
-        <div>
-          <p>300+100+20 = ?</p>
-          <Input id="answer" type={"number"} />
-        </div>
-      ),
-      showCancelButton: true,
-      confirmButtonText: "Confirm",
-      cancelButtonText: "Wait, cancel!",
-      reverseButtons: true,
-      preConfirm: () => {
-        const answer = Swal.getPopup().querySelector("#answer").value;
-        if (answer != 420) {
-          Swal.showValidationMessage(`Please try again.`);
-        }
-        return { answer: answer };
-      },
-    }).then((result) => {
-      if (result.value.answer == 420) {
-        // setHasUserEnteredGiveaway(true); can't set these to true until we get a confirmation from stripe.
-        //setHasUserPurchasedVIPEntry(true);
-        Swal.fire(
-          "Correct!",
-          "You'll now be taken to the payment page.",
-          "success"
-        ).then(()=>{
-          setPriceToPay(vipEntryPrice);
-          setEntryType('vip');
-          toggleModal();
-        });
-      } else {
-        Swal.fire(
-          "Incorrect.",
-          "We were expecting a different answer... try again!",
-          "error"
-        );
-      }
-    });
-  };
-  const freeGiveawayAlert = () => {
-    Swal.fire({
-      title: "Claim free entry?",
-      text: "Would you like to claim this free giveaway entry?",
-      showCancelButton: true,
-      confirmButtonText: "Yes, Claim!",
-      cancelButtonText: "Cancel",
-      reverseButtons: true,
-    }).then((result) => {
-      if (result.value) {
-        setPriceToPay(freeEntryPrice);
-        setEntryType('free');
-        if(!collectFreeEntryPayment()){
-          return;
-        };
-        setHasUserClaimedFreeEntry(true);
-        Swal.fire(
-          "Claimed!",
-          "You've claimed a free entry for this giveaway. Good luck!",
-          "success"
-        );
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        // close alert
-      }
-    });
-  };
-  useEffect(()=>{
-    document.getElementById("giveawayCard").onmousemove = e => {
-      for(const card of document.getElementsByClassName("giveawayCard")) {
-        const rect = card.getBoundingClientRect(),
-       
-              x = e.clientX - rect.left,
-              y = e.clientY - rect.top;
-    
-        card.style.setProperty("--mouse-x", `${x}px`);
-        card.style.setProperty("--mouse-y", `${y}px`);
-      };
-    }
-  })
+	const buyGiveawayAlert = () => {
+		Swal.fire({
+		title: "Skill-testing question",
+		text: "Before you make this purchase, you must correctly answer the math question below:",
+		icon: "warning",
+		html: (
+			<div>
+			<p>300+100+20 = ?</p>
+			<Input id="answer" type={"number"} />
+			</div>
+		),
+		showCancelButton: true,
+		confirmButtonText: "Confirm",
+		cancelButtonText: "Wait, cancel!",
+		reverseButtons: true,
+		preConfirm: () => {
+			const answer = Swal.getPopup().querySelector("#answer").value;
+			if (answer != 420) {
+			Swal.showValidationMessage(`Please try again.`);
+			}
+			return { answer: answer };
+		},
+		}).then((result) => {
+		if (result.value.answer == 420) {
+			// setHasUserEnteredGiveaway(true); can't set these to true until we get a confirmation from stripe.
+			//setHasUserPurchasedVIPEntry(true);
+			Swal.fire(
+			"Correct!",
+			"You'll now be taken to the payment page.",
+			"success"
+			).then(()=>{
+			setPriceToPay(vipEntryPrice);
+			setEntryType('vip');
+			toggleModal();
+			});
+		} else {
+			Swal.fire(
+			"Incorrect.",
+			"We were expecting a different answer... try again!",
+			"error"
+			);
+		}
+		});
+	};
+	const freeGiveawayAlert = () => {
+		Swal.fire({
+		title: "Claim free entry?",
+		text: "Would you like to claim this free giveaway entry?",
+		showCancelButton: true,
+		confirmButtonText: "Yes, Claim!",
+		cancelButtonText: "Cancel",
+		reverseButtons: true,
+		}).then((result) => {
+		if (result.value) {
+			setPriceToPay(freeEntryPrice);
+			setEntryType('free');
+			if(!collectFreeEntryPayment()){
+			return;
+			};
+			setHasUserClaimedFreeEntry(true);
+			Swal.fire(
+			"Claimed!",
+			"You've claimed a free entry for this giveaway. Good luck!",
+			"success"
+			);
+		} else if (
+			/* Read more about handling dismissals below */
+			result.dismiss === Swal.DismissReason.cancel
+		) {
+			// close alert
+		}
+		});
+	};
+	useEffect(()=>{
+		document.getElementById("giveawayCard").onmousemove = e => {
+		for(const card of document.getElementsByClassName("giveawayCard")) {
+			const rect = card.getBoundingClientRect(),
+		
+				x = e.clientX - rect.left,
+				y = e.clientY - rect.top;
+		
+			card.style.setProperty("--mouse-x", `${x}px`);
+			card.style.setProperty("--mouse-y", `${y}px`);
+		};
+		}
+	})
  
-  return (
-    <>
-    <JumboCardQuick
-      title={"Giveaway"}
-      sx={{
-        
-        ml: 2,
-        display: "flex",
-        flexDirection: "column",
-        width: 400,
-      }}
-      headerSx={{ pb: 0 }}
-      wrapperSx={{
-        pt: 1,
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-      id="giveawayCard"
-      className="giveawayCard"
-    >
-      <Box>
-        <div>
-          <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
-          minute interactions
-        </div>
-        <div>
-          <Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
-          winners will be randomly chosen from the ticketholders at the end of
-          the campaign
-        </div>
-      </Box>
+	return (
+		<>
+		<JumboCardQuick
+		title={"Giveaway"}
+		sx={{
+			
+			ml: 2,
+			display: "flex",
+			flexDirection: "column",
+			width: 400,
+		}}
+		headerSx={{ pb: 0 }}
+		wrapperSx={{
+			pt: 1,
+			flex: 1,
+			display: "flex",
+			flexDirection: "column",
+			justifyContent: "space-between",
+		}}
+		id="giveawayCard"
+		className="giveawayCard"
+		>
+		<Box>
+			<div>
+			<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
+			minute interactions
+			</div>
+			<div>
+			<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
+			winners will be randomly chosen from the ticketholders at the end of
+			the campaign
+			</div>
+		</Box>
 
-      <Box id="VIPGiveawaySection">
-        <Typography variant="h5" color="text.secondary" mt={1}>
-          VIP entry
-        </Typography>
+		<Box id="VIPGiveawaySection">
+			<Typography variant="h5" color="text.secondary" mt={1}>
+			VIP entry
+			</Typography>
 
-        <span>
-          Chance multiplier: {vipChanceMultiplier}x
-        </span>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <span>Chance of winning: {winningChances.vip}%</span>
-          <InfoTooltip
-            title="Remember, the % chance of winning will go down as more fans
-          join the giveaway."
-          />
-        </Stack>
-        <Box sx={{ display: "flex", flexDirection: "row", mb: 1, mt: 1 }}>
-          <Box
-            sx={{
-              flex: 1,
-              p: 1,
-              mr: 1,
-              backgroundColor: "rgba(120, 47, 238, 0.1)",
-              borderRadius: 1,
-              border: "2px dashed rgba(120, 47, 238, 1)",
-            }}
-          >
-            <span className="Highlight">${formatMoney(vipEntryPrice)}</span>
-          </Box>
-          {/* <form
-          action="http://localhost:4242/create-giveaway-session"
-          method="POST"
-        > */}
-          <InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
-            Buy VIP entry
-          </InteractButton>
-          {/* </form> */}
-        </Box>
-      </Box>
+			<span>
+			Chance multiplier: {vipChanceMultiplier}x
+			</span>
+			<Stack direction="row" spacing={1} alignItems="center">
+			<span>Chance of winning: {winningChances.vip}%</span>
+			<InfoTooltip
+				title="Remember, the % chance of winning will go down as more fans
+			join the giveaway."
+			/>
+			</Stack>
+			<Box sx={{ display: "flex", flexDirection: "row", mb: 1, mt: 1 }}>
+			<Box
+				sx={{
+				flex: 1,
+				p: 1,
+				mr: 1,
+				backgroundColor: "rgba(120, 47, 238, 0.1)",
+				borderRadius: 1,
+				border: "2px dashed rgba(120, 47, 238, 1)",
+				}}
+			>
+				<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
+			</Box>
+			{/* <form
+			action="http://localhost:4242/create-giveaway-session"
+			method="POST"
+			> */}
+			<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
+				Buy VIP entry
+			</InteractButton>
+			{/* </form> */}
+			</Box>
+		</Box>
 
-      <Divider>or</Divider>
+		<Divider>or</Divider>
 
-      <Box
-        id="freeGiveawaySection"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginTop: "10px",
-        }}
-      >
-        <Typography variant="h5" color="text.secondary">
-          Free entry
-        </Typography>
+		<Box
+			id="freeGiveawaySection"
+			style={{
+			display: "flex",
+			flexDirection: "column",
+			marginTop: "10px",
+			}}
+		>
+			<Typography variant="h5" color="text.secondary">
+			Free entry
+			</Typography>
 
-        <span>
-          Chance multiplier: {freeChanceMultiplier}x
-        </span>
-        <Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
-          <span>Chance of winning: {winningChances.free}%</span>
-          <InfoTooltip
-            title="Remember, the % chance of winning will go down as more fans
-          join the giveaway."
-          />
-        </Stack>
+			<span>
+			Chance multiplier: {freeChanceMultiplier}x
+			</span>
+			<Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
+			<span>Chance of winning: {winningChances.free}%</span>
+			<InfoTooltip
+				title="Remember, the % chance of winning will go down as more fans
+			join the giveaway."
+			/>
+			</Stack>
 
-        {/* <form
-        //   action="http://localhost:4242/create-giveaway-session"
-        //   method="POST"
-        > */}
-        <InteractButton
-          onClick={freeGiveawayAlert}
-          disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded}
-        >
-          Get a free entry
-        </InteractButton>
-        {/* </form> */}
-      </Box>
-    </JumboCardQuick>
-    {modal && (
-      <div className="modal" style={{zIndex:"1000",backgroundColor:"transparent"}}>
-          <div onClick={toggleModal} className="overlay" style={{zIndex:"1001"}}></div>
-          <div className="modal-content" style={{zIndex:"1002"}}>
-              <div className='card-body-text'>Price : "${formatMoney(vipEntryPrice)}"</div>
-              <div className='ButtonsWrapper'>
-                  <form onSubmit={handleSubmit}>
-                      {customerSet
-                          ? <div className='card-body-text'>
-                              <p>Payment Method </p>
-                              <p className={isActive ? 'click-to-show-card-toggle-true' : 'click-to-show-card-toggle-true'}><b style={{ padding: 0 }}>{cardBrand} </b>ending with {last4}
-                                  <button type='button' onClick={handleClickToggle} className="buttonFloat">change</button>
-                              </p>
-                              <div className={isActive ? 'click-to-show-card-toggle-false' : 'click-to-show-card-toggle-true'}>
-                                  <div className='card-element-div'>
-                                  <CardElement options={CARD_ELEMENT_OPTIONS} />
-                                  </div>
-                                  {/* <div className='show-error'>
+			{/* <form
+			//   action="http://localhost:4242/create-giveaway-session"
+			//   method="POST"
+			> */}
+			<InteractButton
+			onClick={freeGiveawayAlert}
+			disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded}
+			>
+			Get a free entry
+			</InteractButton>
+			{/* </form> */}
+		</Box>
+		</JumboCardQuick>
+		{modal && (
+		<div className="modal" style={{zIndex:"1000",backgroundColor:"transparent"}}>
+			<div onClick={toggleModal} className="overlay" style={{zIndex:"1001"}}></div>
+			<div className="modal-content" style={{zIndex:"1002"}}>
+				<div className='card-body-text'>Price : "${formatMoney(vipEntryPrice)}"</div>
+				<div className='ButtonsWrapper'>
+					<form onSubmit={handleSubmit}>
+						{customerSet
+							? <div className='card-body-text'>
+								<p>Payment Method </p>
+								<p className={isActive ? 'click-to-show-card-toggle-true' : 'click-to-show-card-toggle-true'}><b style={{ padding: 0 }}>{cardBrand} </b>ending with {last4}
+									<button type='button' onClick={handleClickToggle} className="buttonFloat">change</button>
+								</p>
+								<div className={isActive ? 'click-to-show-card-toggle-false' : 'click-to-show-card-toggle-true'}>
+									<div className='card-element-div'>
+									<CardElement options={CARD_ELEMENT_OPTIONS} />
+									</div>
+									{/* <div className='show-error'>
 
-                                  {stripeError}
-                                  </div> */}
-                              </div>
-                          </div>
-                          :
-                          <div>
-                            <div className='card-element-div'>
-                              <CardElement options={CARD_ELEMENT_OPTIONS} />
-                            </div>
-                            <div className='checkbox-div card-body-text' >
-                              <input
-                                  type="checkbox"
-                                  value={isSubscribed}
-                                  onChange={handleCheckBox}
-                                  id="subscribe"
-                                  name="subscribe"
-                              />
-                                  Save Card
-                              </div>
-                          </div>
-                      }
+									{stripeError}
+									</div> */}
+								</div>
+							</div>
+							:
+							<div>
+								<div className='card-element-div'>
+								<CardElement options={CARD_ELEMENT_OPTIONS} />
+								</div>
+								<div className='checkbox-div card-body-text' >
+								<input
+									type="checkbox"
+									value={isSubscribed}
+									onChange={handleCheckBox}
+									id="subscribe"
+									name="subscribe"
+								/>
+									Save Card
+								</div>
+							</div>
+						}
 
-                      {/* <div className='checkbox-div card-body-text' >
-                          <input
-                              type="checkbox"
-                              value={isSubscribed}
-                              onChange={handleCheckBox}
-                              id="subscribe"
-                              name="subscribe"
-                          />
-                                Save Card
-                      </div> */}
-                      <div className='show-error'>
-                          {stripeError ? stripeError : ''}
-                      </div>
-                      <button type="submit" >
-                          Pay
-                      </button>
-                  </form>
-              </div>
-              <button id="submit" className="close-modal" onClick={toggleModal}>
-                  X
-              </button>
-          </div>
-      </div>
-      )}
-    </>
-  );
+						{/* <div className='checkbox-div card-body-text' >
+							<input
+								type="checkbox"
+								value={isSubscribed}
+								onChange={handleCheckBox}
+								id="subscribe"
+								name="subscribe"
+							/>
+									Save Card
+						</div> */}
+						<div className='show-error'>
+							{stripeError ? stripeError : ''}
+						</div>
+						<button type="submit" >
+							Pay
+						</button>
+					</form>
+				</div>
+				<button id="submit" className="close-modal" onClick={toggleModal}>
+					X
+				</button>
+			</div>
+		</div>
+		)}
+		</>
+	);
 }
