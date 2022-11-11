@@ -159,7 +159,7 @@ export default function PromotionTab({
               />
 
               <SocialLinkTextField
-                label={"Youtube channel link"}
+                label={"YouTube channel link"}
                 value={youtube}
                 setValue={setYoutube}
                 data={data}
@@ -175,7 +175,7 @@ export default function PromotionTab({
                 dataField={"twitch"}
               />
               <SocialLinkTextField
-                label={"Subreddit link"}
+                label={"SubReddit link"}
                 value={reddit}
                 setValue={setReddit}
                 data={data}
