@@ -107,7 +107,7 @@ export default function Leaderboard({ campaignData, bids }) {
       <Box style={{marginTop:'1rem',height:"100%"}}>
         {bids?.length > 0 ? (
           <Grid container spacing={1} style={{height:"95%"}}>
-            <Grid item xs={3}>
+            <Grid item xs={4} md={4} lg={4} xl={5}>
               {/* <span style={{fontWeight:'bold', color:'#782FEE', textDecoration:'underline'}}>Congrats, you're 8th!</span> */}
               {/* <span
                 style={{
@@ -131,7 +131,7 @@ export default function Leaderboard({ campaignData, bids }) {
                 <RankComponent data={rows[2]} />
               </Stack>
             </Grid>
-            <Grid item xs={9} style={{height:'100%'}}>
+            <Grid item xs={8} md={8} lg={8} xl={7} style={{height:'100%'}}>
               <DataGrid
                 sx={{ flex: 1, height: "100%", borderColor: "divider" }}
                 rows={rows.slice(3, campaignData.numAuctionInteractions)}
@@ -166,264 +166,17 @@ const medals = [medal1, medal2, medal3];
 
 function RankComponent({ data }) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        my: 1,
-      }}
-    >
-      <img
-        style={{ height: 60, paddingRight: 10 }}
-        src={medals[data?.id - 1]}
-        alt=""
-      />
+    <Box sx={{display:"flex", flexDirection:"row", my:1}} >
+      <img style={{ height: '40%', width:'40%', paddingRight: 10 }} src={medals[data?.id - 1]} alt="" />
       <Stack direction="column">
         <Typography variant="h4">
-          <Link href="/interact/user">{data?.username}</Link>
+          <Link href="/interact/user" style={{fontSize:'2.3vw'}}>{data?.username}</Link>
         </Typography>
-        <Typography variant="body">${formatMoney(data?.bidPrice)}</Typography>
-        <Typography variant="caption" color="text.hint">
-          {data?.bidTime?.slice(0, 10)}
+        <Typography variant="body" style={{fontSize:'1.6vw'}}>${formatMoney(data?.bidPrice)}</Typography>
+        <Typography variant="caption" color="text.hint" style={{fontSize:'1.2vw'}}>
+          {formatDate(data.bidTime)}
         </Typography>
       </Stack>
     </Box>
   );
 }
-
-// function Leaderboard() {
-
-//   const supporters = [
-//     {
-//       user: {
-//         username: 'Jackson#222',
-//         profilePicture: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 10.50,
-//       bidTime: 'Just Now',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Jackson#222',
-//         profilePicture: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 10.50,
-//       bidTime: 'Just Now',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Jackson#222',
-//         profilePicture: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8FuEJbKwDdaz1h387130xmYkAIQbZpahhbQ&usqp=CAU',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 10.50,
-//       bidTime: 'Just Now',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-//     {
-//       user: {
-//         username: 'Julian#123',
-//         profilePicture: 'https://play-lh.googleusercontent.com/I-Yd5tJnxw7Ks8FUhUiFr8I4kohd9phv5sRFHG_-nSX9AAD6Rcy570NBZVFJBKpepmc',
-//       },
-//       bidType: 'Auction',
-//       bidPrice: 8.00,
-//       bidTime: '3 min',
-//     },
-
-//   ]
-
-//   const columns = [
-//     { field: 'no', headerName: 'no', width: 90 },
-//     {
-//       field: 'username',
-//       headerName: 'username',
-//       width: 150,
-//     },
-//     {
-//       field: 'bidprice',
-//       headerName: 'bid price',
-//       width: 150,
-
-//     },
-//     {
-//       field: 'time',
-//       headerName: 'time',
-//       width: 110,
-//     },
-//   ]
-
-//   return (
-//     <Box sx={{ height: 400, width: '100%' }}>
-//     <DataGrid
-//       rows={rows}
-//       columns={columns}
-//       pageSize={5}
-//       rowsPerPageOptions={[5]}
-//       checkboxSelection
-//       disableSelectionOnClick
-//     />
-//   </Box>
-//     // <div style={{width:3200}}>
-//     //   <div style={{fontSize:20, fontWeight:'normal'}}>Leaderboard</div>
-//     //   <TableContainer component={Paper} style={{width:'100%'}}>
-//     //     <Table sx={{ }} size='small' aria-label="simple table">
-//     //       <TableHead>
-//     //         <TableRow>
-//     //           <TableCell>No. </TableCell>
-//     //           <TableCell>User</TableCell>
-//     //           <TableCell align="left">Price</TableCell>
-//     //           <TableCell align="left">Bid time</TableCell>
-//     //         </TableRow>
-//     //       </TableHead>
-//     //       <TableBody>
-//     //         {supporters.slice(3).map((row, i) => (
-//     //           <TableRow
-//     //             key={row.user.username}
-//     //             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-//     //           >
-//     //             <TableCell component="th" scope="row">
-//     //               {i+1 + 3}
-//     //             </TableCell>
-//     //             <TableCell  align="left">
-//     //               {row.user.username}
-//     //             </TableCell>
-//     //             <TableCell align="left"><b style={{color:'purple'}}>{row.bidPrice}</b></TableCell>
-//     //             <TableCell align="left">{row.bidTime}</TableCell>
-//     //           </TableRow>
-//     //         ))}
-//     //       </TableBody>
-//     //     </Table>
-//     //   </TableContainer>
-//     //   <TablePagination rowsPerPageOptions={[10, 50]} />
-//     // </div>
-//   );
-// }
-
-// export default Leaderboard;
