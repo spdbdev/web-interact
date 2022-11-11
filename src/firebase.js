@@ -22,8 +22,13 @@ import {
   getDocs,
   collection,
   where,
+  setDoc,
+  doc,
+  getDoc,
   addDoc,
+  updateDoc
 } from "firebase/firestore";
+import { DUMMY_CAMPAIGN } from "./config";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -108,6 +113,100 @@ const sendPasswordReset = async (email) => {
 const logout = () => {
   signOut(auth);
 };
+
+export async function fetchUserByUsername(username) {
+  const q = query(collection(db, "users"), where("username", "==", username));
+  const querySnapshot = await getDocs(q);
+  const docSnapshots = querySnapshot.docs[0];
+  const data = docSnapshots.data()
+  return data
+}
+
+export async function fetchUser(id) {
+  const docRef = doc(db, "users", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const data = docSnap.data()
+    return data
+  } else {
+    // doc.data() will be undefined in this case
+    return
+  }
+}
+
+export async function fetchUserByUid(uid) {
+  const q = query(collection(db, "users"), where("uid", "==", uid));
+  const querySnapshot = await getDocs(q);
+  const docSnapshots = querySnapshot.docs[0];
+  const id = docSnapshots.id;
+  const data = docSnapshots.data()
+  return { ...data, id }
+}
+
+export const addCampaign = async (user) => {
+  console.log(user)
+  let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
+  let newCampaignId = `${user.name}_${campaignCounter}`;
+
+  let updatedUserData =
+    user.campaigns
+      ?
+      { campaigns: [...user.campaigns, { campaignId: newCampaignId, campaignStatus: "draft" }] }
+      :
+      { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] }
+  await setDoc(doc(db, "campaigns", newCampaignId), DUMMY_CAMPAIGN);
+  await updateDoc(doc(db, "users", user.id), updatedUserData);
+  return newCampaignId;
+}
+
+export async function fetchCampaign(campaignId) {
+  // Check for the customURL first
+  const customURLQ = query(collection(db, "campaigns"), where("customURL", "==", campaignId));
+  const customURLQuerySnapshot = await getDocs(customURLQ);
+  var docSnapshots = customURLQuerySnapshot.docs[0];
+  var data;
+  if (docSnapshots) {
+    data = docSnapshots.data()
+  } else if (!docSnapshots) {
+    // If there is no customURL, check for the id
+    data = (await getDoc(doc(db, "campaigns", campaignId))).data();
+  }
+  return data
+}
+
+export function createCampaignURL(campaign) {
+  return `${campaign.campaignStatus === "draft" ? "/d" : "/c"}/${campaign.campaignId}`
+}
+
+export async function publishCampaign(campaignId, userId) {
+  let docRef = doc(db, "campaigns", campaignId); //this needs to be passed in programatically
+  let userDocRef = doc(db, "users", userId); //this needs to be passed in programatically
+  let userData = (
+    await getDoc(userDocRef)
+  ).data();
+  let selectedCampaign = userData.campaigns.find((c) => c.campaignId === campaignId);
+  selectedCampaign.campaignStatus = "scheduled";
+  await updateDoc(docRef, { campaignStatus: "scheduled" });
+  await updateDoc(userDocRef, { campaigns: userData.campaigns });
+}
+
+export const checkCustomURLAgainstOtherCampaigns = async (url) => {
+  const campaign = await fetchCampaign(url);
+  return campaign;
+}
+
+export const getFirebaseArray = async (col) => {
+  let arr = [];
+  let arrFirebaseObject = await getDocs(col);
+  arrFirebaseObject.forEach((x, i) => {
+    // console.log(i);
+    arr.push({ ...x.data() }); // order by price to be implemented
+  });
+  //order by price backend later
+  // _bids.sort((a, b)=> a.price > b.price)
+  return arr;
+};
+
 
 // export const createUserProfileDocument = async (userAuth, additionalData) => {
 //   if (!userAuth) return;

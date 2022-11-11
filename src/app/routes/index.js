@@ -19,34 +19,23 @@ import gridViewRoutes from "./gridViewRoutes";
 const routes = [
   {
     path: "/",
-    element: <Navigate to={"/interact/signin"} />,
+    element: <Navigate to={"/a/signin"} />,
   },
 
   {
     path: "/signin",
-    element: <Navigate to={"/interact/signin"} />,
+    element: <Navigate to={"/a/signin"} />,
   },
 
   {
     path: "/signup",
-    element: <Navigate to={"/interact/signup"} />,
+    element: <Navigate to={"/a/signup"} />,
   },
-
-  {
-    path: "/user",
-    element: <Navigate to={"/interact/user"} />,
-  },
-
-  // {
-  //     path:
-  //         "/campaign",
-  //     element: <Navigate to={"/interact/campaign"}/>
-  // },
 
   // {
   //     path:
   //         "/createCampaign",
-  //     element: <Navigate to={"/interact/createCampaign"}/>
+  //     element: <Navigate to={"/a/create-campaign"}/>
   // },
 
   ...interactV1Routes,

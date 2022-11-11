@@ -39,9 +39,13 @@ export default function FAQAccordian({
       question: "How do I get an interaction?",
       answer: (
         <span>
-          2 options: auction or giveaway. A max of 2 interactions per user can
-          be acquired from every campaign, one from the auction & one from the
-          giveaway. Auction: place a bid to be on the leaderboard or use
+          2 options: auction or giveaway. A max of 2 interactions per user can 
+          be acquired from every campaign, one from the auction & one from the 
+          giveaway; only 1 interaction is actually carried out, except the 
+          duration is longer than a normal interaction (duration would become 
+          the sum of the 2 interactions won, meaning if you place in the top 3 
+          in the auction & you win in the giveaway, you get a super duper long 
+          interaction). Auction: place a bid to be on the leaderboard or use
           auto-bid (select a max bid and your preferred ranking); if you are
           still on the leaderboard when the campaign ends, you will acquire an
           interaction. If you place in the top 3 on the leaderboard, your
@@ -169,10 +173,7 @@ export default function FAQAccordian({
             general availability from Mon-Sun (editable on their profile page
             too). After the campaign ends, selected fans (winners) will have
             interactions assigned to them over the interaction window duration,
-            10 weeks by default (with auction winners having priority). The
-            creator selects when they are available week-by-week (creators have
-            to lock in their availability by Friday midnight for the next week);
-            from this, with our matching algorithm, interactions are scheduled.
+            10 weeks by default (with auction winners having priority). The creator selects when they are available week-by-week (creators have to lock in their availability by Friday midnight for the next week, and can sync with their personal Google, Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.
           </Typography>
         </AccordionDetails>
       </Accordion>

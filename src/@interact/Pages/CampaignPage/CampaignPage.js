@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Header from "./Header";
 import Stats from "./Stats";
-import CreatorName from "./CreatorName";
 import { useEffect, useState } from "react";
 
 import {doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot, getCountFromServer} from "firebase/firestore";
@@ -393,7 +392,7 @@ function CampaignPage(userData) {
 			}}
 			>
 			<Box sx={{ flex: 1, mr: 3 }}>
-				<CreatorName campaignData={campaignData} />
+				{/* <CreatorName campaignData={campaignData} /> */}
 				<CampaignInfo
 				isCampaignEnded={isCampaignEnded}
 				campaignData={campaignData}

@@ -19,10 +19,11 @@ import {
 } from "@mui/material";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FAQAccordian from "./FAQAccordian";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../../firebase";
+import { functions, publishCampaign } from "../../../firebase";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -39,12 +40,15 @@ export function CampaignSummaryItem({ label, value }) {
 
 export default function CampaignCreationSummaryPage() {
   const [campaignData, setCampaignData] = useState(null);
+  const [submitClicked, setSubmitClicked] = useState(false);
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const { campaignId } = useParams();
 
   useEffect(() => {
     const getCampaign = async () => {
       let fetchedData = (
-        await getDoc(doc(db, "campaigns", "campaign-creation-test"))
+        await getDoc(doc(db, "campaigns", campaignId))
       ).data();
 
       setCampaignData(fetchedData);
@@ -89,7 +93,7 @@ export default function CampaignCreationSummaryPage() {
   ];
 
   async function submitCampaign() {
-    const docRef = await doc(db, "campaigns", "campaign-creation-test"); //this needs to be passed in programatically
+    const docRef = await doc(db, "campaigns", campaignId); //this needs to be passed in programatically
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
@@ -112,21 +116,20 @@ export default function CampaignCreationSummaryPage() {
       currency: campaignData?.currency,
     });
 
-    console.log(conversionResponse?.data);
-
     updateDoc(docRef, { currencyExchangeRate: conversionResponse?.data ?? 1 })
       .then(() => {
         console.log("success");
       })
       .catch((error) => {
         console.log(error);
+        setSubmitClicked(false);
       }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
 
     // save as campaignStatus: "scheduled"
 
-    updateDoc(docRef, { campaignStatus: "scheduled" })
+    publishCampaign(campaignId, user.id)
       .then(() => {
-        navigate("/interact/campaign-creation-confirmation");
+        navigate(`/a/campaign-creation-confirmation/${campaignId}`);
         Toast.fire({
           icon: "success",
           title: "Campaign successfully created!",
@@ -138,6 +141,7 @@ export default function CampaignCreationSummaryPage() {
           icon: "error",
           title: "Failed to link server.",
         });
+        setSubmitClicked(false);
       }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
   }
 
@@ -170,7 +174,7 @@ export default function CampaignCreationSummaryPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/interact/createCampaign")}
+              onClick={() => navigate("/a/create-campaign")}
             >
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>
@@ -254,7 +258,9 @@ export default function CampaignCreationSummaryPage() {
           </Stack>
           <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
             <InteractFlashyButton
+              disabled={submitClicked}
               onClick={() => {
+                setSubmitClicked(true);
                 submitCampaign();
               }}
             >
