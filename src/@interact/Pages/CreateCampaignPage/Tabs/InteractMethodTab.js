@@ -130,7 +130,8 @@ export default function InteractMethodTab({
             fan's scheduled interaction, they will automatically be given a
             special role to access a private voice channel; they will
             automatically have that role removed after 3 hours (or you can do so
-            earlier manually)
+            earlier manually). <br></br><br/>
+            Press 'Link your Discord Server' again to change the server.
           </TitleAndDesc>
           <InteractButton
             onClick={handleLinkDiscordButton}
