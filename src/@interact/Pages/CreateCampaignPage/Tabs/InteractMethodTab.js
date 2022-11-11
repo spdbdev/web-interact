@@ -124,7 +124,7 @@ export default function InteractMethodTab({
       </Modal>
       <Stack direction="column" spacing={6}>
         <CreateCampaignItemWrapper>
-          <TitleAndDesc title="Link a Discord server">
+          <TitleAndDesc title="Link your Discord server">
             Interact via Discord to play mini-games like miniputt & watch
             Youtube videos together. Through our Interact bot, 1 minute before a
             fan's scheduled interaction, they will automatically be given a
@@ -191,7 +191,7 @@ export default function InteractMethodTab({
       </Stack>
 
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Or, set up Google Meet">
+        <TitleAndDesc title="Or, use Google Meet">
           We'll automatically generate a unique link for every interaction.
         </TitleAndDesc>
         <InteractButton
