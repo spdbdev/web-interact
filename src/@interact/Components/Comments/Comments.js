@@ -8,16 +8,41 @@ import {
   orderBy,
   setDoc,
   addDoc,
+  arrayUnion,
+  where,
   collection,
+  updateDoc,
   serverTimestamp,
   getDoc,
 } from "firebase/firestore";
-import { db } from "firebase";
+import { db } from "@jumbo/services/auth/firebase/firebase";
 
 const Comments = ({ comments, campaignId }) => {
-  const data = comments;
-  console.log(data);
 
+  // const data =[
+  //   {
+  //     userId: '02b',
+  //     comId: '017',
+  //     fullName: 'Lily',
+  //     userProfile: 'https://www.linkedin.com/in/riya-negi-8879631a9/',
+  //     text: 'I think you have a point🤔',
+  //     avatarUrl: 'https://ui-avatars.com/api/name=Lily&background=random',
+  //     replies: []
+  //   }
+  // ]
+  comments = comments.map(function(comment){
+    let replies = comment.replies.map((reply)=>{
+      if(reply.length > 0){
+        return JSON.parse(reply);
+      }else{
+        return reply;
+      }
+    })
+
+    return {...comment,replies}
+  })
+  console.log("Comments",comments);
+  
   return (
     <CommentSection
       currentUser={{
@@ -30,6 +55,7 @@ const Comments = ({ comments, campaignId }) => {
       formStyle={{ backgroundColor: "white" }}
       titleStyle={{ fontSize: "20px" }}
       hrStyle={{ border: "0.5px solid #fff" }}
+      overlayStyle={{position:"relative",width:"auto",height:"auto",background:"transparent"}}
       submitBtnStyle={{
         border: "1px solid black",
         backgroundColor: "#782FEE",
@@ -41,15 +67,27 @@ const Comments = ({ comments, campaignId }) => {
         color: "white",
         borderRadius: "11px 0 11px 0",
       }}
-      overlayStyle={{ padding: 0 }}
       logIn={{
         loginLink: "http://localhost:3001/",
         signupLink: "http://localhost:3001/",
       }}
-      commentData={data}
+      commentData={comments}
       onSubmitAction={(data) => {
-        console.log("check submit, ", data);
-        addDoc(collection(db, "campaigns", campaignId, "comments"), data);
+        setDoc(doc(db, "campaigns", campaignId, "comments",data.comId), data);
+      }}
+      onReplyAction={async (data) => {
+        console.log("chech reply submit",data);
+        const q = doc(db,"campaigns",campaignId,"comments",data.repliedToCommentId);
+        updateDoc((q),{
+          replies: arrayUnion(JSON.stringify({
+            comId: data.comId,
+            userId:data.userId,
+            avatarUrl: data.avatarUrl,
+            text: data.text,
+            profileUrl: data.profileUrl,
+            fullName: data.fullName
+          }))
+        })
       }}
       currentData={(data) => {
         console.log("curent data", data);

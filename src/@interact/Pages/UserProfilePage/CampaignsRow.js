@@ -3,7 +3,7 @@ import {Swiper,SwiperSlide} from 'swiper/react';
 import {Navigation} from  'swiper'
 import CampaignSnippet from '@interact/Components/CampaignSnippet/CampaignSnippet';
 
-function CampaignsRow({currentCampaigns,heading}) {
+function CampaignsRow({currentCampaigns, heading}) {
 
   const [swiper, setSwiper] = React.useState();
   const prevRef = React.useRef();

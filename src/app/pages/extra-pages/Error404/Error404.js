@@ -9,8 +9,10 @@ import {useJumboApp} from "@jumbo/hooks";
 import {LAYOUT_NAMES} from "../../../layouts/layouts";
 import {ASSET_IMAGES} from "../../../utils/constants/paths";
 import {getAssetPath} from "../../../utils/appHelpers";
+import { useNavigate } from 'react-router-dom';
 
 const Error404 = () => {
+    const navigate = useNavigate();
     const {setActiveLayout} = useJumboApp();
 
     React.useEffect(() => {
@@ -27,9 +29,9 @@ const Error404 = () => {
             justifyContent: 'center',
             p: theme => theme.spacing(4),
         }}>
-            <Div sx={{display: 'inline-flex', mb: 3}}>
+            {/* <Div sx={{display: 'inline-flex', mb: 3}}>
                 <img src={getAssetPath(`${ASSET_IMAGES}/apps/undraw_page_not_found.svg`, "380x206")} alt="404" width={380}/>
-            </Div>
+            </Div> */}
             <Typography align={"center"} component={"h2"} variant={"h1"} color={"text.secondary"} mb={3}>
                 Oops, an error has occurred. Page not found!
             </Typography>
@@ -48,7 +50,7 @@ const Error404 = () => {
                     sx={{bgcolor: theme => theme.palette.background.paper}}
                 />
             </FormControl>
-            <Button variant="contained">Go to home</Button>
+            <Button variant="contained" onClick={()=>navigate('/')}>Go to home</Button>
         </Div>
     );
 };

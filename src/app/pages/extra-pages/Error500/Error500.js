@@ -4,9 +4,11 @@ import {Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useJumboApp} from "@jumbo/hooks";
 import {LAYOUT_NAMES} from "../../../layouts/layouts";
+import { useNavigate } from 'react-router-dom';
 
 const Error500 = () => {
     const {setActiveLayout} = useJumboApp();
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         setActiveLayout(LAYOUT_NAMES.SOLO_PAGE);
@@ -33,7 +35,7 @@ const Error500 = () => {
                 color={"text.secondary"}
                 mb={4}
             >Sorry, server goes wrong </Typography>
-            <Button variant="contained">Go to home</Button>
+            <Button variant="contained" onClick={()=>navigate('/')}>Go to home</Button>
         </Div>
     );
 };
