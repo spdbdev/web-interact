@@ -14,8 +14,23 @@ import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
 import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage/CampaignCreationConfirmationPage";
+import Error404 from "app/pages/extra-pages/Error404";
+import { Navigate } from "react-router-dom";
+import Error500 from "app/pages/extra-pages/Error500";
 
 const interactV1Routes = [
+  {
+    path: "*",
+    element: <Navigate to="/a/400"/>,
+  },
+  {
+    path: "/a/400",
+    element: <Error404/>
+  },
+  {
+    path: "/a/500",
+    element: <Error500/>
+  },
   {
     path: "/interact/signin",
     element: <SignInPage />,
