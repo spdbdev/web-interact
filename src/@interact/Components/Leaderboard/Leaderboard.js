@@ -110,30 +110,22 @@ export default function Leaderboard({ campaignData, bids }) {
       <Box style={{marginTop:'1rem',height:"100%"}}>
         {bids?.length > 0 ? (
           <Grid container spacing={1} style={{height:"95%"}}>
-            <Grid item xs={4} md={4} lg={4} xl={5}>
-              {/* <span style={{fontWeight:'bold', color:'#782FEE', textDecoration:'underline'}}>Congrats, you're 8th!</span> */}
-              {/* <span
-                style={{
-                  fontWeight: "bold",
-                  color: "#f54295",
-                  textDecoration: "underline",
-                }}
-              >
-                You've been overthrown to 20th
-              </span> */}
 
+            <Grid item xs={4} md={4} lg={4} xl={5}>
               <Stack
                 spacing={2}
                 direction="column"
                 justifyContent="space-evenly"
                 divider={<Divider orientation="horizontal" flexItem />}
                 sx={{ my: 2 }}
+                style={{margin:'15%'}}
               >
                 <RankComponent data={rows[0]} />
                 <RankComponent data={rows[1]} />
                 <RankComponent data={rows[2]} />
               </Stack>
             </Grid>
+
             <Grid item xs={8} md={8} lg={8} xl={7} style={{height:'100%'}}>
               <DataGrid
                 sx={{ flex: 1, height: "100%", borderColor: "divider" }}
@@ -147,6 +139,7 @@ export default function Leaderboard({ campaignData, bids }) {
                 disableSelectionOnClick
               />
             </Grid>
+
           </Grid>
         ) : (
           <Box
@@ -170,7 +163,7 @@ const medals = [medal1, medal2, medal3];
 function RankComponent({ data }) {
   return (
     <Box sx={{display:"flex", flexDirection:"row", my:1}} >
-      <img style={{ height: '40%', width:'40%', paddingRight: 10 }} src={medals[data?.id - 1]} alt="" />
+      <img style={{ height: '35%', width:'35%', paddingRight: 10 }} src={medals[data?.id - 1]} alt="" />
       <Stack direction="column">
         <Typography variant="h4">
           <Link href={`/u/${data?.username}`} style={{fontSize:'2.3vw'}}>{data?.username}</Link>
