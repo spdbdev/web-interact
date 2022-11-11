@@ -280,10 +280,10 @@ const FAQText = {
       </Span>{" "}
       The creator can ban any participant of their campaigns from their current
       and future campaigns (lifetime). You can also delete any comment on your
-      campaigns (with the ability to also ban the user who made that comment). A
-      ban button is next to users on the ‘supporters’ tab of your campaign and
-      also on the user profile page when you have scheduled interactions with a
-      fan. Users have to AUTHORIZE a payment method to bid or enter the giveaway
+      campaigns (with the ability to also ban the user who made that comment). 
+      You can ban followers on your profile when looking at your list of followers. 
+      You can also ban users if they have a scheduled interaction in the meeting 
+      info box. Users have to AUTHORIZE a payment method to bid or enter the giveaway
       (meaning their payment method is validated via a small void transaction
       usually). Every fan has until the end of the drop to bid & enter the
       giveaway instead of a first-come-first-serve basis. <br />
