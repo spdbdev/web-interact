@@ -266,7 +266,7 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         When do you get paid?
       </Span>{" "}
-      Within 3 business days after the campaign is completed.
+      Within 3 business days after the campaign is completed, via Stripe Connect (directly to your bank account).
     </FAQSidebarWrapper>
   ),
   7: (
