@@ -273,8 +273,8 @@ const FAQText = {
     <FAQSidebarWrapper title="Promotion">
       While promoting the campaign, the goal is to drive hype & FOMO: it’s a
       fan’s only chance for a few months usually. If they miss out they’ll sit
-      in envy of other lucky fans who get to interact with a content creator
-      they love.
+      in envy of other lucky fans who get to interact.
+      <br /><br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
