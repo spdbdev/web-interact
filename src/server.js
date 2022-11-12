@@ -8,6 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
 app.use(express.static("public"));
 
 const YOUR_DOMAIN = "http://localhost:3000";
@@ -49,6 +50,90 @@ app.get("/method/attach/:cid/:pm", async (req, res) => {
     res.status(400).json({ message: "An error occured", added:false });
   }
 });
+
+
+
+//GET STRIPE ACCOUNT DETAILS
+app.post("/get_account",async (req, res) => {
+  const account = await stripe.accounts.retrieve(
+    req.accountId
+  );
+  res.status(200).send({
+    account:account
+  });
+});
+
+// CREATE STRIPE ACCOUNT
+
+app.get("/onboard-user", async (req, res) => {
+  try {
+    const account = await stripe.accounts.create({
+      type: 'express',
+    });
+
+    // Store the ID of the new Express connected account.
+    req.accountID = account.id;
+    const origin = `${req.secure ? "https://" : "http://"}${req.headers.host}`;
+
+    console.log(req.accountID);
+    const accountLink = await stripe.accountLinks.create({
+      type: "account_onboarding",
+      account: account.id,
+      refresh_url: `${origin}/onboard-user/refresh`,
+      return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountID,
+    });
+    res.redirect(303, accountLink.url);
+  } catch (err) {
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+});
+
+app.get("/onboard-user/refresh", async (req, res) => {
+  if (!req.accountID) {
+    res.redirect("/");
+    return;
+  }
+
+  try {
+    const { accountID } = req;
+    const origin = `${req.secure ? "https://" : "http://"}${req.headers.host}`;
+
+    const accountLink = await stripe.accountLinks.create({
+      type: "account_onboarding",
+      account: accountID,
+      refresh_url: `${origin}/onboard-user/refresh`,
+      return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+accountID,
+    });
+
+    res.redirect(303, accountLink.url);
+  } catch (err) {
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+});
+app.get("/onboard-user/success", async (req, res) => {
+  try {
+    if(req.accountID){
+      // res.status(200).json(JSON.stringify(req));
+      // res.status(200).json(JSON.stringify(res));  
+    }
+    console.log('response from /onboard-user/success');
+    console.log(res);
+    console.log('request from /onboard-user/success');
+    console.log(req.accountID);
+    
+  } catch (err) {
+    console.log('error from /onboard-user/success');
+    console.log(err);
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+});
+
 
 // all payments method
 
@@ -185,13 +270,15 @@ app.post("/make_payment_on_stripe", async (req, res) => {
       currency: 'usd',
       customer: customerId,
       payment_method: paymentmethodid,
-      off_session: true,
+      off_session: true, 
+      capture_method: 'manual',
       confirm: true,
     });
     res.status(200).json({ paymentstatus:true, paymentIntent });
   } catch (err) {
     // Error code will be authentication_required if authentication is needed
     console.log('Error code is: ', err.code);
+    console.log('Error is: ', err);
     const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
     console.log('PI retrieved: ', paymentIntentRetrieved.id );
     res.status(400).json({paymentstatus:false})
@@ -245,7 +332,7 @@ app.post("/create-raffle-session", async (req, res) => {
   res.redirect(303, session.url);
 });
 
-app.post("/create-auction-session", async (req, res) => {
+app.use("/create-auction-session", async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -303,6 +390,7 @@ app.post("/Auction_Bid_Payment_Authorise_Process", async (req, res) => {
   let price = req.body.price;
   clientName = req.body.name;
   email = req.body.email;
+  console.log(price+" - "+clientName+" - "+email);
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: price * 100,
@@ -317,7 +405,7 @@ app.post("/Auction_Bid_Payment_Authorise_Process", async (req, res) => {
       },
     },
   });
-
+console.log(paymentIntent);
   if (paymentIntent) {
     console.log(price);
     data = {
@@ -339,7 +427,8 @@ app.post("/Auction_Bid_Payment_Authorise_Process", async (req, res) => {
 
 app.post("/Auction_Bid_Payment_Capture_Process", async (req, res) => {
   const intent = await stripe.paymentIntents.capture(
-    "pi_3LrjVgCrYT0SvCI20pjw71mO"
+    // "pi_3LrjVgCrYT0SvCI20pjw71mO"
+    req.paymentId
   );
   if (intent.id != null) {
     data = {

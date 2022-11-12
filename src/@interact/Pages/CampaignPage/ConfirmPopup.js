@@ -27,7 +27,9 @@ export default function ConfirmPopup({
   hovereffect,
   hovertext,
   bidAction,
+  createReceipt,
   bidActionstatus,
+  setSelectedPaymentMethod
 }) {
   const [paymentId, setpaymentId] = useState();
   const [showtext, setShowText] = useState(false);
@@ -39,6 +41,7 @@ export default function ConfirmPopup({
 
   const selectPaymentId = (pmid) => {
     setpaymentId(pmid);
+    setSelectedPaymentMethod(pmid);
   };
 
   useEffect(() => {
@@ -49,18 +52,11 @@ export default function ConfirmPopup({
       }
     });
   }, [allprimarymethod]);
-
-  const confirmFuncion = () => {
-    console.log(paymentId, userCostomerId);
-    const formData = new FormData();
-    formData.append("price", price);
-    formData.append("paymentmethodid", paymentId);
-    formData.append("customerId", userCostomerId);
-
-    postRequest("/make_payment_on_stripe", formData)
-      .then(async (resp) => {
-        console.log(resp.data);
-        if (resp.data.paymentstatus) {
+const paymentResponse = (price,resp = null) => {
+  console.log(resp?.data);
+        if (!price || resp?.data?.paymentstatus) {
+          createReceipt();
+        
           settheOpenPopup(false);
           Swal.fire(
             "Correct!",
@@ -78,6 +74,20 @@ export default function ConfirmPopup({
             text: "An error occured",
           });
         }
+}
+  const confirmFuncion = () => {
+    console.log(paymentId, userCostomerId);
+    const formData = new FormData();
+    formData.append("price", price);
+    formData.append("paymentmethodid", paymentId);
+    formData.append("customerId", userCostomerId);
+    if(!price){
+      paymentResponse(price);
+      return;
+    }
+    postRequest("/make_payment_on_stripe", formData)
+      .then(async (resp) => {
+        paymentResponse(price,resp);
       })
       .catch((err) => {
         console.log(err);

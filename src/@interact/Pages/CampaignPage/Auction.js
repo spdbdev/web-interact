@@ -29,7 +29,9 @@ import {
   collection,
   getDocs,
   where,
+  setDoc,
   addDoc,
+  getDoc,
   updateDoc,
   doc,
 } from "firebase/firestore";
@@ -78,6 +80,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
   // // console.log('bid looking at', Math.min(bids.length -1, campaignData?.numBidSlots-1), bids[Math.min(bids.length -1, campaignData?.numBidSlots-1)].price)
   const [user, loading, error] = useAuthState(auth);
   const [bidAmount, setBidAmount] = useState(0);
+  const [currentUser,setCurrentUser] = useState(null);
   const [maxBidAmount, setMaxBidAmount] = useState(0);
   const [desiredRanking, setDesiredRanking] = useState(0);
   const navigate = useNavigate();
@@ -243,13 +246,27 @@ export default function Auction({ bids, campaignData, bidAction }) {
 
   const fetchUserName = async () => {
     try {
+//       const snap = await getDoc(doc(db, 'users', where("uid", "==", user?.uid)))
+
+// if (snap.exists()) {
+//   console.log('using snap');
+//   console.log(snap.id);
+//   console.log(snap.data());
+// }
+// else {
+//   console.log("No such document")
+// }
       const q = query(collection(db, "users"), where("uid", "==", user?.uid));
 
       const colledoc = await getDocs(q);
 
       const data = colledoc.docs[0].data();
-
+      data.id = colledoc.docs[0].id;
+      console.log('user collection doc');
+      console.log(colledoc.docs[0]);
+      console.log(colledoc.docs[0].id);
       setUserCostomerId(data.customerId);
+      setCurrentUser(data);
 
       // getRequest(`/customer/method/${data.customerId}`)
       //   .then((resp) => {
@@ -328,17 +345,44 @@ export default function Auction({ bids, campaignData, bidAction }) {
     setselectPopUp(2);
     setOpenPopup1(false);
   };
+  const createReceipt = async () => {
+    console.log("RECEIPT DETAILS", {
+      creator_username: campaignData?.person?.username,
+      purchaser_username: currentUser?.name,
+      price: openPopup1?bidAmount:maxBidAmount,
+      rank: openPopup1?'manual':desiredRanking,
+  }); 
+//   await db.collection('users').doc("eBgjz86kRKRqBKe2iMI1").collection('receipts').add({
+//     creator_username: campaignData?.person?.username,
+//     purchaser_username: currentUser?.name,
+//     price: maxBidAmount,
+//     rank: desiredRanking,
+//     type:'auction'
+// });
+
+  const receiptResponse = await addDoc(collection(db, "users", currentUser.id, "receipts"), {
+    creator_username: campaignData?.person?.username,
+    purchaser_username: currentUser?.name,
+    price: openPopup1?bidAmount:maxBidAmount,
+    rank: openPopup1?'manual':desiredRanking,
+    type:'auction'
+});
+console.log('receiptResponse');
+console.log(receiptResponse);
+  }
 
   useEffect(() => {
     if (loading) return;
     if (!user) return navigate("/");
-    console.log(auth.currentUser);
     fetchUserName();
+    console.log('currentUser');
+    console.log(currentUser);    
   }, [user]);
 
   return (
     <>
       <ConfirmPopup
+        createReceipt={createReceipt}
         openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
@@ -354,6 +398,7 @@ export default function Auction({ bids, campaignData, bidAction }) {
       />
 
       <ConfirmPopup
+      createReceipt={createReceipt}
         openstate={openPopup1}
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}

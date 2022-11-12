@@ -86,7 +86,7 @@ const AuthUserDropdown = () => {
                 <RepeatOutlinedIcon />
               </ListItemIcon>
               <ListItemText
-                onClick={() => navigate("/interact/createCampaign")}
+                onClick={() => navigate("/interact/receipts")}
                 primary="Receipts & pay stubs"
                 sx={{ my: 0 }}
               />

@@ -17,13 +17,15 @@ import FAQTab from "./Tabs/FAQTab";
 import PaymentTab from "./Tabs/PaymentTab";
 import PromotionTab from "./Tabs/PromotionTab";
 import SideBar from "./SideBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import { ExpandLess } from "@mui/icons-material";
 import { useJumboContentLayout } from "@jumbo/hooks";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import CampaignCategorySelect from "./CampaignCategorySelect";
 import SoloPage from "app/layouts/solo-page/SoloPage";
+import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { doc,query, updateDoc,collection, getDocs, setDoc,where, addDoc } from "firebase/firestore";
 
 const FAQText = {
   0: <span>this is the basics tab</span>,
@@ -39,12 +41,47 @@ function CreateCampaignPage() {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
   const [FAQSideBarText, setFAQSideBarText] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [accountId, setAccountId] = useState(null);
 
   const navigate = useNavigate();
+  const updateAccountId = async () => {
+    try{
+      if(auth?.currentUser?.uid){
+          const q = query(collection(db, "users"), where("uid", "==", auth?.currentUser?.uid));
+          const colledoc = await getDocs(q);
+          const data = colledoc.docs[0].data();
+          if(accountId){
+            const userUpdated = doc(db, "users", colledoc.docs[0].id);
+          const res = await updateDoc(userUpdated,{
+            accountId: accountId
+          });
+          console.log('CAMPAIGN DB accountId');
+    console.log(accountId);
+    
+        }
+        else{
+          console.log('CAMPAIGN DB accountId');
+    console.log(accountId);
+    
+          setAccountId(data.accountId);
+        }
+      }
+      setSelectedTabIndex(5); 
 
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
   useEffect(() => {
+    setAccountId(searchParams.get("accountId"));
+    if(accountId){
+      updateAccountId();
+    }
+
     setFAQSideBarText(FAQText[selectedTabIndex]);
-  }, [selectedTabIndex]);
+  }, [selectedTabIndex,accountId]);
 
   function renderTab() {
     switch (selectedTabIndex) {

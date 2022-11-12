@@ -1,5 +1,5 @@
 import axios from "axios";
-const _BASE_URL = "http://localhost:4242";
+export const _BASE_URL = "http://localhost:4242";
 export const postRequest = (path, data) => {
   return axios.post(`${_BASE_URL}${path}`, data, {
     headers: {

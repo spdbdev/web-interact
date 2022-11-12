@@ -61,11 +61,13 @@ export default function Giveaway({
   const navigate = useNavigate();
   const [user, loading, error] = useAuthState(auth);
   const stripe = useStripe();
+  const [currentUser,setCurrentUser] = useState(null);
   const [open, setOpen] = useState(false);
   const elements = useElements();
   const card = useRef();
   const [openPopup, setOpenPopup] = useState(false);
   const [rafflePrice, setRafflePrice] = useState(0);
+  const [selectedPaymentMethod,setSelectedPaymentMethod] = useState(null);
   useEffect(() => {
     if (typeof campaignData?.rafflePrice === "undefined") {
       setRafflePrice(0);
@@ -226,6 +228,9 @@ export default function Giveaway({
       const data = colledoc.docs[0].data();
 
       setUserCostomerId(data.customerId);
+      data.id = colledoc.docs[0].id;
+      setCurrentUser(data);
+
 
       // getRequest(`/customer/method/${data.customerId}`)
       //   .then((resp) => {
@@ -240,6 +245,32 @@ export default function Giveaway({
       alert("An error occured while fetching user data");
     }
   };
+  const createReceipt = async () => {
+    console.log("GIVEAWAY RECEIPT DETAILS", {
+      creator_username: campaignData?.person?.username,
+      purchaser_username: currentUser?.name,
+      price: rafflePrice,
+      paymentmethod:selectedPaymentMethod, 
+      type:'giveaway'
+  }); 
+//   await db.collection('users').doc("eBgjz86kRKRqBKe2iMI1").collection('receipts').add({
+//     creator_username: campaignData?.person?.username,
+//     purchaser_username: currentUser?.name,
+//     price: maxBidAmount,
+//     rank: desiredRanking,
+//     type:'auction'
+// });
+
+  const receiptResponse = await addDoc(collection(db, "users", currentUser.id, "receipts"), {
+    creator_username: campaignData?.person?.username,
+    purchaser_username: currentUser?.name,
+    price: rafflePrice,
+    paymentmethod:selectedPaymentMethod, 
+    type:'giveaway'
+});
+console.log('Giveaway receiptResponse');
+console.log(receiptResponse);
+  }
 
   useEffect(() => {
     if (!user) return navigate("/");
@@ -320,6 +351,7 @@ export default function Giveaway({
       if (result.value) {
         setHasUserClaimedFreeEntry(true);
         setHasUserEnteredGiveaway(true);
+        createReceipt();
         Swal.fire(
           "Claimed!",
           "You've claimed a free entry for this giveaway. Good luck!",
@@ -340,10 +372,12 @@ export default function Giveaway({
   return (
     <>
       <ConfirmPopup
+      createReceipt={createReceipt}
         openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
+        setSelectedPaymentMethod={setSelectedPaymentMethod}
         title={"Confirm VIP entry"}
         belowtext={autobid}
         undertitle={``}

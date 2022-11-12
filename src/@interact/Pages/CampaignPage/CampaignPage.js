@@ -521,8 +521,9 @@ function CampaignPage(userData) {
     return arr;
   };
   const getCampaignData = async () => {
+    
     let _campaignData = (await getDoc(doc(db, "campaigns", campaignId))).data();
-    // console.log('_campaignData', _campaignData)
+    console.log('_campaignData', _campaignData)
     setCampaignData(_campaignData);
 
     // let bidQuery = query(collection(db, 'campaigns', campaignId, 'bids'), orderBy("time"))
@@ -570,9 +571,17 @@ function CampaignPage(userData) {
       person: user,
       price: amount,
       auto: auto,
-      email:clientemail,
+      email:clientemail == undefined?'':clientemail,
       time: serverTimestamp(),
     });
+    
+    // await setDoc(doc(db, "users", userId, "receipts"), {
+    //   creator_username: campaignData?.person?.username,
+    //   purchaser_username: auth?.currentUser?.name,
+    //   price: price,
+    //   payment_method_id:paymentId,
+    //   rank: desiredRanking,
+    // });
     getCampaignData();
   };
 
