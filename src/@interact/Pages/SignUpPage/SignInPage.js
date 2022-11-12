@@ -10,6 +10,7 @@ import gl_logo from './google.png';
 import './SignUpPage.css'
 import useCurrentUser from '@interact/Hooks/use-current-user';
 import Loading from '@interact/Components/Loading/Loading';
+import InteractButton from '@interact/Components/Button/InteractButton';
 
 function SignInPage() {
 
@@ -45,17 +46,10 @@ function SignInPage() {
           <TextField id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
         </div>
 
-        <div className='ButtonsWrapper'>
-          <Button
-            style={{
-              margin: 10,
-              color: 'white',
-              backgroundColor: "purple",
-              padding: "10px 20px",
-              // fontWeight:'bold',
-            }}
-            onClick={() => loginWithEmailAndPassword(email, password)}
-            color='info'>Log In</Button>
+        <div className='ButtonsWrapper' style={{margin:10}}>
+          <InteractButton onClick={()=>loginWithEmailAndPassword(email, password)}>
+            Log In
+          </InteractButton>
         </div>
         <div style={{ paddingTop: 20 }}>
           <Link to='/reset'>Forgot Password</Link>

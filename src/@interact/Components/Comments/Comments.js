@@ -41,7 +41,6 @@ const Comments = ({ comments, campaignId }) => {
 
     return {...comment,replies}
   })
-  console.log("Comments",comments);
   
   return (
     <CommentSection
@@ -76,7 +75,6 @@ const Comments = ({ comments, campaignId }) => {
         setDoc(doc(db, "campaigns", campaignId, "comments",data.comId), data);
       }}
       onReplyAction={async (data) => {
-        console.log("chech reply submit",data);
         const q = doc(db,"campaigns",campaignId,"comments",data.repliedToCommentId);
         updateDoc((q),{
           replies: arrayUnion(JSON.stringify({
@@ -90,7 +88,7 @@ const Comments = ({ comments, campaignId }) => {
         })
       }}
       currentData={(data) => {
-        console.log("curent data", data);
+        // console.log("curent data", data);
       }}
     />
   );

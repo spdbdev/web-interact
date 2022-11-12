@@ -1,4 +1,4 @@
-import { TextField, Button, FormControlLabel, Checkbox } from "@mui/material";
+import { TextField, Button, FormControlLabel, Checkbox,Alert } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -13,6 +13,7 @@ import fb_logo from "./facebook.png";
 import gl_logo from "./google.png";
 
 import "./SignUpPage.css";
+import InteractButton from "@interact/Components/Button/InteractButton";
 
 // newer SignUpPage with birthday.
 function SignUpPage2() {
@@ -20,11 +21,33 @@ function SignUpPage2() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
+  const [isPassValid,setIsPassValid] = useState(false);
   const [name, setName] = useState("");
+  const [nameError,setNameError] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
+
+
+  const validateUserName = function(){
+    if(name.length > 14){
+      setNameError("Username cannot be longer than 15.");
+      return false;
+    }else if(/\s/.test(name)){
+      setNameError("Whitespaces are not allowed in username");
+      return false;
+    }else if(JSON.stringify(name).includes('\\')){
+      setNameError("Username cannot contain '\\' character.")
+      return false
+    }
+    return true;
+  }
+
   const register = () => {
-    if (!name) alert("Please enter name");
+    if (!validateUserName()) return;
+    if (!isPassValid) {
+      alert("Password is not valid");
+      return;
+    }
     registerWithEmailAndPassword(name, email, password);
   };
   useEffect(() => {
@@ -62,12 +85,17 @@ function SignUpPage2() {
         <br />
         or
         <br />
+        <div style={{width:"80%",padding:"10px"}}>
+          <Alert severity="warning">Warning: username cannot be changed in the future</Alert>
+        </div>
         <div className="TextInputWrapper">
           <TextField
+            error={nameError.length > 0}
             id="outlined-basic"
-            label="Create a Username"
+            label="Legal name"
             variant="outlined"
             value={name}
+            helperText={nameError}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
@@ -102,10 +130,12 @@ function SignUpPage2() {
         </div>
         <PasswordChecklist
           rules={["minLength", "number", "match"]}
-          minLength={5}
+          minLength={6}
           value={password}
           valueAgain={passwordAgain}
-          onChange={(isValid) => {}}
+          onChange={(isValid) => {
+            setIsPassValid(isValid);
+          }}
         />
         <div className="TextInputWrapper">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -133,20 +163,9 @@ function SignUpPage2() {
             <a href="https://eforms.com/release/media/">terms and services</a>
           </span>
         </div>
-        <div className="ButtonsWrapper">
-          <Button
-            style={{
-              margin: 10,
-              color: "white",
-              backgroundColor: "purple",
-              padding: "10px 20px",
-              // fontWeight:'bold',
-            }}
-            color="info"
-            onClick={register}
-          >
-            Create Account
-          </Button>
+        <div className="ButtonsWrapper" style={{margin:10}}>
+          <InteractButton
+          onClick={register}>Create Account</InteractButton>
         </div>
         <div style={{ paddingTop: 20 }}>
           Already have an account? <Link to="/">Log in</Link>

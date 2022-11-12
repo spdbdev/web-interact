@@ -49,7 +49,6 @@ function CampaignInfo({ campaignData, comments, campaignId,bids,giveaways,isCamp
     let items = [...giveaways,...bidsItems];
     items = items.sort(function(a, b){return b.price - a.price});
     setSupporters(items);
-    console.log("items",items);
   }
 
   const getWinners =async function(){
