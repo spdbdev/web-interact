@@ -31,6 +31,7 @@ import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import InteractMethodTab from "./Tabs/InteractMethodTab";
 import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import Medals from "../../Images/allCreatorRanks.png";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -263,10 +264,12 @@ const FAQText = {
         <li>Platinum, $100K = 10%</li>
         <li>Diamond, $1M = 2%</li>
       </ul>
+      <img src={Medals} width="100%" />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         When do you get paid?
       </Span>{" "}
-      Within 3 business days after the campaign is completed, via Stripe Connect (directly to your bank account).
+      Within 3 business days after the campaign is completed, via Stripe Connect
+      (directly to your bank account).
     </FAQSidebarWrapper>
   ),
   7: (
@@ -274,19 +277,20 @@ const FAQText = {
       While promoting the campaign, the goal is to drive hype & FOMO: it’s a
       fan’s only chance for a few months usually. If they miss out they’ll sit
       in envy of other lucky fans who get to interact.
-      <br /><br />
+      <br />
+      <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
       The creator can ban any participant of their campaigns from their current
       and future campaigns (lifetime). You can also delete any comment on your
-      campaigns (with the ability to also ban the user who made that comment). 
-      You can ban followers on your profile when looking at your list of followers. 
-      You can also ban users if they have a scheduled interaction in the meeting 
-      info box. Users have to AUTHORIZE a payment method to bid or enter the giveaway
-      (meaning their payment method is validated via a small void transaction
-      usually). Every fan has until the end of the drop to bid & enter the
-      giveaway instead of a first-come-first-serve basis. <br />
+      campaigns (with the ability to also ban the user who made that comment).
+      You can ban followers on your profile when looking at your list of
+      followers. You can also ban users if they have a scheduled interaction in
+      the meeting info box. Users have to AUTHORIZE a payment method to bid or
+      enter the giveaway (meaning their payment method is validated via a small
+      void transaction usually). Every fan has until the end of the drop to bid
+      & enter the giveaway instead of a first-come-first-serve basis. <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         When can I start the next campaign?
@@ -389,7 +393,7 @@ function CreateCampaignPage() {
         getCampaign("campaign-creation-test");
       }
     }
-  }
+  };
 
   function renderTab() {
     const tabProps = {

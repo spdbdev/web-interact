@@ -13,7 +13,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import SoloPage from "app/layouts/solo-page/SoloPage";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
@@ -36,11 +35,11 @@ const WhatIsInteractFAQs = [
         (editable on their profile page too). After the campaign ends, selected
         fans (winners) will have interactions assigned to them over the
         interaction window duration, 10 weeks by default (with auction winners
-        having priority). The creator selects when they are available week-by-week 
-        (creators have to lock in their availability by Friday midnight for the 
-        next week, and can sync with their personal Google, Outlook or iCloud 
-        calendars); from this, with our matching algorithm, interactions are scheduled.
-
+        having priority). The creator selects when they are available
+        week-by-week (creators have to lock in their availability by Friday
+        midnight for the next week, and can sync with their personal Google,
+        Outlook or iCloud calendars); from this, with our matching algorithm,
+        interactions are scheduled.
       </span>
     ),
     defaultExpanded: true,
@@ -185,6 +184,16 @@ function SpecialAccordion({ question, answer, defaultExpanded }) {
 export default function WhatIsInteractPage() {
   const navigate = useNavigate();
 
+  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+
+  useEffect(() => {
+    // Fixes a bug where sidebar is hidden but remains "open" when
+    // navigating to this screen
+    if (sidebarOptions.open === true) {
+      setSidebarOptions({ open: false });
+    }
+  }, [sidebarOptions]);
+
   return (
     <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
@@ -201,7 +210,7 @@ export default function WhatIsInteractPage() {
           <IconButton
             disableRipple
             disableFocusRipple
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(`/u/`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
@@ -217,9 +226,9 @@ export default function WhatIsInteractPage() {
               grown with you not only as a creator, but as a human being. We
               minimize logistical hassle and make it worth your time (while
               creating content/streaming, making an additional $100+ an hour
-              with only 1000 devoted fans). This is {" "}
+              with only 1000 devoted fans). This is{" "}
               <strong style={{ fontWeight: 600 }}>
-              extra income at no opportunity
+                extra income at no opportunity
               </strong>{" "}
               cost since you get fresh content for your stream (your streaming
               scheduling can stay the same, no additional hours needed) and/or
@@ -237,9 +246,7 @@ export default function WhatIsInteractPage() {
           </Stack>
         </Stack>
         <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
-          <InteractFlashyButton
-            onClick={() => navigate("/a/create-campaign")}
-          >
+          <InteractFlashyButton onClick={() => navigate("/a/create-campaign")}>
             Next →
           </InteractFlashyButton>
         </Box>
