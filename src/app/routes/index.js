@@ -18,11 +18,6 @@ import gridViewRoutes from "./gridViewRoutes";
 
 const routes = [
   {
-    path: "/",
-    element: <Navigate to={"/a/signin"} />,
-  },
-
-  {
     path: "/signin",
     element: <Navigate to={"/a/signin"} />,
   },

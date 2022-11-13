@@ -14,6 +14,7 @@ import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
 import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage/CampaignCreationConfirmationPage";
+import LandingPage from "@interact/Pages/LandingPage/LandingPage";
 
 const interactV1Routes = [
   {
@@ -114,6 +115,12 @@ const interactV1Routes = [
     path: "/a/terms-and-conditions",
     element: (
       <Page component={<></>} layout="solo-page" />
+    ),
+  },
+  {
+    path: "/",
+    element: (
+      <Page component={LandingPage} layout="solo-page" />
     ),
   },
 ];
