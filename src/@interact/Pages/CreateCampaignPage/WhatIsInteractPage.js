@@ -217,7 +217,10 @@ export default function WhatIsInteractPage() {
               grown with you not only as a creator, but as a human being. We
               minimize logistical hassle and make it worth your time (while
               creating content/streaming, making an additional $100+ an hour
-              with only 1000 devoted fans). This is FREE MONEY at no opportunity
+              with only 1000 devoted fans). This is {" "}
+              <strong style={{ fontWeight: 600 }}>
+              extra income at no opportunity
+              </strong>{" "}
               cost since you get fresh content for your stream (your streaming
               scheduling can stay the same, no additional hours needed) and/or
               you can make use of highlights from interactions to spice up new
