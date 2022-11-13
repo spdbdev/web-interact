@@ -45,7 +45,7 @@ function CampaignPage(userData) {
 	const { theme } = useJumboTheme();
 	const campaignId = "test12345";
 	//const navigate = useNavigate();
-	//let [user, loading] = useAuthState(auth);
+	// let [user, loading] = useAuthState(auth);
 	let user = {
   		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
   		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
@@ -240,6 +240,7 @@ function CampaignPage(userData) {
 		//if (loading) return;
 		//if (!user) return navigate("/");
 
+		console.log("User>>",user)
 		getCampaignData();
 		checkPurchasedEntry();
 	}, []);

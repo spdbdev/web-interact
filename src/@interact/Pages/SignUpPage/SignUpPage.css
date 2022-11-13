@@ -2,7 +2,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
-    height:100vh;
+    /* height:100vh; */
     flex-direction: row;
     background-image: linear-gradient(to bottom right, #4b26a3, #d442f5);
 }
@@ -48,7 +48,7 @@
 
 .SignUpWithGoogle{
     height:40px;
-    width:60%;
+    width:65%;
     border-radius: 5px;
     /* border-color:#ccc;
     border-style: solid; */
