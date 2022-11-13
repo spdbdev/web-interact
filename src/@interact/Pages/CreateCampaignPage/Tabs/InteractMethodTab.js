@@ -39,13 +39,9 @@ export default function InteractMethodTab({
 
   useEffect(() => {
     setFormValidationConditions(
-      0 < title?.length &&
-        title?.length <= 40 &&
-        description?.length > 0 &&
-        1 <= categories?.length &&
-        categories?.length <= 3
+      method === "googleMeet" || method === "discord"
     );
-  }, [title, description, categories]);
+  }, [method]);
 
   useEffect(() => {
     if (!formValidationConditions) {
@@ -63,6 +59,20 @@ export default function InteractMethodTab({
   });
 
   const Swal = useSwalWrapper();
+
+  function handleGoogleMeetButton() {
+    if (isGoogleMeetLinked) {
+      setIsGoogleMeetLinked(false);
+      setIsDiscordLinked(false);
+      setMethod(null);
+      setData({ interactMethod: "" });
+    } else {
+      setIsGoogleMeetLinked(true);
+      setIsDiscordLinked(false);
+      setMethod("googleMeet");
+      setData({ interactMethod: "googleMeet" });
+    }
+  }
 
   function handleLinkDiscordButton() {
     const Toast = Swal.mixin({
@@ -130,7 +140,8 @@ export default function InteractMethodTab({
             fan's scheduled interaction, they will automatically be given a
             special role to access a private voice channel; they will
             automatically have that role removed after 3 hours (or you can do so
-            earlier manually). <br></br><br/>
+            earlier manually). <br></br>
+            <br />
             Press 'Link your Discord Server' again to change the server.
           </TitleAndDesc>
           <InteractButton
@@ -196,12 +207,7 @@ export default function InteractMethodTab({
           We'll automatically generate a unique link for every interaction.
         </TitleAndDesc>
         <InteractButton
-          onClick={() => {
-            setIsGoogleMeetLinked(true);
-            setIsDiscordLinked(false);
-            setMethod("googleMeet");
-            setData({ interactMethod: "googleMeet" });
-          }}
+          onClick={handleGoogleMeetButton}
           sx={{
             width: 300,
             color: isGoogleMeetLinked ? "primary.contrastText" : "primary.main",
