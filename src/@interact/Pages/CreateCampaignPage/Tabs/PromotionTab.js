@@ -111,7 +111,13 @@ export default function PromotionTab({
           <br />
           <br />
           Note that this URL won't be reserved until you finish the campaign
-          creation.
+          creation. <br />
+          WARNING: upon submitting this campaign draft, the inputted URL will 
+          become the URL of this campaign; 
+          <span style={{ color: "#782eee", fontWeight: 600 }}>
+          {" "}if you have an active campaign with 
+          this reserved URL, it will also be replaced when you press submit.
+          </span>
         </TitleAndDesc>
         <Stack alignItems="flex-end">
           <Stack direction="row" spacing={2} alignItems="center">
