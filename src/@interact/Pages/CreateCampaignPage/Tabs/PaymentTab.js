@@ -11,6 +11,7 @@ export default function PaymentTab({
   selectedTabIndex,
   setSelectedTabIndex,
 }) {
+  
   return (
     <>
       <CreateCampaignItemWrapper>

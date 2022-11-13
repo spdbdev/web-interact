@@ -319,7 +319,7 @@ function CreateCampaignPage() {
     setHasInitialTabBeenSetFromDatabase,
   ] = useState(false);
   const [FAQSideBarText, setFAQSideBarText] = useState("");
-  const [campaignData, setCampaignData] = useState(campaignId);
+  const [campaignData, setCampaignData] = useState();
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
   const { user } = useCurrentUser();
   const campaignAddedRef = useRef(false);
@@ -335,7 +335,7 @@ function CreateCampaignPage() {
   }, [sidebarOptions]);
 
   const { data, setData, isAutosaving, lastSavedAt, autosaveError } =
-    useAutosaveCampaign(campaignData);
+    useAutosaveCampaign(campaignData, campaignId);
 
   const navigate = useNavigate();
 
@@ -348,37 +348,44 @@ function CreateCampaignPage() {
 
   useEffect(() => {
     setFAQSideBarText(FAQText[selectedTabIndex]);
+    if (campaignData && selectedTabIndex !== campaignData.lastCompletedTabIndex) {
+      setData({ lastCompletedTabIndex: selectedTabIndex })
+    }
   }, [selectedTabIndex]);
 
   useEffect(() => {
-    const initialTabIndex = campaignData?.lastCompletedTabIndex + 1;
-
+    const initialTabIndex = campaignData?.lastCompletedTabIndex;
     if (initialTabIndex >= 0 && !hasInitialTabBeenSetFromDatabase) {
       setSelectedTabIndex(initialTabIndex);
       setHasInitialTabBeenSetFromDatabase(true);
     }
   }, [campaignData]);
 
-  const handleCampaign = () => {
-    const getCampaign = async (campaignId) => {
-      let fetchedData = await fetchCampaign(campaignId);
+  const getCampaign = async (campaignId) => {
+    let fetchedData = await fetchCampaign(campaignId);
 
-      if (fetchedData) {
-        setCampaignData({ ...fetchedData, campaignId });
-      }
-    };
-
-    const handleAddCampaign = async () => {
-      let newCampaignId = await addCampaign(user);
-      navigate(`/d/${newCampaignId}`)
+    if (fetchedData) {
+      setCampaignData(fetchedData, campaignId);
     }
+  };
+
+  const handleAddCampaign = async () => {
+    let newCampaignId = await addCampaign(user);
+    navigate(`/d/${newCampaignId}`)
+  }
+
+  const handleCampaign = () => {
     if (user) {
-      if (campaignAddedRef.current === true) {
-        return
-      } else if (data && !(data.lastCompletedTabIndex !== undefined && Object.keys(data).length === 1) && !campaignId) {
+      // Not ideal, but essentially checks if:
+      // 1) Data exists and is not just lastCompletedTabIndex AND
+      // 2) campaignId has not been passed, thus a new campaign
+      // 3) Campaign has not been added yet
+      if (data && !(data.lastCompletedTabIndex !== undefined && Object.keys(data).length === 1) && !campaignId && campaignAddedRef.current === false) {
         campaignAddedRef.current = true;
         handleAddCampaign();
-      } else {
+      } else if (campaignId) {
+        getCampaign(campaignId);
+      } else if (!campaignId) {
         getCampaign("campaign-creation-test");
       }
     }
