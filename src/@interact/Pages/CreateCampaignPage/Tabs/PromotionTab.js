@@ -112,6 +112,7 @@ export default function PromotionTab({
           <br />
           Note that this URL won't be reserved until you finish the campaign
           creation. <br />
+          <br />
           WARNING: upon submitting this campaign draft, the inputted URL will 
           become the URL of this campaign; 
           <span style={{ color: "#782eee", fontWeight: 600 }}>
