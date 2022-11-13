@@ -9,9 +9,9 @@ import { useParams } from "react-router-dom";
 const DEBOUNCE_SAVE_DELAY_MS = 1000;
 
 export default function useAutosaveCampaign
-  (campaignData) {
+  (campaignData, campaignId) {
   // This UI state mirrors what's in the database.
-  const campaignIdRef = useRef(campaignData)
+  const campaignIdRef = useRef(campaignId)
   const [data, setData] = useState(campaignData);
   const [isAutosaving, setIsAutosaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState(moment());
@@ -24,9 +24,8 @@ export default function useAutosaveCampaign
     setIsAutosaving(true);
     setAutosaveError(false);
     if (!campaignIdRef.current) return;
-    const docRef = await doc(db, "campaigns", campaignIdRef.current); //this needs to be passed in programatically
+    const docRef = doc(db, "campaigns", campaignIdRef.current); //this needs to be passed in programatically
     // const docRef = await doc(db, "campaigns", docId);
-
     updateDoc(docRef, newData)
       .then(() => {
         setIsAutosaving(false);
