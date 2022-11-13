@@ -93,7 +93,7 @@ export default function CampaignCreationSummaryPage() {
   ];
 
   async function submitCampaign() {
-    const docRef = await doc(db, "campaigns", campaignId); //this needs to be passed in programatically
+    const docRef = doc(db, "campaigns", campaignId); //this needs to be passed in programatically
     const Toast = Swal.mixin({
       toast: true,
       position: "top-end",
