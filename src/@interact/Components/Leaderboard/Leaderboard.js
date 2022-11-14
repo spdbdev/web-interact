@@ -99,18 +99,12 @@ export default function Leaderboard({ campaignData, bids }) {
 
   return (
     <JumboCardQuick
-      sx={{ flex: 1, mr: 1 }}
+      sx={{ flex: 1, mr: 1, pb: 3 }}
       className="jumboCardQuick"
       id="jumboCardQuick"
     >
       <Box style={{ height: "100%" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
+        <Stack direction="row" alignItems="center">
           <Typography variant="h4" sx={{ mr: 1, mb: 0 }}>
             Leaderboard
           </Typography>
@@ -120,7 +114,7 @@ export default function Leaderboard({ campaignData, bids }) {
         (before winners from the giveaway); otherwise, if you are overthrown from the
         leaderboard by the end of the campaign, you are not charged"
           />
-        </Box>
+        </Stack>
         <Box style={{ height: "100%" }}>
           {bids?.length > 0 ? (
             <Stack direction="row" spacing={2} width="100%" height="100%">
