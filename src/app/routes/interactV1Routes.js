@@ -10,6 +10,8 @@ import UserProfile from "app/pages/users/user-profile";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
+import TermsAndConditionsPage from "@interact/Pages/TermsAndPolicyPage/TermsAndConditionsPage";
+import PrivacyPolicyPage from "@interact/Pages/TermsAndPolicyPage/PrivacyPolicyPage";
 import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
@@ -38,6 +40,14 @@ const interactV1Routes = [
   {
     path: "/a/signup",
     element: <SignUpPage2 />,
+  },
+  {
+    path: "/a/termsandconditions",
+    element: <TermsAndConditionsPage/>,
+  },
+  {
+    path: "/a/privacypolicy",
+    element: <PrivacyPolicyPage/>,
   },
   {
     path: "/u/:username",

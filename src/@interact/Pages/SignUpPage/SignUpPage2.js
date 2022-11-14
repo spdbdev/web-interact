@@ -159,8 +159,7 @@ function SignUpPage2() {
         >
           <Checkbox />{" "}
           <span>
-            I agree to all{" "}
-            <a href="https://eforms.com/release/media/">terms and services</a>
+            I agree to the <Link to="/a/termsandconditions">terms & conditions</Link>, <Link to="/a/privacypolicy">privacy policy</Link>, and I declare that I am over 13 years old{" "}
           </span>
         </div>
         <div className="ButtonsWrapper" style={{margin:10}}>
