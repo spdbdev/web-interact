@@ -235,14 +235,15 @@ export default function SchedulingTab({
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign Duration">
-          All times on the campaign are in EST (Eastern Standard Time).
-          Set how long the campaign will be active. Enter a start date & time,
-          then duration in days OR the end date & time. <br />
+          All times on the campaign are in EST (Eastern Standard Time). Set how
+          long the campaign will be active. Enter a start date & time, then
+          duration in days OR the end date & time. <br />
           <br />
           Changing the duration will recalculate the end date, and vice-versa.
           Campaigns can last 5 to 20 days. Recommended duration: 10 days. <br />
           <br />
-          (You can customize your timezone in the scheduling process, when setting your available timeslots weekly; so can fans)
+          (You can customize your timezone in the scheduling process, when
+          setting your available timeslots weekly; so can fans)
         </TitleAndDesc>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           {/* need this to use DateTimePicker. Date library used here is moment.js */}
@@ -382,7 +383,7 @@ function NumDurationInput({
       setValue(nextValue);
 
       setData({
-        duration: e.target.value,
+        duration: Number(e.target.value),
         start: startDateTime,
         end: endDateTime,
         windowDuration: interactionWindowDuration,
@@ -402,10 +403,10 @@ function NumDurationInput({
         if (e.nativeEvent.inputType == "insertReplacementText") {
           // handles stepUp/arrowUp and stepDown/arrowDown
           // without this, it's possible to step above or below the min/max values
-          setTempValue(e.target.value);
+          setTempValue(Number(e.target.value));
           handleInteraction(e);
         } else {
-          setTempValue(e.target.value);
+          setTempValue(Number(e.target.value));
         }
       }}
       onBlur={(e) => handleInteraction(e)}

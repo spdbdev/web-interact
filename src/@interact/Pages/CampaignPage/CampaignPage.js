@@ -383,8 +383,8 @@ function CampaignPage(userData) {
       layoutOptions={{
         wrapper: {
           sx: {
-            [theme.breakpoints.up("xl")]: {
-              px: 2,
+            [theme.breakpoints.up("lg")]: {
+              px: 10,
             },
             [theme.breakpoints.up("xxl")]: {
               px: 30,

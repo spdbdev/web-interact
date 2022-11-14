@@ -3,7 +3,7 @@ import { Tab, Tabs } from "@mui/material";
 import { Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
+export const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     // this uses the theme we passed to the ThemeProvider in App.js
     textTransform: "none",
