@@ -3,6 +3,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useNavigate } from "react-router-dom";
@@ -45,7 +46,11 @@ function SignUpPage2() {
   const register = () => {
     if (!validateUserName()) return;
     if (!isPassValid) {
-      alert("Password is not valid");
+      Swal.fire(
+        "Incorrect!",
+        "Password is not valid",
+        "error"
+        );
       return;
     }
     registerWithEmailAndPassword(name, email, password);

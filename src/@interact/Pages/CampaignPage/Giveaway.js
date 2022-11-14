@@ -86,7 +86,6 @@ export default function Giveaway({
         const docSnap = await getDoc(docRef);
         //console.log(docSnap);
         if (docSnap.exists()) {
-          //  alert('exist');
             const data = docSnap.data();
             set_Stripe_customer_id_new(data);
             // console.log("data is :" + JSON.stringify(data));
@@ -247,7 +246,6 @@ export default function Giveaway({
     		return
     	}
     	if (customerSet) {
-    		alert(isActive);
     		// logged users
     		if (isActive) {
     			//already saved card

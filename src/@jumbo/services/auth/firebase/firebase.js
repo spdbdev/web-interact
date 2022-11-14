@@ -7,6 +7,9 @@ import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPasswor
 
 import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
 
+import Swal from 'sweetalert2';
+
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -44,7 +47,7 @@ const signInWithGoogle = async () => {
     }
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
@@ -54,7 +57,7 @@ const loginWithEmailAndPassword = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
@@ -70,17 +73,17 @@ const registerWithEmailAndPassword = async (name, email, password) => {
     });
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
 const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
-    alert("Password reset link sent!");
+    Swal.fire("Success!", "Password reset link sent!", "success");
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
