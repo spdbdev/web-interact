@@ -84,40 +84,35 @@ function CampaignInfo({ campaignData, comments, campaignId,bids,giveaways,isCamp
 
   return (
     <div className="InfoContainer">
-      <Accordion style={{backgroundColor:"transparent"}} defaultExpanded={true}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
-          Campaign Info
-        </AccordionSummary>
-        <AccordionDetails>{campaignData?.info?.description}</AccordionDetails>
-      </Accordion>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", color: "#782eee" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+          textColor="inherit"
+          indicatorColor="primary.main"
+        >
+          <Tab label="Campaign Info" color="inherit" />
+          <Tab label="Comments" />
+          {isCampaignEnded && <Tab label="Winners"/>}
+          <Tab label="Supporters" />
+        </Tabs>
+      </Box>
+      <TabPanel value={value} index={0}>
+        <div>
+          {campaignData?.info?.description}
+        </div>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <Comments comments={comments} campaignId={campaignId}/>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Supporters supporters={supporters} campaignId={campaignId} />
+      </TabPanel>
 
-      <Accordion style={{backgroundColor:"transparent"}}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
-          Comments
-        </AccordionSummary>
-        <AccordionDetails>
-          <Comments comments={comments} campaignId={campaignId}/>
-          {/* <Comments comments={comments} campaignId={campaignId}/> */}
-        </AccordionDetails>
-      </Accordion>
-
-      {isCampaignEnded && <Accordion style={{backgroundColor:"transparent"}}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
-          Winners
-        </AccordionSummary>
-        <AccordionDetails>
-          <Supporters supporters={winners} campaignId={campaignId} />
-        </AccordionDetails>
-      </Accordion>}
-
-      <Accordion style={{backgroundColor:"transparent"}}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{color:"#782eee",textTransform:'uppercase',fontWeight:'500'}}>
-          Supporters
-        </AccordionSummary>
-        <AccordionDetails>
-          <Supporters supporters={supporters} campaignId={campaignId} />
-        </AccordionDetails>
-      </Accordion>
+      {isCampaignEnded && <TabPanel value={value} index={3}>
+        <Supporters supporters={winners} campaignId={campaignId} />
+      </TabPanel>}
     </div>
   );
 }

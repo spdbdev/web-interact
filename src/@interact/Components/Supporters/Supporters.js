@@ -19,7 +19,7 @@ function Supporters({supporters}) {
   // console.log('supporters',supporters)
 
   return (
-    <div style={{display:'flex',flexDirection:'column',alignItems:"flex-start", flexWrap:'wrap', justifyContent:'flex-start'}}>
+    <div style={{display:'flex',flexDirection:'row',alignItems:"flex-start", flexWrap:'wrap', justifyContent:'flex-start'}}>
       {supporters.map((user,i)=>{
         if(!user.username) return false;
         return <SupporterElem key={i} user={user}/>
@@ -33,7 +33,7 @@ export default Supporters;
 function SupporterElem({user}){
 
  return (
-   <div style={{display:'flex', flexDirection:'row', justifyContent:'center', padding:20}}>
+   <div style={{display:'flex', flexDirection:'row',alignItems:"center", justifyContent:'start',flexBasis:"33.3%", padding:20}}>
     {user?.photoUrl ? <img alt='userProfilePic' src={user.photoUrl} style={{borderRadius:18, width:34, height:34}}/> : <PersonIcon style={{border:"1px solid rgba(120,47,238,0.5)", width:34,height:34,borderRadius:18}}/>}
      <a href='#' style={{marginLeft:'10px'}}>{user.username}</a>
    </div>
