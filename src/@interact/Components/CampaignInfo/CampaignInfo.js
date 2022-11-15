@@ -124,7 +124,7 @@ function CampaignInfo({
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <div>{campaignData?.info?.description}</div>
+        {campaignData?.info?.description}
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Comments comments={comments} campaignId={campaignId} />

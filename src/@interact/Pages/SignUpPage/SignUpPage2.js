@@ -80,6 +80,15 @@ function SignUpPage2() {
 
   const handleChangeImage = async (e) => {
     const file = e.target.files[0];
+    const filesize = Math.round((file.size / 1024));
+    if(filesize >= 7168){
+      Swal.fire(
+        "Too Large!",
+        "Max 7mb file size is allowed.",
+        "error"
+        );
+      return;
+    }
     if (file) {
       const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
@@ -135,7 +144,7 @@ function SignUpPage2() {
             alt="profile image"
             style={{height: 100, padding: 10,borderRadius:"50%"}}
           />
-          <input type="file" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
+          <input type="file" accept="image/*" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
           <EditIcon onClick={(e)=>handleFileClick(e)} className="profile_pic--icon"/>
         </div>
         {/* need to set google sign in in the firebase console, rn its only email/password*/}

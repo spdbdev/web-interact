@@ -80,7 +80,6 @@ function UserProfilePage() {
     if (!params.username) {
       navigate(user.name ? `/u/${user.name}` : "/")
     }
-
   }, [user]);
 
 
@@ -101,11 +100,11 @@ function UserProfilePage() {
           borderRadius: 2,
         }}
       >
-        <img
+        {user && <img
           className="profilePic"
           alt="profile-pic"
-          src="https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-        />
+          src={user.imageurl}
+        />}
         <div
           style={{
             color: "white",
