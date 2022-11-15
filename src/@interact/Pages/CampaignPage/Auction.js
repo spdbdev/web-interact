@@ -115,7 +115,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 
 	const options = [];
 	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
-		options.push(<MenuItem value={i}>{i}{nth(i)}</MenuItem>);
+		options.push(<MenuItem value={i} key={i}>{i}{nth(i)}</MenuItem>);
 	}
 
 	return (

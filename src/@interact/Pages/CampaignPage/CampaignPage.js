@@ -56,16 +56,16 @@ function CampaignPage(userData) {
   const num_auction = 10;
   const { theme } = useJumboTheme();
   const campaignId = "test12345";
-  //const navigate = useNavigate();
-  // let [user, loading] = useAuthState(auth);
-  let user = {
-    uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-    photoUrl:
-      "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-    name: "biby",
-    email: "bibyliss@gmail.com",
-    customerId: "cus_MlMuNeDDsNVt2Z",
-  };
+  const navigate = useNavigate();
+  let [user, loading] = useAuthState(auth);
+  // let user = {
+  //   uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
+  //   photoUrl:
+  //     "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+  //   name: "biby",
+  //   email: "bibyliss@gmail.com",
+  //   customerId: "cus_MlMuNeDDsNVt2Z",
+  // };
 
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 
@@ -76,6 +76,14 @@ function CampaignPage(userData) {
       setSidebarOptions({ open: false });
     }
   }, [sidebarOptions]);
+
+  const checkAuthentication = () => {
+		if(!user) {
+			navigate(`/a/signup?redirect=/c/${campaignId}`);
+			return false;
+		};
+		return true;
+	}
 
   const getCampaignData = async () => {
     //campaigns change listener
@@ -266,6 +274,7 @@ function CampaignPage(userData) {
     maxBidPrice = null,
     minBidPrice = null
   ) => {
+    if(!checkAuthentication()) return;
     var userSnap = await getDocs(
       query(collection(db, "users"), where("uid", "==", user.uid))
     );

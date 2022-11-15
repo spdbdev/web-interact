@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import { auth, registerWithEmailAndPassword, signInWithGoogle } from "@jumbo/services/auth/firebase/firebase";
 import PasswordChecklist from "react-password-checklist";
 
@@ -43,6 +43,7 @@ function SignUpPage2() {
   const [imageUrl,setImageUrl] = useState(null);
   const [image,setImage] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fileRef = useRef();
 
@@ -75,11 +76,26 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name, email, password,imageUrl)) navigate(`/u/${name}`);
+    if(registerWithEmailAndPassword(name, email, password,imageUrl)){
+      let redirectUrl = new URLSearchParams(location.search).get('redirect');
+      if(redirectUrl){
+        return navigate(redirectUrl);
+      }
+      navigate(`/u/${name}`)
+    };
   };
 
   const handleChangeImage = async (e) => {
     const file = e.target.files[0];
+    const filesize = Math.round((file.size / 1024));
+    if(filesize >= 7168){
+      Swal.fire(
+        "Too Large!",
+        "Max 7mb file size is allowed.",
+        "error"
+        );
+      return;
+    }
     if (file) {
       const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
@@ -90,7 +106,14 @@ function SignUpPage2() {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
         },
-        (err) => console.log(err),
+        (err) => {
+          Swal.fire(
+            "Fialed!",
+            "Failed to upload your image.",
+            "error"
+            );
+          console.log(err)
+        },
         () => {
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
@@ -135,7 +158,7 @@ function SignUpPage2() {
             alt="profile image"
             style={{height: 100, padding: 10,borderRadius:"50%"}}
           />
-          <input type="file" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
+          <input type="file" accept="image/*" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
           <EditIcon onClick={(e)=>handleFileClick(e)} className="profile_pic--icon"/>
         </div>
         {/* need to set google sign in in the firebase console, rn its only email/password*/}

@@ -43,14 +43,14 @@ export default function Giveaway({
 	const [last4, setLast4] = useState(true);
 	const [useSaveCard, setUseSaveCard] = useState(false);
 	const campaignId = 'test12345';
-	//const [user] = useAuthState(auth); 
-	let user = {
-		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-		name: "biby",
-	  	email: "bibyliss@gmail.com",
-	  	customerId: "cus_MlMuNeDDsNVt2Z",
-  	};
+	const [user] = useAuthState(auth); 
+	// let user = {
+	// 	uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
+	// 	photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+	// 	name: "biby",
+	//   	email: "bibyliss@gmail.com",
+	//   	customerId: "cus_MlMuNeDDsNVt2Z",
+  // 	};
 
 	const navigate = useNavigate();
 	var logged_user_stripe_customer_id = false;
@@ -571,7 +571,16 @@ export default function Giveaway({
         document.body.classList.remove('active-modal')
     }
 
+	const checkAuthentication = () => {
+		if(!user) {
+			navigate(`/a/signup?redirect=/c/${campaignId}`);
+			return false;
+		};
+		return true;
+	}
+
 	const buyGiveawayAlert = () => {
+		if(!checkAuthentication()) return;
 		Swal.fire({
 		title: "Skill-testing question",
 		text: "Before you make this purchase, you must correctly answer the math question below:",
@@ -615,7 +624,9 @@ export default function Giveaway({
 		}
 		});
 	};
+
 	const freeGiveawayAlert = () => {
+		if(!checkAuthentication()) return;
 		Swal.fire({
 		title: "Claim free entry?",
 		text: "Would you like to claim this free giveaway entry?",
