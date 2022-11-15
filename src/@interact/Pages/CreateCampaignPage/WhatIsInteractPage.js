@@ -1,4 +1,5 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import { useJumboLayoutSidebar } from "@jumbo/hooks";
 import { Close, ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
@@ -8,15 +9,41 @@ import {
   Button,
   Container,
   IconButton,
+  Slide,
   Stack,
   Typography,
 } from "@mui/material";
-import SoloPage from "app/layouts/solo-page/SoloPage";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
 
 const WhatIsInteractFAQs = [
+  {
+    question: <span>How it works</span>,
+    answer: (
+      <span>
+        Content creators start a time-limited campaign (lasting 10 days, by
+        default) with a goal, offering 1-on-1 interactions to fans (eg. play a
+        game) that are scheduled in the 10 weeks (by default) after the campaign
+        ends. Fans try to be selected via the giveaway (with a free entry
+        option) or the auction (be a top bidder on the leaderboard; pricier but
+        a guaranteed interaction). Fans pay immediately for the giveaway;
+        meanwhile in the auction, fans only pay if they win (charged at the end
+        of the campaign, triggered manually, part of the firebase cloud
+        function). When new fans try to enter the auction/giveaway, they have to
+        create an account & input their general availability from Mon-Sun
+        (editable on their profile page too). After the campaign ends, selected
+        fans (winners) will have interactions assigned to them over the
+        interaction window duration, 10 weeks by default (with auction winners
+        having priority). The creator selects when they are available
+        week-by-week (creators have to lock in their availability by Friday
+        midnight for the next week, and can sync with their personal Google,
+        Outlook or iCloud calendars); from this, with our matching algorithm,
+        interactions are scheduled.
+      </span>
+    ),
+    defaultExpanded: true,
+  },
   {
     question: <span>Why interact with fans?</span>,
     answer: (
@@ -29,14 +56,14 @@ const WhatIsInteractFAQs = [
         tedious requests nor formal lessons; there are no restrictions—you have
         complete freedom & control to stop talking to users and kick them at
         your discretion. Just chill with your fans on your own schedule.
-        Maximize profits with Interact’s two-pronged hybrid raffle + auction
+        Maximize profits with Interact’s two-pronged hybrid giveaway + auction
         campaign. Our first-of-a-kind multi-item automated auction bidding
         algorithm allows affluent fans to support the creator with more money &
         gives a 100% success-rate option to fans (for fairness’ sake); it's the
         premium option as auction interactions are scheduled to occur first. On
-        the other hand, any fan can spare a few dollars to buy 1 raffle ticket
-        (max of 1 per user) to support you; they didn’t have a compelling reason
-        to give some pocket change prior ("support me for the price of a
+        the other hand, any fan can spare a few dollars to buy 1 giveaway VIP
+        ticket (max of 1 per user) to support you; they didn’t have a compelling
+        reason to give some pocket change prior ("support me for the price of a
         coffee"). Now there’s a really attractive incentive—a chance to gain
         fame, gain recognition from an influencer, etc. They’ve invested
         numerous hours into this creator/topic, feel like a part of this special
@@ -97,20 +124,47 @@ const WhatIsInteractFAQs = [
         helps you & your fans plan ahead, organizing interactions with flexible
         scheduling (smart algo matching); this greatly increases demand since
         all fans have the opportunity to vie for an interaction via our unique
-        auction & raffle campaigns (moreover, Interact creates FOMO with 5-20
+        auction & giveaway campaigns (moreover, Interact creates FOMO with 5-20
         day campaigns + incentive to support you with a fun goal).
       </span>
     ),
   },
   {
     question: <span>Why do fans want personal interactions?</span>,
-    answer: <span>dknfkdnfkajsdn lfdnf kjlsndf lsdfn</span>,
+    answer: (
+      <span>
+        As social platforms are so one-sided, fans give you attention weekly or
+        even daily without being able to receive any meaningful attention or
+        recognition back. They treat you as someone they trust and/or a
+        relatable friend, but have never been able to fulfill that relationship.
+        Thus, fans want to be recognized by you & build a relationship by
+        showing off their talents (e.g. best X-main in this game, astute
+        questions & insights in X, musical/artistic talent, athleticism, or
+        comedic genius). Fans want to discuss & make their own viewpoints known
+        on subjects they are deeply passionate about, where you’re one of the
+        leaders in that subject/community (from anime to politics, from history
+        to frontier tech, from reviews & tier lists to educational animations).
+        Fame—if a fan’s interaction was interesting, creators can post
+        highlights of it or the interaction is part of a
+        live-streaming/podcasting scenario where the fan is recognized by many
+        fellow fans & viewers (react to content together, try not to laugh
+        challenge, etc. even if you don’t create that type of content yet,
+        expand your variety—fans love to watch drama & discourse, or just
+        something new). Interacting with fans as part of your content is
+        effective & appealing since other fans are envious & garners large
+        popularity (Mr. Beast, fans who don’t make money are still ecstatic).{" "}
+        <strong style={{ fontWeight: 600 }}>
+          Creating fresh content is one of the largest challenges we face, why
+          not add some spice?
+        </strong>
+      </span>
+    ),
   },
 ];
 
-function SpecialAccordion({ question, answer }) {
+function SpecialAccordion({ question, answer, defaultExpanded }) {
   return (
-    <Accordion>
+    <Accordion defaultExpanded={defaultExpanded}>
       <AccordionSummary
         sx={{
           background:
@@ -130,8 +184,18 @@ function SpecialAccordion({ question, answer }) {
 export default function WhatIsInteractPage() {
   const navigate = useNavigate();
 
+  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+
+  useEffect(() => {
+    // Fixes a bug where sidebar is hidden but remains "open" when
+    // navigating to this screen
+    if (sidebarOptions.open === true) {
+      setSidebarOptions({ open: false });
+    }
+  }, [sidebarOptions]);
+
   return (
-    <SoloPage>
+    <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",
@@ -146,13 +210,13 @@ export default function WhatIsInteractPage() {
           <IconButton
             disableRipple
             disableFocusRipple
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(`/u/`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
         </Box>
         <Stack direction="column" alignItems="center" width={"100%"}>
-          <Stack spacing={1} sx={{ maxWidth: 1000 }}>
+          <Stack spacing={1} mb={10} sx={{ maxWidth: 1000 }}>
             <Stack direction="column" alignItems="center" spacing={2}>
               <img src={InteractLogo} alt="" width={50} />
               <Typography variant="h2">What Is Interact?</Typography>
@@ -162,7 +226,10 @@ export default function WhatIsInteractPage() {
               grown with you not only as a creator, but as a human being. We
               minimize logistical hassle and make it worth your time (while
               creating content/streaming, making an additional $100+ an hour
-              with only 1000 devoted fans). This is FREE MONEY at no opportunity
+              with only 1000 devoted fans). This is{" "}
+              <strong style={{ fontWeight: 600 }}>
+                extra income at no opportunity
+              </strong>{" "}
               cost since you get fresh content for your stream (your streaming
               scheduling can stay the same, no additional hours needed) and/or
               you can make use of highlights from interactions to spice up new
@@ -173,18 +240,17 @@ export default function WhatIsInteractPage() {
                 key={key}
                 question={item.question}
                 answer={item.answer}
+                defaultExpanded={item.defaultExpanded}
               />
             ))}
           </Stack>
         </Stack>
         <Box sx={{ position: "fixed", bottom: 50, right: 50 }}>
-          <InteractFlashyButton
-            onClick={() => navigate("/interact/createcampaign")}
-          >
+          <InteractFlashyButton onClick={() => navigate("/a/create-campaign")}>
             Next →
           </InteractFlashyButton>
         </Box>
       </Box>
-    </SoloPage>
+    </Slide>
   );
 }

@@ -1,4 +1,5 @@
-import { Clear, Delete, Remove } from "@mui/icons-material";
+import InteractChip from "@interact/Components/Chips/InteractChip";
+import { Clear, Close, Delete, Remove } from "@mui/icons-material";
 import {
   Box,
   Chip,
@@ -23,7 +24,7 @@ const MenuProps = {
   },
 };
 
-const categories = [
+const CATEGORY_OPTIONS = [
   "Gaming",
   "Humor",
   "Just chatting, commentary",
@@ -35,26 +36,29 @@ const categories = [
   "Travel, vlogs & lifestyle",
 ];
 
-export default function CampaignCategorySelect() {
-  const [selectedCategories, setSelectedCategories] = React.useState([
-    "Gaming",
-  ]);
-
+export default function CampaignCategorySelect({
+  data,
+  setData,
+  categories,
+  setCategories,
+}) {
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+    const newCategories = [...categories, event.target.value];
 
-    if (selectedCategories.length < 3) {
-      setSelectedCategories([...selectedCategories, value]);
+    if (newCategories.length > 0 && newCategories.length <= 3) {
+      setData({ categories: newCategories });
     }
+    setCategories(newCategories);
   };
 
   const handleDelete = (e, value) => {
     e.preventDefault();
-    setSelectedCategories(
-      selectedCategories.filter((category) => category !== value)
-    );
+
+    const newCategories = categories.filter((category) => category !== value);
+    if (newCategories.length > 0 && newCategories.length <= 3) {
+      setData({ categories: newCategories });
+    }
+    setCategories(newCategories);
   };
 
   return (
@@ -62,16 +66,20 @@ export default function CampaignCategorySelect() {
       <FormControl sx={{ width: 400 }}>
         <Select
           id="campaign-categories"
-          value={selectedCategories}
+          value={categories}
+          error={categories?.length < 1}
           onChange={handleChange}
+          SelectDisplayProps={{
+            style: { overflowX: "scroll" },
+          }}
           input={<OutlinedInput id="select-multiple-chip" />}
           renderValue={(selected) => (
-            <Stack direction="row" spacing={0.5}>
+            <Stack direction="row" mr={4} spacing={0.5}>
               {selected.map((value) => (
-                <Chip
-                  sx={{ borderRadius: "2px 8px", fontSize: 12 }}
+                <InteractChip
                   key={value}
                   label={value}
+                  deleteIcon={<Close sx={{ color: "primary.main" }} />}
                   onDelete={(e) => handleDelete(e, value)}
                 />
               ))}
@@ -79,9 +87,13 @@ export default function CampaignCategorySelect() {
           )}
           MenuProps={MenuProps}
         >
-          {categories.map((category) => {
+          {CATEGORY_OPTIONS.map((category) => {
             return (
-              <MenuItem key={category} value={category}>
+              <MenuItem
+                key={category}
+                disabled={categories.includes(category)}
+                value={category}
+              >
                 {category}
               </MenuItem>
             );

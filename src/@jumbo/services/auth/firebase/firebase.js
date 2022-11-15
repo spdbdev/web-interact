@@ -3,27 +3,17 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import {
-  GoogleAuthProvider,
-  getAuth,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
-} from "firebase/auth";
 
-import {
-  getFirestore,
-  query,
-  getDocs,
-  collection,
-  where,
-  addDoc,
-} from "firebase/firestore";
+
+import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+  sendPasswordResetEmail, signOut, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
+import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { postRequest } from '../../../../utils/api'
+import { postRequest } from '../../../../utils/api';
+import Swal from 'sweetalert2';
+
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -42,6 +32,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+var user = null;
+
+onAuthStateChanged(auth, (authUser) => {
+  if (authUser) {
+    user = authUser;
+  } else {
+    user = null;
+  }
+});
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -62,7 +61,7 @@ const signInWithGoogle = async () => {
     }
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
@@ -71,11 +70,11 @@ const loginWithEmailAndPassword = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (name, email, password, imageurl) => {
   try {
     const formData = new FormData();
     formData.append("email", email);
@@ -99,17 +98,18 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       });
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
+    return false;
   }
 };
 
 const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
-    alert("Password reset link sent!");
+    Swal.fire("Success!", "Password reset link sent!", "success");
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    Swal.fire("Error!", err.message, "error");
   }
 };
 
@@ -147,6 +147,7 @@ const logout = () => {
 export {
   auth,
   db,
+  user,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,

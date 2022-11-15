@@ -3,7 +3,7 @@ import { Tab, Tabs } from "@mui/material";
 import { Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
+export const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
     // this uses the theme we passed to the ThemeProvider in App.js
     textTransform: "none",
@@ -13,6 +13,7 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
     "&.Mui-selected": {
       color: theme.palette.text.primary,
     },
+    cursor: "default",
   })
 );
 
@@ -31,7 +32,8 @@ export default function CampaignCreationTabs({
         borderBottom: 1,
         borderColor: "divider",
         maxWidth: 1000,
-        my: 3,
+        mt: 1,
+        mb: 3,
       }}
     >
       <Tabs
@@ -45,7 +47,8 @@ export default function CampaignCreationTabs({
         <StyledTab label="Basics" />
         <StyledTab label="Scheduling" />
         <StyledTab label="Interaction" />
-        <StyledTab label="Goal & Video" />
+        <StyledTab label="Goal & video" />
+        <StyledTab label="Interaction method" />
         <StyledTab label="FAQ" />
         <StyledTab label="Payment" />
         <StyledTab label="Promotion" />

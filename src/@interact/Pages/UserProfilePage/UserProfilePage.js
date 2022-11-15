@@ -6,6 +6,10 @@ import Tab from "@mui/material/Tab";
 import { Box } from "@mui/material";
 import ReactModal from "react-modal";
 
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 import "./UserProfilePage.css";
 import Scheduler from "../../Components/Scheduler/Scheduler";
 import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
@@ -26,6 +30,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { FollowButton } from "../CampaignPage/Stats";
+import { fetchUser } from "../../../firebase";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -67,7 +73,8 @@ function UserProfilePage() {
 
   const [modalOpened, setModalOpened] = useState(false);
 
-  const [user, loading, error] = useAuthState(auth);
+  // const [user, loading, error] = useAuthState(auth);
+  const { user } = useCurrentUser();
   const [name, setName] = useState("");
   const [image, setImage] = React.useState(
     "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"

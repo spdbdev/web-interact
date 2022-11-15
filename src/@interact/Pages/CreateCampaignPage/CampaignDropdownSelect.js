@@ -5,6 +5,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
+import { FormHelperText } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,21 +23,19 @@ export default function CampaignDropdownSelect({
   items,
   placeholder,
   defaultValue,
+  setData,
 }) {
   const [selectedItem, setSelectedItem] = React.useState(defaultValue);
-
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedItem(value);
+    setData({ currency: event.target.value });
+    setSelectedItem(event.target.value);
   };
 
   return (
     <div>
       <FormControl sx={{ width: 400 }}>
         <Select
-          id="demo-multiple-name"
+          disabled={true} // DISABLED FOR NOW, ADD IN NEAR FUTURE
           value={selectedItem}
           onChange={handleChange}
           input={<OutlinedInput />}
@@ -43,11 +43,14 @@ export default function CampaignDropdownSelect({
           placeholder={placeholder}
         >
           {items.map((item) => (
-            <MenuItem key={item} value={item}>
-              {item}
+            <MenuItem key={item.value} value={item.value}>
+              {item.label}
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>
+          We will be supporting additional currencies in the near future.
+        </FormHelperText>
       </FormControl>
     </div>
   );

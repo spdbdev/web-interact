@@ -7,10 +7,10 @@ import calendarRoutes from "./calendarRoutes";
 import chartRoutes from "./chartRoutes";
 import mapRoutes from "./mapRoutes";
 import extensionsRoutes from "./extensionsRoutes";
-import {Navigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import extraRoutes from "./extraRoutes";
 import appsRoutes from "./appsRoutes";
-import {muiRoutes} from "./muiRoutes";
+import { muiRoutes } from "./muiRoutes";
 import authRoutes from "./authRoutes";
 import userRoutes from "./userRoutes";
 import listViewRoutes from "./listViewRoutes";
@@ -18,62 +18,40 @@ import gridViewRoutes from "./gridViewRoutes";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 
 const routes = [
-    {
-        path:
-            "/",
-        element: <Navigate to={"/interact/signin"}/>
-    },
-    
-    {
-        path:
-            "/signin",
-        element: <Navigate to={"/interact/signin"}/>
-    },
+  {
+    path: "/",
+    element: <Navigate to={"/a/signin"} />,
+  },
+  {
+    path: "/signin",
+    element: <Navigate to={"/a/signin"} />,
+  },
+  {
+    path: "/signup",
+    element: <Navigate to={"/a/signup"} />,
+  },
 
+  // {
+  //     path:
+  //         "/createCampaign",
+  //     element: <Navigate to={"/a/create-campaign"}/>
+  // },
 
-    {
-        path:
-            "/signup",
-        element: <Navigate to={"/interact/signup"}/>
-    },
-    {
-        path:
-            "/user",
-        element: <Navigate to={"/interact/user"}/>
-    },
-    {
-        path:
-            "/user/:id",
-        element: <UserProfilePage />
-    },
-
-    {
-        path:
-            "/campaign",
-        element: <Navigate to={"/interact/campaign"}/>
-    },
-
-    {
-        path:
-            "/createCampaign",
-        element: <Navigate to={"/interact/createCampaign"}/>
-    },
-
-    ...interactV1Routes,
-    ...dashboardRoutes,
-    ...appsRoutes,
-    ...widgetsRoutes,
-    ...metricsRoutes,
-    ...muiRoutes,
-    ...extensionsRoutes,
-    ...calendarRoutes,
-    ...chartRoutes,
-    ...mapRoutes,
-    ...authRoutes,
-    ...extraRoutes,
-    ...userRoutes,
-    ...listViewRoutes,
-    ...gridViewRoutes,
+  ...interactV1Routes,
+  ...dashboardRoutes,
+  ...appsRoutes,
+  ...widgetsRoutes,
+  ...metricsRoutes,
+  ...muiRoutes,
+  ...extensionsRoutes,
+  ...calendarRoutes,
+  ...chartRoutes,
+  ...mapRoutes,
+  ...authRoutes,
+  ...extraRoutes,
+  ...userRoutes,
+  ...listViewRoutes,
+  ...gridViewRoutes,
 ];
 
 export default routes;

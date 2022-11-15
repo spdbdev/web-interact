@@ -1,8 +1,10 @@
 import React from "react";
 import {
+  Box,
   Button,
   ButtonBase,
   Container,
+  FormControl,
   Stack,
   TextField,
   Typography,
@@ -11,38 +13,38 @@ import { InputUnstyled } from "@mui/base";
 
 export default function SideBarSupportForm() {
   return (
-    <Stack direction="column" m={2} spacing={1}>
+    <Stack direction="column" m={2} spacing={1} sx={{ position: "relative" }}>
+      <Box
+        sx={{
+          height: "50px",
+          width: "100%",
+          position: "absolute",
+          top: -80,
+          zIndex: 8000,
+          background:
+            "linear-gradient(360deg, #B016F8 0%, rgba(177, 22, 248, 0) 100%)",
+        }}
+      ></Box>
       <Typography variant="body2" color={"primary.contrastText"}>
         Have a question? Ask here and we’ll get back to you within 24 hours!
       </Typography>
+
       <TextField
         placeholder="I was wondering how to..."
         multiline
         variant="filled"
-        rows={4}
-        hiddenLabel
-        color="primary.contrastText"
-      />
-      {/* <InputUnstyled
-        componentsProps={{
-          input: {
-            style: {
-              outline: "none",
-              backgroundColor: "rgba(255, 255, 255, .20)",
+        InputProps={{
+          sx: {
+            "&::before": {
               borderColor: "transparent",
-              borderRadius: 3,
-              resize: "none",
-              flex: 1,
-              padding: 10,
-              width: "100%",
             },
+            color: "primary.contrastText",
           },
         }}
-        placeholder="I was wondering how to..."
-        multiline
         rows={4}
-        type="submit"
-      /> */}
+        hiddenLabel
+      />
+
       <ButtonBase
         sx={{
           color: "primary.contrastText",

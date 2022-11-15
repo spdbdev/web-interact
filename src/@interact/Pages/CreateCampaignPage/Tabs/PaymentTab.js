@@ -9,23 +9,25 @@ import { _BASE_URL,postRequest, getRequest } from "utils/api";
 import { useStripe } from "@stripe/react-stripe-js";
 import { useNavigate,useSearchParams } from 'react-router-dom'
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-import { doc,query, updateDoc,collection, getDocs, setDoc,where, addDoc } from "firebase/firestore";
+import { doc, query, updateDoc, collection, getDocs, setDoc, where, addDoc } from "firebase/firestore";
+import { TabNavigation } from "../TabNavigation";
 
 
-
-export default function PaymentTab() {
+export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
   const navigate = useNavigate();
   const stripe = useStripe();
   const [accountId, setAccountId] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-const getAccountId = async ()=>{
-  const q = query(collection(db, "users"), where("uid", "==", auth?.currentUser?.uid));
-  const colledoc = await getDocs(q);
-  const data = colledoc.docs[0].data();
-  
-console.log('DB accountId',data.accountId);
-setAccountId(data.accountId);
-}
+
+  const getAccountId = async ()=>{
+    const q = query(collection(db, "users"), where("uid", "==", auth?.currentUser?.uid));
+    const colledoc = await getDocs(q);
+    const data = colledoc.docs[0].data();
+    
+    console.log('DB accountId',data.accountId);
+    setAccountId(data.accountId);
+  }
+
   useEffect(() => {
     if (searchParams.has('accountId')) {
       console.log(searchParams.get('URL accountId'));
@@ -45,6 +47,7 @@ setAccountId(data.accountId);
     // }
     
   },[accountId,searchParams]);
+  
   const handleLinkStripeClick = async (event)=> {
     event.preventDefault();
     try {
@@ -54,17 +57,19 @@ setAccountId(data.accountId);
       console.log(err);
     }
   }
+
   
   return (
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title={"Banking details"}>
-          Link a bank account where your campaign funds will be deposited.{" "}
-          <br />
-          <br /> Funds are processed through our third-party provider (Stripe)
-          and your bank account details are not stored on our servers. <br />
-          <br /> Funds will be deposited automatically within 3 business days
-          after the campaign ends.
+          Link a bank account where your campaign funds will be
+          deposited. <br />
+          <br /> Funds are processed through our third-party provider
+          (Stripe) and your bank account details are not stored on our
+          servers. <br />
+          <br /> Funds will be deposited automatically within 3
+          business days after the campaign ends.
         </TitleAndDesc>
         {accountId && <TitleAndDesc title={"Account Linked"}><h3>Your account has beedn linked to Stripe</h3></TitleAndDesc> }
         {!accountId && <InteractButton onClick={handleLinkStripeClick}>
@@ -77,11 +82,17 @@ setAccountId(data.accountId);
               px: 2,
             }}
           >
-            Link through <img alt="stripe logo" src={StripeLogo} width="60px" />
+            Link through{" "}
+            <img alt="stripe logo" src={StripeLogo} width="60px" />
           </Span>
         </InteractButton>
       }
       </CreateCampaignItemWrapper>
+      <TabNavigation
+        disableNext={false} // Not yet wired up to stripe
+        selectedTabIndex={selectedTabIndex}
+        setSelectedTabIndex={setSelectedTabIndex}
+      />
     </>
   );
 }

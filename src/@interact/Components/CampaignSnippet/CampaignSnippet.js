@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import { Avatar, Box, Chip, Link, Stack, Typography } from "@mui/material";
 import ChipWithIconAvatar from "app/pages/components/mui/Chips/ChipWithIconAvatar";
+import { formatMoney } from "../utils";
 import "./CampaignSnippet.css";
 import { useEffect, useRef } from "react";
 import UserCampaignStatus from "./UserCampaignStatus";
@@ -48,7 +49,7 @@ export default function CampaignSnippet(props) {
 
       <Stack sx={{ p: 2 }}>
         <Typography sx={{ fontWeight: 500 }}>
-          I will {info.goal} at ${info.goalValue}
+          I will {info.goal} at ${formatMoney(info.goalValue)}
         </Typography>
         <Typography variant="caption" sx={{ color: "text.secondary" }}>
           by {info.endDateTime}

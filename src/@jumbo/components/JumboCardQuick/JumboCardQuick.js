@@ -50,7 +50,7 @@ const JumboCardQuick = (
             }
             {
                 noWrapper ? children :
-                    <CardContent sx={{...wrapperSx, zIndex: 2, position: "relative"}}>{children}</CardContent>
+                    <CardContent sx={{...wrapperSx, zIndex: 2, position: "relative",height:'100%'}}>{children}</CardContent>
             }
             {
                 (action || title || avatar) && reverse &&

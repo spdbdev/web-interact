@@ -17,7 +17,6 @@ import { useState, useEffect, useRef } from "react";
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
-import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";

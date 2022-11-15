@@ -28,19 +28,19 @@ const interactMenus = [
         icon: <ListAltOutlinedIcon sx={{ fontSize: 20 }} />,
       },
       {
-        uri: "/interact/user",
+        uri: "/u/",
         label: "User Profile",
         type: "nav-item",
         icon: <SupportAgentOutlinedIcon sx={{ fontSize: 20 }} />,
       },
       {
-        uri: "/interact/campaign",
+        uri: "/c/",
         label: "Campaign",
         type: "nav-item",
         icon: <PieChartOutlineOutlinedIcon sx={{ fontSize: 20 }} />,
       },
       {
-        uri: "/interact/createCampaign",
+        uri: "/a/what-is-interact",
         label: "Create Campaign",
         type: "nav-item",
         icon: <ShoppingCartOutlinedIcon sx={{ fontSize: 20 }} />,

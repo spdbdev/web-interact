@@ -64,7 +64,6 @@ app.post("/get_account",async (req, res) => {
 });
 
 // CREATE STRIPE ACCOUNT
-
 app.get("/onboard-user", async (req, res) => {
   try {
     const account = await stripe.accounts.create({
@@ -89,7 +88,6 @@ app.get("/onboard-user", async (req, res) => {
     });
   }
 });
-
 app.get("/onboard-user/refresh", async (req, res) => {
   if (!req.accountID) {
     res.redirect("/");
@@ -136,7 +134,6 @@ app.get("/onboard-user/success", async (req, res) => {
 
 
 // all payments method
-
 app.get("/customer/method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
@@ -149,7 +146,6 @@ app.get("/customer/method/:cid", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-
 app.post("/set_default_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerId } = req.body;
@@ -171,8 +167,6 @@ app.post("/set_default_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-
-
 app.get("/gd_customer_payment_method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
@@ -200,8 +194,6 @@ app.get("/gd_customer_payment_method/:cid", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-
-
 app.get("/gd_payment_method/:pid", async (req, res) => {
   try {
    
@@ -219,8 +211,6 @@ app.get("/gd_payment_method/:pid", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-
-
 app.post("/delete_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerid } = req.body;
@@ -235,7 +225,6 @@ app.post("/delete_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-
 app.post("/update_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerid, data,name, city, state, postal} = req.body;
@@ -260,8 +249,6 @@ app.post("/update_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-
-
 app.post("/make_payment_on_stripe", async (req, res) => {
   const {price,paymentmethodid,customerId} = req.body
   try {
@@ -304,20 +291,16 @@ app.get("/allusers", async (req, res) => {
   });
   res.send(paymentMethod);
 });
-
-
-
-
-app.post("/create-raffle-session", async (req, res) => {
+app.post('/create-giveaway-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
-          currency: "usd",
+          currency: 'usd',
           unit_amount: 150,
           tax_behavior: "exclusive",
           product_data: {
-            name: "Raffle Ticket",
+            name: 'Giveaway Ticket'
           },
         },
         quantity: 1,
@@ -390,7 +373,7 @@ app.post("/Auction_Bid_Payment_Authorise_Process", async (req, res) => {
   let price = req.body.price;
   clientName = req.body.name;
   email = req.body.email;
-  console.log(price+" - "+clientName+" - "+email);
+  console.log(price + " - " + clientName + " - " + email);
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: price * 100,
@@ -405,7 +388,7 @@ app.post("/Auction_Bid_Payment_Authorise_Process", async (req, res) => {
       },
     },
   });
-console.log(paymentIntent);
+  console.log(paymentIntent);
   if (paymentIntent) {
     console.log(price);
     data = {
