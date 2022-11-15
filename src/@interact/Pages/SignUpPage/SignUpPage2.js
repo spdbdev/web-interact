@@ -99,7 +99,14 @@ function SignUpPage2() {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
         },
-        (err) => console.log(err),
+        (err) => {
+          Swal.fire(
+            "Fialed!",
+            "Failed to upload your image.",
+            "error"
+            );
+          console.log(err)
+        },
         () => {
           // download url
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {

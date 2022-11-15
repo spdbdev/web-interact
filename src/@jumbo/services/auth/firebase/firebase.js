@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,onAuthStateChanged } from "firebase/auth";
 
 import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
 import { Navigate } from "react-router-dom";
@@ -28,6 +28,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
+var user = null;
+
+onAuthStateChanged(auth, (authUser) => {
+  if (authUser) {
+    user = authUser;
+  } else {
+    user = null;
+  }
+});
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -127,6 +136,7 @@ const logout = () => {
 export {
   auth,
   db,
+  user,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
