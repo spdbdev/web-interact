@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import { auth, registerWithEmailAndPassword, signInWithGoogle } from "@jumbo/services/auth/firebase/firebase";
 import PasswordChecklist from "react-password-checklist";
 
@@ -43,6 +43,7 @@ function SignUpPage2() {
   const [imageUrl,setImageUrl] = useState(null);
   const [image,setImage] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fileRef = useRef();
 
@@ -75,7 +76,13 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name, email, password,imageUrl)) navigate(`/u/${name}`);
+    if(registerWithEmailAndPassword(name, email, password,imageUrl)){
+      let redirectUrl = new URLSearchParams(location.search).get('redirect');
+      if(redirectUrl){
+        return navigate(redirectUrl);
+      }
+      navigate(`/u/${name}`)
+    };
   };
 
   const handleChangeImage = async (e) => {
