@@ -53,8 +53,6 @@ function CampaignPage(userData) {
 		email: "bibyliss@gmail.com",
 		customerId: "cus_MlMuNeDDsNVt2Z",
 	};
-
-
 	const getCampaignData = async () => 
 	{
 		//campaigns change listener
@@ -212,7 +210,6 @@ function CampaignPage(userData) {
 	{
 		var userSnap = await getDocs(query(collection(db, 'users'), where('uid', '==', user.uid)));
 		let user_data = userSnap.docs[0];
-
 		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
 			person: {
 				username: user_data.data().name,
@@ -343,9 +340,9 @@ function CampaignPage(userData) {
 				title="YouTube video player"
 				width="100%"
 				height="100%"
-				frameborder="0"
+				frameBorder="0"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-				allowfullscreen
+				allowFullScreen
 				/>
 			</Box>
 

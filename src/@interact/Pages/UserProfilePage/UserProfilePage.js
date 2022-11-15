@@ -26,7 +26,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import { FollowButton } from "../CampaignPage/Stats";
-import { fetchUser } from "../../../firebase";
+import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 
 function TabPanel(props) {
@@ -71,25 +71,35 @@ function UserProfilePage() {
 
   // const [user, loading, error] = useAuthState(auth);
   const { user } = useCurrentUser();
+  const [targetUser, setTargetUser] = useState({});
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    if (!user) return
+    if (!user) return;
     if (!params.username) {
       navigate(user.name ? `/u/${user.name}` : "/")
     }
-
   }, [user]);
 
+  useEffect(async ()  => {
+    if(params.username) {
+      try {
+        setTargetUser(await fetchUserByName(params.username));
+      }catch(e) {
+        setTargetUser({});
+        console.log("Wrong Username");
+      }
+    }
+  }, [params, targetUser])
 
 
   localStorage.setItem('name', name);
 
   return (
     <div>
-      <FollowerList open={modalOpened} setOpen={setModalOpened} />
+      <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
       <Stack
         direction="column"
         alignItems="center"
@@ -145,9 +155,9 @@ function UserProfilePage() {
               borderRadius: 2,
             }}
           >
-            23k followers
+            {targetUser && targetUser?.followers ? targetUser?.followers.length : 0} followers
           </div>
-          <FollowButton />
+          <FollowButton user={user} targetUser={targetUser}/>
         </div>
       </Stack>
 

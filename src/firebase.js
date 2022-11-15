@@ -48,6 +48,7 @@ const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const functions = getFunctions(app);
+console.log(functions);
 
 // enable when testing local functions:
 // connectFunctionsEmulator(functions, "localhost", 5001);
@@ -143,6 +144,32 @@ export async function fetchUserByUid(uid) {
   return { ...data, id }
 }
 
+export async function fetchUserByName(name) {
+  const q = query(collection(db, "users"), where("name", "==", name))
+  const querySnapshot = await getDocs(q);
+  const docSnapshots = querySnapshot.docs[0];
+  const id = docSnapshots.id;
+  const data = docSnapshots.data()
+  return { ...data, id }
+}
+
+export async function fetchUsersByIds(idlist) {
+  let returnData = [];
+  if(idlist === []){
+    return returnData;
+  }
+  const q = query(collection(db, "users"), where("__name__", "in", idlist))
+  const querySnapshot = await getDocs(q);
+  for(let i = 0; i < querySnapshot.docs.length; i++) {
+    const docSnapshots = querySnapshot.docs[0];
+    const data = docSnapshots.data();
+    const id = docSnapshots.id;
+    returnData.push({...data, id});
+  }
+  return returnData;
+}
+
+
 export const addCampaign = async (user) => {
   console.log(user)
   let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
@@ -158,6 +185,39 @@ export const addCampaign = async (user) => {
   await updateDoc(doc(db, "users", user.id), updatedUserData);
   return newCampaignId;
 }
+
+export const followUser = async (user, targetUser) => {
+  // Need 2 collections, following & followers in each user document (who you're following, and other users who are following you)
+  let following = user && user?.following ? user?.following : [];
+  console.log("following",following);
+  console.log("targetUser", targetUser);
+  following.push(targetUser.id);
+  let updatedFollowingData = {
+    following:following
+  }
+  let followers = targetUser && targetUser?.followers ? targetUser?.followers : [];
+  followers.push(user.id);
+  let updatedFollowersData = {
+    followers:followers
+  }
+  await updateDoc(doc(db, "users", user.id), updatedFollowingData);
+  await updateDoc(doc(db, "users", targetUser.id), updatedFollowersData);
+}
+
+export const unfollowUser = async (user, targetUser) => {
+  let following = user && user?.following ? user?.following : [];
+  following = following.filter(e => e !== targetUser.id);
+  let updatedFollowingData = {
+    following:following
+  }
+  let followers = targetUser && targetUser?.followers ? targetUser?.followers : [];
+  followers = followers.filter(e => e !== user.id);
+  let updatedFollowersData = {
+    followers:followers
+  }
+  await updateDoc(doc(db, "users", user.id), updatedFollowingData);
+  await updateDoc(doc(db, "users", targetUser.id), updatedFollowersData);
+} 
 
 export async function fetchCampaign(campaignId) {
   // Check for the customURL first

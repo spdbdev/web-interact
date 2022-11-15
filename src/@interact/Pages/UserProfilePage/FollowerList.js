@@ -1,9 +1,22 @@
 import "./UserProfilePage.css";
+import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReactModal from "react-modal";
 import InteractButton from "@interact/Components/Button/InteractButton";
+import useCurrentUser from "@interact/Hooks/use-current-user";
+import { FollowButton } from "../CampaignPage/Stats";
+import { fetchUsersByIds } from "../../../firebase";
 
-export default function FollowerList({ open, setOpen }) {
+export default function FollowerList({ open, setOpen, followers = [] }) {
+  // console.log("profilefollowers",followers);
+  const [followerlist, setFollowerList] = useState([]);
+  useEffect(async ()  => {
+    if(followers.length > 0) {
+      setFollowerList(await fetchUsersByIds(followers));
+    }else {
+      setFollowerList([]);
+    }
+  }, [open])
   return (
     <ReactModal
       className="modal"
@@ -24,15 +37,16 @@ export default function FollowerList({ open, setOpen }) {
         </div>
       </div>
       <div style={{ overflowY: "scroll", height: "calc(100% - 30px)" }}>
-        {[...Array(100).keys()].map((x, i) => (
-          <FollowerListItem />
+        {followerlist.map((x, i) => (
+          <FollowerListItem key={i} data={x} />
         ))}
       </div>
     </ReactModal>
   );
 }
 
-function FollowerListItem() {
+function FollowerListItem(data) {
+  const { user } = useCurrentUser();
   return (
     <div
       style={{
@@ -61,13 +75,13 @@ function FollowerListItem() {
         }}
       >
         <div style={{ marginLeft: 20 }}>
-          <div style={{ fontSize: 20 }}>Andrew Thompson</div>
+          <div style={{ fontSize: 20 }}>{data?.data?.name}</div>
           <div style={{ fontSize: 12, color: "#777" }}>
             Contributed $50 2 interactions total
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <InteractButton>Follow</InteractButton>
+          <FollowButton user={user} targetUser={data.data}/>
           <MoreVertIcon style={{ fontSize: 20 }} />
         </div>
       </div>

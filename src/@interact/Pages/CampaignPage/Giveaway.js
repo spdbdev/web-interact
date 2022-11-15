@@ -6,12 +6,13 @@ import { useEffect,useState } from "react";
 import InteractButton from "../../Components/Button/InteractButton";
 import InfoTooltip from "../../Components/InfoTooltip";
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { db, auth } from '../../../firebase';
+import { db, auth, fetchUserByName, followUser } from '../../../firebase';
 import { doc, setDoc, serverTimestamp, getDoc, query, collection, where, getDocs, getCountFromServer, increment } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import "./CampaignPage.css";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 import { formatMoney } from "@interact/Components/utils";
 
 export default function Giveaway({
@@ -44,7 +45,9 @@ export default function Giveaway({
 	const [useSaveCard, setUseSaveCard] = useState(false);
 	const campaignId = 'test12345';
 	//const [user] = useAuthState(auth); 
-	let user = {
+    const { user } = useCurrentUser();
+    
+	let testuser = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
 		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
 		name: "biby",
@@ -59,7 +62,7 @@ export default function Giveaway({
 
 	const fetchUserName = async () => {
 		try {
-			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const q = query(collection(db, "users"), where("uid", "==", testuser?.uid));
 			const doc = await getDocs(q);
 			const data = doc.docs[0].data();
 			setName(data.name);
@@ -71,7 +74,7 @@ export default function Giveaway({
   	fetchUserName();
 
     const getDataGiveaway = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', testuser?.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
@@ -82,7 +85,7 @@ export default function Giveaway({
     }
 
     const get_stripe_customer_id = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', testuser?.uid);
         const docSnap = await getDoc(docRef);
         //console.log(docSnap);
         if (docSnap.exists()) {
@@ -146,7 +149,7 @@ export default function Giveaway({
 	}
 
     useEffect(() => {
-        //if (!user?.uid) return navigate("/");
+        //if (!testuser?.uid) return navigate("/");
         //fetchUserName();
     }, []);
     localStorage.setItem('name', name);
@@ -164,7 +167,7 @@ export default function Giveaway({
     //console.log(userData);
 
     const saveDataInGiveaway = async (data) => {
-        await setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
+        await setDoc(doc(db, "campaigns", campaignId, 'Giveaway', testuser?.uid), data);
 
 		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, 'Giveaway'));
 		const counter = snapshot.data().count;
@@ -187,8 +190,8 @@ export default function Giveaway({
 
     const saveDataInStripeCustomer = (stripe_customer_data) => {
         // console.log(stripe_customer_data);
-        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data);
-        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data);
+        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',testuser?.uid), stripe_customer_data);
+        setDoc(doc(db, 'stripeCustomers',testuser?.uid), stripe_customer_data);
     }
 
 
@@ -573,7 +576,26 @@ export default function Giveaway({
         document.body.classList.remove('active-modal')
     }
 
+    const followCampaign = async () => {
+        const targetUser = await fetchUserByName(campaignData?.person?.username);
+		if(user === undefined) {
+            console.log("You need to sign in to follow user");
+            navigate("/a/signin");
+            return;
+        }else if(targetUser === {}) {
+            console.log("targetUser is wrong");
+            return;
+        }else if(user?.id === targetUser?.id) {
+            console.log("You can not follow yourself");
+            return;
+        }
+        if(!targetUser?.followers?.includes(user?.id)) {
+            followUser(user, targetUser);
+        }
+    }
+
 	const buyGiveawayAlert = () => {
+        followCampaign();
 		Swal.fire({
 		title: "Skill-testing question",
 		text: "Before you make this purchase, you must correctly answer the math question below:",
@@ -618,6 +640,7 @@ export default function Giveaway({
 		});
 	};
 	const freeGiveawayAlert = () => {
+        followCampaign();
 		Swal.fire({
 		title: "Claim free entry?",
 		text: "Would you like to claim this free giveaway entry?",

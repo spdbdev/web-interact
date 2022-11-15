@@ -6,20 +6,26 @@ import {
   Divider, FormControl, InputAdornment, InputLabel, OutlinedInput, Stack, Typography, Select, MenuItem
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { fetchUserByName, followUser } from '../../../firebase';
 import InteractButton from "../../Components/Button/InteractButton";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 import InfoTooltip from "../../Components/InfoTooltip";
+import { useNavigate } from "react-router-dom";
 import "./CampaignPage.css";
 
 
 
-export default function Auction({isCampaignEnded, bids, campaignData, bidAction }) {
-
+export default function Auction({isCampaignEnded, bids, campaignData, bidAction}) {
+	
+	const navigate = useNavigate();
 	const [bidAmount, setBidAmount] = useState(0);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
 	const [maxBidAmount, setMaxBidAmount] = useState(0);
 	const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
 	const [desiredRanking, setDesiredRanking] = useState(1);
+
+    const { user } = useCurrentUser();
 
 	useEffect(() => {
 		if (Object.entries(campaignData).length > 0 && bids.length > 0) {
@@ -107,6 +113,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 		handleMaxBidAmount(e.target.value);
 	}
 
+
 	useEffect(()=>{
 		handleMaxBidAmount(desiredRanking);
 	},[])
@@ -115,9 +122,29 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 
 	const options = [];
 	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
-		options.push(<MenuItem value={i}>{i}{nth(i)}</MenuItem>);
+		options.push(<MenuItem key={i} value={i}>{i}{nth(i)}</MenuItem>);
 	}
-
+	const followCampaign = async () => {
+        const targetUser = await fetchUserByName(campaignData?.person?.username);
+		if(user === undefined) {
+            console.log("You need to sign in to follow user");
+            navigate("/a/signin");
+            return;
+        }else if(targetUser === {}) {
+            console.log("targetUser is wrong");
+            return;
+        }else if(user?.id === targetUser?.id) {
+            console.log("You can not follow yourself");
+            return;
+        }
+        if(!targetUser?.followers?.includes(user?.id)) {
+            followUser(user, targetUser);
+        }
+    }
+	const handleBidClick = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
+		followCampaign();
+		bidAction(amount, auto, desiredRanking, maxBidPrice, minBidPrice);
+	}
 	return (
 		<JumboCardQuick
 		title={"Auction"}
@@ -168,7 +195,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 			/>
 			</FormControl>
 
-			<InteractButton disabled={isCampaignEnded} onClick={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}>
+			<InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(autoBidAmount,true,desiredRanking,maxBidAmount)}>
 			Place auto-bid
 			</InteractButton>
 		</Stack>
@@ -225,7 +252,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 			</Stack>
 
 			{/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
-			<InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
+			<InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(bidAmount,false,null,null,minBidAmount)}>
 			Place bid
 			</InteractButton>
 			{/* </form> */}
