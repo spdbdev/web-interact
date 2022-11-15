@@ -383,8 +383,8 @@ function CampaignPage(userData) {
       layoutOptions={{
         wrapper: {
           sx: {
-            [theme.breakpoints.up("xl")]: {
-              px: 2,
+            [theme.breakpoints.up("lg")]: {
+              px: 10,
             },
             [theme.breakpoints.up("xxl")]: {
               px: 30,
@@ -423,9 +423,9 @@ function CampaignPage(userData) {
               title="YouTube video player"
               width="100%"
               height="100%"
-              frameborder="0"
+              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
+              allowFullScreen
             />
           </Box>
 

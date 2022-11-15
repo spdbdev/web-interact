@@ -6,6 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
+import { FormHelperText } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -34,6 +35,7 @@ export default function CampaignDropdownSelect({
     <div>
       <FormControl sx={{ width: 400 }}>
         <Select
+          disabled={true} // DISABLED FOR NOW, ADD IN NEAR FUTURE
           value={selectedItem}
           onChange={handleChange}
           input={<OutlinedInput />}
@@ -46,6 +48,9 @@ export default function CampaignDropdownSelect({
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>
+          We will be supporting additional currencies in the near future.
+        </FormHelperText>
       </FormControl>
     </div>
   );

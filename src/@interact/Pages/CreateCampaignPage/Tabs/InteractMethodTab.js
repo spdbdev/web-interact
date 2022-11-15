@@ -142,7 +142,9 @@ export default function InteractMethodTab({
             automatically have that role removed after 3 hours (or you can do so
             earlier manually). <br></br>
             <br />
-            Press 'Link your Discord Server' again to change the server.
+            Press 'Link your Discord Server' again to change the server. <br></br>
+            <br />
+            WARNING: make sure you are the 'Owner' of this Discord server.
           </TitleAndDesc>
           <InteractButton
             onClick={handleLinkDiscordButton}
