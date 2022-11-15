@@ -109,18 +109,20 @@ exports.scheduleFunction = functions.pubsub
               case grossRevenue < 1000:
                 grossRevenue =  grossRevenue - ((17 *grossRevenue) / 100)
                 break;
-              case grossRevenue > 1000:
+              case grossRevenue > 1000 && grossRevenue < 10000:
                 grossRevenue =  grossRevenue - ((16 *grossRevenue) / 100)
                 break;
-              case grossRevenue > 10000:
+              case grossRevenue > 10000 && grossRevenue < 100000:
                 grossRevenue =  grossRevenue - ((14 *grossRevenue) / 100)
                 break;
-              case grossRevenue > 100000:
+              case grossRevenue > 100000 && grossRevenue < 1000000:
                 grossRevenue =  grossRevenue - ((10 *grossRevenue) / 100)
                 break;
-              case grossRevenue > 100000:
-                grossRevenue =  grossRevenue - ((2 *grossRevenue) / 100)
+              case grossRevenue > 1000000:
+                grossRevenue =  grossRevenue - ((10 *grossRevenue) / 100)
                 break;
+              default:
+                // grossRevenue =  grossRevenue - ((17 *grossRevenue) / 100)
             }
             const transfer = await stripe.transfers.create({
               amount: grossRevenue *100,
