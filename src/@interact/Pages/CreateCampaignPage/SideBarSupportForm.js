@@ -26,7 +26,7 @@ export default function SideBarSupportForm() {
         }}
       ></Box>
       <Typography variant="body2" color={"primary.contrastText"}>
-        Have a question? Ask here and we’ll get back to you within 24 hours!
+        Have a question? Ask here and we’ll get back to you within 24 hours! (on weekdays)
       </Typography>
 
       <TextField
