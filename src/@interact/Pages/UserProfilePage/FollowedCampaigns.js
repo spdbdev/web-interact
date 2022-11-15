@@ -46,7 +46,7 @@ function FollowedCampaigns() {
 		{
 			let doc = document.data();
 
-			/* let endDate = doc.endDate?.seconds;
+			let endDate = doc.endDate?.seconds;
 			let new_doc = {
 				title: doc.title,
 				endDateTime: getDateFromTimestamp({
@@ -55,10 +55,10 @@ function FollowedCampaigns() {
 				goal: doc.goal,
 				goalValue: doc.goalValue,
 				username: doc.person.username
-			}; */
+			};
 
 
-			current_campaigns.push(doc);
+			current_campaigns.push(new_doc);
 
 			// check user in these collections if found then add this campaign into interaction_campaigns
 			if (
@@ -67,7 +67,7 @@ function FollowedCampaigns() {
 				(await cus(document.id, "GiveawayWinners")) === true
 				) 
 			{
-				interaction_campaigns.push(doc);
+				interaction_campaigns.push(new_doc);
 			}
 		}
 		}

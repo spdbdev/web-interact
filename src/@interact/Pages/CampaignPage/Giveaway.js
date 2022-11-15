@@ -84,7 +84,6 @@ export default function Giveaway({
 			postalCode: "",
 		},
 	});
-
 	const [updateCardInfo, setUpdateCardInfo] = useState({
 		pid: "",
 		name: "",
@@ -93,7 +92,6 @@ export default function Giveaway({
 		city: "",
 		postalCode: "",
 	});
-
 	const [locations, setLocations] = useState({
 		countries: "",
 		states: "",
@@ -104,7 +102,6 @@ export default function Giveaway({
 		city: {},
 		state: {},
 	});
-
 	const [paymentMethods, setPaymentMethods] = useState([]);
 	const [userCostomerId, setUserCostomerId] = useState(null);
 
@@ -322,7 +319,7 @@ export default function Giveaway({
 		}).then((result) => {
 		if (result.value) {
 			setHasUserClaimedFreeEntry(true);
-			setHasUserEnteredGiveaway(true);
+			//setHasUserEnteredGiveaway(true);
 			Swal.fire(
 			"Claimed!",
 			"You've claimed a free entry for this giveaway. Good luck!",

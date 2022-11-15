@@ -61,63 +61,56 @@ function a11yProps(index) {
 }
 
 function UserProfilePage() {
-  const [tab, setTab] = React.useState(0);
-  let { id } = useParams();
+    const [tab, setTab] = React.useState(0);
+    let { id } = useParams();
 
-  let user_id = id;
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
-
-  const isCreator = auth?.currentUser?.uid == user_id ? true : false;
-
-  const [modalOpened, setModalOpened] = useState(false);
-
-  // const [user, loading, error] = useAuthState(auth);
-  const { user } = useCurrentUser();
-  const [name, setName] = useState("");
-  const [image, setImage] = React.useState(
-    "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-  );
-  const navigate = useNavigate();
-
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-
-      const colledoc = await getDocs(q);
-
-      const data = colledoc.docs[0].data();
-      setName(data.name);
-    
-    } catch (err) {
-      console.error(err);
-      alert("An error occured while fetching user data");
-    }
-  };
-
-  const userProfile = async () => {
-    let q = query(collection(db, "userspicture"), where("uid", "==", user?.uid));
-    const userProfileDoc = await getDocs(q);
-    const userProfiledata = userProfileDoc.docs[0].data();
-    if (userProfiledata.imageurl) {
-      setImage(userProfiledata.imageurl);
-    } else {
-      setImage(
-        "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-      );
-    }
-  };
-  useEffect(() => {
-    userProfile();
-  }, [user]);
-
-  useEffect(() => {
     let user_id = id;
-    if (loading) return;
-    if (!user) return navigate("/");
-    fetchUserName();
-  }, [user, loading, id]);
+    const handleChange = (event, newValue) => {
+      setTab(newValue);
+    };
+
+    const isCreator = auth?.currentUser?.uid == user_id ? true : false;
+    const [modalOpened, setModalOpened] = useState(false);
+    const [loading] = useAuthState(auth);
+    const { user } = useCurrentUser();
+    const [name, setName] = useState("");
+    const [image, setImage] = React.useState(
+      "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+    );
+    const navigate = useNavigate();
+
+	const fetchUserName = async () => {
+		try {
+			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const colledoc = await getDocs(q);
+			const data = colledoc.docs[0].data();
+			setName(data.name);
+		} catch (err) {
+			console.error(err);
+			alert("An error occured while fetching user data");
+		}
+	};
+
+	const userProfile = async () => {
+		let q = query(collection(db, "userspicture"), where("uid", "==", user?.uid));
+		const userProfileDoc = await getDocs(q);
+		const userProfiledata = userProfileDoc.docs[0].data();
+		if (userProfiledata.imageurl) {
+			setImage(userProfiledata.imageurl);
+		} else {
+			setImage(
+				"https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+			);
+		}
+	};
+
+	useEffect(() => {
+		let user_id = id;
+		if (loading) return;
+		if (!user) return navigate("/");
+		userProfile();
+		fetchUserName();
+	}, [user, loading, id]);
 
   localStorage.setItem("name", name);
   const handleChangeImage = async (e) => {
