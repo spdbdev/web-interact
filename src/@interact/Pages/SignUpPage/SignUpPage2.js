@@ -1,9 +1,11 @@
-import { TextField, Button, FormControlLabel, Checkbox,Alert } from "@mui/material";
+import { TextField, Button, FormControlLabel, Checkbox,Alert, Icon } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
+
+import EditIcon from "@mui/icons-material/Edit";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,8 +15,20 @@ import PasswordChecklist from "react-password-checklist";
 import fb_logo from "./facebook.png";
 import gl_logo from "./google.png";
 
+import profile_1 from "./interact-heart-baby-blue.png";
+import profile_2 from "./interact-heart-light-orange.png";
+import profile_3 from "./interact-heart-light-pink.png";
+import profile_4 from "./interact-heart-light-violet.png";
+import profile_5 from "./interact-heart-purple-original.png";
+import profile_6 from "./interact-heart-red.png";
+import profile_7 from "./interact-heart-yellow.png";
+
+import { Storage } from "../../../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 import "./SignUpPage.css";
 import InteractButton from "@interact/Components/Button/InteractButton";
+import { useRef } from "react";
 
 // newer SignUpPage with birthday.
 function SignUpPage2() {
@@ -26,8 +40,16 @@ function SignUpPage2() {
   const [name, setName] = useState("");
   const [nameError,setNameError] = useState("");
   const [user, loading, error] = useAuthState(auth);
+  const [imageUrl,setImageUrl] = useState(null);
+  const [image,setImage] = useState(null);
   const navigate = useNavigate();
 
+  const fileRef = useRef();
+
+  const profile_images = [profile_1,profile_2,profile_3,profile_4,profile_5,profile_6,profile_7];
+  const handleFileClick = function(){
+    fileRef.current.click();
+  }
 
   const validateUserName = function(){
     if(name.length > 14){
@@ -53,9 +75,46 @@ function SignUpPage2() {
         );
       return;
     }
-    registerWithEmailAndPassword(name, email, password);
+    if(registerWithEmailAndPassword(name, email, password,imageUrl)) navigate(`/u/${name}`);
   };
+
+  const handleChangeImage = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+        },
+        (err) => console.log(err),
+        () => {
+          // download url
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            setImageUrl(url);
+          });
+        }
+      );
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        var dataURL = reader.result;
+        setImage(dataURL);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const setRandomImage = function(){
+    setImage(profile_images[Math.floor(Math.random() * profile_images.length)]);
+    setImageUrl(profile_images[Math.floor(Math.random() * profile_images.length)]);
+  }
+
   useEffect(() => {
+    setRandomImage();
     if (loading) return;
     if (user) navigate("/user");
   }, [user, loading]);
@@ -68,8 +127,17 @@ function SignUpPage2() {
         <img
           src={process.env.PUBLIC_URL + "/logo.png"}
           alt="logo"
-          style={{ height: 100, padding: 20 }}
+          style={{ height: 120, padding: 20 }}
         />
+        <div className="profile_pic" style={{position: "relative",margin:"1rem"}}>
+          <img
+            src={image}
+            alt="profile image"
+            style={{height: 100, padding: 10,borderRadius:"50%"}}
+          />
+          <input type="file" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
+          <EditIcon onClick={(e)=>handleFileClick(e)} className="profile_pic--icon"/>
+        </div>
         {/* need to set google sign in in the firebase console, rn its only email/password*/}
         <Button className="SignUpWithGoogle" onClick={signInWithGoogle}>
           <img src={gl_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}

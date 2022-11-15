@@ -6,6 +6,7 @@ import { getAnalytics } from "firebase/analytics";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 
 import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
+import { Navigate } from "react-router-dom";
 
 import Swal from 'sweetalert2';
 
@@ -61,7 +62,7 @@ const loginWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (name, email, password,imageurl) => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
@@ -70,10 +71,13 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       name,
       authProvider: "local",
       email,
+      imageurl
     });
+    return true;
   } catch (err) {
     console.error(err);
     Swal.fire("Error!", err.message, "error");
+    return false;
   }
 };
 
