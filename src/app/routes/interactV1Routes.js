@@ -4,7 +4,6 @@ import IntranetDashboard from "../pages/dashboards/intranet/IntranetDashboard";
 
 // Interactv1
 import SignInPage from "@interact/Pages/SignUpPage/SignInPage";
-import Receipts from "@interact/Pages/Receipts/Receipts";
 import SignUpPage2 from "@interact/Pages/SignUpPage/SignUpPage2";
 import UserProfile from "app/pages/users/user-profile";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
@@ -24,10 +23,6 @@ const interactV1Routes = [
   {
     path: "/interact/signup",
     element: <SignUpPage2/>,
-  },
-  {
-    path: "/interact/receipts",
-    element: <Receipts/>,
   },
 
 

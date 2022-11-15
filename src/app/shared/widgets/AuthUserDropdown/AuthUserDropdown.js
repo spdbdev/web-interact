@@ -81,16 +81,6 @@ const AuthUserDropdown = () => {
                 sx={{ my: 0 }}
               />
             </ListItemButton> */}
-            <ListItemButton>
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <RepeatOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText
-                onClick={() => navigate("/interact/receipts")}
-                primary="Receipts & pay stubs"
-                sx={{ my: 0 }}
-              />
-            </ListItemButton>
             <ListItemButton onClick={onLogout}>
               <ListItemIcon sx={{ minWidth: 36 }}>
                 <LogoutIcon />

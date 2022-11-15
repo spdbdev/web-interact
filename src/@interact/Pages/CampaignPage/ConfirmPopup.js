@@ -59,7 +59,7 @@ const paymentResponse = (price,resp = null) => {
         
           settheOpenPopup(false);
           Swal.fire(
-            "Correct!",
+            "Success!",
             "Your payment has been made. Thanks",
             "success"
           );
@@ -70,7 +70,7 @@ const paymentResponse = (price,resp = null) => {
           settheOpenPopup(false);
           Swal.fire({
             icon: "error",
-            title: "Oops...",
+            title: "Failed!",
             text: "An error occured",
           });
         }

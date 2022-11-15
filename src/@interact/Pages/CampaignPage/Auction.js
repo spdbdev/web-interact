@@ -345,35 +345,9 @@ export default function Auction({ bids, campaignData, bidAction }) {
     setselectPopUp(2);
     setOpenPopup1(false);
   };
-  const createReceipt = async () => {
-    console.log("RECEIPT DETAILS", {
-      creator_username: campaignData?.person?.username,
-      purchaser_username: currentUser?.name,
-      price: openPopup1?bidAmount:maxBidAmount,
-      rank: openPopup1?'manual':desiredRanking,
-  }); 
-//   await db.collection('users').doc("eBgjz86kRKRqBKe2iMI1").collection('receipts').add({
-//     creator_username: campaignData?.person?.username,
-//     purchaser_username: currentUser?.name,
-//     price: maxBidAmount,
-//     rank: desiredRanking,
-//     type:'auction'
-// });
-
-  const receiptResponse = await addDoc(collection(db, "users", currentUser.id, "receipts"), {
-    creator_username: campaignData?.person?.username,
-    purchaser_username: currentUser?.name,
-    price: openPopup1?bidAmount:maxBidAmount,
-    rank: openPopup1?'manual':desiredRanking,
-    type:'auction'
-});
-console.log('receiptResponse');
-console.log(receiptResponse);
-  }
 
   useEffect(() => {
     if (loading) return;
-    if (!user) return navigate("/");
     fetchUserName();
     console.log('currentUser');
     console.log(currentUser);    
@@ -382,7 +356,6 @@ console.log(receiptResponse);
   return (
     <>
       <ConfirmPopup
-        createReceipt={createReceipt}
         openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
@@ -398,7 +371,6 @@ console.log(receiptResponse);
       />
 
       <ConfirmPopup
-      createReceipt={createReceipt}
         openstate={openPopup1}
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}

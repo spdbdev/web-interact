@@ -29,7 +29,7 @@ import { getRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
 import ConfirmPopup from "./ConfirmPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from '@mui/material/IconButton';
+import IconButton from "@mui/material/IconButton";
 
 const style = {
   position: "absolute",
@@ -245,35 +245,9 @@ export default function Giveaway({
       alert("An error occured while fetching user data");
     }
   };
-  const createReceipt = async () => {
-    console.log("GIVEAWAY RECEIPT DETAILS", {
-      creator_username: campaignData?.person?.username,
-      purchaser_username: currentUser?.name,
-      price: rafflePrice,
-      paymentmethod:selectedPaymentMethod, 
-      type:'giveaway'
-  }); 
-//   await db.collection('users').doc("eBgjz86kRKRqBKe2iMI1").collection('receipts').add({
-//     creator_username: campaignData?.person?.username,
-//     purchaser_username: currentUser?.name,
-//     price: maxBidAmount,
-//     rank: desiredRanking,
-//     type:'auction'
-// });
-
-  const receiptResponse = await addDoc(collection(db, "users", currentUser.id, "receipts"), {
-    creator_username: campaignData?.person?.username,
-    purchaser_username: currentUser?.name,
-    price: rafflePrice,
-    paymentmethod:selectedPaymentMethod, 
-    type:'giveaway'
-});
-console.log('Giveaway receiptResponse');
-console.log(receiptResponse);
-  }
 
   useEffect(() => {
-    if (!user) return navigate("/");
+  
     fetchUserName();
   }, [user]);
 
@@ -351,7 +325,6 @@ console.log(receiptResponse);
       if (result.value) {
         setHasUserClaimedFreeEntry(true);
         setHasUserEnteredGiveaway(true);
-        createReceipt();
         Swal.fire(
           "Claimed!",
           "You've claimed a free entry for this giveaway. Good luck!",
@@ -372,7 +345,6 @@ console.log(receiptResponse);
   return (
     <>
       <ConfirmPopup
-      createReceipt={createReceipt}
         openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
@@ -519,9 +491,15 @@ console.log(receiptResponse);
           action="http://localhost:4242/create-raffle-session"
           method="POST"
         > */}
-            <InteractButton onClick={buyGiveawayAlert}>
-              Buy VIP entry
-            </InteractButton>
+            {campaignData?.campaignStatus === "scheduled" ||
+            campaignData?.campaignStatus === "ended" ? (
+              <InteractButton disabled>Buy VIP entry</InteractButton>
+            ) : (
+              <InteractButton onClick={buyGiveawayAlert}>
+                Buy VIP entry
+              </InteractButton>
+            )}
+
             {/* </form> */}
           </Box>
         </Box>
@@ -555,12 +533,18 @@ console.log(receiptResponse);
         //   action="http://localhost:4242/create-raffle-session"
         //   method="POST"
         > */}
-          <InteractButton
-            onClick={freeGiveawayAlert}
-            disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry}
-          >
-            Get a free entry
-          </InteractButton>
+          {campaignData?.campaignStatus === "scheduled" ||
+          campaignData?.campaignStatus === "ended" ? (
+            <InteractButton disabled>Get a free entry</InteractButton>
+          ) : (
+            <InteractButton
+              onClick={freeGiveawayAlert}
+              disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry}
+            >
+              Get a free entry
+            </InteractButton>
+          )}
+
           {/* </form> */}
         </Box>
       </JumboCardQuick>

@@ -233,42 +233,45 @@ function UserProfilePage() {
               {...a11yProps(0)}
               style={{ color: "black" }}
             />
-             <Tab
-              label="Settings"
+
+            {/* {isCreator && ( */}
+            <Tab
+              label="Schedule"
               {...a11yProps(1)}
               style={{ color: "black" }}
             />
-            {/* {isCreator && ( */}
-              <Tab
-                label="Schedule"
-                {...a11yProps(2)}
-                style={{ color: "black" }}
-              />
             {/* )}
             {isCreator ? ( */}
+            <Tab
+              label="Creator Schedule"
+              {...a11yProps(2)}
+              style={{ color: "black" }}
+            />
+            {/* ) : null} */}
+
+            {user && (
               <Tab
-                label="Creator Schedule"
+                label="Settings"
                 {...a11yProps(3)}
                 style={{ color: "black" }}
               />
-            {/* ) : null} */}
-          
+            )}
           </Tabs>
         </Box>
         <TabPanel value={tab} index={0}>
           <FollowedCampaigns />
         </TabPanel>
-         <TabPanel value={tab} index={1}>
-          <Setting />
-        </TabPanel>
-        <TabPanel value={tab} index={2}>
+
+        <TabPanel value={tab} index={1}>
           <Scheduler />
         </TabPanel>
-        <TabPanel value={tab} index={3}>
+        <TabPanel value={tab} index={2}>
           {isCreator ? <CreatorSchedules /> : null}
         </TabPanel>
 
-       
+        <TabPanel value={tab} index={3}>
+          <Setting />
+        </TabPanel>
       </Box>
     </div>
   );
