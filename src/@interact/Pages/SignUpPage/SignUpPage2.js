@@ -33,6 +33,8 @@ import { useRef } from "react";
 // newer SignUpPage with birthday.
 function SignUpPage2() {
   const [birdthday, setBirthday] = React.useState(null);
+  const [birthdayError, setBirthdayError] = useState(false);
+  const [birthdayErrorMessage, setBirthdayErrorMessage] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
@@ -62,12 +64,14 @@ function SignUpPage2() {
     }else if(JSON.stringify(name).includes('\\')){
       setNameError("Username cannot contain '\\' character.")
       return false
+    }else{
+      setNameError("");
     }
     return true;
   }
 
   const register = () => {
-    if (!validateUserName()) return;
+    if (!validateUserName() || birthdayError) return;
     if (!isPassValid) {
       Swal.fire(
         "Incorrect!",
@@ -130,6 +134,23 @@ function SignUpPage2() {
       reader.readAsDataURL(file);
     }
   };
+
+  const checkBirthdayValidation = function(value){
+    const crrDate = new Date();
+    const dobDate = new Date(value);
+    if((crrDate.getFullYear() - dobDate.getFullYear()) < 13){
+      setBirthdayError(true);
+      setBirthdayErrorMessage('Age limit is 13 years');
+    }else{
+      setBirthdayError(false);
+      setBirthdayErrorMessage(null);
+    }
+  }
+
+  const handleBirthdayChange = function(value){
+    checkBirthdayValidation(value);
+    setBirthday(value);
+  }
 
   const setRandomImage = function(){
     setImage(profile_images[Math.floor(Math.random() * profile_images.length)]);
@@ -239,9 +260,9 @@ function SignUpPage2() {
               label="Birthday"
               value={birdthday}
               onChange={(newValue) => {
-                setBirthday(newValue);
+                handleBirthdayChange(newValue);
               }}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <TextField {...params} error={birthdayError} helperText={birthdayErrorMessage} />}
             />
           </LocalizationProvider>
         </div>
