@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Select from "react-select";
-import {query, setDoc, serverTimestamp, getCountFromServer, increment, collection, getDocs, where, addDoc, updateDoc, doc} from "firebase/firestore";
+import {query, setDoc, serverTimestamp, getCountFromServer, increment, collection, getDoc, getDocs, where, addDoc, updateDoc, doc} from "firebase/firestore";
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
@@ -55,25 +55,342 @@ export default function Giveaway({
 	freeChanceMultiplier,
 	winningChances,
 }) {
-	const Swal = useSwalWrapper();
-	const navigate = useNavigate();
-	const [user, loading, error] = useAuthState(auth);
 	const stripe = useStripe();
-	const [currentUser,setCurrentUser] = useState(null);
-	const [open, setOpen] = useState(false);
+	const [stripeError, setStripeError] = useState("");
+	const [stripe_customer_id_new, set_Stripe_customer_id_new] = useState(false);
+
 	const elements = useElements();
+	const [priceToPay,setPriceToPay] = useState(0);
+	const [entryType,setEntryType] = useState(null);
+	const [modal, setModal] = useState(false);
+	const [clientemail, isClientEmail] = useState("");
+	const [name, setName] = useState("");
+	const [loggedInUserData, setLoggedInUserData] = useState("");
+
+	const [isSubscribed, setIsSubscribed] = useState(false);
+	const [customerSet, isCustomerSet] = useState(false);
+	const [isActive, setIsActive] = useState(true);
+	const [cardBrand, setCardBrand] = useState(true);
+	const [last4, setLast4] = useState(true);
+	const [useSaveCard, setUseSaveCard] = useState(false);
+	const campaignId = 'test12345';
+
+	const [user, loading, error] = useAuthState(auth);
+	const [currentUser, setCurrentUser] = useState(null);
+	const [open, setOpen] = useState(false);
 	const card = useRef();
 	const [openPopup, setOpenPopup] = useState(false);
-	const [rafflePrice, setRafflePrice] = useState(0);
 	const [selectedPaymentMethod,setSelectedPaymentMethod] = useState(null);
-  
-	useEffect(() => {
-		if (typeof campaignData?.rafflePrice === "undefined") {
-			setRafflePrice(0);
-		} else {
-			setRafflePrice(campaignData?.rafflePrice);
+
+
+	const navigate = useNavigate();
+	const Swal = useSwalWrapper();
+	var logged_user_stripe_customer_id = false;
+
+
+	const fetchUserName = async () => {
+		try {
+			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const colledoc = await getDocs(q);
+			const data = colledoc.docs[0].data();
+			setName(data.name);
+			isClientEmail(data.email);
+
+			setUserCostomerId(data.customerId);
+			data.id = colledoc.docs[0].id;
+			setCurrentUser(data);
+		} catch (err) {
+			console.error(err);
 		}
-	}, []);
+	};
+	useEffect(() => {
+        //if (!user?.uid) return navigate("/");
+        fetchUserName();
+    }, [user]);
+    localStorage.setItem('name', name);
+
+    const getDataGiveaway = async () => {
+        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            setLoggedInUserData(data);            
+        } else {
+            console.log("No such document!");
+        }
+    }
+
+    const get_stripe_customer_id = async () => {
+        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user?.uid);
+        const docSnap = await getDoc(docRef);
+        //console.log(docSnap);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            set_Stripe_customer_id_new(data);
+            // console.log("data is :" + JSON.stringify(data));
+            // console.log("set_Stripe_customer_id is :" + JSON.stringify(stripe_customer_id_new));
+
+            
+        } else {
+            // doc.data() will be undefined in this case
+            // console.log("No such document!");
+            logged_user_stripe_customer_id =false;
+        }  
+    }
+
+    logged_user_stripe_customer_id = stripe_customer_id_new.customer_id;
+
+
+    useEffect(() => {
+        getDataGiveaway();
+        get_stripe_customer_id();
+    }, [])
+    
+	const payment_method = () => {
+		if (logged_user_stripe_customer_id) {
+			axios.post('http://localhost:4242/get_payment_methods', {
+					stripe_customer_id: logged_user_stripe_customer_id
+				})
+				.then(function (response) {
+					var data = response.data;
+					if (data.status) {
+						isCustomerSet(true);
+						var brand = data.brand;
+						var last4 = data.last4;
+						setCardBrand(brand);
+						setLast4(last4);
+						setUseSaveCard(true);
+						//console.log("getting data" +logged_user_stripe_customer_id )
+					} else {
+						isCustomerSet(false);
+						//setUseSaveCard(false);
+						console.log("not getting data")
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		} else {
+			isCustomerSet(false);
+		}
+	}
+
+	if(logged_user_stripe_customer_id){
+		payment_method();
+	}
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setStripeError('');
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [stripeError]);
+
+    var vipEntryPrice = campaignData.giveawayVIPEntryCost ?? 0;
+    var freeEntryPrice = "0";
+    //console.log(userData);
+
+    const saveDataInGiveaway = async (data) => {
+        await setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
+
+		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, 'Giveaway'));
+		const counter = snapshot.data().count;
+		console.log('Giveaway count: ', counter);
+
+		setDoc(doc(db, "campaigns", campaignId), {numGiveawayEntries:counter}, { merge: true });
+
+
+		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
+		{
+			setDoc(
+				doc(db, "contributionAndGiveawayLossHistory", campaignData.person.id, 'users', user.uid), 
+				{contributionTotal: increment(data.price)}, 
+				{ merge: true }
+			);
+
+			setDoc(doc(db, "campaigns", campaignId), {campaignVIPtotal: increment(data.price)}, { merge: true });
+		}
+    }
+
+    const saveDataInStripeCustomer = (stripe_customer_data) => {
+        // console.log(stripe_customer_data);
+        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data);
+        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data);
+    }
+
+
+    const handleClickToggle = event => {
+        // 👇️ toggle isActive state on click
+        event.preventDefault();
+        setUseSaveCard(current_a => !current_a);
+        setIsActive(current_b => !current_b);
+    };
+     
+
+    useEffect(() => {
+        //console.log('use save card value : ' + useSaveCard)
+
+    }, [useSaveCard])
+
+    const handleCheckBox = event => {
+        if (event.target.checked) {
+            //console.log('✅ Checkbox is checked');
+        } else {
+            //console.log('⛔️ Checkbox is NOT checked');
+        }
+        setIsSubscribed(current => !current);
+    };
+
+    const CARD_ELEMENT_OPTIONS = {
+        hidePostalCode: true,
+    };
+
+    const collectFreeEntryPayment = async () => {
+    	var data = {
+    		email: clientemail,
+    		price: priceToPay,
+    		stripe_customer_id: null,
+    		payment_id: null,
+    		entryType: 'free',
+    		status: 'succeeded',
+    		campaignId: campaignId,
+    		type: "Giveaway",
+    		time: serverTimestamp(),
+    	}
+
+    	saveDataInGiveaway(data);
+
+    	return true;
+    }
+
+
+    const toggleModal = () => {
+        setModal(!modal);
+    };
+
+    if (modal) {
+        document.body.classList.add('active-modal')
+    } else {
+        document.body.classList.remove('active-modal')
+    }
+
+	const checkAuthentication = () => {
+		if(!user) {
+			navigate(`/a/signup?redirect=/c/${campaignId}`);
+			return false;
+		};
+		return true;
+	}
+
+	const buyGiveawayAlert = () => {
+		if(!checkAuthentication()) return;
+		Swal.fire({
+			title: "Skill-testing question",
+			text: "Before you make this purchase, you must correctly answer the math question below:",
+			icon: "warning",
+			html: (
+				<div>
+				<p>300+100+20 = ?</p>
+				<Input id="answer" type={"number"} />
+				</div>
+			),
+			showCancelButton: true,
+			confirmButtonText: "Confirm",
+			cancelButtonText: "Wait, cancel!",
+			reverseButtons: true,
+			preConfirm: () => {
+				const answer = Swal.getPopup().querySelector("#answer").value;
+				if (answer != 420) {
+					Swal.showValidationMessage(`Please try again.`);
+				}
+				return { answer: answer };
+			},
+		}).then((result) => {
+			if (result.value.answer == 420) {
+				// setHasUserEnteredGiveaway(true); can't set these to true until we get a confirmation from stripe.
+				//setHasUserPurchasedVIPEntry(true);
+				/* Swal.fire(
+				"Correct!",
+				"You'll now be taken to the payment page.",
+				"success"
+				).then(()=>{
+				setPriceToPay(vipEntryPrice);
+				setEntryType('vip');
+				toggleModal();
+				}); */
+
+				getRequest(`/customer/method/${userCostomerId}`)
+				.then((resp) => {
+					const mdata = resp.data.paymentmethod.data;
+					console.log(resp.data.paymentmethod.data);
+					if (mdata.length > 0) {
+					setPaymentMethods(resp.data.paymentmethod.data);
+					setOpenPopup(true);
+					} else {
+					setOpen(true);
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+				
+			} else {
+				Swal.fire(
+				"Incorrect.",
+				"We were expecting a different answer... try again!",
+				"error"
+				);
+			}
+		});
+	};
+
+	const freeGiveawayAlert = () => {
+		if(!checkAuthentication()) return;
+		Swal.fire({
+			title: "Claim free entry?",
+			text: "Would you like to claim this free giveaway entry?",
+			showCancelButton: true,
+			confirmButtonText: "Yes, Claim!",
+			cancelButtonText: "Cancel",
+			reverseButtons: true,
+		}).then((result) => {
+			if (result.value) {
+				setPriceToPay(freeEntryPrice);
+				setEntryType('free');
+				if(!collectFreeEntryPayment()){
+					return;
+				};
+				setHasUserClaimedFreeEntry(true);
+				Swal.fire(
+					"Claimed!",
+					"You've claimed a free entry for this giveaway. Good luck!",
+					"success"
+				);
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				/* Read more about handling dismissals below */
+				// close alert
+			}
+		});
+	};
+
+	useEffect(()=>{
+		document.getElementById("giveawayCard").onmousemove = e => {
+		for(const card of document.getElementsByClassName("giveawayCard")) {
+			const rect = card.getBoundingClientRect(),
+		
+				x = e.clientX - rect.left,
+				y = e.clientY - rect.top;
+		
+			card.style.setProperty("--mouse-x", `${x}px`);
+			card.style.setProperty("--mouse-y", `${y}px`);
+		};
+		}
+	})
+
+
+
+
 
 	const [cardInfo, setCardInfo] = useState({
 		name: "",
@@ -111,28 +428,18 @@ export default function Giveaway({
 			return { ...prev, address: { ...prev.address, line: value } };
 		});
 	}
-
-	// function handleChangePostalCode(e) {
-	//   const { value } = e.target;
-	//   setCardInfo((prev) => {
-	//     return { ...prev, address: { ...prev.address, postalCode: value } };
-	//   });
-	// }
-
 	function handleChangeName(e) {
 		const { value } = e.target;
 		setCardInfo((prev) => {
 			return { ...prev, name: value };
 		});
 	}
-
 	function parseForSelect(arr) {
 		return arr.map((item) => ({
 			label: item.name,
 			value: item.isoCode ? item.isoCode : item.name,
 		}));
 	}
-
 	function handleSelectCountry(country) {
 		setSelectedLocation((prev) => {
 			return { ...prev, country };
@@ -142,7 +449,6 @@ export default function Giveaway({
 			country: country.value,
 		});
 	}
-
 	function handleSelectState(state) {
 		const cities = City.getCitiesOfState(
 			selectedLocation.country.value,
@@ -154,96 +460,61 @@ export default function Giveaway({
 
 		setLocations((prev) => ({ ...prev, cities: parseForSelect(cities) }));
 	}
-
 	function handleSelectCity(city) {
 		setSelectedLocation((prev) => {
 			return { ...prev, city };
 		});
 	}
-
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
-
 	const closefunction = () => {
 		setOpenPopup(false);
 	};
-
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const address = cardInfo.address;
 		const billingDetails = {
-		name: cardInfo.name,
-		address: {
-			country: cardInfo.country,
-			state: address.state,
-			city: address.city,
-			line1: address.line,
-		},
+			name: cardInfo.name,
+			address: {
+				country: cardInfo.country,
+				state: address.state,
+				city: address.city,
+				line1: address.line,
+			},
 		};
 
 		try {
-		stripe
-			.createPaymentMethod({
-			type: "card",
-			billing_details: billingDetails,
-			card: elements.getElement(CardElement),
+		stripe.createPaymentMethod({
+				type: "card",
+				billing_details: billingDetails,
+				card: elements.getElement(CardElement),
 			})
 			.then((resp) => {
-			const pmid = resp.paymentMethod.id;
-			if (pmid && userCostomerId) {
-				getRequest(`/method/attach/${userCostomerId}/${pmid}`)
-				.then((resp) => {
-					setOpen(false);
-					if (resp.data.added) {
-					setPaymentMethods(resp.data.paymentmethod.data);
-					} else {
-					Swal.fire({
-						icon: "error",
-						title: "Oops...",
-						text: "An error occured",
+				const pmid = resp.paymentMethod.id;
+				if (pmid && userCostomerId) {
+					getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+					.then((resp) => {
+						setOpen(false);
+						if (resp.data.added) {
+							setPaymentMethods(resp.data.paymentmethod.data);
+						} else {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "An error occured",
+						});
+						}
+					})
+					.catch((err) => {
+						/*Handle Error */
 					});
-					}
-				})
-				.catch((err) => {
-					/*Handle Error */
-				});
-			}
-			console.log(resp);
+				}
+				console.log(resp);
 			});
 		} catch (err) {
 		/* Handle Error*/
 		}
 	};
-
-	const fetchUserName = async () => {
-		try {
-			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-			const colledoc = await getDocs(q);
-			const data = colledoc.docs[0].data();
-
-			setUserCostomerId(data.customerId);
-			data.id = colledoc.docs[0].id;
-			setCurrentUser(data);
-
-			// getRequest(`/customer/method/${data.customerId}`)
-			//   .then((resp) => {
-			//     console.log(resp.data.paymentmethod.data);
-			//     setPaymentMethods(resp.data.paymentmethod.data);
-			//   })
-			//   .catch((err) => {
-			//     console.log(err);
-			//   });
-		} catch (err) {
-			console.error(err);
-			alert("An error occured while fetching user data");
-		}
-	};
-
-	useEffect(() => {
-	
-		fetchUserName();
-	}, [user]);
-
 	const resturnOption = () => {
 		const options = supported_transfer_countries.map((item, index) => {
 			return { value: item.code, label: item.country };
@@ -251,92 +522,10 @@ export default function Giveaway({
 		return options;
 	};
 
-  	const buyGiveawayAlert = () => {
-		if (!user) return navigate("/");
-		Swal.fire({
-		title: "Skill-testing question",
-		text: "Before you make this purchase, you must correctly answer the math question below:",
-		icon: "warning",
-		html: (
-			<div>
-			<p>300+100+20 = ?</p>
-			<Input id="answer" type={"number"} />
-			</div>
-		),
-		showCancelButton: true,
-		confirmButtonText: "Confirm",
-		cancelButtonText: "Wait, cancel!",
-		reverseButtons: true,
-		preConfirm: () => {
-			const answer = Swal.getPopup().querySelector("#answer").value;
-			if (answer != 420) {
-			Swal.showValidationMessage(`Please try again.`);
-			}
-			return { answer: answer };
-		},
-		}).then((result) => {
-		if (result.value.answer == 420) {
-			// setHasUserEnteredGiveaway(true); can't set these to true until we get a confirmation from stripe.
-			//setHasUserPurchasedVIPEntry(true);
-			// Swal.fire(
-			//   "Correct!",
-			//   "You'll now be taken to the payment page.",
-			//   "success"
-			// );
-			getRequest(`/customer/method/${userCostomerId}`)
-			.then((resp) => {
-				const mdata = resp.data.paymentmethod.data;
-				console.log(resp.data.paymentmethod.data);
-				if (mdata.length > 0) {
-				setPaymentMethods(resp.data.paymentmethod.data);
-				setOpenPopup(true);
-				} else {
-				setOpen(true);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-		} else {
-			Swal.fire(
-			"Incorrect.",
-			"We were expecting a different answer... try again!",
-			"error"
-			);
-		}
-		});
-	};
 
-	const freeGiveawayAlert = () => {
-		if (!user) return navigate("/");
-		Swal.fire({
-		title: "Claim free entry?",
-		text: "Would you like to claim this free giveaway entry?",
-		showCancelButton: true,
-		confirmButtonText: "Yes, Claim!",
-		cancelButtonText: "Cancel",
-		reverseButtons: true,
-		}).then((result) => {
-		if (result.value) {
-			setHasUserClaimedFreeEntry(true);
-			//setHasUserEnteredGiveaway(true);
-			Swal.fire(
-			"Claimed!",
-			"You've claimed a free entry for this giveaway. Good luck!",
-			"success"
-			);
-		} else if (
-			/* Read more about handling dismissals below */
-			result.dismiss === Swal.DismissReason.cancel
-		) {
-			// close alert
-		}
-		});
-	};
 
-	// these are dummy values and will be replaced with legit DB variables
-	const chanceMultiplier = 1;
-	const lossChanceMultiplier = 2; // this can be 2 or 4, corresponding to 1 or 2 past losses in a giveaway (for same creator)
+
+ 
 	return (
 		<>
 		<ConfirmPopup
@@ -349,17 +538,17 @@ export default function Giveaway({
 			belowtext={autobid}
 			undertitle={``}
 			onchangeclick={handleOpen}
-			price={rafflePrice}
+			price={vipEntryPrice}
 			userCostomerId={userCostomerId}
 			hovertext={hoverText}
 			hovereffect={true}
-		/>
+			/>
 		<Modal
 			open={open}
 			onClose={handleClose}
 			aria-labelledby="modal-modal-title"
 			aria-describedby="modal-modal-description"
-		>
+			>
 			<Box sx={style}>
 			<div className="wrapper">
 				<div className="innerWrapper">
@@ -423,124 +612,102 @@ export default function Giveaway({
 			</div>
 			</Box>
 		</Modal>
+
 		<JumboCardQuick
 			title={"Giveaway"}
 			sx={{
-			ml: 2,
-			display: "flex",
-			flexDirection: "column",
-			width: 400,
+				ml: 2,
+				display: "flex",
+				flexDirection: "column",
+				width: 400,
 			}}
 			headerSx={{ pb: 0 }}
 			wrapperSx={{
-			pt: 1,
-			flex: 1,
-			display: "flex",
-			flexDirection: "column",
-			justifyContent: "space-between",
+				pt: 1,
+				flex: 1,
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between",
 			}}
 			id="giveawayCard"
-		>
+			className="giveawayCard"
+			>
 			<Box>
-			<div>
+				<div>
 				<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
 				minute interactions
-			</div>
-			<div>
+				</div>
+				<div>
 				<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
 				winners will be randomly chosen from the ticketholders at the end of
 				the campaign
-			</div>
+				</div>
 			</Box>
 
 			<Box id="VIPGiveawaySection">
-			<Typography variant="h5" color="text.secondary" mt={2}>
+				<Typography variant="h5" color="text.secondary" mt={1}>
 				VIP entry
-			</Typography>
+				</Typography>
 
-			<span>
-				Chance multiplier: {chanceMultiplier * lossChanceMultiplier * 25}x
-			</span>
-			<Stack direction="row" spacing={1} alignItems="center">
-				<span>Chance of winning: 2.5%</span>
+				<span>
+				Chance multiplier: {vipChanceMultiplier}x
+				</span>
+				<Stack direction="row" spacing={1} alignItems="center">
+				<span>Chance of winning: {winningChances.vip}%</span>
 				<InfoTooltip
-				title="Remember, the % chance of winning will go down as more fans
-			join the giveaway."
+					title="Remember, the % chance of winning will go down as more fans
+				join the giveaway."
 				/>
-			</Stack>
-
-			<Box sx={{ display: "flex", flexDirection: "row", mb: 2, mt: 1 }}>
+				</Stack>
+				<Box sx={{ display: "flex", flexDirection: "row", mb: 1, mt: 1 }}>
 				<Box
-				sx={{
+					sx={{
 					flex: 1,
 					p: 1,
 					mr: 1,
 					backgroundColor: "rgba(120, 47, 238, 0.1)",
 					borderRadius: 1,
 					border: "2px dashed rgba(120, 47, 238, 1)",
-				}}
+					}}
 				>
-				<span className="Highlight">${campaignData?.rafflePrice}0</span>
+					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
-				{/* <form
-			action="http://localhost:4242/create-raffle-session"
-			method="POST"
-			> */}
-				{campaignData?.campaignStatus === "scheduled" ||
-				campaignData?.campaignStatus === "ended" ? (
-				<InteractButton disabled>Buy VIP entry</InteractButton>
-				) : (
-				<InteractButton onClick={buyGiveawayAlert}>
+
+				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
 					Buy VIP entry
 				</InteractButton>
-				)}
-
-				{/* </form> */}
-			</Box>
+				</Box>
 			</Box>
 
 			<Divider>or</Divider>
 
 			<Box
-			id="freeGiveawaySection"
-			style={{
+				id="freeGiveawaySection"
+				style={{
 				display: "flex",
 				flexDirection: "column",
-				margin: "10px 0",
-			}}
-			>
-			<Typography variant="h5" color="text.secondary">
-				Free entry
-			</Typography>
-
-			<span>
-				Chance multiplier: {chanceMultiplier * lossChanceMultiplier}x
-			</span>
-			<Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
-				<span>Chance of winning: 0.1%</span>
-				<InfoTooltip
-				title="Remember, the % chance of winning will go down as more fans
-			join the giveaway."
-				/>
-			</Stack>
-
-			{/* <form
-			//   action="http://localhost:4242/create-raffle-session"
-			//   method="POST"
-			> */}
-			{campaignData?.campaignStatus === "scheduled" ||
-			campaignData?.campaignStatus === "ended" ? (
-				<InteractButton disabled>Get a free entry</InteractButton>
-			) : (
-				<InteractButton
-				onClick={freeGiveawayAlert}
-				disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry}
+				marginTop: "10px",
+				}}
 				>
-				Get a free entry
-				</InteractButton>
-			)}
+				<Typography variant="h5" color="text.secondary">
+				Free entry
+				</Typography>
 
-			{/* </form> */}
+				<span>
+				Chance multiplier: {freeChanceMultiplier}x
+				</span>
+				<Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
+				<span>Chance of winning: {winningChances.free}%</span>
+				<InfoTooltip
+					title="Remember, the % chance of winning will go down as more fans
+				join the giveaway."
+				/>
+				</Stack>
+
+				<InteractButton onClick={freeGiveawayAlert}
+					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded} >
+					Get a free entry
+				</InteractButton>
 			</Box>
 		</JumboCardQuick>
 		</>
