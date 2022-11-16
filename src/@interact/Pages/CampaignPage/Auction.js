@@ -7,7 +7,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Select as ReactSelect } from "react-select";
 import { formatMoney, getDateFromTimestamp } from "@interact/Components/utils";
 
 import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
@@ -465,7 +464,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 
               <div className="rowSelect">
                 <label>Country</label>
-                <ReactSelect
+                <Select
                   options={resturnOption()}
                   onChange={handleSelectCountry}
                 />

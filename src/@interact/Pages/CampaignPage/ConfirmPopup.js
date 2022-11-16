@@ -27,7 +27,6 @@ export default function ConfirmPopup({
   hovereffect,
   hovertext,
   bidAction,
-  createReceipt,
   bidActionstatus,
   setSelectedPaymentMethod,
   buyvip,
@@ -53,27 +52,30 @@ export default function ConfirmPopup({
       }
     });
   }, [allprimarymethod]);
-  const paymentResponse = (price, resp = null) => {
-    console.log(resp?.data);
-    if (!price || resp?.data?.paymentstatus) {
-      createReceipt();
+const paymentResponse = (price,resp = null) => {
+  console.log(resp?.data);
+        if (!price || resp?.data?.paymentstatus) {
 
-      settheOpenPopup(false);
-      Swal.fire("Success!", "Your payment has been made. Thanks", "success");
-      if (bidActionstatus) {
-        bidAction(price);
-      }
-    } else {
-      settheOpenPopup(false);
-      Swal.fire({
-        icon: "error",
-        title: "Failed!",
-        text: "An error occured",
-      });
-    }
-  };
+          settheOpenPopup(false);
+          Swal.fire(
+            "Success!",
+            "Your payment has been made. Thanks",
+            "success"
+          );
+          if (bidActionstatus) {
+            bidAction(price);
+          }
+        } else {
+          settheOpenPopup(false);
+          Swal.fire({
+            icon: "error",
+            title: "Failed!",
+            text: "An error occured",
+          });
+        }
+}
   const confirmFuncion = () => {
-    console.log(paymentId, userCostomerId);
+    // console.log(paymentId, userCostomerId);
     const formData = new FormData();
     formData.append("price", price);
     formData.append("paymentmethodid", paymentId);
