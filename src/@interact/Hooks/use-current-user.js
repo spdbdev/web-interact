@@ -12,7 +12,7 @@ const useCurrentUser = () => {
       setUser(user)
     }
     if (authUser) handleFetchUserByUID()
-  }, [authUser])
+  }, [authUser, user?.following])
   return { user }
 }
 

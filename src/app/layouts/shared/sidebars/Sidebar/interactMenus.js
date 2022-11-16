@@ -1,14 +1,9 @@
 import React from "react";
-import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
-import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import NewspaperIcon from "@mui/icons-material/Newspaper";
 
 const interactMenus = [
   {
@@ -16,40 +11,22 @@ const interactMenus = [
     type: "section",
     children: [
       {
-        uri: "/dashboards/misc",
-        label: "Sign In",
-        type: "nav-item",
-        icon: <GraphicEqIcon sx={{ fontSize: 20 }} />,
-      },
-      {
-        uri: "/dashboards/listing",
-        label: "Sign Up",
-        type: "nav-item",
-        icon: <ListAltOutlinedIcon sx={{ fontSize: 20 }} />,
-      },
-      {
         uri: "/u/",
-        label: "User Profile",
+        label: "Profile",
         type: "nav-item",
-        icon: <SupportAgentOutlinedIcon sx={{ fontSize: 20 }} />,
-      },
-      {
-        uri: "/c/",
-        label: "Campaign",
-        type: "nav-item",
-        icon: <PieChartOutlineOutlinedIcon sx={{ fontSize: 20 }} />,
+        icon: <PersonOutlineIcon sx={{ fontSize: 20 }} />,
       },
       {
         uri: "/a/what-is-interact",
-        label: "Create Campaign",
+        label: "Start a campaign",
         type: "nav-item",
-        icon: <ShoppingCartOutlinedIcon sx={{ fontSize: 20 }} />,
+        icon: <EditOutlinedIcon sx={{ fontSize: 20 }} />,
       },
     ],
   },
 
   {
-    label: "sidebar.menu.apps",
+    label: "FOLLOWING",
     type: "section",
     children: [
       {

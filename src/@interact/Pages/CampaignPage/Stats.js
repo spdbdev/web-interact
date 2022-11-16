@@ -8,7 +8,7 @@ import InfoTooltip from "@interact/Components/InfoTooltip";
 import Span from "@jumbo/shared/Span";
 import { formatMoney } from "@interact/Components/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
-import { followUser,unfollowUser,fetchUserByName } from "../../../firebase";
+import { followUser,fetchUserByName } from "../../../firebase";
 
 
 export default function Stats({ campaignData, bids }) {
@@ -78,15 +78,9 @@ export function FollowButton({ user, targetUser }) {
 			console.log("You need to sign in to follow user");
 			navigate("/a/signin");
 			return;
-		}else if(targetUser === {}) {
-			console.log("targetUser is wrong");
-			return;
-		}else if(user?.id === targetUser?.id) {
-			console.log("You can not follow yourself");
-			return;
 		}
 		//Call function for follow/unfollow
-		selectedState ? unfollowUser(user, targetUser) : followUser(user, targetUser);
+		selectedState ? followUser(user, targetUser, false) : followUser(user, targetUser, true);
 		selectedState = !selectedState;
 	}
 

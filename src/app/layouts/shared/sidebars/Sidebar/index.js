@@ -1,18 +1,106 @@
-import React, { Suspense } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { IconButton } from "@mui/material";
-import interactMenus from "./interactMenus";
 import JumboVerticalNavbar from "@jumbo/components/JumboVerticalNavbar/JumboVerticalNavbar";
 import { DrawerHeader } from "@jumbo/components/JumboLayout/style";
 import JumboScrollbar from "@jumbo/components/JumboScrollbar";
 import { useJumboLayoutSidebar, useJumboSidebarTheme } from "@jumbo/hooks";
 import { SIDEBAR_STYLES, SIDEBAR_VIEWS } from "@jumbo/utils/constants/layout";
-import Logo from "../../../../shared/Logo";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Zoom from "@mui/material/Zoom";
 import Div from "@jumbo/shared/Div";
 import SidebarSkeleton from "./SidebarSkeleton";
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import useCurrentUser from "@interact/Hooks/use-current-user";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
+import { fetchUsersByIds, followUser } from "../../../../../firebase";
 
 const Sidebar = () => {
+  let { user } = useCurrentUser();
+  const Swal = useSwalWrapper();
+  const defaultPhotoURL = "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
+  const handleUserItemClick = (targetUser) => {
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You will unfollow this user once you approve.",
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          reverseButtons: true,
+      }).then(result => {
+          if (result.value) {
+            if(user && targetUser) {
+              followUser(user, targetUser, false);
+              Swal.fire('Success!', 'You have unfollowed.', 'success');
+            }
+          } else if (
+              result.dismiss === Swal.DismissReason.cancel
+          ) {
+              Swal.fire('Cancelled', 'You are still following that user', 'success');
+          }
+      });
+  };
+  const [followingList, setFollowingList] = useState([]);
+
+  useEffect(async () => {
+    if(user?.following?.length === 0) {
+      setFollowingList([]);
+    }else {
+      try {
+        console.log("user?.following", user?.following);
+        const returnedValue = await fetchUsersByIds(user?.following);
+          let followingItemGroup = [];
+        for(let i = 0; i < returnedValue.length; i++) {
+          let data = {
+            uri: "/u/"+returnedValue[i].name,
+            label: returnedValue[i].name,
+            type: "nav-item",
+            icon: <RemoveCircleOutlineIcon onClick={()=>handleUserItemClick(returnedValue[i])} sx={{ fontSize: 20 }} />,
+            photoURL: returnedValue[i]?.photoURL ? returnedValue[i]?.photoURL : defaultPhotoURL,
+          }
+          followingItemGroup.push(data);
+        }
+        setFollowingList(followingItemGroup);
+      }catch(e) {
+        console.log(e);
+      }
+    }
+  }, [user]);
+
+  
+  const interactMenus = [
+    {
+      label: "sidebar.menu.home",
+      type: "section",
+      children: [
+        {
+          uri: "/u/",
+          label: "Profile",
+          type: "nav-item",
+          icon: <PersonOutlineIcon sx={{ fontSize: 20 }} />,
+        },
+        {
+          uri: "/a/what-is-interact",
+          label: "Start a campaign",
+          type: "nav-item",
+          icon: <EditOutlinedIcon sx={{ fontSize: 20 }} />,
+        },
+      ],
+    },
+  
+    {
+      label: "FOLLOWING",
+      type: "section",
+      children: followingList,
+    },
+    {
+      label: "RECENT CAMPAIGNS",
+      type: "section",
+      children: [],
+    },
+  ];
   return (
     <React.Fragment>
       <SidebarHeader />
@@ -51,7 +139,6 @@ const SidebarHeader = () => {
     <React.Fragment>
       {sidebarOptions?.style !== SIDEBAR_STYLES.CLIPPED_UNDER_HEADER && (
         <DrawerHeader>
-          <Logo mini={isMiniAndClosed} mode={sidebarTheme.type} />
           {
             <Zoom in={sidebarOptions?.open}>
               <IconButton

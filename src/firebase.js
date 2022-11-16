@@ -153,7 +153,7 @@ export async function fetchUserByName(name) {
   return { ...data, id }
 }
 
-export async function fetchUsersByIds(idlist) {
+export async function fetchUsersByIds(idlist = []) {
   let returnData = [];
   if(idlist === []){
     return returnData;
@@ -161,7 +161,7 @@ export async function fetchUsersByIds(idlist) {
   const q = query(collection(db, "users"), where("__name__", "in", idlist))
   const querySnapshot = await getDocs(q);
   for(let i = 0; i < querySnapshot.docs.length; i++) {
-    const docSnapshots = querySnapshot.docs[0];
+    const docSnapshots = querySnapshot.docs[i];
     const data = docSnapshots.data();
     const id = docSnapshots.id;
     returnData.push({...data, id});
@@ -185,39 +185,47 @@ export const addCampaign = async (user) => {
   await updateDoc(doc(db, "users", user.id), updatedUserData);
   return newCampaignId;
 }
-
-export const followUser = async (user, targetUser) => {
-  // Need 2 collections, following & followers in each user document (who you're following, and other users who are following you)
+/*
+function to follow/unfollowUser
+user=>Signed User that is going to follow
+targetUser=>User that signed user is going to follow
+isfollow=>isfollow ? follow : unfollow
+*/
+export const followUser = async (user, targetUser, isfollow = true) => {
+  console.log("isfollow", isfollow);
+  if(targetUser === {}) {
+    console.log("targetUser is wrong");
+    return;
+  }else if(user?.id === targetUser?.id) {
+    console.log("You can not follow yourself");
+    return;
+  }
   let following = user && user?.following ? user?.following : [];
-  console.log("following",following);
-  console.log("targetUser", targetUser);
-  following.push(targetUser.id);
+  let followers = targetUser && targetUser?.followers ? targetUser?.followers : [];
+  if(isfollow) {
+    if(following?.includes(targetUser?.id)) {
+      console.log("You already followed this user");
+      return;
+    }
+    following.push(targetUser.id);
+    followers.push(user.id);
+  }else {
+    following = following.filter(e => e !== targetUser.id);
+    followers = followers.filter(e => e !== user.id);
+  }
   let updatedFollowingData = {
     following:following
   }
-  let followers = targetUser && targetUser?.followers ? targetUser?.followers : [];
-  followers.push(user.id);
+  
   let updatedFollowersData = {
     followers:followers
   }
+  console.log("updatedFollowingData",updatedFollowingData);
+  console.log("updatedFollowersData",updatedFollowersData);
+  
   await updateDoc(doc(db, "users", user.id), updatedFollowingData);
   await updateDoc(doc(db, "users", targetUser.id), updatedFollowersData);
 }
-
-export const unfollowUser = async (user, targetUser) => {
-  let following = user && user?.following ? user?.following : [];
-  following = following.filter(e => e !== targetUser.id);
-  let updatedFollowingData = {
-    following:following
-  }
-  let followers = targetUser && targetUser?.followers ? targetUser?.followers : [];
-  followers = followers.filter(e => e !== user.id);
-  let updatedFollowersData = {
-    followers:followers
-  }
-  await updateDoc(doc(db, "users", user.id), updatedFollowingData);
-  await updateDoc(doc(db, "users", targetUser.id), updatedFollowersData);
-} 
 
 export async function fetchCampaign(campaignId) {
   // Check for the customURL first

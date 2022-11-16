@@ -582,12 +582,6 @@ export default function Giveaway({
             console.log("You need to sign in to follow user");
             navigate("/a/signin");
             return;
-        }else if(targetUser === {}) {
-            console.log("targetUser is wrong");
-            return;
-        }else if(user?.id === targetUser?.id) {
-            console.log("You can not follow yourself");
-            return;
         }
         if(!targetUser?.followers?.includes(user?.id)) {
             followUser(user, targetUser);

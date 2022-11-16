@@ -47,6 +47,7 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
 
 function FollowerListItem(data) {
   const { user } = useCurrentUser();
+  const defaultPhotoURL = "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
   return (
     <div
       style={{
@@ -58,7 +59,7 @@ function FollowerListItem(data) {
       }}
     >
       <img
-        src="https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png"
+        src={data?.data?.photoURL ? data?.data?.photoURL : defaultPhotoURL}
         style={{
           objectFit: "cover",
           width: 50,
