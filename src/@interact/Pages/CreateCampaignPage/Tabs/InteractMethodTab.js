@@ -15,10 +15,69 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { discordServices } from "app/services/discord";
+import { urlencode } from "app/utils/www";
 import React, { useEffect, useState } from "react";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import { TabNavigation } from "../TabNavigation";
+
+
+
+
+/**
+ * Performs OAuth
+ * Returns either `false` or the authorization data
+ */
+const performOAuth = () => {
+  return new Promise(async (resolve, reject) =>{
+
+    await discordServices.revokeAuthorization();
+
+
+    // // Build Authorization URI
+    const oAuthURI = await discordServices.generateAuthorizationURI();
+
+
+    // Launch an OAuth flow in a new tab
+
+    const windowHandle = window.open(oAuthURI, "_blank");
+
+
+    // Wait for the user to authorize the app
+    windowHandle.onclose = () => {
+      // When the window closes, check if we have a code
+      resolve(localStorage.getItem("DISCORD_LINK_STATUS"));
+    }
+
+
+    const authData = await discordServices.waitForAuthorization();
+
+    if (authData) {
+      // Ensure that we close the window
+      windowHandle.close();
+
+      // Only resolve if this promise has not already been resolved
+      resolve(authData);
+    }
+
+
+    
+  });
+  
+};
+
+
+
+
+
+const INTERACT_METHODS = {
+  NOT_LINKED: null,
+  DISCORD: 'discord',
+  GMEET: 'googleMeet'
+}
+
+
 
 export default function InteractMethodTab({
   data,
@@ -32,16 +91,26 @@ export default function InteractMethodTab({
   const [errors, setErrors] = useState(false);
   const [formValidationConditions, setFormValidationConditions] =
     useState(false);
-  const [method, setMethod] = useState(data?.interactMethod);
-  const [isDiscordLinked, setIsDiscordLinked] = useState(false);
-  const [isGoogleMeetLinked, setIsGoogleMeetLinked] = useState(false);
+
+
+  const [LinkingInteraction, setLinkingInteraction] = useState(data?.interactMethod);
+
+
+  /**
+   * Describes the linked interaction method
+   */
+  const [LinkedInteractMethod, setLinkedInteractMethod] = useState(INTERACT_METHODS.NOT_LINKED);
+
+  const isDiscordLinked = LinkedInteractMethod === INTERACT_METHODS.DISCORD;
+  const isGoogleMeetLinked = LinkedInteractMethod === INTERACT_METHODS.GMEET;
+
   const [shouldShowProgressModal, setShouldShowProgressModal] = useState(false);
 
   useEffect(() => {
     setFormValidationConditions(
-      method === "googleMeet" || method === "discord"
+      LinkingInteraction === INTERACT_METHODS.GMEET || LinkingInteraction === INTERACT_METHODS.DISCORD
     );
-  }, [method]);
+  }, [LinkingInteraction]);
 
   useEffect(() => {
     if (!formValidationConditions) {
@@ -50,6 +119,8 @@ export default function InteractMethodTab({
       setErrors(false);
     }
   }, [formValidationConditions]);
+
+  
 
   const isTabValidated = useFormValidation({
     selectedTabIndex,
@@ -62,15 +133,12 @@ export default function InteractMethodTab({
 
   function handleGoogleMeetButton() {
     if (isGoogleMeetLinked) {
-      setIsGoogleMeetLinked(false);
-      setIsDiscordLinked(false);
-      setMethod(null);
+      setLinkingInteraction(null);
       setData({ interactMethod: "" });
     } else {
-      setIsGoogleMeetLinked(true);
-      setIsDiscordLinked(false);
-      setMethod("googleMeet");
-      setData({ interactMethod: "googleMeet" });
+      setLinkedInteractMethod(INTERACT_METHODS.GMEET);
+      setLinkingInteraction(INTERACT_METHODS.GMEET);
+      setData({ interactMethod: INTERACT_METHODS.GMEET });
     }
   }
 
@@ -86,27 +154,38 @@ export default function InteractMethodTab({
         toast.addEventListener("mouseleave", Swal.resumeTimer);
       },
     });
+    
+
+
 
     setShouldShowProgressModal(true);
 
-    // here, get value of discordServerLinkResult,  'succeeded' or 'failed' and show respective Toast:
-    Toast.fire({
-      icon: "success",
-      title: "Discord server successfully linked!",
-    }).then(() => {
-      setIsDiscordLinked(true);
-      setIsGoogleMeetLinked(false);
-      setMethod("discord");
-      setData({ interactMethod: "discord" });
-      setShouldShowProgressModal(false);
-    });
+    performOAuth().then((authData) => {
+      console.log('Received authData', authData);
+      const success = !!authData;
+      if (success) {
+        Toast.fire({
+          icon: "success",
+          title: "Discord server linked successfully",
+        }).then(()=> {
+          setShouldShowProgressModal(false);
+        });
+        
+        setLinkedInteractMethod(INTERACT_METHODS.DISCORD);
+        setLinkingInteraction(INTERACT_METHODS.DISCORD);
+        setData({ interactMethod: INTERACT_METHODS.DISCORD });
+    }
+    else{
+      Toast.fire({
+        icon: "error",
+        title: "Failed to link server.",
+      }).then(() => {
+        setShouldShowProgressModal(false);
+      });
+    }
 
-    Toast.fire({
-      icon: "error",
-      title: "Failed to link server.",
-    }).then(() => {
-      setShouldShowProgressModal(false);
-    });
+
+    });   
   }
 
   return (

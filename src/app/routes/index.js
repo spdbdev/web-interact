@@ -15,6 +15,7 @@ import authRoutes from "./authRoutes";
 import userRoutes from "./userRoutes";
 import listViewRoutes from "./listViewRoutes";
 import gridViewRoutes from "./gridViewRoutes";
+import oAuthRoutes from "./oAuthRoutes";
 
 const routes = [
   {
@@ -37,7 +38,7 @@ const routes = [
   //         "/createCampaign",
   //     element: <Navigate to={"/a/create-campaign"}/>
   // },
-
+  ...oAuthRoutes,
   ...interactV1Routes,
   ...dashboardRoutes,
   ...appsRoutes,
@@ -52,7 +53,7 @@ const routes = [
   ...extraRoutes,
   ...userRoutes,
   ...listViewRoutes,
-  ...gridViewRoutes,
+  ...gridViewRoutes
 ];
 
 export default routes;
