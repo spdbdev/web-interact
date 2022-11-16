@@ -1,4 +1,4 @@
-import { TextField, Button, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel } from "@mui/material";
+import { TextField, Button,FormControl, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -279,6 +279,7 @@ function SignUpPage2() {
           </LocalizationProvider>
         </div>
         <div className="TextInputWrapper">
+          <FormControl>
           <InputLabel id="country-label">Country</InputLabel>
           <Select
             labelId="country-label"
@@ -291,6 +292,7 @@ function SignUpPage2() {
               return <MenuItem value={country.name}>{country.name}</MenuItem>
             })}
           </Select>
+          </FormControl>
         </div>
         {/* <FormControlLabel control={<Checkbox />} label={"I agree to all " + <a href='https://eforms.com/release/media/'>terms and services</a>} /> */}
         <div
