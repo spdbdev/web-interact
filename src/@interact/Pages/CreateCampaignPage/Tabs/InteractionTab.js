@@ -183,7 +183,7 @@ export default function InteractionTab({
       <Stack
         direction="row"
         alignItems="center"
-        spacing={4}
+        spacing={14}
         sx={{
           background: "rgba(120, 47, 238, 0.1)",
           p: 3,
@@ -207,7 +207,7 @@ export default function InteractionTab({
           <Span sx={{ fontWeight: 600 }}>
             {data?.numAuctionInteractions + data?.numGiveawayInteractions} fans
           </Span>{" "}
-          personally over the period of{" "}
+          over the period of{" "} <br></br>
           <Span sx={{ fontWeight: 600 }}>
             {getDateFromTimestamp({ timestamp: data?.endDateTime?.seconds })}
           </Span>{" "}

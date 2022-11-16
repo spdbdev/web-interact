@@ -2,7 +2,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
-    height:100vh;
+    /* height:100vh; */
     flex-direction: row;
     background-image: linear-gradient(to bottom right, #4b26a3, #d442f5);
 }
@@ -48,7 +48,7 @@
 
 .SignUpWithGoogle{
     height:40px;
-    width:60%;
+    width:65%;
     border-radius: 5px;
     /* border-color:#ccc;
     border-style: solid; */
@@ -69,3 +69,20 @@
 .SignUpWithGoogle:hover {
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.4);
   }
+
+.profile_pic input{
+    display: none;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.profile_pic--icon{
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    border: 1px solid red;
+    border-radius: 50%;
+    padding: 1px;
+    color: red;
+    cursor: pointer;
+}

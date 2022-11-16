@@ -331,9 +331,7 @@ module.exports = function getCampaignImageHTML({
             ${description}
           </div>
           <div class="div-10">
-          ${categories
-            ?.map((category) => `<div class="div-11">${category}</div>`)
-            .join("")}
+          ${categories?.map((category) => `<div class="div-11">${category}</div>`).join("")}
           </div>
         </div>
         <div class="video-container">

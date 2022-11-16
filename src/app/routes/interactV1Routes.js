@@ -8,15 +8,35 @@ import SignInPage from "@interact/Pages/SignUpPage/SignInPage";
 import SignUpPage2 from "@interact/Pages/SignUpPage/SignUpPage2";
 import UserProfile from "app/pages/users/user-profile";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
+import Settings from "@interact/Pages/UserProfilePage/Settings";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
+import TermsAndConditionsPage from "@interact/Pages/TermsAndPolicyPage/TermsAndConditionsPage";
+import PrivacyPolicyPage from "@interact/Pages/TermsAndPolicyPage/PrivacyPolicyPage";
 import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
 import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage/CampaignCreationConfirmationPage";
+import Error404 from "app/pages/extra-pages/Error404";
+import { Navigate } from "react-router-dom";
+import Error500 from "app/pages/extra-pages/Error500";
+
+import AuthGuard from "@jumbo/services/auth/AuthGuard";
 import LandingPage from "@interact/Pages/LandingPage/LandingPage";
 
 const interactV1Routes = [
+  {
+    path: "*",
+    element: <Navigate to="/a/400"/>,
+  },
+  {
+    path: "/a/400",
+    element: <Error404/>
+  },
+  {
+    path: "/a/500",
+    element: <Error500/>
+  },
   {
     path: "/a/signin",
     element: <SignInPage />,
@@ -26,9 +46,19 @@ const interactV1Routes = [
     element: <SignUpPage2 />,
   },
   {
+    path: "/a/termsandconditions",
+    element: <TermsAndConditionsPage/>,
+  },
+  {
+    path: "/a/privacypolicy",
+    element: <PrivacyPolicyPage/>,
+  },
+  {
     path: "/u/:username",
     element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
     ),
   },
   {
@@ -46,6 +76,11 @@ const interactV1Routes = [
     path: "/c/:campaignId",
     element: <CampaignPage />,
   },
+
+  {
+    path: "/a/settings",
+    element: <Settings/>,
+  },
   {
     path: "/c/",
     element: <CampaignPage />,
@@ -60,8 +95,11 @@ const interactV1Routes = [
     element: <CaptureAuction />,
   },
   {
-    path: "/a/create-campaign/",
-    element: <Page component={CreateCampaignPage} layout="solo-page" />,
+    path: "/a/create-campaign",
+    element: (
+    <AuthGuard>
+    <Page component={CreateCampaignPage} layout="solo-page" />
+    </AuthGuard>),
   },
 
   {

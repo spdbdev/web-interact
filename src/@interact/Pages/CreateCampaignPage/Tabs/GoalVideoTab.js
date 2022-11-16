@@ -108,7 +108,7 @@ export default function GoalVideoTab({
             justifyContent="space-between"
           >
             <Typography variant="h3" sx={{ mt: 1 }}>
-              Sample campaign video script:
+              Sample script:
             </Typography>
 
             <IconButton onClick={() => setIsScriptExampleModalOpen(false)}>
@@ -130,6 +130,7 @@ export default function GoalVideoTab({
             get an interaction. These interactions will occur first, before
             giveaway winners, and the top 3 will get 90 minutes to chat, show
             off, & game with me.
+            <br></br><br></br>
           </Typography>
         </Box>
       </Modal>
@@ -169,7 +170,7 @@ export default function GoalVideoTab({
       </Stack>
 
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Introduction Video">
+        <TitleAndDesc title="Introduction video">
           Include a link to a short YouTube video where you describe your
           campaign and goal where you tell your fans about the goal, explain how
           interactions work & how fans can acquire them in the campaign.

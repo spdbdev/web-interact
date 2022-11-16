@@ -25,7 +25,7 @@ export default function FollowerList({ open, setOpen }) {
       </div>
       <div style={{ overflowY: "scroll", height: "calc(100% - 30px)" }}>
         {[...Array(100).keys()].map((x, i) => (
-          <FollowerListItem />
+          <FollowerListItem key={i}/>
         ))}
       </div>
     </ReactModal>

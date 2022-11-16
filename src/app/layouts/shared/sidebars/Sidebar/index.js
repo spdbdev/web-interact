@@ -11,6 +11,7 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Zoom from "@mui/material/Zoom";
 import Div from "@jumbo/shared/Div";
 import SidebarSkeleton from "./SidebarSkeleton";
+import InteractLogo from "@interact/Images/logo.png";
 
 const Sidebar = () => {
   return (
@@ -51,7 +52,8 @@ const SidebarHeader = () => {
     <React.Fragment>
       {sidebarOptions?.style !== SIDEBAR_STYLES.CLIPPED_UNDER_HEADER && (
         <DrawerHeader>
-          <Logo mini={isMiniAndClosed} mode={sidebarTheme.type} />
+        <img src={InteractLogo} width={120} />
+          {/* <Logo mini={isMiniAndClosed} mode={sidebarTheme.type} /> */}
           {
             <Zoom in={sidebarOptions?.open}>
               <IconButton

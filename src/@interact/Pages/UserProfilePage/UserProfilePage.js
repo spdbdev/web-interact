@@ -15,12 +15,16 @@ import Scheduler from "../../Components/Scheduler/Scheduler";
 import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import FollowedCampaigns from "./FollowedCampaigns";
 import CreatorSchedules from "./CreatorSchedule";
+import Setting from "./Settings";
 import MeetingBlocks from "./MeetingBlocks";
 import FollowerListItem from "./FollowerList";
 import FollowerList from "./FollowerList";
 
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs, where, addDoc } from "firebase/firestore";
+import Storage from "./firebasestorage";
+
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
@@ -57,36 +61,91 @@ function a11yProps(index) {
 }
 
 function UserProfilePage() {
-  const [tab, setTab] = React.useState(0);
+    const [tab, setTab] = React.useState(0);
+    let { id } = useParams();
 
-  const handleChange = (event, newValue) => {
-    setTab(newValue);
-  };
+    let user_id = id;
+    const handleChange = (event, newValue) => {
+      setTab(newValue);
+    };
 
-  const params = useParams();
+    const isCreator = auth?.currentUser?.uid == user_id ? true : false;
+    const [modalOpened, setModalOpened] = useState(false);
+    const [loading] = useAuthState(auth);
+    const { user } = useCurrentUser();
+    const [name, setName] = useState("");
+    const [image, setImage] = React.useState(
+      "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+    );
+    const navigate = useNavigate();
 
-  const isCreator = true;
+	const fetchUserName = async () => {
+		try {
+			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const colledoc = await getDocs(q);
+			const data = colledoc.docs[0].data();
+			setName(data.name);
+		} catch (err) {
+			console.error(err);
+			alert("An error occured while fetching user data");
+		}
+	};
 
-  const [modalOpened, setModalOpened] = useState(false);
+	const userProfile = async () => {
+		let q = query(collection(db, "userspicture"), where("uid", "==", user?.uid));
+		const userProfileDoc = await getDocs(q);
+		const userProfiledata = userProfileDoc.docs[0].data();
+		if (userProfiledata.imageurl) {
+			setImage(userProfiledata.imageurl);
+		} else {
+			setImage(
+				"https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+			);
+		}
+	};
 
-  // const [user, loading, error] = useAuthState(auth);
-  const { user } = useCurrentUser();
-  const [name, setName] = useState("");
-  const navigate = useNavigate();
+	useEffect(() => {
+		let user_id = id;
+		if (loading) return;
+		if (!user) return navigate("/");
+		userProfile();
+		fetchUserName();
+	}, [user, loading, id]);
 
+  localStorage.setItem("name", name);
+  const handleChangeImage = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+        },
+        (err) => console.log(err),
+        async () => {
+          // download url
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            await addDoc(collection(db, "userspicture"), {
+              uid: user?.uid,
+              name: user.displayName,
+              imageurl: url,
+            });
+          });
+        }
+      );
 
-  useEffect(() => {
-    if (!user) return
-    if (!params.username) {
-      navigate(user.name ? `/u/${user.name}` : "/")
+      var reader = new FileReader();
+      reader.onload = function () {
+        var dataURL = reader.result;
+        setImage(dataURL);
+      };
+      reader.readAsDataURL(file);
     }
-
-  }, [user]);
-
-
-
-  localStorage.setItem('name', name);
-
+  };
   return (
     <div>
       <FollowerList open={modalOpened} setOpen={setModalOpened} />
@@ -101,11 +160,20 @@ function UserProfilePage() {
           borderRadius: 2,
         }}
       >
-        <img
-          className="profilePic"
-          alt="profile-pic"
-          src="https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-        />
+        <div className="image_item">
+          <form className="image_item-form">
+            <label className="image_item-form--lable"> Replace photo</label>
+            <input
+              className="image-item-form-input"
+              type="file"
+              id="image-item-form--input-id"
+              onChange={handleChangeImage}
+            ></input>
+          </form>
+
+          {/* <input type="file" onChange={handleChangeImage} /> */}
+          <img className="profilePic" alt="profile-pic" src={image} />
+        </div>
         <div
           style={{
             color: "white",
@@ -165,28 +233,44 @@ function UserProfilePage() {
               {...a11yProps(0)}
               style={{ color: "black" }}
             />
+
+            {/* {isCreator && ( */}
             <Tab
               label="Schedule"
               {...a11yProps(1)}
               style={{ color: "black" }}
             />
-            {isCreator ? (
+            {/* )}
+            {isCreator ? ( */}
+            <Tab
+              label="Creator Schedule"
+              {...a11yProps(2)}
+              style={{ color: "black" }}
+            />
+            {/* ) : null} */}
+
+            {user && (
               <Tab
-                label="Creator Schedule"
-                {...a11yProps(1)}
+                label="Settings"
+                {...a11yProps(3)}
                 style={{ color: "black" }}
               />
-            ) : null}
+            )}
           </Tabs>
         </Box>
         <TabPanel value={tab} index={0}>
           <FollowedCampaigns />
         </TabPanel>
+
         <TabPanel value={tab} index={1}>
           <Scheduler />
         </TabPanel>
         <TabPanel value={tab} index={2}>
           {isCreator ? <CreatorSchedules /> : null}
+        </TabPanel>
+
+        <TabPanel value={tab} index={3}>
+          <Setting />
         </TabPanel>
       </Box>
     </div>

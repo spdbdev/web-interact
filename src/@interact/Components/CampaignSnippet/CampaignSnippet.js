@@ -4,8 +4,15 @@ import { Avatar, Box, Chip, Link, Stack, Typography } from "@mui/material";
 import ChipWithIconAvatar from "app/pages/components/mui/Chips/ChipWithIconAvatar";
 import { formatMoney } from "../utils";
 import "./CampaignSnippet.css";
+import { useEffect, useRef } from "react";
 import UserCampaignStatus from "./UserCampaignStatus";
-export default function CampaignSnippet() {
+export default function CampaignSnippet(props) {
+  const {info} = props;
+  useEffect(() =>{
+    console.log('CampaignSnippet'); 
+    console.log(props); 
+  },[info]);
+  
   return (
     <JumboCardQuick noWrapper sx={{ maxWidth: 280, m: 2 }}>
       <Box sx={{ position: "relative" }}>
@@ -42,21 +49,21 @@ export default function CampaignSnippet() {
 
       <Stack sx={{ p: 2 }}>
         <Typography sx={{ fontWeight: 500 }}>
-          I will eat 100 hotdogs at ${formatMoney(5000)}
+          I will {info.goal} at ${formatMoney(info.goalValue)}
         </Typography>
         <Typography variant="caption" sx={{ color: "text.secondary" }}>
-          by Friday, 26 August 2022
+          by {info.endDateTime}
         </Typography>
 
         <br />
         <Stack direction="row" spacing={1}>
           <Avatar sx={{ width: 24, height: 24 }} />
           <Box>
-            <Typography>Play minecraft with me 1 on 1!</Typography>
+            <Typography>{info.titie}</Typography>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Created by{" "}
               <Link href="#" sx={{ color: "primary.main" }}>
-                Pattedevelours
+              {info.username}
               </Link>
             </Typography>
           </Box>

@@ -12,6 +12,165 @@ const app = express();
 app.use(cors);
 
 
+const stripe = require("stripe")(
+  "sk_test_51LJU6pIRYjPm2gCpn2kkJ7fGaIhuL7Sr8opDkKUXYcPQ3syGUaOxWwI5yDMrzdhDTKYMFw0tdz7LAtEbvJvWaT6M00XBTlISBa"
+);
+
+exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async (context) => {
+  var db = admin.firestore();
+
+  db.collection("campaigns").get().then((querySnapshot) => {
+	  querySnapshot.forEach((doc) => {
+		const element = doc.data();
+		const elementid = doc.id;
+		let campaignStatus = element.campaignStatus;
+		if (typeof element.startDateTime === "object") {
+		  let sec = element.startDateTime.seconds;
+		  let starttime = new Date(sec);
+		  let currenttime = new Date();
+		  if (currenttime >= starttime) {
+        if (campaignStatus == "scheduled") {
+          campaignStatus = "live";
+        }
+		  }
+		}
+		if (typeof element.endDateTime === "object") {
+		  let endsec = element.endDateTime.seconds;
+		  let endtime = new Date(endsec);
+		  var currenttime = new Date();
+		  if (currenttime >= endtime) {
+        if (campaignStatus == "live") {
+          campaignStatus = "ended";
+        }
+		  }
+		}
+		let transferStatus =
+		  typeof element.transferStatus === "undefined" ||
+		  element.transferStatus === "pending"
+			? "pending"
+			: element.transferStatus;
+		if (campaignStatus === "ended" && transferStatus === "pending") {
+		  transferStatus = "done";
+		  update_user(element);
+		  make_payment(element, elementid, "top3AuctionWinners");
+		  make_payment(element, elementid, "normalAuctionWinners");
+		}
+		db.collection("campaigns").doc(elementid).set(
+		  {
+			addelement: element.mytotal,
+			transferStatus: transferStatus,
+			campaignStatus: campaignStatus,
+		  },
+		  { merge: true }
+		);
+		// doc.data() is never undefined for query doc snapshots
+		console.log(doc.id, " => ", doc.data());
+	  });
+	})
+	.catch((error) => {
+	  console.log("Error getting documents: ", error);
+	});
+
+  async function update_user(campaign) {
+	const userQuery = db.collection("users").where("uid", "==", campaign.person.id);
+	userQuery
+	  .get()
+	  .then( async (querySnapshot) => {
+		if (!querySnapshot.empty) {
+		  const snapshot = querySnapshot.docs[0];
+		  const snapshotData = snapshot.data();
+
+		  // use only the first document, but there could be more
+		  const userid = snapshot.id;
+		  let grossRevenue = 0;
+		  if (snapshotData.grossRevenue) {
+			grossRevenue =
+			  parseFloat(snapshotData.grossRevenue) +
+			  parseFloat(campaign.campaignGoalTotal);
+		  } else {
+			grossRevenue = parseFloat(element.campaignGoalTotal);
+		  }
+		  switch (true) {
+			case grossRevenue < 1000:
+			  grossRevenue =  grossRevenue - ((17 *grossRevenue) / 100)
+			  break;
+			case grossRevenue > 1000 && grossRevenue < 10000:
+			  grossRevenue =  grossRevenue - ((16 *grossRevenue) / 100)
+			  break;
+			case grossRevenue > 10000 && grossRevenue < 100000:
+			  grossRevenue =  grossRevenue - ((14 *grossRevenue) / 100)
+			  break;
+			case grossRevenue > 100000 && grossRevenue < 1000000:
+			  grossRevenue =  grossRevenue - ((10 *grossRevenue) / 100)
+			  break;
+			case grossRevenue > 1000000:
+			  grossRevenue =  grossRevenue - ((10 *grossRevenue) / 100)
+			  break;
+			default:
+			  // grossRevenue =  grossRevenue - ((17 *grossRevenue) / 100)
+		  }
+		  const transfer = await stripe.transfers.create({
+			amount: grossRevenue *100,
+			currency: 'usd',
+			destination: snapshotData.accountId,
+			// transfer_group: 'ORDER_95',
+		  });
+		  const documentRef = snapshot.ref; // now you have a DocumentReference
+		  db.collection("users").doc(userid).set(
+			{
+			  grossRevenue: grossRevenue,
+			},
+			{ merge: true }
+		  );
+		} else {
+		  console.error("Error getting document:");
+		}
+	  })
+	  .catch((error) => {
+		console.error("Error getting document:", error);
+	  });
+  }
+
+  async function make_payment(campaign, campaign_id, collection) {
+	try {
+	  db.collection("campaigns")
+		.doc(campaign_id)
+		.collection(collection)
+		.get()
+		.then((snapshot) => {
+		  if (!snapshot.empty) {
+			snapshot.forEach(async (document) => {
+			  let doc = document.data();
+			  doc.id = document.id;
+			  const winnersdata = document.data();
+			  db.collection("contributionAndGiveawayLossHistory")
+				.doc(campaign.creatorName)
+				.collection("users")
+				.add({
+				  contributionTotal: winnersdata.price,
+				});
+			  const paymentintent = await stripe.paymentIntents.create({
+				amount: winnersdata.price * 100,
+				currency: "usd",
+				customer: "cus_MlMuoDXSvJx2Xc",
+				payment_method: "pm_1M1r8qIRYjPm2gCp9FpRWyBv",
+				off_session: true,
+				confirm: true,
+			  });
+			});
+		  }
+		})
+		.catch((error) => {
+		  console.error("Error getting document:", error);
+		});
+	} catch (error) {
+	  console.error("Error getting document:", error);
+	}
+  }
+
+  return null;
+});
+
 
 /* 
 	https://us-central1-interact2002.cloudfunctions.net/determineWinners?campaign_id=test12345
@@ -219,8 +378,6 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 	response.send("Collecting winners are done.");
 });
-
-
 
 // auto trigger function
 exports.autoBidding = functions.firestore.document('/campaigns/{campaign_id}/bids/{bid_id}').onWrite(async (snap, context) => 
