@@ -1,0 +1,17 @@
+.landing-gradient-text {
+  background: linear-gradient(180deg, #DD00FF 0%, #782FEE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.landing-subtitle {
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s linear;
+}
+.landing-title:hover .landing-subtitle {
+  visibility: visible;
+  opacity: 1;
+}

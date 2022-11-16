@@ -13,6 +13,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/system";
 import SoloPage from "app/layouts/solo-page/SoloPage";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -185,6 +186,25 @@ function SpecialAccordion({ question, answer, defaultExpanded }) {
 export default function WhatIsInteractPage() {
   const navigate = useNavigate();
 
+  const VideoWrapper = styled(Box)`
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  padding-bottom: 56.25%;
+  overflow: hidden;
+  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+  border-radius: 23px;
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+`;
+
   return (
     <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
@@ -208,9 +228,19 @@ export default function WhatIsInteractPage() {
         </Box>
         <Stack direction="column" alignItems="center" width={"100%"}>
           <Stack spacing={1} mb={10} sx={{ maxWidth: 1000 }}>
-            <Stack direction="column" alignItems="center" spacing={2}>
-              <img src={InteractLogo} alt="" width={50} />
-              <Typography variant="h2">What Is Interact?</Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
+              <Stack direction="column" alignItems="center" spacing={2} sx={{ width: { sm: '33%' } }}>
+                <img src={InteractLogo} alt="" width={50} />
+                <Typography variant="h2">What Is Interact?</Typography>
+              </Stack>
+              <Stack sx={{ width: { xs: '100%', sm: '66%' } }}>
+                <VideoWrapper>
+                  <iframe
+                    title='youtube'
+                    src='https://www.youtube.com/embed/L0AykH20X3Q?playlist=L0AykH20X3Q&loop=1'
+                  />
+                </VideoWrapper>
+              </Stack>
             </Stack>
             <Typography variant="h5" sx={{ py: 4 }}>
               Interact helps you bring joy to your most loyal fans who have
