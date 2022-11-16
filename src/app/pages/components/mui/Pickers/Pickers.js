@@ -10,7 +10,7 @@ const Pickers = () => {
         <Masonry
             spacing={3.75}
             columns={{xs: 1, lg: 2}}
-            sx={{minWidth: '100%', width: 'auto'}}
+            sx={{minWidth: '50%', width: 'auto'}}
         >
             <DateAndTImePickers/>
             <TimePickers/>

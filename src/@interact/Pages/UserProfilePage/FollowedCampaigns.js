@@ -5,7 +5,7 @@ import MeetingBlocks from "./MeetingBlocks";
 
 
 import { useEffect, useRef, useState } from "react";
-import InteractButton from "@interact/Components/Button/InteractButton";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
@@ -115,11 +115,12 @@ function FollowedCampaigns() {
 			<MeetingBlocks />
 		</div>
 		<div style={{ margin: 20 }}>
-			<InteractButton style={{ paddingLeft: 200 }}
-				onClick={() => navigate(`/a/create-campaign/`)} >
-				+ Create New Campaign
-			</InteractButton>
+			<InteractFlashyButton style={{ paddingLeft: 200 }}
+				onClick={() => navigate(`/a/what-is-interact/`)} >
+				+ Create new campaign
+			</InteractFlashyButton>
 		</div>
+		<br></br>
 		<CampaignsRow
 			currentCampaigns={currentCampaigns}
 			heading="Live campaigns"
