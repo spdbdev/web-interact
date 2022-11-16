@@ -104,7 +104,7 @@ export default function Giveaway({
 	};
 	useEffect(() => {
 		console.log('user >>>', user, campaignId);
-        if (user.uid){
+        if (user?.uid){
 			fetchUserName();
 			getDataGiveaway();
         	get_stripe_customer_id();
