@@ -6,7 +6,7 @@ import Giveaway from "./Giveaway";
 import Auction from "./Auction";
 import Faq from "@interact/Components/Faq/Faq";
 import { DataGrid } from "@mui/x-data-grid";
-import { auth } from "../../../firebase";
+
 
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -14,27 +14,15 @@ import Header from "./Header";
 import Stats from "./Stats";
 import { useEffect, useState } from "react";
 
-import {
-  doc,
-  setDoc,
-  addDoc,
-  getDoc,
-  getDocs,
-  collection,
-  query,
-  where,
-  orderBy,
-  serverTimestamp,
-  onSnapshot,
-  getCountFromServer,
-} from "firebase/firestore";
-import { db } from "@jumbo/services/auth/firebase/firebase";
+import { doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot, getCountFromServer} from "firebase/firestore";
 import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
+import { auth, logout, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
 import { sortBids } from "@interact/Components/utils";
+
 
 function CampaignPage(userData) {
   const [vipChanceMultiplier, setVipChanceMultiplier] = useState(25);
@@ -45,8 +33,7 @@ function CampaignPage(userData) {
   const [comments, setComments] = useState([]);
   const [supporters, setSupporters] = useState([]);
   const [winningChances, setWiningChances] = useState({ vip: 100, free: 100 });
-  const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] =
-    useState(false);
+  const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] = useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);

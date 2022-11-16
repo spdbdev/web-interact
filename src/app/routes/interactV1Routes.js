@@ -8,6 +8,7 @@ import SignInPage from "@interact/Pages/SignUpPage/SignInPage";
 import SignUpPage2 from "@interact/Pages/SignUpPage/SignUpPage2";
 import UserProfile from "app/pages/users/user-profile";
 import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
+import Settings from "@interact/Pages/UserProfilePage/Settings";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
 import TermsAndConditionsPage from "@interact/Pages/TermsAndPolicyPage/TermsAndConditionsPage";
@@ -73,6 +74,11 @@ const interactV1Routes = [
   {
     path: "/c/:campaignId",
     element: <CampaignPage />,
+  },
+
+  {
+    path: "/a/settings",
+    element: <Settings/>,
   },
   {
     path: "/c/",

@@ -74,10 +74,10 @@ function App() {
                                                                 alignContent: 'center',
                                                                 height: '100%',
                                                             }}
-                                                        >
+                                                    >
                                                             <CircularProgress sx={{m: '-40px auto 0'}}/>
                                                         </Div>
-                                                    }
+                                                    } 
                                                 >
                                                     <AppRoutes/>
                                                 </Suspense>

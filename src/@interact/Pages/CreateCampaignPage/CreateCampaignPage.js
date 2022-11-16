@@ -1,15 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  ButtonBase,
-  Container,
-  IconButton,
-  Input,
-  Slide,
-  Stack,
-  Typography,
-} from "@mui/material";
+import {Box, Button, ButtonBase, Container, IconButton, Input, Slide, Stack, Typography} from "@mui/material";
 import CampaignCreationTabs from "./CampaignCreationTabs";
 import BasicsTab from "./Tabs/BasicsTab";
 import SchedulingTab from "./Tabs/SchedulingTab";
@@ -19,12 +9,18 @@ import FAQTab from "./Tabs/FAQTab";
 import PaymentTab from "./Tabs/PaymentTab";
 import PromotionTab from "./Tabs/PromotionTab";
 import SideBar from "./SideBar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useJumboContentLayout } from "@jumbo/hooks";
+import JumboContentLayout from "@jumbo/components/JumboContentLayout";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import CampaignCategorySelect from "./CampaignCategorySelect";
+import SoloPage from "app/layouts/solo-page/SoloPage";
+import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { doc, query, updateDoc, collection, getDoc, getDocs, setDoc, where, addDoc } from "firebase/firestore";
+
 import { Close, ExpandLess } from "@mui/icons-material";
 import Span from "@jumbo/shared/Span";
 import useAutosaveCampaign from "@interact/Hooks/use-autosave-campaign";
-import { db } from "@jumbo/services/auth/firebase/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import Loading from "@interact/Components/Loading/Loading";
 import { useJumboLayoutSidebar } from "@jumbo/hooks";
@@ -33,15 +29,17 @@ import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import Medals from "../../Images/allCreatorRanks.png";
 
+
+
 function FAQSidebarWrapper({ title, children }) {
-  return (
-    <div>
-      <Typography variant="h4" color="primary.contrastText">
-        {title}
-      </Typography>
-      {children}
-    </div>
-  );
+	return (
+		<div>
+			<Typography variant="h4" color="primary.contrastText">
+				{title}
+			</Typography>
+			{children}
+		</div>
+	);
 }
 
 const FAQText = {
@@ -334,203 +332,231 @@ const FAQText = {
 };
 
 function CreateCampaignPage() {
-  // initialize lastCompleteTabIndex to -1 in firestore
-  const { campaignId } = useParams();
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-  const [
-    hasInitialTabBeenSetFromDatabase,
-    setHasInitialTabBeenSetFromDatabase,
-  ] = useState(false);
-  const [FAQSideBarText, setFAQSideBarText] = useState("");
-  const [campaignData, setCampaignData] = useState();
-  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
-  const { user } = useCurrentUser();
-  const campaignAddedRef = useRef(false);
+	// initialize lastCompleteTabIndex to -1 in firestore
+	const { campaignId } = useParams();
+	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+	const [hasInitialTabBeenSetFromDatabase, setHasInitialTabBeenSetFromDatabase] = useState(false);
+	const [FAQSideBarText, setFAQSideBarText] = useState("");
 
-  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+	const [searchParams, setSearchParams] = useSearchParams();
+	const [accountId, setAccountId] = useState(null);
 
-  useEffect(() => {
-    // Fixes a bug where sidebar is hidden but remains "open" when
-    // navigating to this screen from the user profile
-    if (sidebarOptions.open === true) {
-      setSidebarOptions({ open: false });
-    }
-  }, [sidebarOptions]);
+	const [campaignData, setCampaignData] = useState();
+	const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
+	const { user } = useCurrentUser();
+	const campaignAddedRef = useRef(false);
+	const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+	const { data, setData, isAutosaving, lastSavedAt, autosaveError } = useAutosaveCampaign(campaignData, campaignId);
 
-  const { data, setData, isAutosaving, lastSavedAt, autosaveError } =
-    useAutosaveCampaign(campaignData, campaignId);
+	useEffect(() => {
+		// Fixes a bug where sidebar is hidden but remains "open" when
+		// navigating to this screen from the user profile
+		if (sidebarOptions.open === true) {
+			setSidebarOptions({ open: false });
+		}
+	}, [sidebarOptions]);
 
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    // data is for checking when all autosave data has been autosaved
-    // Based on data, it will update campaignData which is used to populate form fields
+  	const navigate = useNavigate();
+  	const updateAccountId = async () => {
+		try{
+			if(auth?.currentUser?.uid)
+			{
+				const q = query(collection(db, "users"), where("uid", "==", auth?.currentUser?.uid));
+				const colledoc = await getDocs(q);
+				const data = colledoc.docs[0].data();
+				if(accountId){
+					const userUpdated = doc(db, "users", colledoc.docs[0].id);
+					const res = await updateDoc(userUpdated, {
+						accountId: accountId
+					});
+				}
+				else{
+					setAccountId(data.accountId);
+				}
+			}
+			setSelectedTabIndex(5); 
+		}
+		catch(err){
+			console.log(err);
+		}
+  	}
 
-    handleCampaign();
-  }, [data, lastSavedAt, user]);
 
-  useEffect(() => {
-    setFAQSideBarText(FAQText[selectedTabIndex]);
-    if (campaignData && selectedTabIndex !== campaignData.lastCompletedTabIndex) {
-      setData({ lastCompletedTabIndex: selectedTabIndex })
-    }
-  }, [selectedTabIndex]);
+	useEffect(() => {
+		setAccountId(searchParams.get("accountId"));
+		if(accountId){
+			updateAccountId();
+		}
+	}, [accountId]);
 
-  useEffect(() => {
-    const initialTabIndex = campaignData?.lastCompletedTabIndex;
-    if (initialTabIndex >= 0 && !hasInitialTabBeenSetFromDatabase) {
-      setSelectedTabIndex(initialTabIndex);
-      setHasInitialTabBeenSetFromDatabase(true);
-    }
-  }, [campaignData]);
+	useEffect(() => {
+		// data is for checking when all autosave data has been autosaved
+		// Based on data, it will update campaignData which is used to populate form fields
+		handleCampaign();
+	}, [data, lastSavedAt, user]);
 
-  const getCampaign = async (campaignId) => {
-    let fetchedData = await fetchCampaign(campaignId);
+	useEffect(() => {
+		setFAQSideBarText(FAQText[selectedTabIndex]);
+		if (campaignData && selectedTabIndex !== campaignData.lastCompletedTabIndex) {
+			setData({ lastCompletedTabIndex: selectedTabIndex })
+		}
+	}, [selectedTabIndex]);
 
-    if (fetchedData) {
-      setCampaignData(fetchedData, campaignId);
-    }
-  };
+	useEffect(() => {
+		const initialTabIndex = campaignData?.lastCompletedTabIndex;
+		if (initialTabIndex >= 0 && !hasInitialTabBeenSetFromDatabase) {
+			setSelectedTabIndex(initialTabIndex);
+			setHasInitialTabBeenSetFromDatabase(true);
+		}
+	}, [campaignData]);
 
-  const handleAddCampaign = async () => {
-    let newCampaignId = await addCampaign(user);
-    navigate(`/d/${newCampaignId}`)
-  }
+  	const getCampaign = async (campaignId) => {
+		let fetchedData = await fetchCampaign(campaignId);
+		if (fetchedData) {
+			setCampaignData(fetchedData, campaignId);
+		}
+	};
 
-  const handleCampaign = () => {
-    if (user) {
-      // Not ideal, but essentially checks if:
-      // 1) Data exists and is not just lastCompletedTabIndex AND
-      // 2) campaignId has not been passed, thus a new campaign
-      // 3) Campaign has not been added yet
-      if (data && !(data.lastCompletedTabIndex !== undefined && Object.keys(data).length === 1) && !campaignId && campaignAddedRef.current === false) {
-        campaignAddedRef.current = true;
-        handleAddCampaign();
-      } else if (campaignId) {
-        getCampaign(campaignId);
-      } else if (!campaignId) {
-        getCampaign("campaign-creation-test");
-      }
-    }
-  };
+	const handleAddCampaign = async () => {
+		let newCampaignId = await addCampaign(user);
+		navigate(`/d/${newCampaignId}`)
+	}
 
-  function renderTab() {
-    const tabProps = {
-      data: campaignData,
-      setData: setData,
-      selectedTabIndex,
-      setSelectedTabIndex,
-    };
+	const handleCampaign = () => {
+		if (user) {
+			// Not ideal, but essentially checks if:
+			// 1) Data exists and is not just lastCompletedTabIndex AND
+			// 2) campaignId has not been passed, thus a new campaign
+			// 3) Campaign has not been added yet
+			if (data && !(data.lastCompletedTabIndex !== undefined && Object.keys(data).length === 1) && !campaignId && campaignAddedRef.current === false) {
+				campaignAddedRef.current = true;
+				handleAddCampaign();
+			} else if (campaignId) {
+				getCampaign(campaignId);
+			} else if (!campaignId) {
+				getCampaign("campaign-creation-test");
+			}
+		}
+	};
 
-    switch (selectedTabIndex) {
-      case 0:
-        return <BasicsTab {...tabProps} />;
-      case 1:
-        return <SchedulingTab {...tabProps} />;
-      case 2:
-        return <InteractionTab {...tabProps} />;
-      case 3:
-        return <GoalVideoTab {...tabProps} />;
-      case 4:
-        return <InteractMethodTab {...tabProps} />;
-      case 5:
-        return <FAQTab {...tabProps} />;
-      case 6:
-        return <PaymentTab {...tabProps} />;
-      case 7:
-        return <PromotionTab {...tabProps} />;
-      default:
-        return <BasicsTab {...tabProps} selectedTabIndex={0} />;
-    }
-  }
+	function renderTab() {
+		const tabProps = {
+			data: campaignData,
+			setData: setData,
+			selectedTabIndex,
+			setSelectedTabIndex,
+		};
 
-  if (!campaignData) {
-    return <Loading />;
-  }
+		switch (selectedTabIndex) {
+			case 0:
+				return <BasicsTab {...tabProps} />;
+			case 1:
+				return <SchedulingTab {...tabProps} />;
+			case 2:
+				return <InteractionTab {...tabProps} />;
+			case 3:
+				return <GoalVideoTab {...tabProps} />;
+			case 4:
+				return <InteractMethodTab {...tabProps} />;
+			case 5:
+				return <FAQTab {...tabProps} />;
+			case 6:
+				return <PaymentTab {...tabProps} />;
+			case 7:
+				return <PromotionTab {...tabProps} />;
+			default:
+				return <BasicsTab {...tabProps} selectedTabIndex={0} />;
+		}
+	}
 
-  return (
-    <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
-      <Box
-        sx={{
-          display: "flex",
-          position: "relative",
-          flexDirection: "row",
-          height: "100%",
-          width: "100%",
-          padding: 0,
-          backgroundColor: "background.default",
-        }}
-      >
-        <SideBar
-          isSideBarCollapsed={isSideBarCollapsed}
-          setIsSideBarCollapsed={setIsSideBarCollapsed}
-          FAQSideBarText={FAQSideBarText}
-        />
-        <Box
-          sx={{
-            width: isSideBarCollapsed ? "40px" : "260px",
-          }}
-        ></Box>
-        <Container
-          sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Container sx={{ display: "flex", justifyContent: "center" }}>
-            <ButtonBase
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                color: "text.hint",
-              }}
-              onClick={() => navigate("/a/what-is-interact")}
-            >
-              <ExpandLess />
-              <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
-            </ButtonBase>
-          </Container>
+	if (!campaignData) {
+		return <Loading />;
+	}
 
-          <CampaignCreationTabs
-            selectedTabIndex={selectedTabIndex}
-            setSelectedTabIndex={setSelectedTabIndex}
-          />
-          <Stack
-            direction="column"
-            flex={1}
-            justifyContent="space-evenly"
-            spacing={2}
-            pb={10}
-            position="relative"
-          >
-            {campaignData !== campaignId ? renderTab() : null}
-          </Stack>
-        </Container>
-        <Box sx={{ position: "absolute", top: 10, right: 10 }}>
-          <Span sx={{ color: "text.hint" }}>
-            {autosaveError ? (
-              <Span sx={{ color: "error" }}>Could not autosave.</Span>
-            ) : isAutosaving ? (
-              "Saving..."
-            ) : (
-              <Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
-            )}{" "}
-          </Span>
-          <IconButton
-            disableRipple
-            disableFocusRipple
-            onClick={() => navigate(`/u/${user.name}`)}
-          >
-            <Close sx={{ color: "text.secondary" }} />
-          </IconButton>
-        </Box>
-      </Box>
-    </Slide>
-  );
+	return (
+		<Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
+		<Box
+			sx={{
+			display: "flex",
+			position: "relative",
+			flexDirection: "row",
+			height: "100%",
+			width: "100%",
+			padding: 0,
+			backgroundColor: "background.default",
+			}}
+		>
+			<SideBar
+			isSideBarCollapsed={isSideBarCollapsed}
+			setIsSideBarCollapsed={setIsSideBarCollapsed}
+			FAQSideBarText={FAQSideBarText}
+			/>
+			<Box
+			sx={{
+				width: isSideBarCollapsed ? "40px" : "260px",
+			}}
+			></Box>
+			<Container
+			sx={{
+				flex: 1,
+				display: "flex",
+				flexDirection: "column",
+				width: "100%",
+				height: "100%",
+			}}
+			>
+			<Container sx={{ display: "flex", justifyContent: "center" }}>
+				<ButtonBase
+				sx={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					color: "text.hint",
+				}}
+				onClick={() => navigate("/a/what-is-interact")}
+				>
+				<ExpandLess />
+				<Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
+				</ButtonBase>
+			</Container>
+
+			<CampaignCreationTabs
+				selectedTabIndex={selectedTabIndex}
+				setSelectedTabIndex={setSelectedTabIndex}
+			/>
+			<Stack
+				direction="column"
+				flex={1}
+				justifyContent="space-evenly"
+				spacing={2}
+				pb={10}
+				position="relative"
+			>
+				{campaignData !== campaignId ? renderTab() : null}
+			</Stack>
+			</Container>
+			<Box sx={{ position: "absolute", top: 10, right: 10 }}>
+			<Span sx={{ color: "text.hint" }}>
+				{autosaveError ? (
+				<Span sx={{ color: "error" }}>Could not autosave.</Span>
+				) : isAutosaving ? (
+				"Saving..."
+				) : (
+				<Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
+				)}{" "}
+			</Span>
+			<IconButton
+				disableRipple
+				disableFocusRipple
+				onClick={() => navigate(`/u/${user.name}`)}
+			>
+				<Close sx={{ color: "text.secondary" }} />
+			</IconButton>
+			</Box>
+		</Box>
+		</Slide>
+	);
 }
 
 export default CreateCampaignPage;

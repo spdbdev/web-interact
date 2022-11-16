@@ -3,11 +3,15 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut,onAuthStateChanged } from "firebase/auth";
 
+
+import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
+  sendPasswordResetEmail, signOut, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
 import { Navigate } from "react-router-dom";
-
+import { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
 
 
@@ -20,7 +24,7 @@ const firebaseConfig = {
   storageBucket: "interact2002.appspot.com",
   messagingSenderId: "614264280566",
   appId: "1:614264280566:web:8644b5c9d6c9f8277c23d7",
-  measurementId: "G-LBQPPM4GPT"
+  measurementId: "G-LBQPPM4GPT",
 };
 
 // Initialize Firebase
@@ -61,7 +65,6 @@ const signInWithGoogle = async () => {
   }
 };
 
-
 const loginWithEmailAndPassword = async (email, password) => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
@@ -71,18 +74,28 @@ const loginWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password,imageurl) => {
+const registerWithEmailAndPassword = async (name, email, password, imageurl) => {
   try {
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("name", name);
+    // console.log("customer id", usersdoc.docs[index].id);
+
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      name,
-      authProvider: "local",
-      email,
-      imageurl
-    });
-    return true;
+    postRequest("/user/register", formData)
+      .then(async (resp) => {
+        await addDoc(collection(db, "users"), {
+          uid: user.uid,
+          name,
+          authProvider: "local",
+          email,
+          customerId: resp.data.customer.id,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (err) {
     console.error(err);
     Swal.fire("Error!", err.message, "error");
@@ -100,11 +113,9 @@ const sendPasswordReset = async (email) => {
   }
 };
 
-
 const logout = () => {
   signOut(auth);
 };
-
 
 // export const createUserProfileDocument = async (userAuth, additionalData) => {
 //   if (!userAuth) return;
@@ -115,7 +126,7 @@ const logout = () => {
 
 //   if (!snapShot.exists) {
 //     const { displayName, email } = userAuth;
-//     const createdAt = new Date(); 
+//     const createdAt = new Date();
 
 //     try {
 //       await userRef.set({
@@ -130,7 +141,7 @@ const logout = () => {
 //   }
 
 //   return userRef;
-    
+
 // }
 
 export {
