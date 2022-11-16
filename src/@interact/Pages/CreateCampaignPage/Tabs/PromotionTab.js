@@ -147,7 +147,7 @@ export default function PromotionTab({
         </Stack>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
-        <TitleAndDescFullWidth title="Social Links">
+        <TitleAndDescFullWidth title="Social links">
           <Stack
             direction="row"
             spacing={4}

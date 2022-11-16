@@ -215,15 +215,15 @@ export default function InteractMethodTab({
         <CreateCampaignItemWrapper>
           <TitleAndDesc title="Link your Discord server">
             Interact via Discord to play mini-games like miniputt & watch
-            Youtube videos together. Through our Interact bot, 1 minute before a
+            Youtube videos together. Through our Interact bot, 5 minutes before a
             fan's scheduled interaction, they will automatically be given a
             special role to access a private voice channel; they will
-            automatically have that role removed after 3 hours (or you can do so
-            earlier manually). <br></br>
+            automatically have that role removed after 15 minutes (or you can do so
+            manually at an earlier time). <br></br>
             <br />
             Press 'Link your Discord Server' again to change the server. <br></br>
             <br />
-            WARNING: make sure you are the 'Owner' of this Discord server.
+            WARNING: make sure you are the owner or a super admin of this Discord server.
           </TitleAndDesc>
           <InteractButton
             onClick={handleLinkDiscordButton}

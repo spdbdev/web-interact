@@ -110,14 +110,16 @@ function CampaignInfo({
 
   return (
     <div className="InfoContainer">
+      <br></br>
       <Box sx={{ borderBottom: 1, borderColor: "divider", color: "#782eee" }}>
         <Tabs
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
           textColor="primary"
+          size="50"
         >
-          <StyledTab label="Campaign Info" color="inherit" />
+          <StyledTab label="Campaign info" color="inherit" />
           <StyledTab label="Comments" />
           {isCampaignEnded && <Tab label="Winners" />}
           <StyledTab label="Supporters" />

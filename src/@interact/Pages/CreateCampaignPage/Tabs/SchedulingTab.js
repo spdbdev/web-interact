@@ -234,7 +234,7 @@ export default function SchedulingTab({
   return (
     <>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Campaign Duration">
+        <TitleAndDesc title="Campaign duration">
           All times on the campaign are in EST (Eastern Standard Time). Set how
           long the campaign will be active. Enter a start date & time, then
           duration in days OR the end date & time. <br />
@@ -306,7 +306,7 @@ export default function SchedulingTab({
         </LocalizationProvider>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Interaction Window Duration">
+        <TitleAndDesc title="Interaction window duration">
           Choose the number of weeks; interactions will be scheduled with fans
           for X weeks after the campaign ends. <br /> <br />
           Too many weeks = some fans will have to wait a long time, but too few

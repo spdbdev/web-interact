@@ -56,7 +56,7 @@ export default function BasicsTab({
   return (
     <>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Campaign Title">
+        <TitleAndDesc title="Campaign title">
           Enter a title for your campaign. Include your name/alias in the title
           so fans can find you more easily.
         </TitleAndDesc>
@@ -80,7 +80,7 @@ export default function BasicsTab({
         />
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Campaign Info">
+        <TitleAndDesc title="Campaign info">
           Enter a short description of your campaign.
         </TitleAndDesc>
         <TextField

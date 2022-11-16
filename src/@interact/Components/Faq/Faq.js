@@ -13,7 +13,7 @@ function Faq({ campaignData }) {
 
   return (
     <Box>
-      <Typography variant="h2">FAQs</Typography>
+      <Typography variant="h2">FAQ</Typography>
       {FAQs?.map((faq,i) => (
         <FaqElem key={i} faq={faq} />
       ))}

@@ -13,6 +13,7 @@ import moment from "moment";
 import { getDateFromTimestamp } from "@interact/Components/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import { light } from "@mui/material/styles/createPalette";
 
 export default function Header({ campaignData }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
@@ -57,7 +58,7 @@ export default function Header({ campaignData }) {
           </Span>
         </Typography>
       </Stack>
-
+      <br></br>
       <InteractFlashyButton
           // variant="h4"
           // m={0}
@@ -65,7 +66,7 @@ export default function Header({ campaignData }) {
           // sx={{ color: "secondary.contrastText" }}
         >
           Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
-        </InteractFlashyButton>
+      </InteractFlashyButton>
 
       {/* <Box
         sx={{

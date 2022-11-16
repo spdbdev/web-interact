@@ -52,18 +52,20 @@ const Comments = ({ comments, campaignId }) => {
         currentUserFullName: "Riya Negi",
       }}
       formStyle={{ backgroundColor: "white" }}
-      titleStyle={{ fontSize: "20px" }}
+      titleStyle={{ fontSize: "17.69px" }}
       hrStyle={{ border: "0.5px solid #fff" }}
       overlayStyle={{position:"relative",width:"auto",height:"auto",background:"transparent"}}
       submitBtnStyle={{
-        border: "1px solid black",
+        fontSize: 13.69,
+        border: "0.5px solid #FFF",
         backgroundColor: "#782FEE",
         borderRadius: "0 11px 0 11px",
       }}
       cancelBtnStyle={{
-        border: "1px solid gray",
-        backgroundColor: "gray",
-        color: "white",
+        fontSize: 13.69,
+        backgroundColor: "#D3D3D3",
+        color: "black",
+        border: "0.5px solid #fff",
         borderRadius: "11px 0 11px 0",
       }}
       logIn={{

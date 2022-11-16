@@ -53,9 +53,9 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How are interactions carried out?
       </Span>{" "}
-      💜 Via Discord (fans link their Discord accounts; when it’s their turn to
+      ⭐ Via Discord (fans link their Discord accounts; when it’s their turn to
       interact, fans join the creator’s server and are given a special role
-      automatically) or Google Meet (unique Google Meet link). <br></br>💜 You may also
+      automatically) or Google Meet (unique Google Meet link). <br></br>⭐ You may also
       stream it live and/or record it (users have agreed to photo/video release
       in the terms & conditions).
       <br />
@@ -63,14 +63,14 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Why interact with fans?
       </Span>{" "}
-      💜 Form a closer bond with your fans who have been in your corner, cheering you on as 
+      ⭐ Form a closer bond with your fans who have been in your corner, cheering you on as 
       you continue to grow as a creator & a human; everyone also gets to see the fan-interactions 
       produced (or highlights) where they can learn more & see a different side to you.
-      <br></br>💜 Meeting your most loyal fans is fun & fulfilling. It’s a wonderful feeling to see 
+      <br></br>⭐ Meeting your most loyal fans is fun & fulfilling. It’s a wonderful feeling to see 
       their eyes light up. These aren’t tedious requests nor formal lessons; there are no restrictions—you 
       have complete freedom & control to stop talking to users and kick them at your discretion. Just 
       chill with your fans on your own schedule.
-      <br></br>💜 Do it all with minimal effort & complete control: our scheduling algorithm is focused 
+      <br></br>⭐ Do it all with minimal effort & complete control: our scheduling algorithm is focused 
       on flexibility for the creator; one only has to input their specific availability week-by-week, 
       3 days in advance (on Friday at the latest, week starts on Monday).
     </FAQSidebarWrapper>
@@ -92,18 +92,18 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         How does scheduling work?
       </Span>{" "}
-      💜 You can sync with your Google, Outlook or iCloud calendar, where your
+      ⭐ You can sync with your Google, Outlook or iCloud calendar, where your
       scheduled events will show up as unavailable timeslots automatically on
       your creator schedule tab (in your Interact profile page); after you lock
       in your availability for a week, your interactions with fans are scheduled
-      and can be exported to your calendar. <br></br>💜 Fans can select their availability
+      and can be exported to your calendar. <br></br>⭐ Fans can select their availability
       from Mon-Sun in general as long as they have an account, even before
       they've acquired any interactions (a minimum of 5 hours of the week have
       to be selected). Fans also select a preference for time of day (in their
       timezone), morning (6am to 10:30 am), noon (10:30 am to 1:30 pm),
       afternoon (1:30pm to 6pm), evening (6pm to 10:30pm), midnight (10:30pm to
-      1:30am), gremlin time (1:30 am to 6am). <br></br>💜 The first week after the campaign
-      (starting Monday) is when interactions will start to be booked. <br></br>💜 When the
+      1:30am), gremlin time (1:30 am to 6am). <br></br>⭐ The first week after the campaign
+      (starting Monday) is when interactions will start to be booked. <br></br>⭐ When the
       campaign ends, creators are shown the availability of all of their fans
       continuously (shown X number of fans that are available for each time
       slot), and release a specific schedule week-by-week on Friday 11:59 pm at
@@ -111,8 +111,8 @@ const FAQText = {
       11:59pm to lock in a schedule for the next week starting Monday), with the
       ability to choose how many interactions to do that week. We then allocate
       the best fitting fans as soon as the creator locks in their schedule for
-      each week. <br></br>💜 Fans & creators can reschedule. Rescheduled fans will be added
-      back into the matching algorithm pool & matched accordingly once again. <br></br>💜 By
+      each week. <br></br>⭐ Fans & creators can reschedule. Rescheduled fans will be added
+      back into the matching algorithm pool & matched accordingly once again. <br></br>⭐ By
       the last week, fans that creators are not able to meet are refunded. This
       means that if a fan or creator reschedules an interaction in the last
       week, the fan is refunded.
@@ -123,10 +123,10 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Why giveaway + auction format?
       </Span>{" "}
-      Both affluent & everyday fans have an opportunity to interact: <br></br>💜 The
+      Both affluent & everyday fans have an opportunity to interact: <br></br>⭐ The
       giveaway allows all of your fans—for free or for a few dollars—to support
       you & achieve the campaign goal while getting a chance to interact with a
-      content creator they love. <br></br>💜 The auction makes it fair by giving your most
+      content creator they love. <br></br>⭐ The auction makes it fair by giving your most
       loyal fans the option to get an interaction with 100% certainty; your most
       loyal fans who want to tell you, their favorite creator, about themselves
       will save up birthday money / holiday wishes for an interaction with you.
@@ -197,8 +197,8 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         What activities can I do with a fan in an interaction?{" "}
       </Span>{" "}
-      💜 Playing games (from competitive games like Valorant & Chess to…. GeoGuessr
-      or mini putt in Discord activities). <br></br>💜 Discussing topics fans are passionate
+      ⭐ Playing games (from competitive games like Valorant & Chess to…. GeoGuessr
+      or mini putt in Discord activities). <br></br>⭐ Discussing topics fans are passionate
       about, commentating, and learning from each other (fans can screen share:
       they might show off their own creations, favorite clips of your content
       and ask for advice in your field of expertise… or just anime. You could
@@ -212,19 +212,19 @@ const FAQText = {
       merch & shipping); but, they don’t have a compelling reason to give you 
       some coffee money. Having a chance to personally interact & gain 
       recognition from you is an attractive incentive (via the giveaway):
-      <br></br>💜Fans like you—as social platforms are so one-sided, fans give you attention weekly or
+      <br></br>⭐Fans like you—as social platforms are so one-sided, fans give you attention weekly or
       even daily without being able to receive any meaningful attention or
       recognition back. They treat you as someone they trust and/or a relatable
       friend, but have never been able to fulfill that relationship. Thus, fans
       want to be recognized by you & build a relationship by showing off their
       talents (e.g. best X-main in this game, astute questions & insights in X,
       musical/artistic talent, athleticism, or comedic genius). 
-      <br></br>💜 Fans want to
+      <br></br>⭐ Fans want to
       discuss & make their own viewpoints known on subjects they are deeply
       passionate about, where you’re one of the leaders in that
       subject/community (from anime to politics, from history to frontier tech,
       from reviews & tier lists to educational animations). 
-      <br></br>💜 Fame—if a fan’s
+      <br></br>⭐ Fame—if a fan’s
       interaction was interesting, creators can post highlights of it or the
       interaction is part of a live-streaming/podcasting scenario where the fan
       is recognized by many fellow fans & viewers (react to content together,
@@ -298,14 +298,14 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
-      💜 The creator can ban & unban (lifetime) any participant of their 
+      ⭐ The creator can ban & unban (lifetime) any participant of their 
       campaigns from their current and future campaigns. You can also delete any 
       comment on your campaigns (with the ability to also ban the user who made 
       that comment). A ban button is next to users on the ‘supporters’ tab of your 
       campaign and also on the user profile page when you have scheduled interactions with a fan. 
-      💜 Users have to AUTHORIZE a payment method to bid or enter the giveaway 
+      ⭐ Users have to AUTHORIZE a payment method to bid or enter the giveaway 
       (meaning their payment method is valid via a small void transaction usually).
-      💜 Every fan has until the end of the drop to bid & enter the giveaway instead 
+      ⭐ Every fan has until the end of the drop to bid & enter the giveaway instead 
       of a first-come-first-serve basis.
  <br />
       <br />
