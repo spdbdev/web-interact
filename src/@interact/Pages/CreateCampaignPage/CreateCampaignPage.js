@@ -244,6 +244,18 @@ const FAQText = {
       namely: "What can we do in an interaction?" and "How are interactions
       carried out?" <br /> <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
+        "How are interactions carried out?"
+      </Span>{" "}
+      Here, you can tell your fans how they'll be able to interact with you via
+      Discord (⭐ fans link their Discord accounts; when it’s their turn to
+      interact, fans join the creator’s server and are given a special role
+      automatically 5 minutes before their scheduled interaction; the roles is 
+      removed 15 minutes after the interaction end time) or 
+      Google Meet (unique Google Meet link). Are you going to
+      stream the interaction live and/or record it (If you wish to play a game,
+      what is the game? Which region/server?) <br />
+      <br />
+      <Span sx={{ textDecoration: "underline", display: "block" }}>
         "What can we do in an interaction?"
       </Span>{" "}
       Tell your fans what kind of rewarding experience they'd get with you if
@@ -251,15 +263,6 @@ const FAQText = {
       of seeing how I make my videos behind the scenes, and you'll even get a
       chance to be in one!" <br />
       <br />
-      <Span sx={{ textDecoration: "underline", display: "block" }}>
-        "How are interactions carried out?"
-      </Span>{" "}
-      Here, you can tell your fans how they'll be able to interact with you via
-      Discord (fans link their Discord accounts; when it’s their turn to
-      interact, fans join the creator’s server and are given a special role
-      automatically) or Google Meet (unique Google Meet link). Are you going to
-      stream the interaction live and/or record it (If you wish to play a game,
-      what is the game? Which region/server?)
     </FAQSidebarWrapper>
   ),
   6: (
