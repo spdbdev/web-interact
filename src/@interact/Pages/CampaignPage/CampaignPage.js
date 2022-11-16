@@ -126,6 +126,7 @@ function CampaignPage(userData) {
 			bidsList = sortBids(bidsList);
 			setBids(bidsList);
 
+			if(!user?.email) return;
 			let position = bidsList.findIndex((element) => element.email === user.email);
 			setUserAuctionPosition(++position);
 			setHasUserEnteredAuction(true);
@@ -171,27 +172,17 @@ function CampaignPage(userData) {
   	};
 
 	const getUserLostHistory = async (creator_id, user_id) => {
-		const campaignHistoryUsers = await getDoc(
-		doc(
-			db,
-			"contributionAndGiveawayLossHistory",
-			creator_id,
-			"users",
-			user_id
-		)
-		);
+		const campaignHistoryUsers = await getDoc(doc(db, "contributionAndGiveawayLossHistory", creator_id, "users", user_id));
 		if (doc.exists) {
-		const { numOfLoss } = campaignHistoryUsers.data();
-		return parseInt(numOfLoss);
+			const { numOfLoss } = campaignHistoryUsers.data();
+			return parseInt(numOfLoss);
 		}
 		return 0;
 	};
 
 	const getChanceMultiplier = async (_campaignData) => {
-		let lostHistory = await getUserLostHistory(
-		_campaignData.person.id,
-		user.uid
-		);
+		if(!user?.uid) return;
+		let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
 		lostHistory = parseInt(lostHistory);
 
 		let freeMultiplier = 1;
@@ -252,6 +243,7 @@ function CampaignPage(userData) {
 	};
 
 	const checkPurchasedEntry = async () => {
+		if(!user?.uid) return;
 		const docRef = doc(db, "campaigns", campaignId, "Giveaway", user.uid);
 		const docSnap = await getDoc(docRef);
 		if (docSnap.exists()) {
@@ -316,54 +308,36 @@ function CampaignPage(userData) {
 		console.log(params, !params.campaignId, user)
 	}, [user, params]); */
 
-  function renderUserCampaignStatus() {
-    if (
-      hasUserEnteredAuction ||
-      hasUserPurchasedVIPEntry ||
-      hasUserClaimedFreeEntry
-    ) {
-      let statusType = "bid";
-      let chances = 0;
-      if (hasUserPurchasedVIPEntry) {
-        chances = winningChances.vip;
-        statusType = "giveaway";
-      } else if (hasUserClaimedFreeEntry) {
-        chances = winningChances.free;
-        statusType = "giveaway";
-      }
-      return (
-        <Stack
-          alignItems="center"
-          sx={{
-            position: "fixed",
-            bottom: 10,
-            left: 0,
-            zIndex: 4000,
-            width: "100%",
-          }}
-        >
-          <Box
-            sx={{
-              backgroundColor: "primary.translucent",
-              boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 30px",
-              p: 1,
-              borderRadius: 2,
-            }}
-          >
-            <UserCampaignStatus
-              statusType={statusType}
-              userAuctionPosition={userAuctionPosition}
-              userGiveawayWinChance={chances}
-              auctionLeaderboardSpots={31}
-              showUserAvatar
-            />
-          </Box>
-        </Stack>
-      );
-    } else {
-      return null;
-    }
-  }
+	function renderUserCampaignStatus() {
+		if (hasUserEnteredAuction || hasUserPurchasedVIPEntry || hasUserClaimedFreeEntry) 
+		{
+			let statusType = "bid";
+			let chances = 0;
+			if (hasUserPurchasedVIPEntry) {
+				chances = winningChances.vip;
+				statusType = "giveaway";
+			} else if (hasUserClaimedFreeEntry) {
+				chances = winningChances.free;
+				statusType = "giveaway";
+			}
+			return (
+				<Stack alignItems="center"
+					sx={{position:"fixed", bottom:10, left:'50%', zIndex:4000, width:"auto", transform:"translateX(-50%)" }}>
+					<Box sx={{backgroundColor:"primary.translucent", boxShadow:"rgba(0, 0, 0, 0.24) 0px 3px 30px", p:1, borderRadius:2}}>
+						<UserCampaignStatus
+							statusType={statusType}
+							userAuctionPosition={userAuctionPosition}
+							userGiveawayWinChance={chances}
+							auctionLeaderboardSpots={31}
+							showUserAvatar
+							/>
+					</Box>
+				</Stack>
+			);
+		} else {
+			return null;
+		}
+	}
 
   return (
     <JumboContentLayout
