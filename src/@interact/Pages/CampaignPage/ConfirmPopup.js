@@ -29,7 +29,8 @@ export default function ConfirmPopup({
   bidAction,
   createReceipt,
   bidActionstatus,
-  setSelectedPaymentMethod
+  setSelectedPaymentMethod,
+  buyvip,
 }) {
   const [paymentId, setpaymentId] = useState();
   const [showtext, setShowText] = useState(false);
@@ -52,42 +53,44 @@ export default function ConfirmPopup({
       }
     });
   }, [allprimarymethod]);
-const paymentResponse = (price,resp = null) => {
-  console.log(resp?.data);
-        if (!price || resp?.data?.paymentstatus) {
-          createReceipt();
-        
-          settheOpenPopup(false);
-          Swal.fire(
-            "Success!",
-            "Your payment has been made. Thanks",
-            "success"
-          );
-          if (bidActionstatus) {
-            bidAction(price);
-          }
-        } else {
-          settheOpenPopup(false);
-          Swal.fire({
-            icon: "error",
-            title: "Failed!",
-            text: "An error occured",
-          });
-        }
-}
+  const paymentResponse = (price, resp = null) => {
+    console.log(resp?.data);
+    if (!price || resp?.data?.paymentstatus) {
+      createReceipt();
+
+      settheOpenPopup(false);
+      Swal.fire("Success!", "Your payment has been made. Thanks", "success");
+      if (bidActionstatus) {
+        bidAction(price);
+      }
+    } else {
+      settheOpenPopup(false);
+      Swal.fire({
+        icon: "error",
+        title: "Failed!",
+        text: "An error occured",
+      });
+    }
+  };
   const confirmFuncion = () => {
     console.log(paymentId, userCostomerId);
     const formData = new FormData();
     formData.append("price", price);
     formData.append("paymentmethodid", paymentId);
     formData.append("customerId", userCostomerId);
-    if(!price){
+    let url = "";
+    if (!price) {
       paymentResponse(price);
       return;
     }
-    postRequest("/make_payment_on_stripe", formData)
+    if (buyvip) {
+      url = "/make_instant_payment_on_stripe";
+    } else {
+      url = "/make_payment_on_stripe";
+    }
+    postRequest(url, formData)
       .then(async (resp) => {
-        paymentResponse(price,resp);
+        paymentResponse(price, resp);
       })
       .catch((err) => {
         console.log(err);
@@ -117,7 +120,6 @@ const paymentResponse = (price,resp = null) => {
             </Typography>
             {hovereffect && <InfoTooltip title={hovertext} />}
           </Stack>
-          
 
           <Typography variant="subtitle1" gutterBottom>
             {undertitle}

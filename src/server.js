@@ -274,6 +274,32 @@ app.post("/make_payment_on_stripe", async (req, res) => {
 });
 
 
+app.post("/make_instant_payment_on_stripe", async (req, res) => {
+  const {price,paymentmethodid,customerId} = req.body
+  try {
+    const paymentintent = await stripe.paymentIntents.create({
+      amount: price * 100,
+      currency: "usd",
+      customer: customerId,
+      payment_method: paymentmethodid,
+      off_session: true,
+      confirm: true,
+    });
+    res.status(200).json({ paymentstatus:true, paymentintent });
+  } catch (err) {
+    // Error code will be authentication_required if authentication is needed
+    console.log('Error code is: ', err.code);
+    console.log('Error is: ', err);
+    const paymentIntentRetrieved = await stripe.paymentIntents.retrieve(err.raw.payment_intent.id);
+    console.log('PI retrieved: ', paymentIntentRetrieved.id );
+    res.status(400).json({paymentstatus:false})
+  }
+  
+});
+
+
+
+
 
 
 

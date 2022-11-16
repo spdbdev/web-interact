@@ -542,6 +542,8 @@ export default function Giveaway({
 			userCostomerId={userCostomerId}
 			hovertext={hoverText}
 			hovereffect={true}
+			buyvip={true}
+			
 			/>
 		<Modal
 			open={open}
