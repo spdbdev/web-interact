@@ -113,7 +113,7 @@ const Header = () => {
           </IconButton>
         </Div>
       </Slide>
-      <Link to="/campaign"
+      <Link to="/a/create-campaign/"
        style={{
         color: isHovering ? '#782fee' : '#222',
         textDecoration: isHovering ? 'underline' : 'none',
@@ -143,7 +143,7 @@ const Header = () => {
         <AuthUserDropdown/>
         </>}
         {!isLoggedIn &&
-        <Link to="/interact/signin" style={{textDecoration: 'none'}}>
+        <Link to="/a/signin" style={{textDecoration: 'none'}}>
           <Button variant={"contained"}>Sign In</Button></Link>}
       </Stack>
     </React.Fragment>
