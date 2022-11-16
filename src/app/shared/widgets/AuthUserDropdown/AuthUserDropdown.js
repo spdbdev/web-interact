@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Avatar from "@mui/material/Avatar";
 import { authUser } from "./fake-db";
 import {
@@ -19,13 +19,41 @@ import { useNavigate } from "react-router-dom";
 import JumboDdPopover from "@jumbo/components/JumboDdPopover";
 import Div from "@jumbo/shared/Div";
 import { useJumboTheme } from "@jumbo/hooks";
+import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { query,collection,where, getDocs } from 'firebase/firestore'
 
-import { logout } from "@jumbo/services/auth/firebase/firebase";
 
 const AuthUserDropdown = () => {
   // const mutation = useAuthSignOut(auth);
   const navigate = useNavigate();
   const { theme } = useJumboTheme();
+  const [user, loading, error] = useAuthState(auth);
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  
+
+  const fetchUserName = async () => {
+    try {
+      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+
+      const colledoc = await getDocs(q);
+
+      const data = colledoc.docs[0].data();
+      setName(data.name);
+      setEmail(data.email)
+      
+    
+    } catch (err) {
+      console.error(err);
+      alert("An error occured while fetching user data");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserName();
+  }, [user]);
+
 
   const onLogout = () => {
     //mutation.mutate();
@@ -54,12 +82,12 @@ const AuthUserDropdown = () => {
         >
           <Avatar
             src={authUser.profile_pic}
-            alt={authUser.name}
+            alt={name}
             sx={{ width: 60, height: 60, mb: 2 }}
           />
-          <Typography variant={"h5"}>{authUser.name}</Typography>
+          <Typography variant={"h5"}>{name}</Typography>
           <Typography variant={"body1"} color="text.secondary">
-            {authUser.handle}
+            {email}
           </Typography>
         </Div>
         <Divider />
