@@ -605,11 +605,9 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           </Typography>
           </Stack>
 
-          {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
           <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
           Place bid
           </InteractButton>
-          {/* </form> */}
         </Stack>
         <Typography variant="caption" color="text.hint">
           You won't be charged if you don't win.

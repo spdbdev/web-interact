@@ -15,14 +15,13 @@ import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
 import { Country, State, City } from "country-state-city";
-import { getRequest } from "../../../utils/api";
+import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
 import ConfirmPopup from "./ConfirmPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from "@mui/material/IconButton";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
-import axios from 'axios';
 import "./CampaignPage.css";
 import { formatMoney } from "@interact/Components/utils";
 
@@ -45,6 +44,7 @@ const hoverText = "Only 1 entry is allowed per user. Each time a user loses, the
 
 
 export default function Giveaway({
+	campaignId,
 	isCampaignEnded,
 	campaignData,
 	hasUserClaimedFreeEntry,
@@ -73,7 +73,6 @@ export default function Giveaway({
 	const [cardBrand, setCardBrand] = useState(true);
 	const [last4, setLast4] = useState(true);
 	const [useSaveCard, setUseSaveCard] = useState(false);
-	const campaignId = 'test12345';
 
 	const [user, loading, error] = useAuthState(auth);
 	const [currentUser, setCurrentUser] = useState(null);
@@ -104,79 +103,66 @@ export default function Giveaway({
 		}
 	};
 	useEffect(() => {
-        //if (!user?.uid) return navigate("/");
-        fetchUserName();
-    }, [user]);
+		console.log('user >>>', user, campaignId);
+        if (user.uid){
+			fetchUserName();
+			getDataGiveaway();
+        	get_stripe_customer_id();
+		}
+
+		if(logged_user_stripe_customer_id){
+			payment_method();
+		}
+    }, [user, logged_user_stripe_customer_id]);
     localStorage.setItem('name', name);
 
     const getDataGiveaway = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
             setLoggedInUserData(data);            
-        } else {
-            console.log("No such document!");
         }
     }
 
     const get_stripe_customer_id = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user.uid);
         const docSnap = await getDoc(docRef);
         //console.log(docSnap);
         if (docSnap.exists()) {
             const data = docSnap.data();
             set_Stripe_customer_id_new(data);
-            // console.log("data is :" + JSON.stringify(data));
-            // console.log("set_Stripe_customer_id is :" + JSON.stringify(stripe_customer_id_new));
-
-            
         } else {
-            // doc.data() will be undefined in this case
-            // console.log("No such document!");
-            logged_user_stripe_customer_id =false;
+            logged_user_stripe_customer_id = false;
         }  
     }
-
     logged_user_stripe_customer_id = stripe_customer_id_new.customer_id;
-
-
-    useEffect(() => {
-        getDataGiveaway();
-        get_stripe_customer_id();
-    }, [])
     
 	const payment_method = () => {
 		if (logged_user_stripe_customer_id) {
-			axios.post('http://localhost:4242/get_payment_methods', {
-					stripe_customer_id: logged_user_stripe_customer_id
-				})
-				.then(function (response) {
-					var data = response.data;
-					if (data.status) {
-						isCustomerSet(true);
-						var brand = data.brand;
-						var last4 = data.last4;
-						setCardBrand(brand);
-						setLast4(last4);
-						setUseSaveCard(true);
-						//console.log("getting data" +logged_user_stripe_customer_id )
-					} else {
-						isCustomerSet(false);
-						//setUseSaveCard(false);
-						console.log("not getting data")
-					}
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
+			postRequest("/get_payment_methods", {stripe_customer_id: logged_user_stripe_customer_id})
+			.then(function (response) {
+				var data = response.data;
+				if (data.status) {
+					isCustomerSet(true);
+					var brand = data.brand;
+					var last4 = data.last4;
+					setCardBrand(brand);
+					setLast4(last4);
+					setUseSaveCard(true);
+					//console.log("getting data" +logged_user_stripe_customer_id )
+				} else {
+					isCustomerSet(false);
+					//setUseSaveCard(false);
+					console.log("not getting data")
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
 		} else {
 			isCustomerSet(false);
 		}
-	}
-
-	if(logged_user_stripe_customer_id){
-		payment_method();
 	}
 
     useEffect(() => {

@@ -1,10 +1,11 @@
 import React from 'react'
-import axios from 'axios';
+import { getRequest, postRequest } from "../../../utils/api";
+
 const CaptureAuction = () => {
   return (
     <div>
         {
-            axios.post('http://localhost:4242/Auction_Bid_Payment_Capture_Process', {
+            postRequest('/Auction_Bid_Payment_Capture_Process', {
                 data:"dwvayudg"
               }).then(function (response) {
                 if(response.data.pi_id){
