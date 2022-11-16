@@ -27,7 +27,7 @@ import { Storage } from "../../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import "./SignUpPage.css";
-import InteractButton from "@interact/Components/Button/InteractButton";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { useRef } from "react";
 
 // newer SignUpPage with birthday.
@@ -55,11 +55,11 @@ function SignUpPage2() {
   }
 
   const validateUserName = function(){
-    if(name.length > 14){
-      setNameError("Username cannot be longer than 15.");
+    if(name.length > 15){
+      setNameError("Cannot be longer than 15 characters.");
       return false;
     }else if(/\s/.test(name)){
-      setNameError("Whitespaces are not allowed in username");
+      setNameError("Whitespaces are not allowed");
       return false;
     }else if(JSON.stringify(name).includes('\\')){
       setNameError("Username cannot contain '\\' character.")
@@ -112,7 +112,7 @@ function SignUpPage2() {
         },
         (err) => {
           Swal.fire(
-            "Fialed!",
+            "Failed!",
             "Failed to upload your image.",
             "error"
             );
@@ -185,7 +185,7 @@ function SignUpPage2() {
         {/* need to set google sign in in the firebase console, rn its only email/password*/}
         <Button className="SignUpWithGoogle" onClick={signInWithGoogle}>
           <img src={gl_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
-          <div>Sign Up with Google</div>
+          <div>Sign up with Google</div>
         </Button>
         {/* <br /> */}
         <Button
@@ -197,7 +197,7 @@ function SignUpPage2() {
           }}
         >
           <img src={fb_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
-          <div>Sign Up with Facebook</div>
+          <div>Sign up with Facebook</div>
         </Button>
         <br />
         or
@@ -209,7 +209,7 @@ function SignUpPage2() {
           <TextField
             error={nameError.length > 0}
             id="outlined-basic"
-            label="Legal name"
+            label="Username"
             variant="outlined"
             value={name}
             helperText={nameError}
@@ -219,7 +219,7 @@ function SignUpPage2() {
         <div className="TextInputWrapper">
           <TextField
             id="outlined-basic"
-            label="Enter Email Address"
+            label="Enter email address"
             variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -257,7 +257,7 @@ function SignUpPage2() {
         <div className="TextInputWrapper">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              label="Birthday"
+              label="Date of birth"
               value={birdthday}
               onChange={(newValue) => {
                 handleBirthdayChange(newValue);
@@ -274,14 +274,15 @@ function SignUpPage2() {
             alignItems: "center",
           }}
         >
-          <Checkbox />{" "}
+          <Checkbox />
           <span>
-            I agree to the <Link to="/a/termsandconditions">terms & conditions</Link>, <Link to="/a/privacypolicy">privacy policy</Link>, and I declare that I am over 13 years old{" "}
+            I agree to the <Link to="/a/termsandconditions">terms & conditions</Link> and the <Link to="/a/privacypolicy">privacy policy</Link>
           </span>
         </div>
+        <br></br>
         <div className="ButtonsWrapper" style={{margin:10}}>
-          <InteractButton
-          onClick={register}>Create Account</InteractButton>
+          <InteractFlashyButton
+          onClick={register}>Create account</InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20 }}>
           Already have an account? <Link to="/">Log in</Link>
@@ -291,5 +292,4 @@ function SignUpPage2() {
     </div>
   );
 }
-
 export default SignUpPage2;

@@ -18,14 +18,7 @@ import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  Container,
-  Divider,
-  Link,
-  Stack,
-  Typography,
-  Grid,
-} from "@mui/material";
+import {Container, Divider, Link, Stack, Typography, Grid} from "@mui/material";
 import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";

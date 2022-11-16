@@ -64,7 +64,7 @@ function SignUpPage() {
                                 padding: "10px 20px",
                                 // fontWeight:'bold',
                             }}
-                            color='info'>Create Account</Button>
+                            color='info'>Create account</Button>
                     </div>
                     <div style={{paddingTop:20}}>
                         Already have an account? <a href='#'>Log in</a>

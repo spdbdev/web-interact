@@ -8,7 +8,7 @@ import Faq from "@interact/Components/Faq/Faq";
 import { DataGrid } from "@mui/x-data-grid";
 
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Header from "./Header";
 import Stats from "./Stats";
@@ -25,46 +25,60 @@ import { sortBids } from "@interact/Components/utils";
 
 
 function CampaignPage(userData) {
-  const [vipChanceMultiplier, setVipChanceMultiplier] = useState(25);
-  const [freeChanceMultiplier, setFreeChanceMultiplier] = useState(1);
-  const [campaignData, setCampaignData] = useState({});
-  const [bids, setBids] = useState([]);
-  const [giveaways, setGiveaways] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [supporters, setSupporters] = useState([]);
-  const [winningChances, setWiningChances] = useState({ vip: 100, free: 100 });
-  const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] = useState(false);
-  const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
-  const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
-  const [userAuctionPosition, setUserAuctionPosition] = useState(0);
-  const [isCampaignEnded, setIsCampaignEnded] = useState(false);
+  
+	const [vipChanceMultiplier, setVipChanceMultiplier] = useState(25);
+	const [freeChanceMultiplier, setFreeChanceMultiplier] = useState(1);
+	const [campaignData, setCampaignData] = useState({});
+	const [bids, setBids] = useState([]);
+	const [giveaways, setGiveaways] = useState([]);
+	const [comments, setComments] = useState([]);
+	const [supporters, setSupporters] = useState([]);
+	const [winningChances, setWiningChances] = useState({ vip: 100, free: 100 });
+	const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] = useState(false);
+	const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
+	const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
+	const [userAuctionPosition, setUserAuctionPosition] = useState(0);
+	const [isCampaignEnded, setIsCampaignEnded] = useState(false);
+	const [campaignId, setCampaignId] = useState(null);
 
-  const num_giveaway = 10;
-  const num_auction = 10;
-  const { theme } = useJumboTheme();
-  const campaignId = "test12345";
-  const navigate = useNavigate();
-  let [user, loading] = useAuthState(auth);
-  // let user = {
-  //   uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-  //   photoUrl:
-  //     "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-  //   name: "biby",
-  //   email: "bibyliss@gmail.com",
-  //   customerId: "cus_MlMuNeDDsNVt2Z",
-  // };
+	const num_giveaway = 10;
+	const num_auction = 10;
+	const { theme } = useJumboTheme();
+	const navigate = useNavigate();
+	
+	let { campaign_slug } = useParams();
+	if(!campaign_slug) campaign_slug = "test12345";
 
-  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+	let [user, loading] = useAuthState(auth);
+	/* let user = {
+		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
+		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+		name: "biby",
+		email: "bibyliss@gmail.com",
+		customerId: "cus_MlMuNeDDsNVt2Z",
+	}; */
 
-  useEffect(() => {
-    // Fixes a bug where sidebar is hidden but remains "open" when
-    // navigating to this screen
-    if (sidebarOptions.open === true) {
-      setSidebarOptions({ open: false });
-    }
-  }, [sidebarOptions]);
+	useEffect(() => {
+		//if (loading) return;
+		//if (!user) return navigate("/"); // this page should be browsable without login
+		if(campaignId === null) checkCampaignID();
+		else {
+			console.log('campaignId >>>>>', campaignId);
+			getCampaignData();
+			checkPurchasedEntry();
+		}
+	}, [campaignId]);
 
-  const checkAuthentication = () => {
+	const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+	useEffect(() => {
+		// Fixes a bug where sidebar is hidden but remains "open" when
+		// navigating to this screen
+		if (sidebarOptions.open === true) {
+			setSidebarOptions({ open: false });
+		}
+	}, [sidebarOptions]);
+
+  	const checkAuthentication = () => {
 		if(!user) {
 			navigate(`/a/signup?redirect=/c/${campaignId}`);
 			return false;
@@ -72,77 +86,77 @@ function CampaignPage(userData) {
 		return true;
 	}
 
-  const getCampaignData = async () => {
-    //campaigns change listener
-    const campaignsListener = onSnapshot(
-      query(doc(db, "campaigns", campaignId)),
-      (querySnapshot) => {
-        let _campaignData = querySnapshot.data();
-        setCampaignData(_campaignData);
+	const checkCampaignID = async () => 
+	{
+		// check if the campaignId is a uid or custom_url 
+		const docSnap = await getDoc(doc(db, "campaigns", campaign_slug));
+		if (!docSnap.exists()) {
+			const customURLQ = query(collection(db, "campaigns"), where("customURL", "==", campaign_slug));
+			const customURLQuerySnapshot = await getDocs(customURLQ);
+			var docSnapshots = customURLQuerySnapshot.docs[0];
+			if (docSnapshots) setCampaignId(docSnapshots.id);
+		}
+		else setCampaignId(campaign_slug);
+	}
 
-        // console.log("Campaign Data >>>>>>>>>>>", _campaignData);
+  	const getCampaignData = async () => 
+	{
+		//campaigns change listener
+		const campaignsListener = onSnapshot(query(doc(db, "campaigns", campaignId)), (querySnapshot) => {
+			let _campaignData = querySnapshot.data();
+			setCampaignData(_campaignData);
 
-        //Check Campaign End Time
-        let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
-        let now = new Date();
-        if (campaignEndDate - now < 0) setIsCampaignEnded(true);
+			// console.log("Campaign Data >>>>>>>>>>>", _campaignData);
 
-        if (Object.entries(_campaignData).length > 0)
-          getChanceMultiplier(_campaignData);
-      }
-    );
+			//Check Campaign End Time
+			let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
+			let now = new Date();
+			if (campaignEndDate - now < 0) setIsCampaignEnded(true);
 
-    //Bids change listener
-    const bidsListener = onSnapshot(
-      query(collection(db, "campaigns", campaignId, "bids")),
-      (querySnapshot) => {
-        let bidsList = [];
-        querySnapshot.forEach((doc) => {
-          bidsList.push(doc.data());
-        });
-        bidsList = sortBids(bidsList);
-        setBids(bidsList);
+			if (Object.entries(_campaignData).length > 0)
+			getChanceMultiplier(_campaignData);
+		});
 
-        let position = bidsList.findIndex(
-          (element) => element.email === user.email
-        );
-        setUserAuctionPosition(++position);
-        setHasUserEnteredAuction(true);
-      }
-    );
+		//Bids change listener
+		const bidsListener = onSnapshot(query(collection(db, "campaigns", campaignId, "bids")), (querySnapshot) => {
+			let bidsList = [];
+			querySnapshot.forEach((doc) => {
+				bidsList.push(doc.data());
+			});
+			bidsList = sortBids(bidsList);
+			setBids(bidsList);
 
-    const commentsListener = onSnapshot(
-      query(collection(db, "campaigns", campaignId, "comments")),
-      (querySnapshot) => {
-        let commentsList = [];
-        querySnapshot.forEach((doc) => {
-          commentsList.push(doc.data());
-        });
-        setComments(commentsList);
-      }
-    );
+			let position = bidsList.findIndex((element) => element.email === user.email);
+			setUserAuctionPosition(++position);
+			setHasUserEnteredAuction(true);
+		});
 
-    const giveawayListener = onSnapshot(
-      query(collection(db, "campaigns", campaignId, "Giveaway")),
-      (querySnapshot) => {
-        let giveawayList = [];
-        querySnapshot.forEach((doc) => {
-          giveawayList.push(doc.data());
-        });
-        setGiveaways(giveawayList);
-      }
-    );
+		const commentsListener = onSnapshot(query(collection(db, "campaigns", campaignId, "comments")), (querySnapshot) => {
+			let commentsList = [];
+			querySnapshot.forEach((doc) => {
+			commentsList.push(doc.data());
+			});
+			setComments(commentsList);
+		});
 
-    // Using giveaways and bids instead of supporters.
-    // const supportersListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "supporters")),(querySnapshot)=>{
-    // 	let supportersList = [];
-    // 	querySnapshot.forEach((doc) => {
-    // 		supportersList.push(doc.data());
-    // 	});
-    // 	setSupporters(supportersList[0].supporters);
-    // })
+		const giveawayListener = onSnapshot(query(collection(db, "campaigns", campaignId, "Giveaway")), (querySnapshot) => {
+			let giveawayList = [];
+			querySnapshot.forEach((doc) => {
+			giveawayList.push(doc.data());
+			});
+			setGiveaways(giveawayList);
+		});
 
-    /* 
+		// Using giveaways and bids instead of supporters.
+		/* const supportersListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "supporters")),(querySnapshot)=>{
+			let supportersList = [];
+			querySnapshot.forEach((doc) => {
+				supportersList.push(doc.data());
+			});
+			setSupporters(supportersList[0].supporters);
+		}) */
+
+    	/* 
 		// replace these with listeners
 		setComments(
 		  await getFirebaseArray(
@@ -154,157 +168,134 @@ function CampaignPage(userData) {
 		    collection(db, "campaigns", campaignId, "supporters")
 		  )
 		); */
-  };
+  	};
 
-  const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(
-      doc(
-        db,
-        "contributionAndGiveawayLossHistory",
-        creator_id,
-        "users",
-        user_id
-      )
-    );
-    if (doc.exists) {
-      const { numOfLoss } = campaignHistoryUsers.data();
-      return parseInt(numOfLoss);
-    }
-    return 0;
-  };
+	const getUserLostHistory = async (creator_id, user_id) => {
+		const campaignHistoryUsers = await getDoc(
+		doc(
+			db,
+			"contributionAndGiveawayLossHistory",
+			creator_id,
+			"users",
+			user_id
+		)
+		);
+		if (doc.exists) {
+		const { numOfLoss } = campaignHistoryUsers.data();
+		return parseInt(numOfLoss);
+		}
+		return 0;
+	};
 
-  const getChanceMultiplier = async (_campaignData) => {
-    let lostHistory = await getUserLostHistory(
-      _campaignData.person.id,
-      user.uid
-    );
-    lostHistory = parseInt(lostHistory);
+	const getChanceMultiplier = async (_campaignData) => {
+		let lostHistory = await getUserLostHistory(
+		_campaignData.person.id,
+		user.uid
+		);
+		lostHistory = parseInt(lostHistory);
 
-    let freeMultiplier = 1;
-    let vipMultiplier = 25;
+		let freeMultiplier = 1;
+		let vipMultiplier = 25;
 
-    if (lostHistory === 1) {
-      freeMultiplier = 2;
-      vipMultiplier = 50;
-    } else if (lostHistory > 1) {
-      freeMultiplier = 4;
-      vipMultiplier = 100;
-    }
-    setVipChanceMultiplier(vipMultiplier);
-    setFreeChanceMultiplier(freeMultiplier);
+		if (lostHistory === 1) {
+		freeMultiplier = 2;
+		vipMultiplier = 50;
+		} else if (lostHistory > 1) {
+		freeMultiplier = 4;
+		vipMultiplier = 100;
+		}
+		setVipChanceMultiplier(vipMultiplier);
+		setFreeChanceMultiplier(freeMultiplier);
 
-    //console.log("Lost history",lostHistory, 'vip chance',vipChanceMultiplier, 'free chance',freeChanceMultiplier);
-    getChanceOfwinning(_campaignData, vipMultiplier, freeMultiplier);
-  };
+		//console.log("Lost history",lostHistory, 'vip chance',vipChanceMultiplier, 'free chance',freeChanceMultiplier);
+		getChanceOfwinning(_campaignData, vipMultiplier, freeMultiplier);
+	};
 
-  const getChanceOfwinning = async (
-    _campaignData,
-    vipMultiplier,
-    freeMultiplier
-  ) => {
-    const docSnap = await getDocs(
-      collection(db, "campaigns", campaignId, "Giveaway")
-    );
-    //console.log("doc snap", docSnap);
+	const getChanceOfwinning = async (
+		_campaignData,
+		vipMultiplier,
+		freeMultiplier
+	) => {
+		const docSnap = await getDocs(
+		collection(db, "campaigns", campaignId, "Giveaway")
+		);
+		//console.log("doc snap", docSnap);
 
-    if (!docSnap.empty) {
-      let TotalPoolEntries = 0;
-      for (let document of docSnap.docs) {
-        let doc = document.data();
-        doc.price = Number(doc.price);
+		if (!docSnap.empty) {
+		let TotalPoolEntries = 0;
+		for (let document of docSnap.docs) {
+			let doc = document.data();
+			doc.price = Number(doc.price);
 
-        let noOfEntries = 1;
-        if (doc.price > 0) noOfEntries = 25;
+			let noOfEntries = 1;
+			if (doc.price > 0) noOfEntries = 25;
 
-        let previousLoss = await getUserLostHistory(
-          _campaignData.person.id,
-          document.id
-        );
-        if (previousLoss === 1) noOfEntries = noOfEntries * 2;
-        else if (previousLoss > 1) noOfEntries = noOfEntries * 4;
+			let previousLoss = await getUserLostHistory(
+			_campaignData.person.id,
+			document.id
+			);
+			if (previousLoss === 1) noOfEntries = noOfEntries * 2;
+			else if (previousLoss > 1) noOfEntries = noOfEntries * 4;
 
-        TotalPoolEntries = TotalPoolEntries + noOfEntries;
-      }
+			TotalPoolEntries = TotalPoolEntries + noOfEntries;
+		}
 
-      if (TotalPoolEntries !== 0) {
-        let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
-        let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
+		if (TotalPoolEntries !== 0) {
+			let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
+			let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
 
-        setWiningChances({ vip: vipChances, free: freeChances });
-      }
-    } else {
-      console.log("No such collection!");
-    }
-  };
+			setWiningChances({ vip: vipChances, free: freeChances });
+		}
+		} else {
+		console.log("No such collection!");
+		}
+	};
 
-  const checkPurchasedEntry = async () => {
-    const docRef = doc(db, "campaigns", campaignId, "Giveaway", user.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (data.entryType === "free") {
-        setHasUserClaimedFreeEntry(true);
-      } else if (data.entryType === "vip") {
-        setHasUserClaimedFreeEntry(true);
-        setHasUserPurchasedVIPEntry(true);
-      }
-      console.log("User Giveaway", data);
-    } else {
-      console.log("No such document!");
-    }
-  };
+	const checkPurchasedEntry = async () => {
+		const docRef = doc(db, "campaigns", campaignId, "Giveaway", user.uid);
+		const docSnap = await getDoc(docRef);
+		if (docSnap.exists()) {
+			const data = docSnap.data();
+			if (data.entryType === "free") {
+				setHasUserClaimedFreeEntry(true);
+			} else if (data.entryType === "vip") {
+				setHasUserClaimedFreeEntry(true);
+				setHasUserPurchasedVIPEntry(true);
+			}
+			console.log("User Giveaway", data);
+		} else {
+			console.log("No such document!");
+		}
+	};
 
-  const bid = async (
-    amount,
-    auto = false,
-    desiredRanking = null,
-    maxBidPrice = null,
-    minBidPrice = null
-  ) => {
-    if(!checkAuthentication()) return;
-    var userSnap = await getDocs(
-      query(collection(db, "users"), where("uid", "==", user.uid))
-    );
-    let user_data = userSnap.docs[0];
+	const bid = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
+		if(!checkAuthentication()) return;
+		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
+		let user_data = userSnap.docs[0];
 
-    await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
-      person: {
-        username: user_data.data().name,
-        id: user_data.id,
-        photoUrl: user.photoURL,
-      },
-      desiredRanking,
-      minBidPrice,
-      maxBidPrice,
-      price: amount,
-      auto: auto,
-      email: user.email,
-      time: serverTimestamp(),
-    });
+		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
+			person: {
+				username: user_data.data().name,
+				id: user_data.id,
+				photoUrl: user.photoURL,
+			},
+			desiredRanking,
+			minBidPrice,
+			maxBidPrice,
+			price: amount,
+			auto: auto,
+			email: user.email,
+			time: serverTimestamp(),
+		});
 
-    const snapshot = await getCountFromServer(
-      collection(db, "campaigns", campaignId, "bids")
-    );
-    const counter = snapshot.data().count;
-    console.log("bids count: ", counter);
+		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
+		const counter = snapshot.data().count;
+		console.log("bids count: ", counter);
 
-    setDoc(
-      doc(db, "campaigns", campaignId),
-      { numAuctionBids: counter },
-      { merge: true }
-    );
-  };
+		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
+	};
 
-  useEffect(() => {
-    //if (loading) return;
-    //if (!user) return navigate("/");
-
-    console.log("User>>", user);
-    getCampaignData();
-    checkPurchasedEntry();
-  }, []);
-
-  /* useEffect(() => {
+  	/* useEffect(() => {
 		// Check if there is a campaignId in params
 		if (params.campaignId) {
 		  // Then, check if the campaign is a draft, 
@@ -388,7 +379,7 @@ function CampaignPage(userData) {
           },
         },
       }}
-    >
+      >
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
         <Header campaignData={campaignData} />
@@ -425,8 +416,9 @@ function CampaignPage(userData) {
             />
           </Box>
 
-          {num_giveaway > 0 ? (
+          {num_giveaway > 0 && campaignId != null ? (
             <Giveaway
+			  campaignId={campaignId}
               isCampaignEnded={isCampaignEnded}
               campaignData={campaignData}
               hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}

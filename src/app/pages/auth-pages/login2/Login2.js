@@ -61,10 +61,7 @@ const Login2 = () => {
                         }}
                     >
                         <Div sx={{mb: 2}}>
-                            <Typography variant={"h3"} color={"inherit"} fontWeight={500} mb={3}>Sign In</Typography>
-                            <Typography variant={"body1"} mb={2}>
-                                By signing in, you can avail full features of the Jumbo.
-                            </Typography>
+                            <Typography variant={"h3"} color={"inherit"} fontWeight={500} mb={3}>Sign in</Typography>
                             <Typography variant={"body1"}>
                                 <Link
                                     href={"#"}
@@ -104,7 +101,7 @@ const Login2 = () => {
                     <Div sx={{mb: 2}}>
                         <FormControlLabel control={<Checkbox/>} label="Remember me"/>
                     </Div>
-                    <Button variant="contained" sx={{mb: 2}}>Sign In</Button>
+                    <Button variant="contained" sx={{mb: 2}}>Sign in</Button>
 
                     <Typography variant={"body1"} mb={2}>Or sign up with</Typography>
                     <Stack direction="row" alignItems="center" spacing={1} mb={1}>
