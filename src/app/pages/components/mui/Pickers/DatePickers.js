@@ -14,7 +14,7 @@ const DatePickers = () => {
         <JumboDemoCard
             title={"Date Pickers"}
             demoCode={code}
-            wrapperSx={{backgroundColor: 'background.color', pt: 0}}
+            wrapperSx={{backgroundColor: '#ffffff', pt: 0}}
         >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Stack spacing={3}>

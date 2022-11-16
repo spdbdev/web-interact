@@ -18,6 +18,7 @@ import { Link,useLocation } from "react-router-dom";
 import Button from "@mui/material/Button";
 import {auth } from "@jumbo/services/auth/firebase/firebase";
 import {useState,useEffect} from 'react'
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 // import { useAuthState } from "react-firebase-hooks/auth";
 
 const Header = () => {
@@ -144,10 +145,32 @@ const Header = () => {
         </>}
         {!isLoggedIn &&
         <Link to="/a/signin" style={{textDecoration: 'none'}}>
-          <Button variant={"contained"}>Sign In</Button></Link>}
+          <Button
+            sx={{
+              ":hover": {
+                 background:
+                  "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+                   color: "white",
+                },
+                background:
+                "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
+                  borderColor: "primary.main",
+                  fontWeight: 500,
+                  fontSize: 15.21,
+                  textTransform: "none",
+                  borderRadius: "3px 11px",
+                  borderWidth: 1,
+                  px: 3,
+                  py: 0.69,
+              }} 
+              //disableElevation
+              variant={"contained"}
+              type="submit"
+          > Sign in
+          </Button> </Link>
+        }
       </Stack>
     </React.Fragment>
   );
 };
-
 export default Header;
