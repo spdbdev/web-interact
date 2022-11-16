@@ -1,4 +1,5 @@
 import moment from "moment";
+import {Country} from 'country-state-city';
 
 export function getDateFromTimestamp({ timestamp, format = "MMM Do, YYYY" }) {
   return moment.unix(timestamp).format(format) ?? "";
@@ -56,4 +57,14 @@ export function isValidHttpUrl(string) {
   } catch (err) {
     return false;
   }
+}
+
+export function getUserCountryName(){
+    const isoCode = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1];
+    const location = Country.getAllCountries().find((country)=>{
+      if(country.isoCode == isoCode){
+        return country;
+      }
+    })
+    return location?.name;
 }

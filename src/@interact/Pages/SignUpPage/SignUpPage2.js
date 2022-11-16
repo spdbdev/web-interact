@@ -1,4 +1,4 @@
-import { TextField, Button, FormControlLabel, Checkbox,Alert, Icon } from "@mui/material";
+import { TextField, Button, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -11,6 +11,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useNavigate,useLocation } from "react-router-dom";
 import { auth, registerWithEmailAndPassword, signInWithGoogle } from "@jumbo/services/auth/firebase/firebase";
 import PasswordChecklist from "react-password-checklist";
+import {Country} from 'country-state-city';
 
 import fb_logo from "./facebook.png";
 import gl_logo from "./google.png";
@@ -29,6 +30,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import "./SignUpPage.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { useRef } from "react";
+import { getUserCountryName } from "@interact/Components/utils";
 
 // newer SignUpPage with birthday.
 function SignUpPage2() {
@@ -39,6 +41,7 @@ function SignUpPage2() {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [isPassValid,setIsPassValid] = useState(false);
+  const [country,setCountry] = useState("");
   const [name, setName] = useState("");
   const [nameError,setNameError] = useState("");
   const [user, loading, error] = useAuthState(auth);
@@ -80,7 +83,7 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name, email, password,imageUrl)){
+    if(registerWithEmailAndPassword(name, email, password,imageUrl,country)){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);
@@ -156,6 +159,15 @@ function SignUpPage2() {
     setImage(profile_images[Math.floor(Math.random() * profile_images.length)]);
     setImageUrl(profile_images[Math.floor(Math.random() * profile_images.length)]);
   }
+
+  useEffect(()=>{
+    const countryName = getUserCountryName();
+    if(countryName){
+      setCountry(countryName);
+    }else{
+      setCountry(Country.getAllCountries()[0].name);
+    }
+  },[])
 
   useEffect(() => {
     setRandomImage();
@@ -265,6 +277,20 @@ function SignUpPage2() {
               renderInput={(params) => <TextField {...params} error={birthdayError} helperText={birthdayErrorMessage} />}
             />
           </LocalizationProvider>
+        </div>
+        <div className="TextInputWrapper">
+          <InputLabel id="country-label">Country</InputLabel>
+          <Select
+            labelId="country-label"
+            id="country-select"
+            value={country}
+            label="Country"
+            onChange={(e)=>setCountry(e.target.value)}
+          >
+            {Country.getAllCountries().map((country)=>{
+              return <MenuItem value={country.name}>{country.name}</MenuItem>
+            })}
+          </Select>
         </div>
         {/* <FormControlLabel control={<Checkbox />} label={"I agree to all " + <a href='https://eforms.com/release/media/'>terms and services</a>} /> */}
         <div

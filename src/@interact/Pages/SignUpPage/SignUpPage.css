@@ -80,9 +80,10 @@
     position: absolute;
     bottom: 15px;
     right: 15px;
-    border: 1px solid red;
+    border: 1px solid black;
     border-radius: 50%;
     padding: 1px;
-    color: red;
+    color: black;
+    background-color: #fff;
     cursor: pointer;
 }

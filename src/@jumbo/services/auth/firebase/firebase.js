@@ -74,7 +74,7 @@ const loginWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password, imageurl) => {
+const registerWithEmailAndPassword = async (name, email, password, imageurl,country) => {
   try {
     const formData = new FormData();
     formData.append("email", email);
@@ -91,6 +91,7 @@ const registerWithEmailAndPassword = async (name, email, password, imageurl) => 
           authProvider: "local",
           email,
           customerId: resp.data.customer.id,
+          country,
         });
       })
       .catch((err) => {
