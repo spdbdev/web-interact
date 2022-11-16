@@ -28,6 +28,7 @@ import {
   addDoc,
   updateDoc
 } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { DUMMY_CAMPAIGN } from "./config";
 
 // Your web app's Firebase configuration
@@ -48,7 +49,7 @@ const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const functions = getFunctions(app);
-console.log(functions);
+const Storage = getStorage(app);
 
 // enable when testing local functions:
 // connectFunctionsEmulator(functions, "localhost", 5001);
@@ -307,6 +308,7 @@ export {
   auth,
   db,
   functions,
+  Storage,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,

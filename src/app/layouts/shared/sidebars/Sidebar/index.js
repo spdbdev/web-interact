@@ -45,7 +45,7 @@ const Sidebar = () => {
   const [followingList, setFollowingList] = useState([]);
 
   useEffect(async () => {
-    if(user?.following?.length === 0) {
+    if(user === undefined || user?.following?.length === 0) {
       setFollowingList([]);
     }else {
       try {
@@ -146,7 +146,7 @@ const SidebarHeader = () => {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ ml: 0, mr: -1.5 }}
-                onClick={() => setSidebarOptions({ open: false })}
+                onClick={() => setSidebarOptions({ open: !sidebarOptions.open })}
               >
                 <MenuOpenIcon />
               </IconButton>

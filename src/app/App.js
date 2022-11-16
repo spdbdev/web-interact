@@ -20,9 +20,18 @@ import {CircularProgress} from "@mui/material";
 import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements } from '@stripe/react-stripe-js';
 import CaptureAuction from '@interact/Pages/CampaignPage/CaptureAuction';
+import { clearStorage } from "./utils/storage";
+import { DISCORD_LOCALSTORAGE_KEYS } from "./services/discord";
 const stripePromise = loadStripe('pk_test_51LJU6pIRYjPm2gCpQ07Vg68jRq7XfRVpVLSygsbAR4r42iZCN3hWueDFUxeOXxHBiUg3tUp9ciZE4mfQjsFpIxEN00g6y5PWRS');
 
-localStorage.clear();
+
+
+clearStorage(
+    // Clear everything except...
+    ...Object.values(
+        DISCORD_LOCALSTORAGE_KEYS
+    )
+);
 
 
 const queryClient = new QueryClient({
@@ -65,10 +74,10 @@ function App() {
                                                                 alignContent: 'center',
                                                                 height: '100%',
                                                             }}
-                                                        >
+                                                    >
                                                             <CircularProgress sx={{m: '-40px auto 0'}}/>
                                                         </Div>
-                                                    }
+                                                    } 
                                                 >
                                                     <AppRoutes/>
                                                 </Suspense>
