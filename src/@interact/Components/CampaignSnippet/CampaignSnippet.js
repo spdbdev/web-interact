@@ -37,7 +37,7 @@ export default function CampaignSnippet(props) {
             fontSize: 12,
           }}
           icon={<Icon icon="iconoir:warning-circled-outline" />}
-          label="Limited Interactions"
+          label="Limited interactions"
         />
       </Box>
       <Box sx={{ px: 1 }}>

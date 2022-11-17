@@ -143,7 +143,7 @@ function UserProfilePage() {
         >
           <div className="image_item">
             <form className="image_item-form">
-              <label className="image_item-form--lable"> Add Image</label>
+              <label className="image_item-form--lable"> Replace image</label>
               <input
                 className="image-item-form-input"
                 type="file"
