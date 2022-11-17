@@ -223,18 +223,14 @@ export default function WhatIsInteractPage() {
                   <Typography variant="h2">What Is Interact?</Typography>
                 </Stack>
                 <Typography variant="h5" sx={{ pt: 2, mb: 0 }}>
-                  💜 Interact helps you bring joy to your most loyal fans who have
-                  grown with you not only as a creator, but as a human being. We
-                  minimize logistical hassle and make it worth your time (while
-                  creating content/streaming, making an additional $100+ an hour
-                  with only 1000 devoted fans). <br></br> 💜 This is{" "}
-                  <strong style={{ fontWeight: 600 }}>
-                    extra income at no opportunity
-                  </strong>{" "}
-                  cost since you get fresh content for your stream (your streaming
-                  scheduling can stay the same, no additional hours needed) and/or
-                  you can make use of highlights from interactions to spice up new
-                  videos.
+                <strong style={{ fontWeight: 600 }}>
+                    Extra income at no opportunity cost.
+                  </strong>{" "} We minimize logistical hassle and make it worth your time to bring joy to your loyal fans.
+                  💜 Raise $5k to $7k in a 10 day campaign
+                  with 1000 fans, in exchange for ~50 hours of interactions: getting fresh content for your stream &
+                  make use of highlights from interactions to spice up your new
+                  videos. Campaigns reserve interactions for 2 months usually (a few hours of getting to know fans 
+                  each week), so 5 campaigns = 10 months of interactions, 💜 generating $25K to $35K annually. {" "}
                 </Typography>
               </Stack>
               <Stack sx={{ width: { xs: '100%', sm: '55%' } }}>
