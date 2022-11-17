@@ -21,16 +21,16 @@ import Error404 from "app/pages/extra-pages/Error404";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 
-import AuthGuard from "@jumbo/services/auth/AuthGuard";
+//import AuthGuard from "@jumbo/services/auth/AuthGuard";
 import ForgotPassword from "app/pages/auth-pages/forgot-password";
 
 const interactV1Routes = [
   {
     path: "*",
-    element: <Navigate to="/a/400"/>,
+    element: <Navigate to="/a/404"/>,
   },
   {
-    path: "/a/400",
+    path: "/a/404",
     element: <Error404/>
   },
   {
@@ -70,18 +70,8 @@ const interactV1Routes = [
     ),
   },
   {
-    path: "/interact/userold",
-    //element: <CrmDashboard/>,
-    element: <UserProfilePage />,
-  },
-  {
     path: "/c/:campaignId",
     element: <CampaignPage />,
-  },
-
-  {
-    path: "/a/settings",
-    element: <Settings/>,
   },
   {
     path: "/c/",
@@ -91,10 +81,6 @@ const interactV1Routes = [
   {
     path: "/d/:campaignId",
     element: <Page component={CreateCampaignPage} layout="solo-page" />,
-  },
-  {
-    path: "/interact/capture",
-    element: <CaptureAuction />,
   },
   {
     path: "/a/create-campaign",
@@ -127,12 +113,6 @@ const interactV1Routes = [
     ),
   },
   {
-    path: "/a/settings",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
     path: "/a/receipts-and-paystubs",
     element: (
       <Page component={<></>} layout="solo-page" />
@@ -140,18 +120,6 @@ const interactV1Routes = [
   },
   {
     path: "/a/campaigncreatorfaq",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/privacy-policy",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/terms-and-conditions",
     element: (
       <Page component={<></>} layout="solo-page" />
     ),

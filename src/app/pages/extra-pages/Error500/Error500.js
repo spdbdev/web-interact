@@ -1,10 +1,10 @@
 import React from 'react';
 import Div from "@jumbo/shared/Div";
 import {Typography} from "@mui/material";
-import Button from "@mui/material/Button";
 import {useJumboApp} from "@jumbo/hooks";
 import {LAYOUT_NAMES} from "../../../layouts/layouts";
 import { useNavigate } from 'react-router-dom';
+import InteractFlashyButton from '@interact/Components/Button/InteractFlashyButton';
 
 const Error500 = () => {
     const {setActiveLayout} = useJumboApp();
@@ -34,8 +34,10 @@ const Error500 = () => {
                 variant={"h1"}
                 color={"text.secondary"}
                 mb={4}
-            >Sorry, server goes wrong </Typography>
-            <Button variant="contained" onClick={()=>navigate('/')}>Go to home</Button>
+            >Sorry, the server has crashed <br></br> 
+            <br></br>
+            (┬┬﹏┬┬)</Typography>
+            <InteractFlashyButton variant="contained" onClick={()=>navigate('/')}>Go to home</InteractFlashyButton>
         </Div>
     );
 };
