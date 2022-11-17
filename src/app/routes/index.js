@@ -19,10 +19,6 @@ import oAuthRoutes from "./oAuthRoutes";
 
 const routes = [
   {
-    path: "/",
-    element: <Navigate to={"/a/signin"} />,
-  },
-  {
     path: "/signin",
     element: <Navigate to={"/a/signin"} />,
   },

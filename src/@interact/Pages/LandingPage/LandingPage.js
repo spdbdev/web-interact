@@ -1,20 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Stack,
-  Box,
-  Grid,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
 import { styled } from "@mui/system";
-import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import ArrowDropUpRoundedIcon from '@mui/icons-material/ArrowDropUpRounded';
+import { Stack, Box, Grid, Typography, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import './LandingPage.css'
+import './LandingPage.css';
 
 const GradientRoundedBox = styled(Box)`
   width: 100%;
@@ -24,13 +16,11 @@ const GradientRoundedBox = styled(Box)`
   overflow: hidden;
 `;
 
-const HeartBox = styled(GradientRoundedBox)`
-  width: 100%;
+const VideoContainer = styled(GradientRoundedBox)`
   margin-left: auto;
   margin-right: auto;
   position: relative;
   padding-bottom: 56.25%;
-  overflow: hidden;
   iframe {
     position: absolute;
     top: 0;
@@ -45,7 +35,7 @@ const Image = styled('img')`
   width: 100%;
   object-fit: cover;
   height: 100%;
-`
+`;
 
 const Card = styled(GradientRoundedBox)`
   cursor: pointer;
@@ -55,8 +45,8 @@ const Card = styled(GradientRoundedBox)`
   &:before {
     content: "";
     background: ${props => props.reverse
-      ? 'linear-gradient(130deg, transparent 0% 33%, #DD00FF 66%, #782FEE 83.5%, #DD00FF 100%)'
-      : 'linear-gradient(130deg, transparent 0% 33%, #782FEE 66%, #DD00FF 83.5%, #782FEE 100%)'};
+    ? 'linear-gradient(130deg, transparent 0% 33%, #DD00FF 66%, #782FEE 83.5%, #DD00FF 100%)'
+    : 'linear-gradient(130deg, transparent 0% 33%, #782FEE 66%, #DD00FF 83.5%, #782FEE 100%)'};
     background-position: 0% 0%;
     transition: background-position 350ms ease;
     background-size: 300% 300%;
@@ -76,13 +66,20 @@ const Card = styled(GradientRoundedBox)`
     color: white;
     -webkit-text-fill-color: white;
   }
-  .card-content {
+  &:hover .landing-subtitle {
+    visibility: visible;
+    opacity: 1;
+  }
+  &:hover .landing-gray-heart {
+    opacity: 1;
+  }
+  & > div {
     position: relative;
     z-index: 2;
     width: 100%;
     height: 100%;
   }
-`
+`;
 
 const blockList = [
   {
@@ -105,7 +102,7 @@ const blockList = [
   },
   {
     id: 3,
-    title: 'Hands-off flexible automated scheduling',
+    title: 'Hands off, flexible scheduling',
     description: `Input the times you want to interact week-by-week 
                   we’ll handle the rest via our matching algo (including 2-way sync with Google, 
                   Outlook & iCloud calendars to seamlessly mesh with your availability).`,
@@ -119,7 +116,7 @@ const FeatureCard = ({ data }) => {
     <Grid item xs={12} sm={6} md={4} data-aos={data?.aos}>
       <GradientRoundedBox sx={{ alignItems: "center", p: 4, height: '100%' }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '230px' }}>
-          <img src={data?.icon} alt='' style={{ width: 'auto' }} />
+          <img src={data?.icon} alt='' />
         </Box>
         <Typography
           sx={{
@@ -127,7 +124,8 @@ const FeatureCard = ({ data }) => {
             fontWeight: 600,
             color: "#4D4657",
             textAlign: "center",
-            lineHeight: '110%'
+            lineHeight: '110%',
+            minHeight: '62px'
           }}
         >
           {data.title}
@@ -149,21 +147,19 @@ const FeatureCard = ({ data }) => {
   )
 };
 
-const AnimateCard = (props) => {
-  const { radius, padding, children, reverse } = props;
-
+const AnimateCard = ({ radius, padding, children, reverse }) => {
   return (
     <Card
       radius={radius ?? '0px'}
-      sx={{ padding: padding ?? '10px' }}
+      sx={{ padding: padding ?? '10px',  }}
       reverse={reverse}
     >
-      <Box className="card-content">
+      <Box>
         {children}
       </Box>
     </Card>
   )
-}
+};
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -178,7 +174,7 @@ const LandingPage = () => {
         <Stack width={"100%"} sx={{ mt: 15 }}>
           <Grid container spacing={8}>
             <Grid item xs={12} sm={4} md={4}>
-              <AnimateCard padding='72px' radius='0px 27px' data-aos="fade-up">
+              <AnimateCard padding='65px' radius='5px 27px' data-aos="fade-up">
                 <Box
                   sx={{
                     display: 'flex',
@@ -220,17 +216,69 @@ const LandingPage = () => {
                     >
                       your fans with 1-on-1 interactions
                     </Typography>
-                    <Typography
-                      className="landing-gradient-text landing-subtitle"
-                      sx={{
-                        fontSize: '27px',
-                        fontWeight: 600,
-                        mt: 2,
-                        lineHeight: '120.52%'
-                      }}
-                    >
-                      & substantially boost your income
-                    </Typography>
+                    <Box sx={{ mt: 2 }} className='landing-subtitle'>
+                      <Typography
+                        className="landing-gradient-text"
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        & substantially
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          color: '#FF5C00',
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        {" "}boost{" "}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        your income via 5 to 20 day
+                        auction
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          color: '#FF5C00',
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        +
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        giveaway campaigns
+                      </Typography>
+                    </Box>
                   </Typography>
                   <Box>
                     <img src='images/icons/logo.png' alt='' />
@@ -239,7 +287,7 @@ const LandingPage = () => {
               </AnimateCard>
             </Grid>
             <Grid item xs={12} sm={8} md={8}>
-              <GradientRoundedBox sx={{ display: 'flex' }} radius='0px 27px'>
+              <GradientRoundedBox sx={{ display: 'flex' }} radius='5px 27px'>
                 <Image src='images/pages/landing/delight.jpg' alt='' />
               </GradientRoundedBox>
             </Grid>
@@ -251,7 +299,7 @@ const LandingPage = () => {
               <Image src='images/pages/landing/reward-left.jpg' alt='' />
             </Grid>
             <Grid item xs={12} sm={8} md={4}>
-              <AnimateCard padding='72px' radius='0px' reverse="true">
+              <AnimateCard padding='65px' radius='0px' reverse="true">
                 <Box
                   sx={{
                     height: '100%',
@@ -281,7 +329,7 @@ const LandingPage = () => {
                         lineHeight: '120.52%'
                       }}
                     >
-                      Reward your fans with what they want
+                      Let your fans be
                     </Typography>
                     <Typography
                       variant="body1"
@@ -293,22 +341,60 @@ const LandingPage = () => {
                         lineHeight: '120.52%'
                       }}
                     >
-                      &nbsp;most
+                      {" "}recognized
                     </Typography>
-                    <Typography
-                      className="landing-gradient-text landing-subtitle"
-                      sx={{
-                        fontSize: '27px',
-                        fontWeight: 600,
-                        mt: 2,
-                        lineHeight: '120.52%'
-                      }}
-                    >
-                      to have 2-way interactions & be recognized after spending countless hours watching you
-                    </Typography>
+                    <Box sx={{ mt: 2 }} className='landing-subtitle'>
+                      <Typography
+                        className="landing-gradient-text"
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        after spending countless hours watching you; they’ve
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          color: '#FF5C00',
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        &nbsp;grown with you&nbsp;
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        not only as a creator, but
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: '27px',
+                          fontWeight: 600,
+                          color: '#FF5C00',
+                          lineHeight: '120.52%'
+                        }}
+                      >
+                        &nbsp;as a person
+                      </Typography>
+                    </Box>
                   </Typography>
-                  <Box sx={{ width: '80px' }}>
-                    <Image src='images/pages/landing/heart-round.png' alt='' />
+                  <Box sx={{ width: '80px', position: 'relative' }}>
+                    <img src='images/pages/landing/heart-round.png' alt='' className='landing-heart' />
+                    <img src='images/pages/landing/gray-heart-round.png' alt='' className='landing-gray-heart' />
                   </Box>
                 </Box>
               </AnimateCard>
@@ -322,14 +408,21 @@ const LandingPage = () => {
         <Stack width={"100%"} sx={{ mt: 15 }}>
           <Grid container spacing={8} data-aos="fade-right">
             <Grid item xs={12} sm={8} md={8}>
-              <GradientRoundedBox sx={{ display: 'flex' }} radius='0px 27px'>
+              <GradientRoundedBox sx={{ display: 'flex' }} radius='5px 27px'>
                 <Image src='images/pages/landing/loyal-fans.jpg' alt='' />
               </GradientRoundedBox>
             </Grid>
             <Grid item xs={12} sm={4} md={4} data-aos="fade-down">
-              <AnimateCard padding='72px' radius='0px 27px'>
+              <AnimateCard padding='65px' radius='27px 5px'>
                 <Box
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end' }}
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    pl: '3px'
+                  }}
                 >
                   <Box
                     sx={{
@@ -340,6 +433,18 @@ const LandingPage = () => {
                     <Typography
                       variant="body1"
                       component='span'
+                      sx={{
+                        fontSize: '37px',
+                        fontWeight: 800,
+                        color: '#FF5C00',
+                        lineHeight: '120.52%'
+                      }}
+                    >
+                      Your{" "}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component='span'
                       className="landing-gradient-text"
                       sx={{
                         fontSize: '37px',
@@ -347,7 +452,31 @@ const LandingPage = () => {
                         lineHeight: '120.52%',
                       }}
                     >
-                      On top of bringing joy to your most loyal fans
+                      hours,{" "}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component='span'
+                      sx={{
+                        fontSize: '37px',
+                        fontWeight: 800,
+                        color: '#FF5C00',
+                        lineHeight: '120.52%'
+                      }}
+                    >
+                      your{" "}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component='span'
+                      className="landing-gradient-text"
+                      sx={{
+                        fontSize: '37px',
+                        fontWeight: 800,
+                        lineHeight: '120.52%',
+                      }}
+                    >
+                      schedule: choose your availability 
                     </Typography>
                     <Box sx={{ mt: 2 }} className='landing-subtitle'>
                       <Typography
@@ -360,43 +489,8 @@ const LandingPage = () => {
                           lineHeight: '120.52%',
                         }}
                       >
-                        who have&nbsp;
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '27px',
-                          fontWeight: 600,
-                          lineHeight: '120.52%',
-                          color: '#FF5C00'
-                        }}
-                      >
-                        grown with you&nbsp;
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '27px',
-                          fontWeight: 600,
-                          lineHeight: '120.52%',
-                        }}
-                      >
-                        not only as a creator, but&nbsp;
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '27px',
-                          fontWeight: 600,
-                          lineHeight: '120.52%',
-                          color: '#FF5C00'
-                        }}
-                      >
-                        as a person
+                        week-by-week, and we’ll match you with available fans who have won in the
+                        campaign; over 1 or 2 months, get to know your fans for a few hours every week
                       </Typography>
                     </Box>
                   </Box>
@@ -405,22 +499,23 @@ const LandingPage = () => {
                   </Box>
                 </Box>
               </AnimateCard>
-
             </Grid>
           </Grid>
         </Stack>
-
         <Box sx={{ width: '80%' }}>
-          <HeartBox mt={23} mb={13}>
+          <VideoContainer mt={23} mb={13}>
             <iframe
               title='youtube'
               src='https://www.youtube.com/embed/L0AykH20X3Q?playlist=L0AykH20X3Q&loop=1'
             />
-          </HeartBox>
+          </VideoContainer>
         </Box>
-
         <Stack direction="column" alignItems="center" mb={13}>
-          <InteractFlashyButton radius='5px 23px' onClick={() => navigate('/a/what-is-interact')} aos="fade-up">
+          <InteractFlashyButton
+            radius='5px 23px'
+            onClick={() => navigate('/a/what-is-interact')}
+            aos="fade-up"
+          >
             <Typography sx={{ fontSize: "32px", px: 6, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
               Start a campaign
             </Typography>
@@ -449,7 +544,7 @@ const LandingPage = () => {
               >
                 Together, you can:
                 <Box
-                  style={{ borderLeft: "5px solid #782FEE" }}
+                  className='landing-game-border'
                   sx={{ pl: 5, mt: 5 }}
                 >
                   <Box data-aos="fade-right" data-aos-duration="1000">
@@ -457,10 +552,9 @@ const LandingPage = () => {
                       fontSize={"26px"}
                       color={"#70677E"}
                       fontWeight={"400"}
+                      sx={{ '& > :not(.MuiTypography-body1)': { fontWeight: 700, color: "#782FEE" } }}
                     >
-                      <span style={{ fontWeight: "700", color: "#782FEE" }}>
-                        Play games:{" "}
-                      </span>
+                      <span>Play games:{" "}</span>
                       <Typography
                         variant="body1"
                         component="span"
@@ -476,10 +570,9 @@ const LandingPage = () => {
                       fontSize={"26px"}
                       color={"#70677E"}
                       fontWeight={"400"}
+                      sx={{ '& > span': { fontWeight: 700, color: "#782FEE" } }}
                     >
-                      <span style={{ fontWeight: "700", color: "#782FEE" }}>
-                        Have interesting discussions:{" "}
-                      </span>
+                      <span>Have interesting discussions:{" "}</span>
                       Discussing topics fans are passionate about, commentating, and
                       learning from each other (fans can screen share: they might
                       show off their own creations, favorite clips of your content
@@ -515,7 +608,7 @@ const LandingPage = () => {
                 src='images/pages/landing/together.png'
                 alt=''
                 loading="lazy"
-                style={{ width: '100%' }}
+                className='landing-w-100'
                 data-aos="fade-left"
                 data-aos-duration="1000"
               />
@@ -525,11 +618,12 @@ const LandingPage = () => {
 
         <Stack width={"100%"} sx={{ mt: 15 }}>
           <Accordion
-            style={{
-              borderRadius: "45px",
-              boxShadow: "0px 0px 27px 7px rgba(120, 47, 238, 0.15)",
+            className='landing-accordion'
+            sx={{
+              px: 6,
+              py: 4,
+              boxShadow: "0px 0px 27px 7px rgba(120, 47, 238, 0.15)"
             }}
-            sx={{ px: 6, py: 4 }}
           >
             <AccordionSummary
               aria-controls="panel1a-content"
@@ -554,28 +648,25 @@ const LandingPage = () => {
                         or Google Meet</span>) that are <span>scheduled in the 10 weeks (by
                           default) after the campaign ends.</span>
                   </Typography>
-
                   <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;Fans try to be selected via the <span>giveaway </span>(with a
                     <span> free entry option</span>) or the <span>auction </span>(be a top bidder on the
-                    leaderboard; pricier but a guaranteed interaction).  Fans pay immediately for the giveaway; meanwhile in the auction, fans only pay if they win (charged at the end of the campaign).
+                    leaderboard; pricier but a guaranteed interaction).  Fans pay immediately for the giveaway;
+                    meanwhile in the auction, fans only pay if they win (charged at the end of the campaign).
                   </Typography>
                 </Box>
-
                 <Box sx={{ flex: 1 }}>
                   <Typography fontSize={"21px"}>
                     💜&nbsp;When new fans try to enter the auction/giveaway,
                     they have to create an account & input their general
                     availability from Mon-Sun (editable on profile).
                   </Typography>
-
                   <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;After the campaign ends,<span> selected fans (winners)
                       will have interactions assigned to them over the
                       interaction window duration, </span>10 weeks by default
                     (with auction winners having priority).
                   </Typography>
-
                   <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;The content creator<span> selects when they are available
                       week-by-week </span>(creators have to lock in their availability by
@@ -591,7 +682,11 @@ const LandingPage = () => {
 
         <GradientRoundedBox sx={{ mt: 10, display: 'flex', overflow: 'hidden' }}>
           <Box>
-            <img src='images/pages/landing/interact.jpg' alt='' style={{ height: '100%' }} />
+            <img
+              src='images/pages/landing/interact.jpg'
+              alt=''
+              className='landing-h-100'
+            />
           </Box>
           <Box sx={{ p: 8, flex: 1 }}>
             <Typography fontSize={"36px"} color={"#782FEE"} fontWeight={"700"} >
@@ -603,9 +698,9 @@ const LandingPage = () => {
               fontWeight={"400"}
               color={"#4D4657"}
               data-aos="fade-down"
+              sx={{ '& > span': { fontWeight: 600 } }}
             >
-              Earn{" "}
-              <span style={{ fontWeight: 600 }}>$5K to $7K per campaign</span>{" "}
+              Earn<span> $5K to $7K per campaign </span>
               with around 1000 loyal fans who spend only a few dollars.
             </Typography>
             <Typography
@@ -614,10 +709,11 @@ const LandingPage = () => {
               color={"#70677E"}
               fontWeight={"400"}
               data-aos="fade-down"
+              sx={{ '& > span': { fontWeight: 500 } }}
             >
               Campaigns reserve interactions for 2 months usually, so 5 campaigns
-              equals approx. 10 months of interactions which generates{" "}
-              <span style={{ fontWeight: 500 }}>$25K to $35K</span> in annual
+              equals approx. 10 months of interactions which generates
+              <span> $25K to $35K</span> in annual
               revenue.
             </Typography>
             <Typography
@@ -626,16 +722,17 @@ const LandingPage = () => {
               fontWeight={"500"}
               color={"#4D4657"}
               data-aos="fade-up-left"
+              sx={{ '& > span': { textDecoration: "underline", fontWeight: 700 } }}
             >
-              <span style={{ textDecoration: "underline", fontWeight: "700" }}>
-                Extra income
-              </span>{" "}
-              with{" "}
-              <span style={{ textDecoration: "underline", fontWeight: "700" }}>
-                no opportunity cost
-              </span>
+              <span>Extra income </span>with
+              <span> no opportunity cost</span>
             </Typography>
-            <Typography mt={1} fontSize={"24px"} color={"#70677E"} >
+            <Typography
+              mt={1} 
+              fontSize={"24px"} 
+              color={"#70677E"}
+              data-aos="fade-down"
+            >
               You’ll get fresh content for your stream, and your streaming
               schedule can stay the same with no additional hours needed. You can
               even make use of highlights from interactions to spice up new
@@ -650,7 +747,6 @@ const LandingPage = () => {
               Create a campaign now!
             </Typography>
           </InteractFlashyButton>
-
           <Typography sx={{ my: 5, fontSize: "28px", textAlign: "center", color: '#A79BBB' }}>
             Get started for free, create a campaign in under half an hour
           </Typography>

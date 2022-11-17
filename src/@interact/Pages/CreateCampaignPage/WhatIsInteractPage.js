@@ -216,12 +216,28 @@ export default function WhatIsInteractPage() {
         </Box>
         <Stack direction="column" alignItems="center" width={"100%"}>
           <Stack spacing={1} mb={10} sx={{ maxWidth: 1000 }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
-              <Stack direction="column" alignItems="center" spacing={2} sx={{ width: { sm: '33%' } }}>
-                <img src={InteractLogo} alt="" width={50} />
-                <Typography variant="h2">What Is Interact?</Typography>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems="center" sx={{ mb: 5 }}>
+              <Stack sx={{ width: { sm: '45%' } }}>
+                <Stack direction="column" alignItems="center" spacing={2}>
+                  <img src={InteractLogo} alt="" width={50} />
+                  <Typography variant="h2">What Is Interact?</Typography>
+                </Stack>
+                <Typography variant="h5" sx={{ pt: 2, mb: 0 }}>
+                  💜 Interact helps you bring joy to your most loyal fans who have
+                  grown with you not only as a creator, but as a human being. We
+                  minimize logistical hassle and make it worth your time (while
+                  creating content/streaming, making an additional $100+ an hour
+                  with only 1000 devoted fans). <br></br> 💜 This is{" "}
+                  <strong style={{ fontWeight: 600 }}>
+                    extra income at no opportunity
+                  </strong>{" "}
+                  cost since you get fresh content for your stream (your streaming
+                  scheduling can stay the same, no additional hours needed) and/or
+                  you can make use of highlights from interactions to spice up new
+                  videos.
+                </Typography>
               </Stack>
-              <Stack sx={{ width: { xs: '100%', sm: '66%' } }}>
+              <Stack sx={{ width: { xs: '100%', sm: '55%' } }}>
                 <VideoWrapper>
                   <iframe
                     title='youtube'
@@ -230,20 +246,6 @@ export default function WhatIsInteractPage() {
                 </VideoWrapper>
               </Stack>
             </Stack>
-            <Typography variant="h5" sx={{ py: 4 }}>
-              💜 Interact helps you bring joy to your most loyal fans who have
-              grown with you not only as a creator, but as a human being. We
-              minimize logistical hassle and make it worth your time (while
-              creating content/streaming, making an additional $100+ an hour
-              with only 1000 devoted fans). <br></br> 💜 This is{" "}
-              <strong style={{ fontWeight: 600 }}>
-                extra income at no opportunity
-              </strong>{" "}
-              cost since you get fresh content for your stream (your streaming
-              scheduling can stay the same, no additional hours needed) and/or
-              you can make use of highlights from interactions to spice up new
-              videos.
-            </Typography>
             {WhatIsInteractFAQs?.map((item, key) => (
               <SpecialAccordion
                 key={key}
