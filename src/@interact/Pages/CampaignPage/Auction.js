@@ -8,9 +8,7 @@ import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { formatMoney, getDateFromTimestamp } from "@interact/Components/utils";
-
 import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
-
 import "./CampaignPage.css";
 import {Button, Divider, OutlinedInput, InputAdornment, useScrollTrigger, Tooltip, InputLabel, FormControl, 
   Container, Typography, Box, Stack, Select, MenuItem} from "@mui/material";
@@ -23,7 +21,8 @@ import supported_transfer_countries from "./countrylist";
 import ConfirmPopup from "./ConfirmPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from '@mui/material/IconButton';
-
+import { fetchUserByName, followUser } from '../../../firebase';
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 const style = {
   position: "absolute",
@@ -55,29 +54,25 @@ const manualbid = [
 
 const belowAutobidTitle = "The bid will place you Xth on the leaderboard (if others do not bid higher)";
 
-
-
-
-
-export default function Auction({isCampaignEnded, bids, campaignData, bidAction }) {
-
+export default function Auction({isCampaignEnded, bids, campaignData, bidAction}) {
+	
+	const navigate = useNavigate();
 	const [bidAmount, setBidAmount] = useState(0);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
 	const [maxBidAmount, setMaxBidAmount] = useState(0);
 	const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
 	const [desiredRanking, setDesiredRanking] = useState(1);
-
-  const [user, loading, error] = useAuthState(auth);
-  const [currentUser,setCurrentUser] = useState(null);
-  const navigate = useNavigate();
-  const stripe = useStripe();
-  const [open, setOpen] = useState(false);
-  const elements = useElements();
-  const card = useRef();
-  const [openPopup, setOpenPopup] = useState(false);
-  const [openPopup1, setOpenPopup1] = useState(false);
-  const [selectPopUp, setselectPopUp] = useState(1);
+	
+  const { user } = useCurrentUser();
+	const [currentUser,setCurrentUser] = useState(null);
+	const stripe = useStripe();
+	const [open, setOpen] = useState(false);
+	const elements = useElements();
+	const card = useRef();
+	const [openPopup, setOpenPopup] = useState(false);
+	const [openPopup1, setOpenPopup1] = useState(false);
+	const [selectPopUp, setselectPopUp] = useState(1);
 
 
 	useEffect(() => {
@@ -164,6 +159,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 		: setDesiredRanking(e.target.value);
 		handleMaxBidAmount(e.target.value);
 	}
+
 
 	useEffect(()=>{
 		handleMaxBidAmount(desiredRanking);
@@ -305,7 +301,6 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
     }
   };
 
-
   const fetchUserName = async () => {
     try {
       const q = query(collection(db, "users"), where("uid", "==", user?.uid));
@@ -316,7 +311,6 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
       setCurrentUser(data);
     } catch (err) {
       console.error(err);
-      alert("An error occured while fetching user data");
     }
   };
   const resturnOption = () => {
@@ -381,26 +375,33 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
   };
 
   useEffect(() => {
-    if (loading) return;
     fetchUserName();    
   }, [user]);
-
-
-
-
-
-
 
 	function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
 	const options = [];
 	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
 		options.push(<MenuItem value={i} key={i}>{i}{nth(i)}</MenuItem>);
 	}
-
+	const followCampaign = async () => {
+    const targetUser = await fetchUserByName(campaignData?.person?.username);
+		if(user === undefined) {
+            console.log("You need to sign in to follow user");
+            navigate("/a/signin");
+            return;
+        }
+        if(!targetUser?.followers?.includes(user?.id)) {
+            followUser(user, targetUser);
+        }
+  }
+	const handleBidClick = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
+		followCampaign();
+		bidAction(amount, auto, desiredRanking, maxBidPrice, minBidPrice);
+	}
 	return (
     <>
       <ConfirmPopup
-        openstate={openPopup}
+        openstate={openPopup} 
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
@@ -549,7 +550,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           />
           </FormControl>
 
-          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}>
+          <InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(autoBidAmount,true,desiredRanking,maxBidAmount)}>
           Place auto-bid
           </InteractButton>
         </Stack>
@@ -605,7 +606,8 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           </Typography>
           </Stack>
 
-          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
+          {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
+          <InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(bidAmount,false,null,null,minBidAmount)}>
           Place bid
           </InteractButton>
         </Stack>

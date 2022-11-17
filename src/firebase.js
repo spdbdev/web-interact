@@ -145,6 +145,32 @@ export async function fetchUserByUid(uid) {
   return { ...data, id }
 }
 
+export async function fetchUserByName(name) {
+  const q = query(collection(db, "users"), where("name", "==", name))
+  const querySnapshot = await getDocs(q);
+  const docSnapshots = querySnapshot.docs[0];
+  const id = docSnapshots.id;
+  const data = docSnapshots.data()
+  return { ...data, id }
+}
+
+export async function fetchUsersByIds(idlist = []) {
+  let returnData = [];
+  if(idlist === []){
+    return returnData;
+  }
+  const q = query(collection(db, "users"), where("__name__", "in", idlist))
+  const querySnapshot = await getDocs(q);
+  for(let i = 0; i < querySnapshot.docs.length; i++) {
+    const docSnapshots = querySnapshot.docs[i];
+    const data = docSnapshots.data();
+    const id = docSnapshots.id;
+    returnData.push({...data, id});
+  }
+  return returnData;
+}
+
+
 export const addCampaign = async (user) => {
   console.log(user)
   let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
@@ -159,6 +185,47 @@ export const addCampaign = async (user) => {
   await setDoc(doc(db, "campaigns", newCampaignId), DUMMY_CAMPAIGN);
   await updateDoc(doc(db, "users", user.id), updatedUserData);
   return newCampaignId;
+}
+/*
+function to follow/unfollowUser
+user=>Signed User that is going to follow
+targetUser=>User that signed user is going to follow
+isfollow=>isfollow ? follow : unfollow
+*/
+export const followUser = async (user, targetUser, isfollow = true) => {
+  console.log("isfollow", isfollow);
+  if(targetUser === {}) {
+    console.log("targetUser is wrong");
+    return;
+  }else if(user?.id === targetUser?.id) {
+    console.log("You can not follow yourself");
+    return;
+  }
+  let following = user && user?.following ? user?.following : [];
+  let followers = targetUser && targetUser?.followers ? targetUser?.followers : [];
+  if(isfollow) {
+    if(following?.includes(targetUser?.id)) {
+      console.log("You already followed this user");
+      return;
+    }
+    following.push(targetUser.id);
+    followers.push(user.id);
+  }else {
+    following = following.filter(e => e !== targetUser.id);
+    followers = followers.filter(e => e !== user.id);
+  }
+  let updatedFollowingData = {
+    following:following
+  }
+  
+  let updatedFollowersData = {
+    followers:followers
+  }
+  console.log("updatedFollowingData",updatedFollowingData);
+  console.log("updatedFollowersData",updatedFollowersData);
+  
+  await updateDoc(doc(db, "users", user.id), updatedFollowingData);
+  await updateDoc(doc(db, "users", targetUser.id), updatedFollowersData);
 }
 
 export async function fetchCampaign(campaignId) {

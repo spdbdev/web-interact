@@ -4,7 +4,6 @@ import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
-
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
@@ -13,7 +12,6 @@ import Select from "react-select";
 import {query, setDoc, serverTimestamp, getCountFromServer, increment, collection, getDoc, getDocs, where, addDoc, updateDoc, doc} from "firebase/firestore";
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import Swal from "sweetalert2";
 import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
@@ -24,6 +22,9 @@ import IconButton from "@mui/material/IconButton";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./CampaignPage.css";
 import { formatMoney } from "@interact/Components/utils";
+import { fetchUserByName, followUser } from '../../../firebase';
+import useCurrentUser from "@interact/Hooks/use-current-user";
+
 
 
 const style = {
@@ -74,7 +75,7 @@ export default function Giveaway({
 	const [last4, setLast4] = useState(true);
 	const [useSaveCard, setUseSaveCard] = useState(false);
 
-	const [user, loading, error] = useAuthState(auth);
+	const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const [open, setOpen] = useState(false);
 	const card = useRef();
@@ -175,7 +176,6 @@ export default function Giveaway({
 
     var vipEntryPrice = campaignData.giveawayVIPEntryCost ?? 0;
     var freeEntryPrice = "0";
-    //console.log(userData);
 
     const saveDataInGiveaway = async (data) => {
         await setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
@@ -268,9 +268,22 @@ export default function Giveaway({
 		};
 		return true;
 	}
-
+	const followCampaign = async () => {
+        const targetUser = await fetchUserByName(campaignData?.person?.username);
+		console.log("user", user);
+		console.log("targetuser", targetUser);
+		if(user === undefined) {
+            console.log("You need to sign in to follow user");
+            navigate("/a/signin");
+            return;
+        }
+        if(!targetUser?.followers?.includes(user?.id)) {
+            followUser(user, targetUser);
+        }
+    }
 	const buyGiveawayAlert = () => {
 		if(!checkAuthentication()) return;
+		followCampaign();
 		Swal.fire({
 			title: "Skill-testing question",
 			text: "Before you make this purchase, you must correctly answer the math question below:",
@@ -333,6 +346,7 @@ export default function Giveaway({
 
 	const freeGiveawayAlert = () => {
 		if(!checkAuthentication()) return;
+		followCampaign();
 		Swal.fire({
 			title: "Claim free entry?",
 			text: "Would you like to claim this free giveaway entry?",

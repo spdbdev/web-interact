@@ -5,7 +5,6 @@ import Leaderboard from "@interact/Components/Leaderboard/Leaderboard";
 import Giveaway from "./Giveaway";
 import Auction from "./Auction";
 import Faq from "@interact/Components/Faq/Faq";
-import { DataGrid } from "@mui/x-data-grid";
 
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,11 +16,11 @@ import { useEffect, useState } from "react";
 import { doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot, getCountFromServer} from "firebase/firestore";
 import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
-import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
-import { auth, logout, db } from "@jumbo/services/auth/firebase/firebase";
+import { auth, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
 import { sortBids } from "@interact/Components/utils";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 
 function CampaignPage(userData) {
@@ -450,9 +449,6 @@ function CampaignPage(userData) {
             <Faq campaignData={campaignData} />
           </Box>
         </Box>
-
-        {/* <center style={{color:'gray'}}>Affiliate Program: Refer an influencer {'&'} earn up to $10,000! 5% of their first year of profits will be given to the referrer.</center> */}
-        {/* <center> <br/> some footer stuff <br /> </center> */}
       </Box>
     </JumboContentLayout>
   );

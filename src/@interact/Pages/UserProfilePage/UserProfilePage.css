@@ -117,3 +117,7 @@
     cursor: auto;
     pointer-events: none;
   }
+
+  .ReactModal__Overlay {
+    z-index: 1000;
+  }

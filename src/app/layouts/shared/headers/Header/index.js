@@ -38,17 +38,8 @@ const Header = () => {
   };
 
   auth.onAuthStateChanged(user=>{
-    console.log('onAuthStateChanged');
-    console.log(user);
-      setIsLoggedIn(!!user);
+    setIsLoggedIn(!!user);
   });
-// useEffect(() => {
-//   console.log('Logged In User Auth');
-//       console.log(auth);
-//       setIsLoggedIn(!!auth.currentUser);
-//         console.log(isLoggedIn);
-//       console.log(!isLoggedIn);
-// },[isLoggedIn,auth]);
 
   return (
     <React.Fragment>

@@ -75,15 +75,42 @@ const JumboNavItem = ({item, isNested, translate}) => {
                       ...(isMiniAndClosed) ? {justifyContent: 'center'} : {},
                   }}
             >
-
-                <ListItemIcon sx={{minWidth: isMiniAndClosed ? 20 : 32, color: 'inherit'}}>
+                {
+                    item?.photoURL ? 
+                    <></>
+                    :
+                    <ListItemIcon sx={{minWidth: isMiniAndClosed ? 20 : 32, color: 'inherit'}}>
                     {
                         isNested ?
                             <CircleIcon sx={{fontSize: 6, ml: 1}}/>
                             :
                             item.icon
                     }
-                </ListItemIcon>
+                    </ListItemIcon> 
+                }
+                
+                {
+                    item?.photoURL ? 
+                    <div
+                        style={{
+                            display: "flex",
+                            paddingRight: "10%",
+                            alignItems: "center",
+                        }}
+                        >
+                        <img
+                            src={item?.photoURL}
+                            style={{
+                            objectFit: "cover",
+                            width: 35,
+                            height: 35,
+                            borderRadius: 1000,
+                            }}
+                        />
+                    </div>
+                    :
+                    <></>
+                }
                 {
                     !isMiniAndClosed &&
                     <ListItemText
@@ -97,6 +124,20 @@ const JumboNavItem = ({item, isNested, translate}) => {
                             }
                         }}
                     />
+                }
+
+                {
+                    item?.photoURL ? 
+                    <ListItemIcon sx={{minWidth: isMiniAndClosed ? 20 : 32, color: 'inherit', paddingLeft:"15px"}}>
+                    {
+                        isNested ?
+                            <CircleIcon sx={{fontSize: 6, ml: 1}}/>
+                            :
+                            item.icon
+                    }
+                    </ListItemIcon> 
+                    :
+                    <></>
                 }
             </Link>
         </ListItemButton>

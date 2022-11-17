@@ -93,7 +93,7 @@ const AuthUserDropdown = () => {
         <Divider />
         <nav>
           <List disablePadding sx={{ pb: 1 }}>
-            <ListItemButton>
+            <ListItemButton onClick={()=>navigate("/u")}>
               <ListItemIcon sx={{ minWidth: 36 }}>
                 <PersonOutlineIcon />
               </ListItemIcon>

@@ -77,7 +77,7 @@ function FollowedCampaigns() {
 
 	// checkUserSelection
 	const cus = async (campaignID, collectionName) => {
-		const docSnap = await getDoc(doc(db, "campaigns", campaignID, collectionName, user.uid));
+		const docSnap = await getDoc(doc(db, "campaigns", campaignID, collectionName, user?.uid));
 		if (docSnap.exists()) {
 			return true;
 		}
