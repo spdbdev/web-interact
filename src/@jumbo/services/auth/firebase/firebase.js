@@ -93,7 +93,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
           email,
           customerId: resp.data.customer.id,
           country,
-          imageurl
+          photoUrl:imageurl
         });
       })
       .catch((err) => {
