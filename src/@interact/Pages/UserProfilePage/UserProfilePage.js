@@ -57,7 +57,7 @@ function UserProfilePage() {
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
     const [image, setImage] = React.useState(
-      "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSi7Mj2jDzj87i1emqmIAKigu5gzrIKsFfOua8gZbV-g&s"
     );
 
     const userProfile = async () => {
