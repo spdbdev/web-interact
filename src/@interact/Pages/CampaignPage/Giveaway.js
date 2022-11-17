@@ -15,7 +15,7 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
-import ConfirmPopup from "./ConfirmPopup";
+import ConfirmVIPPopup from "./ConfirmVIPPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from "@mui/material/IconButton";
 
@@ -37,12 +37,6 @@ const style = {
 	boxShadow: 24,
 	p: 4,
 };
-const autobid = ["By pressing 'Confirm', you will automatically follow the creator of this campaign & consent to receiving email updates from the campaigns",];
-const hoverText = "Only 1 entry is allowed per user. Each time a user loses, their next giveaway with the same creator will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to a total 100x chance with a VIP entry)";
-
-
-
-
 
 export default function Giveaway({
 	campaignId,
@@ -325,6 +319,7 @@ export default function Giveaway({
 					console.log(resp.data.paymentmethod.data);
 					if (mdata.length > 0) {
 					setPaymentMethods(resp.data.paymentmethod.data);
+					setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
 					setOpenPopup(true);
 					} else {
 					setOpen(true);
@@ -497,6 +492,7 @@ export default function Giveaway({
 						setOpen(false);
 						if (resp.data.added) {
 							setPaymentMethods(resp.data.paymentmethod.data);
+							setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
 						} else {
 						Swal.fire({
 							icon: "error",
@@ -521,29 +517,19 @@ export default function Giveaway({
 		});
 		return options;
 	};
-
-
-
-
  
 	return (
 		<>
-		<ConfirmPopup
+		<ConfirmVIPPopup
 			openstate={openPopup}
 			settheOpenPopup={setOpenPopup}
 			closefunction={closefunction}
 			allprimarymethod={paymentMethods}
-			setSelectedPaymentMethod={setSelectedPaymentMethod}
-			title={"Confirm VIP entry"}
-			belowtext={autobid}
-			undertitle={``}
 			onchangeclick={handleOpen}
 			price={vipEntryPrice}
 			userCostomerId={userCostomerId}
-			hovertext={hoverText}
-			hovereffect={true}
-			buyvip={true}
-			
+			selectPaymentMethod={selectedPaymentMethod}
+			setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
 		<Modal
 			open={open}

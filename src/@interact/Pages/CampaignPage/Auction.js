@@ -6,7 +6,7 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { PaymentElement, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { formatMoney, getDateFromTimestamp } from "@interact/Components/utils";
 import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
 import "./CampaignPage.css";
@@ -18,7 +18,7 @@ import Swal from "sweetalert2";
 import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
-import ConfirmPopup from "./ConfirmPopup";
+import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from '@mui/material/IconButton';
 import { fetchUserByName, followUser } from '../../../firebase';
@@ -35,44 +35,26 @@ const style = {
   p: 4,
 };
 
-const autobid = [
-  `You will only be charged if you're a winning bidder on the
-  leaderboard at the end of the campaign`,
-  `When you confirm your bid, you consent to an automatic charge via
-  this payment method at the end of the campaign & you will
-  automatically follow the creator of this campaign & consent to
-  receiving email updates from the campaigns`,
-  `New bids replace old bids, since each user is limited to 1
-  interaction`,
-];
-
-const manualbid = [
-  `You will only be charged if you're a winning bidder on the leaderboard at the end of the campaign`,
-  `By pressing 'Confirm', you will automatically follow the creator of this campaign & consent to receiving email updates from the campaigns`,
-  `New bids replace old bids, since each user is limited to 1 interaction`,
-];
-
-const belowAutobidTitle = "The bid will place you Xth on the leaderboard (if others do not bid higher)";
-
-export default function Auction({isCampaignEnded, bids, campaignData, bidAction}) {
-	
-	const navigate = useNavigate();
+export default function Auction({isCampaignEnded, bids, campaignData, bidAction }) {
 	const [bidAmount, setBidAmount] = useState(0);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
 	const [maxBidAmount, setMaxBidAmount] = useState(0);
 	const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
 	const [desiredRanking, setDesiredRanking] = useState(1);
-	
-  const { user } = useCurrentUser();
-	const [currentUser,setCurrentUser] = useState(null);
-	const stripe = useStripe();
-	const [open, setOpen] = useState(false);
-	const elements = useElements();
-	const card = useRef();
-	const [openPopup, setOpenPopup] = useState(false);
-	const [openPopup1, setOpenPopup1] = useState(false);
-	const [selectPopUp, setselectPopUp] = useState(1);
+
+  const [user, loading, error] = useAuthState(auth);
+  const [currentUser,setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+  const stripe = useStripe();
+  const [open, setOpen] = useState(false);
+  const elements = useElements();
+  const card = useRef();
+  const [openPopup, setOpenPopup] = useState(false);
+  const [openPopup1, setOpenPopup1] = useState(false);
+  const [selectPopUp, setselectPopUp] = useState(1);
+  const paymentRef = useRef();
+  const [selectPaymentMethod, setSelectPaymentMethod] = useState('');
 
 
 	useEffect(() => {
@@ -164,9 +146,6 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
 	useEffect(()=>{
 		handleMaxBidAmount(desiredRanking);
 	},[])
-
-
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -262,6 +241,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
       },
     };
 
+    console.log(billingDetails)
     try {
       stripe
         .createPaymentMethod({
@@ -270,6 +250,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           card: elements.getElement(CardElement),
         })
         .then((resp) => {
+          console.log(resp.paymentMethod)
           const pmid = resp.paymentMethod.id;
           if (pmid && userCostomerId) {
             getRequest(`/method/attach/${userCostomerId}/${pmid}`)
@@ -277,6 +258,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
                 setOpen(false);
                 if (resp.data.added) {
                   setPaymentMethods(resp.data.paymentmethod.data);
+                  setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
                   if (selectPopUp === 1) {
                     setOpenPopup(true);
                   } else {
@@ -328,6 +310,8 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           console.log(resp.data.paymentmethod.data);
           if (mdata.length > 0) {
             setPaymentMethods(resp.data.paymentmethod.data);
+            setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+            // setOpen(true);
             setOpenPopup(true);
           } else {
             setOpen(true);
@@ -347,6 +331,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
     // bidAction(bidAmount);
   };
   const verificationOfBid1 = () => {
+    console.log("manualbid")
     if (!user) return navigate("/");
     getRequest(`/customer/method/${userCostomerId}`)
       .then((resp) => {
@@ -354,6 +339,8 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
         console.log(resp.data.paymentmethod.data);
         if (mdata.length > 0) {
           setPaymentMethods(resp.data.paymentmethod.data);
+          setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+          // setOpen(true);
           setOpenPopup1(true);
         } else {
           setOpen(true);
@@ -400,36 +387,35 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
 	}
 	return (
     <>
-      <ConfirmPopup
-        openstate={openPopup} 
+      <ConfirmAuctionPopup
+        openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
-        title={"Confirm auto-bid"}
-        belowtext={autobid}
-        undertitle={`The bid will place you ${desiredRanking} on the leaderboard (if others do not bid higher)`}
+        desiredRanking={desiredRanking}
         onchangeclick={handleOpen}
         price={maxBidAmount}
         userCostomerId={userCostomerId}
         bidAction={bidAction}
         bidActionstatus={true}
+        selectPaymentMethod={selectPaymentMethod}
+        setSelectedPaymentMethod={setSelectPaymentMethod}
       />
 
-      <ConfirmPopup
+      <ConfirmAuctionPopup
         openstate={openPopup1}
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
         allprimarymethod={paymentMethods}
-        title={"Confirm manual bid"}
-        belowtext={manualbid}
-        undertitle={``}
+        desiredRanking={desiredRanking}
         onchangeclick={handleOpen}
         price={bidAmount}
         userCostomerId={userCostomerId}
         bidAction={bidAction}
         bidActionstatus={true}
+        selectPaymentMethod={selectPaymentMethod}
+        setSelectedPaymentMethod={setSelectPaymentMethod}
       />
-      
       <Modal
         open={open}
         onClose={handleClose}
@@ -550,7 +536,13 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           />
           </FormControl>
 
-          <InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(autoBidAmount,true,desiredRanking,maxBidAmount)}>
+          {/*
+          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}>
+          Place auto-bid
+          </InteractButton>
+          */}
+
+          <InteractButton disabled={isCampaignEnded} onClick={() => verificationOfBid()}>
           Place auto-bid
           </InteractButton>
         </Stack>
@@ -607,9 +599,15 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           </Stack>
 
           {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
-          <InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(bidAmount,false,null,null,minBidAmount)}>
+          {/*
+          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
           Place bid
           </InteractButton>
+          */}
+          <InteractButton disabled={isCampaignEnded} onClick={() => verificationOfBid1()}>
+          Place bid
+          </InteractButton>
+          {/* </form> */}
         </Stack>
         <Typography variant="caption" color="text.hint">
           You won't be charged if you don't win.

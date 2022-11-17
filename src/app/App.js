@@ -43,9 +43,17 @@ const queryClient = new QueryClient({
 
 const store = configureStore();
 
+const options = {
+
+    appearance: {
+        theme: 'stripe'
+    },
+};
+    
+
 function App() {
     return (
-        <Elements stripe={stripePromise}>
+        <Elements stripe={stripePromise} options={options}>
         <QueryClientProvider client={queryClient}>
             <Provider store={store}>
                 <BrowserRouter history={history}>

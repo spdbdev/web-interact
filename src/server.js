@@ -1,6 +1,12 @@
 const stripe = require("stripe")(
   "sk_test_51LJU6pIRYjPm2gCpn2kkJ7fGaIhuL7Sr8opDkKUXYcPQ3syGUaOxWwI5yDMrzdhDTKYMFw0tdz7LAtEbvJvWaT6M00XBTlISBa"
 );
+
+// stripe.applePayDomains.create({
+//   domain_name: 'example.com'
+// });
+
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -146,6 +152,7 @@ app.get("/customer/method/:cid", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
+
 app.post("/set_default_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerId } = req.body;
