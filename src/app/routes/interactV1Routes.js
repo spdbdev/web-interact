@@ -65,9 +65,7 @@ const interactV1Routes = [
   },
   {
     path: "/u/",
-    element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
-    ),
+    element: <Navigate to="/a/signin"/>,
   },
   {
     path: "/c/:campaignId",
