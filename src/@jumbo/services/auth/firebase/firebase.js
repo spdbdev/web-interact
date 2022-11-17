@@ -52,7 +52,7 @@ const loginWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name, email, password, imageurl,country) => {
+const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country) => {
   try {
     const formData = new FormData();
     formData.append("email", email);
@@ -66,10 +66,12 @@ const registerWithEmailAndPassword = async (name, email, password, imageurl,coun
         await addDoc(collection(db, "users"), {
           uid: user.uid,
           name,
+          legalName,
           authProvider: "local",
           email,
           customerId: resp.data.customer.id,
           country,
+          photoUrl:imageurl
         });
       })
       .catch((err) => {

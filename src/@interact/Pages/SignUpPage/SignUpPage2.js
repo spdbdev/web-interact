@@ -43,7 +43,9 @@ function SignUpPage2() {
   const [isPassValid,setIsPassValid] = useState(false);
   const [country,setCountry] = useState("");
   const [name, setName] = useState("");
+  const [legalName, setLegalName] = useState("");
   const [nameError,setNameError] = useState("");
+  const [legalNameError,setLegalNameError] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [imageUrl,setImageUrl] = useState(null);
   const [image,setImage] = useState(null);
@@ -57,24 +59,31 @@ function SignUpPage2() {
     fileRef.current.click();
   }
 
-  const validateUserName = function(){
+  const validate = function(){
+    let isValid = true;
     if(name.length > 15){
       setNameError("Cannot be longer than 15 characters.");
-      return false;
+      isValid = false;
     }else if(/\s/.test(name)){
       setNameError("Whitespaces are not allowed");
-      return false;
+      isValid = false;
     }else if(JSON.stringify(name).includes('\\')){
-      setNameError("Username cannot contain '\\' character.")
-      return false
+      setNameError("Cannot contain '\\'")
+      isValid = false;
     }else{
       setNameError("");
     }
-    return true;
+    if(/^[A-Za-z\s]+$/.test(legalName)){
+      setLegalNameError("");
+    }else{
+      setLegalNameError("Invalid name");
+      isValid = false;
+    }
+    return isValid;
   }
 
   const register = () => {
-    if (!validateUserName() || birthdayError) return;
+    if (!validate() || birthdayError) return;
     if (!isPassValid) {
       Swal.fire(
         "Incorrect!",
@@ -83,7 +92,7 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name, email, password,imageUrl,country)){
+    if(registerWithEmailAndPassword(name,legalName, email, password,imageUrl,country)){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);
@@ -226,6 +235,17 @@ function SignUpPage2() {
             value={name}
             helperText={nameError}
             onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="TextInputWrapper">
+          <TextField
+            error={legalNameError.length > 0}
+            id="outlined-basic"
+            label="Legal Name"
+            variant="outlined"
+            value={legalName}
+            helperText={legalNameError}
+            onChange={(e) => setLegalName(e.target.value)}
           />
         </div>
         <div className="TextInputWrapper">

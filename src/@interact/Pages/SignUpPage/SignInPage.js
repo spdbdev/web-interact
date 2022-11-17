@@ -52,7 +52,7 @@ function SignInPage() {
           </InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20 }}>
-          <Link to='/reset'>Forgot password</Link>
+          <Link to='/a/forgotpassword'>Forgot password</Link>
         </div>
         <div style={{ paddingTop: 20 }}>
           Don't have an account? <Link to='/signup'>Sign up now.</Link>

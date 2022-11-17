@@ -21,6 +21,9 @@ import Error404 from "app/pages/extra-pages/Error404";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 
+import AuthGuard from "@jumbo/services/auth/AuthGuard";
+import ForgotPassword from "app/pages/auth-pages/forgot-password";
+
 const interactV1Routes = [
   {
     path: "*",
@@ -41,6 +44,10 @@ const interactV1Routes = [
   {
     path: "/a/signup",
     element: <SignUpPage2 />,
+  },
+  {
+    path: "/a/forgotpassword",
+    element: <ForgotPassword/>
   },
   {
     path: "/a/termsandconditions",
