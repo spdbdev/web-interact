@@ -115,10 +115,6 @@ function FollowedCampaigns() {
 			<MeetingBlocks />
 		</div>
 		<div style={{ margin: 20 }}>
-			<InteractFlashyButton style={{ paddingLeft: 200 }}
-				onClick={() => navigate(`/a/what-is-interact/`)} >
-				+ Create new campaign
-			</InteractFlashyButton>
 		</div>
 		<br></br>
 		<CampaignsRow
