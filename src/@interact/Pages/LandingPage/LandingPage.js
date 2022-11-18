@@ -16,11 +16,18 @@ const GradientRoundedBox = styled(Box)`
   overflow: hidden;
 `;
 
-const VideoContainer = styled(GradientRoundedBox)`
+const RoundedBox = styled(Box)`
+  width: 100%;
+  background: #ffffff;
+  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+  overflow: hidden;
+`;
+
+const VideoContainer = styled(RoundedBox)`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.1%;
   iframe {
     position: absolute;
     top: 0;
@@ -84,25 +91,25 @@ const Card = styled(GradientRoundedBox)`
 const blockList = [
   {
     id: 1,
-    title: 'Offer the most special & in-demand perk: your attention.',
+    title: 'Offer the most special & in-demand perk: your attention',
     description: `Interact helps you bring joy to your most loyal fans 
                   who have grown with you not only as a creator, but as a human being. 
-                  We minimize logistical hassle and make it worth your time.`,
+                  Get to know these fans & give them the acnknowledgment they crave for.`,
     icon: 'images/pages/landing/heart-book.svg',
     aos: "flip-left"
   },
   {
     id: 2,
-    title: 'Both affluent & everyday fans have an opportunity to interact',
+    title: 'Both affluent & everyday fans get to interact',
     description: `Fans can enter the giveaway for free, having a chance of acquiring an interaction, 
                   or spend a few dollars for a VIP entry (25x increased chance); 
-                  more affluent fans can purchase a guaranteed interaction by bidding in the auction.`,
+                  affluent fans can buy a guaranteed interaction via the auction.`,
     icon: 'images/pages/landing/pig.svg',
     aos: "flip-right"
   },
   {
     id: 3,
-    title: 'Hands off, flexible scheduling',
+    title: 'Hassle-free & flexible scheduling',
     description: `Input the times you want to interact week-by-week 
                   we’ll handle the rest via our matching algo (including 2-way sync with Google, 
                   Outlook & iCloud calendars to seamlessly mesh with your availability).`,
@@ -214,45 +221,45 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '24px',
                           fontWeight: 600,
-                          lineHeight: '130.52%'
+                          lineHeight: '140.52%'
                         }}
                       >
-                        & substantially
+                        (game & chat); Interact
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '24px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '130.52%'
+                          lineHeight: '140.52%'
                         }}
                       >
-                        {" "}boost{" "}
+                        {" "}boosts{" "}
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '24px',
                           fontWeight: 600,
-                          lineHeight: '130.52%'
+                          lineHeight: '140.52%'
                         }}
                       >
-                        your income with our 5-20 day auction
+                        your income with our auction
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '24px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '130.52%'
+                          lineHeight: '140.52%'
                         }}
                       >
                         {" "}+{" "}
@@ -262,12 +269,12 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '24px',
                           fontWeight: 600,
-                          lineHeight: '130.52%'
+                          lineHeight: '140.52%'
                         }}
                       >
-                        giveaway campaigns
+                        giveaway campaigns & minimizes logistical hassle with our intuitive scheduling
                       </Typography>
                     </Box>
                   </Box>
@@ -336,7 +343,7 @@ const LandingPage = () => {
                           lineHeight: '130.52%'
                         }}
                       >
-                        after spending countless hours watching you; they’ve
+                        After spending countless hours watching you, fans have
                       </Typography>
                       <Typography
                         variant="body1"
@@ -469,12 +476,36 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '24px',
                           fontWeight: 600,
-                          lineHeight: '130.52%',
+                          lineHeight: '140.52%'
                         }}
                       >
-                        Get to know your fans for a few hours a week, over 1-2 months; flexibly choose your availability
+                        Get to know your fans for a
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '24px',
+                          fontWeight: 600,
+                          color: '#FF5C00',
+                          lineHeight: '140.52%'
+                        }}
+                      >
+                        {" "}few hours{" "}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                          fontSize: '24px',
+                          fontWeight: 600,
+                          lineHeight: '140.52%'
+                        }}
+                      >
+                        a week over 1-2 months; flexibly choose your availability
                         week-by-week, and we’ll match you with fans who have won an interaction in the campaign
                       </Typography>
                     </Box>
@@ -571,7 +602,7 @@ const LandingPage = () => {
         </GradientRoundedBox>
 
         <Stack width={"100%"}>
-          <Grid container spacing={3}>
+          <Grid container spacing={7}>
             {blockList.map(data => (
               <FeatureCard key={data.id} data={data} />
             ))}

@@ -176,13 +176,13 @@ export default function WhatIsInteractPage() {
 
   const VideoWrapper = styled(Box)`
     width: 100%;
+    background: #ffffff;
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    padding-bottom: 56.25%;
+    padding-bottom: 56.1%;
     overflow: hidden;
     box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
-    border-radius: 23px;
     iframe {
       position: absolute;
       top: 0;
@@ -224,36 +224,40 @@ export default function WhatIsInteractPage() {
               <Typography variant="h2" fontSize='21px' sx={{ mb: 0, mt: '1px', letterSpacing: '4px' }}>WHAT IS</Typography>
               <InteractLogo src='/images/pages/interact/interact-logo.png' alt='' />
             </Stack>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems="center" sx={{ mb: 5 }}>
+            <br></br>
+            <br></br>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={7} alignItems="center" sx={{ mb: 5 }}>
               <Stack sx={{ width: { sm: '35%' } }}>
                 <Typography
                   variant="h4"
-                  fontSize='18px'
+                  fontSize='18.5px'
                   sx={{
                     mb: 0,
-                    lineHeight: '24px'
+                    lineHeight: '29px'
                   }}
                 >
                   <strong style={{ fontWeight: 600 }}>
                     Extra income at no opportunity cost.
-                  </strong>{" "} We minimize logistical hassle and make it worth your time to bring joy to your loyal fans.
+                  </strong>{" "} Get to know & bring joy to your fans; we minimize logistical hassle and make it worth your time.
                   💜 Raise $5k to $7k in a 10 day campaign
-                  with 1000 fans, in exchange for ~50 hours of interactions: getting fresh content for your stream &
+                  with 1000 fans, in exchange for a few hours
+                  each week over 2 months (~50 hours total): getting fresh content for your stream &
                   make use of highlights from interactions to spice up your new
-                  videos. Campaigns reserve interactions for 2 months usually (a few hours of getting to know fans
-                  each week), so 5 campaigns = 10 months of interactions, 💜 generating $25K to $35K annually. {" "}
+                  videos. That's 💜 $25K to $35K annually (5 campaigns = 10 months of interactions). {" "}
                 </Typography>
               </Stack>
-              <Stack sx={{ width: { xs: '100%', sm: '65%' } }}>
+              <Stack sx={{ width: { xs: '100%', sm: '59%' } }}>
                 <VideoWrapper>
                   <iframe
                     title='youtube'
-                    src='https://www.youtube-nocookie.com/embed/L0AykH20X3Q'
+                    src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc'
                     allowFullScreen
                   />
                 </VideoWrapper>
               </Stack>
             </Stack>
+            <br></br>
+            <br></br>
             {WhatIsInteractFAQs?.map((item, key) => (
               <SpecialAccordion
                 key={key}
