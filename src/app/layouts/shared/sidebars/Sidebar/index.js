@@ -9,85 +9,107 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Zoom from "@mui/material/Zoom";
 import Div from "@jumbo/shared/Div";
 import SidebarSkeleton from "./SidebarSkeleton";
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
-import { fetchUsersByIds, fetchRecentCampaigns,followUser } from "../../../../../firebase";
+import {
+  fetchUsersByIds,
+  fetchRecentCampaigns,
+  followUser,
+} from "../../../../../firebase";
 
 const Sidebar = () => {
   let { user } = useCurrentUser();
   const Swal = useSwalWrapper();
-  const defaultPhotoURL = "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
+  const defaultPhotoURL =
+    "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
   const [followingList, setFollowingList] = useState([]);
   const [recentCampaignList, setRecentCampaignList] = useState([]);
   useEffect(async () => {
     try {
       const returnedValue = await fetchUsersByIds(user?.following);
       let followingItemGroup = [];
-      for(let i = 0; i < returnedValue.length; i++) {
+      for (let i = 0; i < returnedValue.length; i++) {
         let data = {
-          uri: "/u/"+returnedValue[i].name,
+          uri: "/u/" + returnedValue[i].name,
           label: returnedValue[i].name,
           type: "nav-item",
-          icon: <RemoveCircleOutlineIcon onClick={()=>handleUserItemClick(returnedValue[i])} sx={{ fontSize: 20 }} />,
-          photoURL: returnedValue[i]?.photoURL ? returnedValue[i]?.photoURL : defaultPhotoURL,
-        }
+          icon: (
+            <RemoveCircleOutlineIcon
+              onClick={() => handleUserItemClick(returnedValue[i])}
+              sx={{ fontSize: 20 }}
+            />
+          ),
+          photoURL: returnedValue[i]?.photoURL
+            ? returnedValue[i]?.photoURL
+            : defaultPhotoURL,
+        };
         followingItemGroup.push(data);
       }
       setFollowingList(followingItemGroup);
-    }catch(e) {
+    } catch (e) {
       setFollowingList([]);
     }
   }, [user?.following]);
 
   useEffect(async () => {
     try {
-      const returnedValue = await fetchRecentCampaigns(user?.recentCampaignData);
+      const returnedValue = await fetchRecentCampaigns(
+        user?.recentCampaignData
+      );
       let recentCampaignItemGroup = [];
-      console.log("returnedValue for recent",returnedValue);
-      for(let i = 0; i < returnedValue.length; i++) {
+      console.log("returnedValue for recent", returnedValue);
+      for (let i = 0; i < returnedValue.length; i++) {
         let data = {
-          campaignUri: returnedValue[i]?.id ? "/c/"+returnedValue[i]?.id : "/c/", 
-          label: returnedValue[i]?.header?.title ? returnedValue[i]?.header?.title : "No Title",
+          campaignUri: returnedValue[i]?.id
+            ? "/c/" + returnedValue[i]?.id
+            : "/c/",
+          label: returnedValue[i]?.header?.title
+            ? returnedValue[i]?.header?.title
+            : "No Title",
           creator_label: "Created by",
-          creator_name:returnedValue[i]?.person?.username ? returnedValue[i]?.person?.username : "No Name",
-          creator_Uri: returnedValue[i]?.person?.username ? "/u/"+returnedValue[i]?.person?.username : "/u",
+          creator_name: returnedValue[i]?.person?.username
+            ? returnedValue[i]?.person?.username
+            : "No Name",
+          creator_Uri: returnedValue[i]?.person?.username
+            ? "/u/" + returnedValue[i]?.person?.username
+            : "/u",
           type: "recent-campaign-item",
-          photoURL: returnedValue[i]?.person?.photoUrl ? returnedValue[i]?.person?.photoUrl : defaultPhotoURL,
-        }
+          photoURL: returnedValue[i]?.person?.photoUrl
+            ? returnedValue[i]?.person?.photoUrl
+            : defaultPhotoURL,
+        };
         recentCampaignItemGroup.push(data);
       }
       setRecentCampaignList(recentCampaignItemGroup);
-    } catch(e) {
+    } catch (e) {
       setRecentCampaignList([]);
-    } 
-  }, [user?.recentCampaignData])
+    }
+  }, [user?.recentCampaignData]);
 
   const handleUserItemClick = (targetUser) => {
-      Swal.fire({
-          title: 'Are you sure?',
-          text: "You will unfollow this user once you approve.",
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonText: 'Yes',
-          cancelButtonText: 'No',
-          reverseButtons: true,
-      }).then(result => {
-          if (result.value) {
-            if(user && targetUser) {
-              followUser(user, targetUser, false);
-              Swal.fire('Success!', 'You have unfollowed.', 'success');
-            }
-          } else if (
-              result.dismiss === Swal.DismissReason.cancel
-          ) {
-              Swal.fire('Cancelled', 'You are still following that user', 'success');
-          }
-      });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will unfollow this user once you approve.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.value) {
+        if (user && targetUser) {
+          followUser(user, targetUser, false);
+          Swal.fire("Success!", "You have unfollowed.", "success");
+        }
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire("Cancelled", "You are still following that user", "success");
+      }
+    });
   };
-  
+
   const interactMenus = [
     {
       label: "sidebar.menu.home",
@@ -107,7 +129,7 @@ const Sidebar = () => {
         },
       ],
     },
-  
+
     {
       label: "FOLLOWING",
       type: "section",
@@ -120,7 +142,15 @@ const Sidebar = () => {
     },
   ];
   return (
-    <React.Fragment>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        background: "url('/images/navbar-background.svg')",
+        height: '100%'
+      }}
+    >
       <SidebarHeader />
       <JumboScrollbar autoHide autoHideDuration={200} autoHideTimeout={500}>
         <Suspense
@@ -141,7 +171,7 @@ const Sidebar = () => {
           <JumboVerticalNavbar translate items={interactMenus} />
         </Suspense>
       </JumboScrollbar>
-    </React.Fragment>
+    </div>
   );
 };
 
@@ -149,7 +179,7 @@ const SidebarHeader = () => {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
   useEffect(async () => {
     setSidebarOptions({ open: true });
-  }, [])
+  }, []);
   const isMiniAndClosed = React.useMemo(() => {
     return sidebarOptions?.view === SIDEBAR_VIEWS.MINI && !sidebarOptions?.open;
   }, [sidebarOptions.view, sidebarOptions.open]);
@@ -165,7 +195,9 @@ const SidebarHeader = () => {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ ml: 0, mr: -1.5 }}
-                onClick={() => setSidebarOptions({ open: !sidebarOptions.open })}
+                onClick={() =>
+                  setSidebarOptions({ open: !sidebarOptions.open })
+                }
               >
                 <MenuOpenIcon />
               </IconButton>
