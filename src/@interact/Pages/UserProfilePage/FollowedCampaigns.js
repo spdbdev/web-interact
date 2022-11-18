@@ -119,7 +119,7 @@ function FollowedCampaigns() {
 		<br></br>
 		<CampaignsRow
 			currentCampaigns={currentCampaigns}
-			heading="Live campaigns"
+			heading="Followed campaigns"
 		/>
 		<CampaignsRow
 			currentCampaigns={interactionCampaigns}
