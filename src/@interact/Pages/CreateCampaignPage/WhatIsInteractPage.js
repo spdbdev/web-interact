@@ -66,7 +66,7 @@ const WhatIsInteractFAQs = [
           $25K to $35K gross revenue annually.
         </strong>
       </span>
-    ),    
+    ),
     defaultExpanded: true,
   },
   {
@@ -93,9 +93,9 @@ const WhatIsInteractFAQs = [
     question: <span>Why do fans want personal interactions?</span>,
     answer: (
       <span>
-        Most fans can only afford spending a few dollars (can’t afford expensive merch 
-        & shipping); but, they don’t have a compelling reason to give you some coffee 
-        money. Having a chance to personally interact & gain recognition from you is 
+        Most fans can only afford spending a few dollars (can’t afford expensive merch
+        & shipping); but, they don’t have a compelling reason to give you some coffee
+        money. Having a chance to personally interact & gain recognition from you is
         an attractive incentive (via the giveaway):
         <br></br>💜 Fans like you—as social platforms are so one-sided, fans give you attention weekly or
         even daily without being able to receive any meaningful attention or
@@ -175,23 +175,27 @@ export default function WhatIsInteractPage() {
   }, [sidebarOptions]);
 
   const VideoWrapper = styled(Box)`
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  padding-bottom: 56.25%;
-  overflow: hidden;
-  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
-  border-radius: 23px;
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    border: 0;
-  }
-`;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding-bottom: 56.25%;
+    overflow: hidden;
+    box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+    border-radius: 23px;
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  `;
+
+  const InteractLogo = styled('img')`
+    height: 65px;
+  `
 
   return (
     <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
@@ -216,28 +220,36 @@ export default function WhatIsInteractPage() {
         </Box>
         <Stack direction="column" alignItems="center" width={"100%"}>
           <Stack spacing={1} mb={10} sx={{ maxWidth: 1000 }}>
+            <Stack direction='row' justifyContent='center' alignItems='center' sx={{ mb: 3 }}>
+              <Typography variant="h2" fontSize='21px' sx={{ mb: 0, mt: '1px', letterSpacing: '4px' }}>WHAT IS</Typography>
+              <InteractLogo src='/images/pages/interact/interact-logo.png' alt='' />
+            </Stack>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems="center" sx={{ mb: 5 }}>
-              <Stack sx={{ width: { sm: '45%' } }}>
-                <Stack direction="column" alignItems="center" spacing={2}>
-                  <img src={InteractLogo} alt="" width={50} />
-                  <Typography variant="h2">What Is Interact?</Typography>
-                </Stack>
-                <Typography variant="h5" sx={{ pt: 2, mb: 0 }}>
-                <strong style={{ fontWeight: 600 }}>
+              <Stack sx={{ width: { sm: '35%' } }}>
+                <Typography
+                  variant="h4"
+                  fontSize='18px'
+                  sx={{
+                    mb: 0,
+                    lineHeight: '24px'
+                  }}
+                >
+                  <strong style={{ fontWeight: 600 }}>
                     Extra income at no opportunity cost.
                   </strong>{" "} We minimize logistical hassle and make it worth your time to bring joy to your loyal fans.
                   💜 Raise $5k to $7k in a 10 day campaign
                   with 1000 fans, in exchange for ~50 hours of interactions: getting fresh content for your stream &
                   make use of highlights from interactions to spice up your new
-                  videos. Campaigns reserve interactions for 2 months usually (a few hours of getting to know fans 
+                  videos. Campaigns reserve interactions for 2 months usually (a few hours of getting to know fans
                   each week), so 5 campaigns = 10 months of interactions, 💜 generating $25K to $35K annually. {" "}
                 </Typography>
               </Stack>
-              <Stack sx={{ width: { xs: '100%', sm: '55%' } }}>
+              <Stack sx={{ width: { xs: '100%', sm: '65%' } }}>
                 <VideoWrapper>
                   <iframe
                     title='youtube'
-                    src='https://www.youtube.com/embed/L0AykH20X3Q?playlist=L0AykH20X3Q&loop=1'
+                    src='https://www.youtube-nocookie.com/embed/L0AykH20X3Q'
+                    allowFullScreen
                   />
                 </VideoWrapper>
               </Stack>

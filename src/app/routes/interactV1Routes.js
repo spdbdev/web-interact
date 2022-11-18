@@ -157,9 +157,10 @@ const interactV1Routes = [
   },
   {
     path: "/",
-    element: (
-      <Page component={LandingPage} layout="solo-page" />
-    ),
+    element: <LandingPage />
+    // element: (
+    //   <Page component={LandingPage} layout="solo-page" />
+    // ),
   },
 ];
 
