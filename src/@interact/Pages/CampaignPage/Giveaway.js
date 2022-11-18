@@ -641,8 +641,7 @@ export default function Giveaway({
 				</div>
 				<div>
 				<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
-				winners will be randomly chosen from the ticketholders at the end of
-				the campaign
+				winners will be chosen when the campaign ends
 				</div>
 			</Box>
 
