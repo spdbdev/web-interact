@@ -30,6 +30,7 @@ export default function ConfirmAuctionPopup({
   const [paymentId, setpaymentId] = useState();
   const [showtext, setShowText] = useState(false);
   const Swal = useSwalWrapper();
+
   const changeEvent = () => {
     // settheOpenPopup(false);
     onchangeclick();

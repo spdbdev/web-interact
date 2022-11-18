@@ -22,7 +22,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { clearStorage } from "./utils/storage";
 import { DISCORD_LOCALSTORAGE_KEYS } from "./services/discord";
 const stripePromise = loadStripe('pk_test_51LJU6pIRYjPm2gCpQ07Vg68jRq7XfRVpVLSygsbAR4r42iZCN3hWueDFUxeOXxHBiUg3tUp9ciZE4mfQjsFpIxEN00g6y5PWRS');
-
+// import { StripeContext } from "./hooks/useStripeContext";
 
 
 clearStorage(
