@@ -22,7 +22,7 @@ import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 
 //import AuthGuard from "@jumbo/services/auth/AuthGuard";
-import ForgotPassword from "app/pages/auth-pages/forgot-password";
+import ForgotPassword from "@interact/Pages/SignUpPage/ForgotPassword";
 
 const interactV1Routes = [
   {
