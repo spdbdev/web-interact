@@ -1,6 +1,5 @@
 import React from "react";
 import "./UserProfilePage.css";
-import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import MeetingBlocks from "./MeetingBlocks";
 
 

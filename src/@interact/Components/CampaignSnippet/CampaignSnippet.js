@@ -6,12 +6,11 @@ import { formatMoney } from "../utils";
 import "./CampaignSnippet.css";
 import { useEffect, useRef } from "react";
 import UserCampaignStatus from "./UserCampaignStatus";
+
+
 export default function CampaignSnippet(props) {
+  
   const {info} = props;
-  useEffect(() =>{
-    console.log('CampaignSnippet'); 
-    console.log(props); 
-  },[info]);
   
   return (
     <JumboCardQuick noWrapper sx={{ maxWidth: 280, m: 2 }}>
