@@ -21,7 +21,7 @@ import Error404 from "app/pages/extra-pages/Error404";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 
-//import AuthGuard from "@jumbo/services/auth/AuthGuard";
+import AuthGuard from "@jumbo/services/auth/AuthGuard";
 import ForgotPassword from "@interact/Pages/SignUpPage/ForgotPassword";
 import ResetPassword from "@interact/Pages/SignUpPage/ResetPassword";
 
