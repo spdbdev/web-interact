@@ -51,7 +51,7 @@ function CampaignPage(userData) {
 	let [user, loading] = useAuthState(auth);
 	/* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-		photoUrl: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+		photoURL: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
 		name: "biby",
 		email: "bibyliss@gmail.com",
 		customerId: "cus_MlMuNeDDsNVt2Z",
@@ -62,7 +62,7 @@ function CampaignPage(userData) {
 		//if (!user) return navigate("/"); // this page should be browsable without login
 		if(campaignId === null) checkCampaignID();
 		else {
-			console.log('campaignId >>>>>', campaignId);
+			//console.log('campaignId >>>>>', campaignId);
 			getCampaignData();
 			checkPurchasedEntry();
 		}
@@ -191,44 +191,36 @@ function CampaignPage(userData) {
 		getChanceOfwinning(_campaignData, vipMultiplier, freeMultiplier);
 	};
 
-	const getChanceOfwinning = async (
-		_campaignData,
-		vipMultiplier,
-		freeMultiplier
-	) => {
-		const docSnap = await getDocs(
-		collection(db, "campaigns", campaignId, "Giveaway")
-		);
+	const getChanceOfwinning = async (_campaignData, vipMultiplier, freeMultiplier) => {
+		const docSnap = await getDocs(collection(db, "campaigns", campaignId, "Giveaway"));
 		//console.log("doc snap", docSnap);
 
 		if (!docSnap.empty) {
-		let TotalPoolEntries = 0;
-		for (let document of docSnap.docs) {
-			let doc = document.data();
-			doc.price = Number(doc.price);
+			let TotalPoolEntries = 0;
+			for (let document of docSnap.docs) {
+				let doc = document.data();
+				doc.price = Number(doc.price);
 
-			let noOfEntries = 1;
-			if (doc.price > 0) noOfEntries = 25;
+				let noOfEntries = 1;
+				if (doc.price > 0) noOfEntries = 25;
 
-			let previousLoss = await getUserLostHistory(
-			_campaignData.person.id,
-			document.id
-			);
-			if (previousLoss === 1) noOfEntries = noOfEntries * 2;
-			else if (previousLoss > 1) noOfEntries = noOfEntries * 4;
+				let previousLoss = await getUserLostHistory(
+				_campaignData.person.id,
+				document.id
+				);
+				if (previousLoss === 1) noOfEntries = noOfEntries * 2;
+				else if (previousLoss > 1) noOfEntries = noOfEntries * 4;
 
-			TotalPoolEntries = TotalPoolEntries + noOfEntries;
-		}
+				TotalPoolEntries = TotalPoolEntries + noOfEntries;
+			}
 
-		if (TotalPoolEntries !== 0) {
-			let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
-			let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
+			if (TotalPoolEntries !== 0) {
+				let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
+				let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
 
-			setWiningChances({ vip: vipChances, free: freeChances });
-		}
-		} else {
-		console.log("No such collection!");
-		}
+				setWiningChances({ vip: vipChances, free: freeChances });
+			}
+		} 
 	};
 
 	const checkPurchasedEntry = async () => {
@@ -243,7 +235,7 @@ function CampaignPage(userData) {
 				setHasUserClaimedFreeEntry(true);
 				setHasUserPurchasedVIPEntry(true);
 			}
-			console.log("User Giveaway", data);
+			//console.log("User Giveaway", data);
 		} else {
 			console.log("No such document!");
 		}
@@ -258,7 +250,7 @@ function CampaignPage(userData) {
 			person: {
 				username: user_data.data().name,
 				id: user_data.id,
-				photoUrl: user.photoURL,
+				photoURL: user.photoURL,
 			},
 			desiredRanking,
 			minBidPrice,
@@ -271,7 +263,7 @@ function CampaignPage(userData) {
 
 		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
 		const counter = snapshot.data().count;
-		console.log("bids count: ", counter);
+		//console.log("bids count: ", counter);
 
 		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
 	};

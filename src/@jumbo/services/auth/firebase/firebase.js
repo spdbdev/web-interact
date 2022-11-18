@@ -71,7 +71,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
           email,
           customerId: resp.data.customer.id,
           country,
-          photoUrl:imageurl
+          photoURL:imageurl
         });
       })
       .catch((err) => {

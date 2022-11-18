@@ -23,7 +23,7 @@ function FollowedCampaigns() {
 	let user_id = id;
 	/* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-		photoUrl:
+		photoURL:
 		"https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
 		name: "biby",
 		email: "bibyliss@gmail.com",
