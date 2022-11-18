@@ -179,7 +179,7 @@ function UserProfilePage() {
               marginBottom: 5,
               paddingLeft: 20,
               paddingRight: 20,
-              borderRadius: "0 11px 0 11px",
+              borderRadius: "6.21px 11px 6.21px 11px",
               alignItems: "center",
               backgroundColor: "white",
             }}
