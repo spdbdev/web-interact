@@ -491,7 +491,7 @@ const LandingPage = () => {
           <VideoContainer mt={23} mb={13}>
             <iframe
               title='youtube'
-              src='https://www.youtube-nocookie.com/embed/L0AykH20X3Q'
+              src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc'
               allowFullScreen
             />
           </VideoContainer>
