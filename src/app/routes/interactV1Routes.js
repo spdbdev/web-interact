@@ -21,7 +21,7 @@ import Error404 from "app/pages/extra-pages/Error404";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 
-//import AuthGuard from "@jumbo/services/auth/AuthGuard";
+import AuthGuard from "@jumbo/services/auth/AuthGuard";
 import ForgotPassword from "app/pages/auth-pages/forgot-password";
 
 const interactV1Routes = [
@@ -60,13 +60,17 @@ const interactV1Routes = [
   {
     path: "/u/:username",
     element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
     ),
   },
   {
     path: "/u/",
     element: (
-     <Page component={UserProfilePage} layout="vertical-default" />
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
     ),
   },
   {
@@ -85,7 +89,7 @@ const interactV1Routes = [
   {
     path: "/a/create-campaign",
     element: (
-    <Page component={CreateCampaignPage} layout="solo-page" />
+      <Page component={CreateCampaignPage} layout="solo-page" />
     )
   },
 

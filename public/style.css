@@ -50,7 +50,7 @@
 .move_campaigin_title {
   font-weight: bold;
   position: relative;
-  animation: campaign_title_move 5s infinite;
+  animation: campaign_title_move 15s infinite;
   animation-timing-function: linear;
 }
 
