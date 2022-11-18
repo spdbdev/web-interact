@@ -351,6 +351,14 @@ function CreateCampaignPage() {
 	const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 	const { data, setData, isAutosaving, lastSavedAt, autosaveError } = useAutosaveCampaign(campaignData, campaignId);
 
+  //If unathenticated redirect to signup
+  useEffect(()=>{
+    console.log("User>>>",user);
+    if(!user){
+      navigate('/a/signup');
+    }
+  },[])
+
 	useEffect(() => {
 		// Fixes a bug where sidebar is hidden but remains "open" when
 		// navigating to this screen from the user profile
