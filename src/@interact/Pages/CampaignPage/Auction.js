@@ -6,7 +6,7 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { PaymentElement, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { formatMoney, getDateFromTimestamp } from "@interact/Components/utils";
 import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
 import "./CampaignPage.css";
@@ -305,11 +305,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
     if (!user) return navigate("/");
     if (desiredRanking > 0) {
 
-      postRequest(`/create-payment-intent`, {price: maxBidAmount})
-      .then((response) => {
-        console.log({title: 'client-secret' , response});
-        let clientSecret = response.data.clientSecret;
-        getRequest(`/customer/method/${userCostomerId}`)
+      getRequest(`/customer/method/${userCostomerId}`)
         .then((resp) => {
           const mdata = resp.data.paymentmethod.data;
           console.log(resp.data.paymentmethod.data);
@@ -325,29 +321,6 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         .catch((err) => {
           console.log(err);
         });
-      })
-      .catch(err => {
-        console.error({
-          title: 'postRequest-/create-payment-intent',
-          message: err.message
-        })
-      })
-      // getRequest(`/customer/method/${userCostomerId}`)
-      //   .then((resp) => {
-      //     const mdata = resp.data.paymentmethod.data;
-      //     console.log(resp.data.paymentmethod.data);
-      //     if (mdata.length > 0) {
-      //       setPaymentMethods(resp.data.paymentmethod.data);
-      //       setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
-      //       // setOpen(true);
-      //       setOpenPopup(true);
-      //     } else {
-      //       setOpen(true);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
     } else {
       Swal.fire({
         icon: "error",

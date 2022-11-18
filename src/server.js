@@ -758,21 +758,4 @@ app.post("/get_payment_methods", async (req, res) => {
   return res.json(data);
 });
 
-app.post("/create-payment-intent", async (req, res) => {
-  const { price } = req.body;
-
-  // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: Number(price) * 100,
-    currency: "usd",
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
-
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
-});
-
 app.listen(4242, () => console.log("Running on port 4242"));
