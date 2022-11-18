@@ -26,7 +26,8 @@ import {
   doc,
   getDoc,
   addDoc,
-  updateDoc
+  updateDoc,
+  limit
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { DUMMY_CAMPAIGN } from "./config";
@@ -268,41 +269,48 @@ export const getFirebaseArray = async (col) => {
   let arr = [];
   let arrFirebaseObject = await getDocs(col);
   arrFirebaseObject.forEach((x, i) => {
-    // console.log(i);
     arr.push({ ...x.data() }); // order by price to be implemented
   });
-  //order by price backend later
-  // _bids.sort((a, b)=> a.price > b.price)
   return arr;
 };
 
+/*
+Function to store campaignid to users data for Recent Campaign Feature.
+*/
+export const saveToRecentCampaignHistory = async (campaignId, user) => {  
+  if(campaignId && user) {
+    let currentRecentCampaignData = user?.recentCampaignData ? user?.recentCampaignData : [];
+    if(currentRecentCampaignData?.includes(campaignId)) {
+      return;
+    }
+    let recentCampaignData = [campaignId];
+    recentCampaignData = [...recentCampaignData, ...currentRecentCampaignData];
+    let updatedRecentCampaignData = {
+      recentCampaignData : recentCampaignData
+    }
+    await updateDoc(doc(db, "users", user.id), updatedRecentCampaignData);
+  } 
+}
 
-// export const createUserProfileDocument = async (userAuth, additionalData) => {
-//   if (!userAuth) return;
-
-//   const userRef = firestore.doc(`users/${userAuth.uid}`);
-
-//   const snapShot = await userRef.get();
-
-//   if (!snapShot.exists) {
-//     const { displayName, email } = userAuth;
-//     const createdAt = new Date();
-
-//     try {
-//       await userRef.set({
-//         displayName,
-//         email,
-//         createdAt,
-//         ...additionalData
-//       })
-//     } catch (error) {
-//       console.log('error creating user', error.message);
-//     }
-//   }
-
-//   return userRef;
-
-// }
+/*
+Function to return Recent CampaignList
+Returns recent 17 campaignlist.
+*/
+export const fetchRecentCampaigns = async (idlist) => {
+  let returnData = [];
+  if(idlist === []){
+    return returnData;
+  }
+  const q = query(collection(db, "campaigns"), where("__name__", "in", idlist), limit(17))
+  const querySnapshot = await getDocs(q);
+  for(let i = 0; i < querySnapshot.docs.length; i++) {
+    const docSnapshots = querySnapshot.docs[i];
+    const data = docSnapshots.data();
+    const id = docSnapshots.id;
+    returnData.push({...data, id});
+  }
+  return returnData;
+}
 
 export {
   auth,

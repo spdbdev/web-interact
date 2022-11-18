@@ -14,12 +14,57 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
-import { fetchUsersByIds, followUser } from "../../../../../firebase";
+import { fetchUsersByIds, fetchRecentCampaigns,followUser } from "../../../../../firebase";
 
 const Sidebar = () => {
   let { user } = useCurrentUser();
   const Swal = useSwalWrapper();
   const defaultPhotoURL = "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
+  const [followingList, setFollowingList] = useState([]);
+  const [recentCampaignList, setRecentCampaignList] = useState([]);
+  useEffect(async () => {
+    try {
+      const returnedValue = await fetchUsersByIds(user?.following);
+      let followingItemGroup = [];
+      for(let i = 0; i < returnedValue.length; i++) {
+        let data = {
+          uri: "/u/"+returnedValue[i].name,
+          label: returnedValue[i].name,
+          type: "nav-item",
+          icon: <RemoveCircleOutlineIcon onClick={()=>handleUserItemClick(returnedValue[i])} sx={{ fontSize: 20 }} />,
+          photoURL: returnedValue[i]?.photoURL ? returnedValue[i]?.photoURL : defaultPhotoURL,
+        }
+        followingItemGroup.push(data);
+      }
+      setFollowingList(followingItemGroup);
+    }catch(e) {
+      setFollowingList([]);
+    }
+  }, [user?.following]);
+
+  useEffect(async () => {
+    try {
+      const returnedValue = await fetchRecentCampaigns(user?.recentCampaignData);
+      let recentCampaignItemGroup = [];
+      console.log("returnedValue for recent",returnedValue);
+      for(let i = 0; i < returnedValue.length; i++) {
+        let data = {
+          campaignUri: returnedValue[i]?.id ? "/c/"+returnedValue[i]?.id : "/c/", 
+          label: returnedValue[i]?.header?.title ? returnedValue[i]?.header?.title : "No Title",
+          creator_label: "Created by",
+          creator_name:returnedValue[i]?.person?.username ? returnedValue[i]?.person?.username : "No Name",
+          creator_Uri: returnedValue[i]?.person?.username ? "/u/"+returnedValue[i]?.person?.username : "/u",
+          type: "recent-campaign-item",
+          photoURL: returnedValue[i]?.person?.photoUrl ? returnedValue[i]?.person?.photoUrl : defaultPhotoURL,
+        }
+        recentCampaignItemGroup.push(data);
+      }
+      setRecentCampaignList(recentCampaignItemGroup);
+    } catch(e) {
+      setRecentCampaignList([]);
+    } 
+  }, [user?.recentCampaignData])
+
   const handleUserItemClick = (targetUser) => {
       Swal.fire({
           title: 'Are you sure?',
@@ -42,33 +87,6 @@ const Sidebar = () => {
           }
       });
   };
-  const [followingList, setFollowingList] = useState([]);
-
-  useEffect(async () => {
-    if(user === undefined || user?.following?.length === 0) {
-      setFollowingList([]);
-    }else {
-      try {
-        console.log("user?.following", user?.following);
-        const returnedValue = await fetchUsersByIds(user?.following);
-          let followingItemGroup = [];
-        for(let i = 0; i < returnedValue.length; i++) {
-          let data = {
-            uri: "/u/"+returnedValue[i].name,
-            label: returnedValue[i].name,
-            type: "nav-item",
-            icon: <RemoveCircleOutlineIcon onClick={()=>handleUserItemClick(returnedValue[i])} sx={{ fontSize: 20 }} />,
-            photoURL: returnedValue[i]?.photoURL ? returnedValue[i]?.photoURL : defaultPhotoURL,
-          }
-          followingItemGroup.push(data);
-        }
-        setFollowingList(followingItemGroup);
-      }catch(e) {
-        console.log(e);
-      }
-    }
-  }, [user]);
-
   
   const interactMenus = [
     {
@@ -98,7 +116,7 @@ const Sidebar = () => {
     {
       label: "RECENT CAMPAIGNS",
       type: "section",
-      children: [],
+      children: recentCampaignList,
     },
   ];
   return (
@@ -129,8 +147,9 @@ const Sidebar = () => {
 
 const SidebarHeader = () => {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const { sidebarTheme } = useJumboSidebarTheme();
-
+  useEffect(async () => {
+    setSidebarOptions({ open: true });
+  }, [])
   const isMiniAndClosed = React.useMemo(() => {
     return sidebarOptions?.view === SIDEBAR_VIEWS.MINI && !sidebarOptions?.open;
   }, [sidebarOptions.view, sidebarOptions.open]);

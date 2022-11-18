@@ -62,15 +62,20 @@ function UserProfilePage() {
 
     const userProfile = async () => {
       let q = query(collection(db, "userspicture"), where("uid", "==", user?.uid));
-      const userProfileDoc = await getDocs(q);
-      const userProfiledata = userProfileDoc.docs[0].data();
-      if (userProfiledata.imageurl) {
-        setImage(userProfiledata.imageurl);
-      } else {
-        setImage(
-          "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-        );
+      try {
+        const userProfileDoc = await getDocs(q);
+        const userProfiledata = userProfileDoc.docs[0].data();
+        if (userProfiledata.imageurl) {
+          setImage(userProfiledata.imageurl);
+        } else {
+          setImage(
+            "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+          );
+        }
+      }catch(e) {
+        console.log(e);
       }
+      
     };
 
     const handleChangeImage = async (e) => {
