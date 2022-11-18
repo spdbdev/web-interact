@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
-  sendPasswordResetEmail, signOut } from "firebase/auth";
+  sendPasswordResetEmail, signOut, verifyPasswordResetCode,confirmPasswordReset } from "firebase/auth";
 import { getFirestore, query, getDocs, collection, where, addDoc} from "firebase/firestore";
 import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
@@ -71,7 +71,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
           email,
           customerId: resp.data.customer.id,
           country,
-          photoUrl:imageurl
+          photoURL:imageurl
         });
       })
       .catch((err) => {
@@ -98,6 +98,25 @@ const logout = () => {
   signOut(auth);
 };
 
+const verifyResetCode = async (code) => {
+  try{
+    await verifyPasswordResetCode(auth,code);
+    return true;
+  }catch(err){
+    Swal.fire("Error!",err.message, "error");
+    return false;
+  }
+}
+
+const confirmPasswordChange = async (code,password) => {
+  try{
+    await confirmPasswordReset(auth,code,password);
+    Swal.fire("Success!", "Password has been changed!", "success");
+  }catch(err){
+    Swal.fire("Error!",err.message, "error");
+  }
+}
+
 export {
   auth,
   db,
@@ -105,5 +124,7 @@ export {
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
+  verifyResetCode,
+  confirmPasswordChange,
   logout,
 };

@@ -35,7 +35,7 @@ export async function initCampaignDoc(user) {
       lastCompletedTabIndex: -1,
       numAuctionInteractions: 0,
       numGiveawayInteractions: 0,
-      person: { id: "PNUa4JcusGMYowApbfPLflxAtap2", username: "umerhayat" },
+      person: { id: "PNUa4JcusGMYowApbfPLflxAtap2", username: "TestUser" },
       savedCustomURL: null,
       shouldReserveURL: false,
       socials: {

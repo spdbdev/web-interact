@@ -24,8 +24,7 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const [dropdownSearchVisibility, setDropdownSearchVisibility] =
-    React.useState(false);
+  const [dropdownSearchVisibility, setDropdownSearchVisibility] = React.useState(false);
   const { headerTheme } = useJumboHeaderTheme();
   const [isHovering, setIsHovering] = useState(false);
 
@@ -132,7 +131,7 @@ const Header = () => {
         {isLoggedIn &&
         <>
         <NotificationsDropdown />
-        <AuthUserDropdown/>
+        <AuthUserDropdown />
         </>}
         {!isLoggedIn &&
         <Link to="/a/signin" style={{textDecoration: 'none'}}>

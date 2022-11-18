@@ -98,7 +98,7 @@ export default function Giveaway({
 		}
 	};
 	useEffect(() => {
-		console.log('user >>>', user, campaignId);
+		//console.log('user >>>', user, campaignId);
         if (user?.uid){
 			fetchUserName();
 			getDataGiveaway();

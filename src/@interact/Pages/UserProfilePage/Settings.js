@@ -446,39 +446,6 @@ function Settings() {
 
   localStorage.setItem("name", name);
 
-  const handleChangeImage = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const percent = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-        },
-        (err) => console.log(err),
-        async () => {
-          // download url
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            await addDoc(collection(db, "userspicture"), {
-              uid: user?.uid,
-              name: user.displayName,
-              imageurl: url,
-            });
-          });
-        }
-      );
-
-      var reader = new FileReader();
-      reader.onload = function () {
-        var dataURL = reader.result;
-        setImage(dataURL);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
   return (
     <div>
       <Modal

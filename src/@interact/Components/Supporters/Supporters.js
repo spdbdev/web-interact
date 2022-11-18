@@ -34,7 +34,7 @@ function SupporterElem({user}){
 
  return (
    <div style={{display:'flex', flexDirection:'row',alignItems:"center", justifyContent:'start',flexBasis:"33.3%", padding:20}}>
-    {user?.photoUrl ? <img alt='userProfilePic' src={user.photoUrl} style={{borderRadius:18, width:34, height:34}}/> : <PersonIcon style={{border:"1px solid rgba(120,47,238,0.5)", width:34,height:34,borderRadius:18}}/>}
+    {user?.photoURL ? <img alt='userProfilePic' src={user.photoURL} style={{borderRadius:18, width:34, height:34}}/> : <PersonIcon style={{border:"1px solid rgba(120,47,238,0.5)", width:34,height:34,borderRadius:18}}/>}
      <a href='#' style={{marginLeft:'10px'}}>{user.username}</a>
    </div>
  )
