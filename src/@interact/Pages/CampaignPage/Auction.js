@@ -572,7 +572,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           </Typography>
 
           <Typography>
-            The top 20 bidders win at the end of the campaign.
+            The top 20 bidders win at the end of the campaign
           </Typography>
           </Stack>
 
