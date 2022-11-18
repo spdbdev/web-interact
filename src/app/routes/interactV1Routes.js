@@ -66,7 +66,7 @@ const interactV1Routes = [
   {
     path: "/u/",
     element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
+     <Page component={UserProfilePage} layout="vertical-default" />
     ),
   },
   {

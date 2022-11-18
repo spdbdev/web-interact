@@ -102,10 +102,10 @@ export default function Leaderboard({ campaignData, bids }) {
             Leaderboard
           </Typography>
           <InfoTooltip
-            title="If you’re on the leaderboard at the end of the campaign, 
-        you will receive a premium interaction, occurring before all other interactions
-        (before winners from the giveaway); otherwise, if you are overthrown from the
-        leaderboard by the end of the campaign, you are not charged"
+            title="If you’re on the leaderboard at the end of the campaign, you will receive 
+            a premium interaction, occurring before all other interactions (before winners from 
+            the giveaway); otherwise, if you are overthrown from the leaderboard by the end 
+            of the campaign, you are not charged"
           />
         </Stack>
         <Box style={{ height: "100%" }}>
