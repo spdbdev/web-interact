@@ -1,5 +1,5 @@
 import { TextField, Button, Stack } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { Box } from "@mui/material";
@@ -21,6 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FollowButton } from "../CampaignPage/Stats";
 import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import EditIcon from "@mui/icons-material/Edit";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,8 +57,9 @@ function UserProfilePage() {
     const isCreator = user?.name == params.username ? true : false;
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
+    const fileRef = useRef();
     const [image, setImage] = React.useState(
-      "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSi7Mj2jDzj87i1emqmIAKigu5gzrIKsFfOua8gZbV-g&s"
     );
 
     const userProfile = async () => {
@@ -77,6 +79,10 @@ function UserProfilePage() {
       }
       
     };
+
+    const handleFileClick = function(){
+      fileRef.current.click();
+    }
 
     const handleChangeImage = async (e) => {
       const file = e.target.files[0];
@@ -147,15 +153,8 @@ function UserProfilePage() {
           }}
         >
           <div className="image_item">
-            <form className="image_item-form">
-              <label className="image_item-form--lable"> Add Image</label>
-              <input
-                className="image-item-form-input"
-                type="file"
-                id="image-item-form--input-id"
-                onChange={handleChangeImage}
-              ></input>
-            </form>
+            <input type="file" accept="image/*" style={{display:"none"}} onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
+            <EditIcon onClick={(e)=>handleFileClick(e)} style={{width:'1.3em',height:'1.3em'}} className="profile_pic--icon"/>
             <img className="profilePic" alt="profile-pic" src={image} />
           </div>
           <div
