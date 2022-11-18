@@ -2,7 +2,7 @@ import { TextField, Button,FormControl, FormControlLabel, Checkbox,Alert, Icon, 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Swal from 'sweetalert2';
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,7 +29,6 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import "./SignUpPage.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { useRef } from "react";
 import { getUserCountryName } from "@interact/Components/utils";
 
 // newer SignUpPage with birthday.
