@@ -1,5 +1,4 @@
 import "./UserProfilePage.css";
-import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 
 export default function MeetingBlocks({ content, passed }) {
   return (

@@ -91,7 +91,7 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name,legalName, email, password,imageUrl,country)){
+    if(registerWithEmailAndPassword(name,legalName, email, password, imageUrl, country)){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);

@@ -60,7 +60,6 @@ const Sidebar = () => {
         user?.recentCampaignData
       );
       let recentCampaignItemGroup = [];
-      console.log("returnedValue for recent", returnedValue);
       for (let i = 0; i < returnedValue.length; i++) {
         let data = {
           campaignUri: returnedValue[i]?.id
@@ -116,7 +115,7 @@ const Sidebar = () => {
       type: "section",
       children: [
         {
-          uri: "/u/",
+          uri: "/u/"+user?.name,
           label: "Profile",
           type: "nav-item",
           icon: <PersonOutlineIcon sx={{ fontSize: 20 }} />,

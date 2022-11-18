@@ -1,6 +1,5 @@
 import React from "react";
 import "./UserProfilePage.css";
-import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import MeetingBlocks from "./MeetingBlocks";
 
 
@@ -23,7 +22,7 @@ function FollowedCampaigns() {
 	let user_id = id;
 	/* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-		photoUrl:
+		photoURL:
 		"https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
 		name: "biby",
 		email: "bibyliss@gmail.com",
@@ -119,7 +118,7 @@ function FollowedCampaigns() {
 		<br></br>
 		<CampaignsRow
 			currentCampaigns={currentCampaigns}
-			heading="Live campaigns"
+			heading="Followed campaigns"
 		/>
 		<CampaignsRow
 			currentCampaigns={interactionCampaigns}

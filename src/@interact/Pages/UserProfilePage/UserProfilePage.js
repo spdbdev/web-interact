@@ -14,7 +14,7 @@ import CreatorSchedules from "./CreatorSchedule";
 import Setting from "./Settings";
 import FollowerList from "./FollowerList";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { query, collection, getDocs, where, addDoc } from "firebase/firestore";
+import { setDoc, doc,query, onSnapshot } from "firebase/firestore";
 import Storage from "./firebasestorage";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,6 +22,7 @@ import { FollowButton } from "../CampaignPage/Stats";
 import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
+import Swal from 'sweetalert2';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,42 +51,52 @@ function a11yProps(index) {
 }
 
 function UserProfilePage() {
-    const [tab, setTab] = React.useState(0);
+
     const navigate = useNavigate();
     const params = useParams();
     const { user } = useCurrentUser();
     const isCreator = user?.name == params.username ? true : false;
+
+    const [tab, setTab] = React.useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
     const fileRef = useRef();
-    const [image, setImage] = React.useState(
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSi7Mj2jDzj87i1emqmIAKigu5gzrIKsFfOua8gZbV-g&s"
-    );
+    const [image, setImage] = React.useState("https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg");
 
-    const userProfile = async () => {
-      let q = query(collection(db, "userspicture"), where("uid", "==", user?.uid));
-      try {
-        const userProfileDoc = await getDocs(q);
-        const userProfiledata = userProfileDoc.docs[0].data();
-        if (userProfiledata.imageurl) {
-          setImage(userProfiledata.imageurl);
-        } else {
-          setImage(
-            "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg"
-          );
-        }
-      }catch(e) {
-        console.log(e);
-      }
-      
+
+    const updatePhotoURL = async (url) => {
+      setDoc(doc(db, "users", user.id), {photoURL:url}, {merge:true});
+    };
+
+    const getTargetUser = async () => {
+      let defaultUser = await fetchUserByName(params.username);
+      setTargetUser(defaultUser);
+      const userListener = onSnapshot(query(doc(db, "users",defaultUser.id)), (querySnapshot) => {
+        let userData = querySnapshot.data();
+        const id = querySnapshot.id;
+        setTargetUser({ ...userData, id });
+      });
     };
 
     const handleFileClick = function(){
       fileRef.current.click();
     }
 
+    const handleChange = (event, newValue) => {
+      setTab(newValue);
+    };
+
     const handleChangeImage = async (e) => {
       const file = e.target.files[0];
+      const filesize = Math.round((file.size / 1024));
+      if(filesize >= 7168){
+        Swal.fire(
+          "Too Large!",
+          "Max 7mb file size is allowed.",
+          "error"
+          );
+        return;
+      }
       if (file) {
         const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
@@ -97,17 +108,14 @@ function UserProfilePage() {
             );
           },
           (err) => console.log(err),
-          async () => {
+          () => {
             // download url
             getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-              await addDoc(collection(db, "userspicture"), {
-                uid: user?.uid,
-                name: user.displayName,
-                imageurl: url,
-              });
+              updatePhotoURL(url);
             });
           }
         );
+
         var reader = new FileReader();
         reader.onload = function () {
           var dataURL = reader.result;
@@ -122,21 +130,12 @@ function UserProfilePage() {
       if (!params.username) {
         navigate(user.name ? `/u/${user.name}` : "/")
       }
-      userProfile();
+      setImage(user.photoURL);
     }, [user]);
 
-    useEffect(async ()  => {
-      if(params.username) {
-        try {
-          setTargetUser(await fetchUserByName(params.username));
-        }catch(e) {
-          setTargetUser({});
-        }
-      }
-    }, [params, targetUser])
-    const handleChange = (event, newValue) => {
-      setTab(newValue);
-    };
+    useEffect(()  => {
+      if(params.username) getTargetUser();
+    }, [params]);
 
     return (
       <div>
@@ -146,7 +145,7 @@ function UserProfilePage() {
           alignItems="center"
           justifyContent="center"
           sx={{
-            backgroundColor: "primary.main",
+            backgroundImage: "linear-gradient(to bottom right, #4b26a3, #d442f5)",
             width: "100%",
             py: 4,
             borderRadius: 2,

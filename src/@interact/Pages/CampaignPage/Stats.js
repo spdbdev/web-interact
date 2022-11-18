@@ -9,20 +9,22 @@ import Span from "@jumbo/shared/Span";
 import { formatMoney } from "@interact/Components/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { followUser,fetchUserByName } from "../../../firebase";
-
+import { db } from "@jumbo/services/auth/firebase/firebase";
+import { doc,query, onSnapshot } from "firebase/firestore";
 
 export default function Stats({ campaignData, bids }) {
 	let stats = campaignData.stats ?? {};
 	const { user } = useCurrentUser();
 	const [targetUser, setTargetUser] = useState({});
 	useEffect(async ()  => {
-      try {
-        let data = await fetchUserByName(campaignData?.person?.username);
-        setTargetUser(data);
-      }catch(e) {
-        setTargetUser({});
-      }
-  	}, [campaignData?.person, targetUser])
+		let defaultUser = await fetchUserByName(campaignData?.person?.username);
+		setTargetUser(defaultUser);
+		const userListener = onSnapshot(query(doc(db, "users",defaultUser.id)), (querySnapshot) => {
+			let userData = querySnapshot.data();
+			const id = querySnapshot.id;
+			setTargetUser({ ...userData, id });
+		});
+  	}, [campaignData?.person])
 	return (
 		<Stack
 		direction="row"
