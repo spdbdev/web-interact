@@ -21,10 +21,11 @@ import { auth, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
 import { sortBids } from "@interact/Components/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import { saveToRecentCampaignHistory } from "../../../firebase";
 
 
 function CampaignPage(userData) {
-  
+  	const { user } = useCurrentUser();
 	const [vipChanceMultiplier, setVipChanceMultiplier] = useState(25);
 	const [freeChanceMultiplier, setFreeChanceMultiplier] = useState(1);
 	const [campaignData, setCampaignData] = useState({});
@@ -44,11 +45,9 @@ function CampaignPage(userData) {
 	const num_auction = 10;
 	const { theme } = useJumboTheme();
 	const navigate = useNavigate();
-	
 	let { campaign_slug } = useParams();
 	if(!campaign_slug) campaign_slug = "test12345";
 
-	let [user, loading] = useAuthState(auth);
 	/* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
 		photoURL: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
@@ -66,8 +65,9 @@ function CampaignPage(userData) {
 			getCampaignData();
 			checkPurchasedEntry();
 		}
-	}, [campaignId]);
-  	const checkAuthentication = () => {
+	}, [user,campaignId]);
+
+  const checkAuthentication = () => {
 		if(!user) {
 			navigate(`/a/signup?redirect=/c/${campaignId}`);
 			return false;
@@ -88,20 +88,17 @@ function CampaignPage(userData) {
 		else setCampaignId(campaign_slug);
 	}
 
-  	const getCampaignData = async () => 
+  const getCampaignData = async () => 
 	{
 		//campaigns change listener
 		const campaignsListener = onSnapshot(query(doc(db, "campaigns", campaignId)), (querySnapshot) => {
 			let _campaignData = querySnapshot.data();
 			setCampaignData(_campaignData);
-
-			// console.log("Campaign Data >>>>>>>>>>>", _campaignData);
-
-			//Check Campaign End Time
+      saveToRecentCampaignHistory(campaignId, user);
+      //Check Campaign End Time
 			let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
 			let now = new Date();
 			if (campaignEndDate - now < 0) setIsCampaignEnded(true);
-
 			if (Object.entries(_campaignData).length > 0)
 			getChanceMultiplier(_campaignData);
 		});
@@ -114,7 +111,6 @@ function CampaignPage(userData) {
 			});
 			bidsList = sortBids(bidsList);
 			setBids(bidsList);
-
 			if(!user?.email) return;
 			let position = bidsList.findIndex((element) => element.email === user.email);
 			setUserAuctionPosition(++position);
@@ -136,29 +132,7 @@ function CampaignPage(userData) {
 			});
 			setGiveaways(giveawayList);
 		});
-
-		// Using giveaways and bids instead of supporters.
-		/* const supportersListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "supporters")),(querySnapshot)=>{
-			let supportersList = [];
-			querySnapshot.forEach((doc) => {
-				supportersList.push(doc.data());
-			});
-			setSupporters(supportersList[0].supporters);
-		}) */
-
-    	/* 
-		// replace these with listeners
-		setComments(
-		  await getFirebaseArray(
-		    collection(db, "campaigns", campaignId, "comments")
-		  )
-		);
-		setSupporters(
-		  await getFirebaseArray(
-		    collection(db, "campaigns", campaignId, "supporters")
-		  )
-		); */
-  	};
+  };
 
 	const getUserLostHistory = async (creator_id, user_id) => {
 		const campaignHistoryUsers = await getDoc(doc(db, "contributionAndGiveawayLossHistory", creator_id, "users", user_id));
@@ -186,8 +160,6 @@ function CampaignPage(userData) {
 		}
 		setVipChanceMultiplier(vipMultiplier);
 		setFreeChanceMultiplier(freeMultiplier);
-
-		//console.log("Lost history",lostHistory, 'vip chance',vipChanceMultiplier, 'free chance',freeChanceMultiplier);
 		getChanceOfwinning(_campaignData, vipMultiplier, freeMultiplier);
 	};
 
@@ -245,7 +217,6 @@ function CampaignPage(userData) {
 		if(!checkAuthentication()) return;
 		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
 		let user_data = userSnap.docs[0];
-
 		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
 			person: {
 				username: user_data.data().name,
@@ -260,7 +231,6 @@ function CampaignPage(userData) {
 			email: user.email,
 			time: serverTimestamp(),
 		});
-
 		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
 		const counter = snapshot.data().count;
 		//console.log("bids count: ", counter);
@@ -268,28 +238,7 @@ function CampaignPage(userData) {
 		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
 	};
 
-  	/* useEffect(() => {
-		// Check if there is a campaignId in params
-		if (params.campaignId) {
-		  // Then, check if the campaign is a draft, 
-		  if (user && user.campaigns && user.campaigns[0] && user.campaigns[0].campaignStatus === "draft") {
-			// then redirect the user to /d/
-			navigate(createCampaignURL(user.campaigns[0]))
-		  } else {
-			// otherwise, proceed with getting campaign data
-			getCampaignData(params.campaignId);
-		  }
-		} else {
-		  // otherwise, check if user is authenticated
-		  if (user) {
-			// then redirect either to appropriate campaign, or to create campaign page
-			navigate(user.campaigns && user.campaigns[0] ? createCampaignURL(user.campaigns[0]) : "/a/create-campaign")
-		  }
-		}
-		console.log(params, !params.campaignId, user)
-	}, [user, params]); */
-
-	function renderUserCampaignStatus() {
+  function renderUserCampaignStatus() {
 		if (hasUserEnteredAuction || hasUserPurchasedVIPEntry || hasUserClaimedFreeEntry) 
 		{
 			let statusType = "bid";

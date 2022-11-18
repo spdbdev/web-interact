@@ -14,7 +14,7 @@ import CreatorSchedules from "./CreatorSchedule";
 import Setting from "./Settings";
 import FollowerList from "./FollowerList";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc,query, onSnapshot } from "firebase/firestore";
 import Storage from "./firebasestorage";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
@@ -69,11 +69,13 @@ function UserProfilePage() {
     };
 
     const getTargetUser = async () => {
-      try {
-        setTargetUser(await fetchUserByName(params.username));
-      }catch(e) {
-        setTargetUser({});
-      }
+      let defaultUser = await fetchUserByName(params.username);
+      setTargetUser(defaultUser);
+      const userListener = onSnapshot(query(doc(db, "users",defaultUser.id)), (querySnapshot) => {
+        let userData = querySnapshot.data();
+        const id = querySnapshot.id;
+        setTargetUser({ ...userData, id });
+      });
     };
 
     const handleFileClick = function(){

@@ -65,13 +65,17 @@ const interactV1Routes = [
   {
     path: "/u/:username",
     element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
     ),
   },
   {
     path: "/u/",
     element: (
-     <Page component={UserProfilePage} layout="vertical-default" />
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
     ),
   },
   {
@@ -90,7 +94,7 @@ const interactV1Routes = [
   {
     path: "/a/create-campaign",
     element: (
-    <Page component={CreateCampaignPage} layout="solo-page" />
+      <Page component={CreateCampaignPage} layout="solo-page" />
     )
   },
 
