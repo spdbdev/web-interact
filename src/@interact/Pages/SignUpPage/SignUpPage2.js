@@ -197,11 +197,15 @@ function SignUpPage2() {
           <img
             src={image}
             alt="profile image"
-            style={{height: 100, padding: 10,borderRadius:"50%"}}
+            style={{height: 100, padding: 10, borderRadius:"50%"}}
           />
           <input type="file" accept="image/*" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
           <EditIcon onClick={(e)=>handleFileClick(e)} className="profile_pic--icon"/>
         </div>
+        <div style={{ paddingTop: 0 }}>
+          Already have an account? <Link to="/a/signin">Log in</Link>
+        </div>
+        <br></br>
         {/* need to set google sign in in the firebase console, rn its only email/password*/}
         <Button className="SignUpWithGoogle" onClick={signInWithGoogle}>
           <img src={gl_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
@@ -332,7 +336,7 @@ function SignUpPage2() {
           onClick={register}>Create account</InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20 }}>
-          Already have an account? <Link to="/">Log in</Link>
+          Already have an account? <Link to="/a/signin">Log in</Link>
         </div>
       </div>
       {/* </div> */}

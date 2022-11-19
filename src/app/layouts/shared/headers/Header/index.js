@@ -19,6 +19,7 @@ import Button from "@mui/material/Button";
 import {auth } from "@jumbo/services/auth/firebase/firebase";
 import {useState,useEffect} from 'react'
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import InteractLogo from "@interact/Components/TopBar/tempLogo.png";
 // import { useAuthState } from "react-firebase-hooks/auth";
 
 const Header = () => {
@@ -90,29 +91,13 @@ const Header = () => {
               },
             }}
           />
-          <IconButton
-            sx={{
-              position: "absolute",
-              right: 15,
-              top: "50%",
-              color: "inherit",
-              transform: "translateY(-50%)",
-            }}
-            onClick={() => setDropdownSearchVisibility(false)}
-          >
-            <CloseIcon />
-          </IconButton>
         </Div>
       </Slide>
-      <Link to="/a/create-campaign/"
-       style={{
-        color: isHovering ? '#782fee' : '#222',
-        textDecoration: isHovering ? 'underline' : 'none',
-      }}
+      <Link to="/"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       >
-        Start a campaign
+        <img src={InteractLogo} width={120} />
       </Link>
 
       <Stack
