@@ -11,8 +11,6 @@ import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 import Settings from "@interact/Pages/UserProfilePage/Settings";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
-import TermsAndConditionsPage from "@interact/Pages/TermsAndPolicyPage/TermsAndConditionsPage";
-import PrivacyPolicyPage from "@interact/Pages/TermsAndPolicyPage/PrivacyPolicyPage";
 import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
@@ -23,6 +21,10 @@ import Error500 from "app/pages/extra-pages/Error500";
 
 import AuthGuard from "@jumbo/services/auth/AuthGuard";
 import LandingPage from "@interact/Pages/LandingPage/LandingPage";
+import FaqPage from '@interact/Pages/FaqPage';
+import CampaignCreatorFaqPage from "@interact/Pages/CampaignCreatorFaqPage";
+import TermsAndConditionsPage from "@interact/Pages/TermsAndConditionsPage";
+import PrivacyPolicyPage from "@interact/Pages/PrivacyPolicyPage";
 
 const interactV1Routes = [
   {
@@ -46,12 +48,20 @@ const interactV1Routes = [
     element: <SignUpPage2 />,
   },
   {
-    path: "/a/termsandconditions",
+    path: "/a/terms-conditions",
     element: <TermsAndConditionsPage/>,
   },
   {
-    path: "/a/privacypolicy",
+    path: "/a/privacy-policy",
     element: <PrivacyPolicyPage/>,
+  },
+  {
+    path: "/a/faq",
+    element: <FaqPage />
+  },
+  {
+    path: "/a/campaign-creator-faq",
+    element: <CampaignCreatorFaqPage />
   },
   {
     path: "/u/:username",
@@ -120,12 +130,6 @@ const interactV1Routes = [
     ),
   },
   {
-    path: "/a/faq",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
     path: "/a/settings",
     element: (
       <Page component={<></>} layout="solo-page" />
@@ -139,18 +143,6 @@ const interactV1Routes = [
   },
   {
     path: "/a/campaigncreatorfaq",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/privacy-policy",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/terms-and-conditions",
     element: (
       <Page component={<></>} layout="solo-page" />
     ),

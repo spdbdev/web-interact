@@ -121,26 +121,26 @@ const blockList = [
 const FeatureCard = ({ data }) => {
   return (
     <Grid item xs={12} sm={6} md={4} data-aos={data?.aos}>
-      <GradientRoundedBox sx={{ alignItems: "center", p: 4, height: '100%' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '230px' }}>
+      <GradientRoundedBox sx={{ alignItems: "center", p: 3, height: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
           <img src={data?.icon} alt='' />
         </Box>
         <Typography
           sx={{
-            fontSize: "28px",
+            fontSize: "21px",
             fontWeight: 600,
             color: "#4D4657",
             textAlign: "center",
             lineHeight: '110%',
-            minHeight: '62px'
+            minHeight: '65px'
           }}
         >
           {data.title}
         </Typography>
         <Typography
           sx={{
-            mt: 3,
-            fontSize: "20px",
+            mt: 2,
+            fontSize: "15px",
             fontWeight: 400,
             textAlign: "center",
             color: '#70677E',
@@ -168,6 +168,44 @@ const AnimateCard = ({ radius, padding, children, reverse }) => {
   )
 };
 
+const CampaignButtonGroup = ({ title, goToPage }) => {
+  return (
+    <Stack direction="column" alignItems="center">
+      <InteractFlashyButton
+        radius={"5px 23px"}
+        aos="fade-up"
+        onClick={() => goToPage()}
+      >
+        <Typography sx={{ fontSize: "18px", px: 2, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
+         {title}
+        </Typography>
+      </InteractFlashyButton>
+      <Typography
+        sx={{
+          mt: 2,
+          mb: 1,
+          fontSize: "15px",
+          textAlign: "center",
+          color: '#A79BBB',
+          lineHeight: '25px',
+          maxWidth: '550px',
+          '& > a': {
+            color: '#782FEE',
+            transition: 'color 0.2s linear'
+          },
+          '& > a:hover': {
+            color: '#DD00FF'
+          }
+        }}
+      >
+        Get started for free, create a campaign in 15 minutes;{" "}
+        <a href='mailto:andrew@interact.vip?Subject=Help me set things up on Interact'>send us an email</a>
+        {" "}with your social media link & we’ll be happy to personally help you set things up
+      </Typography>
+    </Stack>
+  )
+}
+
 const LandingPage = () => {
   const navigate = useNavigate();
 
@@ -176,12 +214,12 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <Stack maxWidth={"1440px"} alignSelf="center">
+    <Stack maxWidth={"1010px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 15 }}>
-          <Grid container spacing={8}>
+        <Stack width={"100%"} sx={{ mt: 11 }}>
+          <Grid container spacing={6}>
             <Grid item xs={12} sm={4} md={4}>
-              <AnimateCard padding='65px' radius='5px 27px' data-aos="fade-up">
+              <AnimateCard padding='49px' radius='5px 27px' data-aos="fade-up">
                 <Box
                   sx={{
                     display: 'flex',
@@ -195,10 +233,10 @@ const LandingPage = () => {
                       variant="body1"
                       component='span'
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
                         color: '#FF5C00',
-                        lineHeight: '130.52%'
+                        lineHeight: '120%'
                       }}
                     >
                       Delight&nbsp;
@@ -208,22 +246,22 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
-                        lineHeight: '130.52%'
+                        lineHeight: '120%'
                       }}
                     >
                       your fans with 1-on-1 interactions
                     </Typography>
-                    <Box sx={{ mt: 3 }} className='landing-subtitle'>
+                    <Box sx={{ mt: 2 }} className='landing-subtitle'>
                       <Typography
                         className="landing-gradient-text"
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         (game & chat); Interact
@@ -232,10 +270,10 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         {" "}boosts{" "}
@@ -245,9 +283,9 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         your income with our auction
@@ -256,10 +294,10 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         {" "}+{" "}
@@ -269,16 +307,16 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         giveaway campaigns & minimizes logistical hassle with our intuitive scheduling
                       </Typography>
                     </Box>
                   </Box>
-                  <Box>
+                  <Box sx={{ '& img': { width: '50px' }, display: 'flex' }}>
                     <img src='images/icons/logo.png' alt='' />
                   </Box>
                 </Box>
@@ -291,13 +329,13 @@ const LandingPage = () => {
             </Grid>
           </Grid>
         </Stack>
-        <GradientRoundedBox width={"100%"} sx={{ mt: 15 }} radius='27px'>
+        <GradientRoundedBox width={"100%"} sx={{ mt: 11 }} radius='27px'>
           <Grid container>
             <Grid item xs={12} sm={4} md={4}>
               <Image src='images/pages/landing/reward-left.jpg' alt='' />
             </Grid>
             <Grid item xs={12} sm={8} md={4} data-aos="fade-left">
-              <AnimateCard padding='65px' radius='0px' reverse="true">
+              <AnimateCard padding='49px' radius='0px' reverse="true">
                 <Box
                   sx={{
                     height: '100%',
@@ -313,9 +351,9 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
-                        lineHeight: '130.52%'
+                        lineHeight: '120%'
                       }}
                     >
                       Let your fans be
@@ -324,23 +362,23 @@ const LandingPage = () => {
                       variant="body1"
                       component='span'
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
                         color: '#FF5C00',
-                        lineHeight: '130.52%'
+                        lineHeight: '120%'
                       }}
                     >
                       {" "}recognized
                     </Typography>
-                    <Box sx={{ mt: 3 }} className='landing-subtitle'>
+                    <Box sx={{ mt: 2 }} className='landing-subtitle'>
                       <Typography
                         className="landing-gradient-text"
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '21px',
                           fontWeight: 600,
-                          lineHeight: '130.52%'
+                          lineHeight: '98%'
                         }}
                       >
                         After spending countless hours watching you, fans have
@@ -349,10 +387,10 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '21px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '130.52%'
+                          lineHeight: '98%'
                         }}
                       >
                         &nbsp;grown with you&nbsp;
@@ -362,9 +400,9 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '21px',
                           fontWeight: 600,
-                          lineHeight: '130.52%'
+                          lineHeight: '98%'
                         }}
                       >
                         not only as a creator, but
@@ -373,10 +411,10 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '27px',
+                          fontSize: '21px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '140.52%',
+                          lineHeight: '115%',
                           display: 'block'
                         }}
                       >
@@ -384,7 +422,7 @@ const LandingPage = () => {
                       </Typography>
                     </Box>
                   </Box>
-                  <Box sx={{ width: '80px', position: 'relative' }}>
+                  <Box sx={{ width: '60px', position: 'relative' }}>
                     <img src='images/pages/landing/heart-round.png' alt='' className='landing-heart' />
                     <img src='images/pages/landing/gray-heart-round.png' alt='' className='landing-gray-heart' />
                   </Box>
@@ -397,15 +435,15 @@ const LandingPage = () => {
           </Grid>
         </GradientRoundedBox>
 
-        <Stack width={"100%"} sx={{ mt: 15 }}>
-          <Grid container spacing={8} data-aos="fade-right">
+        <Stack width={"100%"} sx={{ mt: 11 }}>
+          <Grid container spacing={6} data-aos="fade-right">
             <Grid item xs={12} sm={8} md={8}>
               <GradientRoundedBox sx={{ display: 'flex' }} radius='5px 27px'>
                 <Image src='images/pages/landing/loyal-fans.jpg' alt='' />
               </GradientRoundedBox>
             </Grid>
             <Grid item xs={12} sm={4} md={4} data-aos="fade-down">
-              <AnimateCard padding='65px' radius='27px 5px'>
+              <AnimateCard padding='49px' radius='27px 5px'>
                 <Box
                   sx={{
                     height: '100%',
@@ -426,10 +464,10 @@ const LandingPage = () => {
                       variant="body1"
                       component='span'
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
                         color: '#FF5C00',
-                        lineHeight: '130.52%'
+                        lineHeight: '120%'
                       }}
                     >
                       Your{" "}
@@ -439,9 +477,9 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
-                        lineHeight: '130.52%',
+                        lineHeight: '120%',
                       }}
                     >
                       hours,{" "}
@@ -450,10 +488,10 @@ const LandingPage = () => {
                       variant="body1"
                       component='span'
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
                         color: '#FF5C00',
-                        lineHeight: '130.52%'
+                        lineHeight: '120%'
                       }}
                     >
                       your{" "}
@@ -463,22 +501,22 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '37px',
+                        fontSize: '28px',
                         fontWeight: 800,
-                        lineHeight: '130.52%',
+                        lineHeight: '120%',
                       }}
                     >
                       schedule
                     </Typography>
-                    <Box sx={{ mt: 3 }} className='landing-subtitle'>
+                    <Box sx={{ mt: 2 }} className='landing-subtitle'>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         Get to know your fans for a
@@ -487,10 +525,10 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FF5C00',
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         {" "}few hours{" "}
@@ -500,9 +538,9 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '24px',
+                          fontSize: '18px',
                           fontWeight: 600,
-                          lineHeight: '140.52%'
+                          lineHeight: '115%'
                         }}
                       >
                         a week over 1-2 months; flexibly choose your availability
@@ -510,7 +548,7 @@ const LandingPage = () => {
                       </Typography>
                     </Box>
                   </Box>
-                  <Box>
+                  <Box sx={{ '& img': { width: '50px' }, display: 'flex' }}>
                     <img src='images/icons/logo.png' alt='' />
                   </Box>
                 </Box>
@@ -519,7 +557,7 @@ const LandingPage = () => {
           </Grid>
         </Stack>
         <Box sx={{ width: '80%' }}>
-          <VideoContainer mt={23} mb={13}>
+          <VideoContainer mt={17} mb={10}>
             <iframe
               title='youtube'
               src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc'
@@ -527,37 +565,27 @@ const LandingPage = () => {
             />
           </VideoContainer>
         </Box>
-        <Stack direction="column" alignItems="center" mb={13}>
-          <InteractFlashyButton
-            radius='5px 23px'
-            onClick={() => navigate('/a/what-is-interact')}
-            aos="fade-up"
-          >
-            <Typography sx={{ fontSize: "24px", px: 4, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
-              Start a campaign
-            </Typography>
-          </InteractFlashyButton>
-
-          <Typography sx={{ my: 2, fontSize: "20px", textAlign: "center", color: '#A79BBB', lineHeight: '36px' }}>
-            Get started for free, create a campaign in under half an hour
-          </Typography>
+        <Stack sx={{ mb: 10 }}>
+          <CampaignButtonGroup
+            title='Start a campaign'
+            goToPage={() => navigate('/a/what-is-interact')}
+          />
         </Stack>
-
-        <GradientRoundedBox sx={{ mb: '120px', display: 'flex', overflow: 'hidden' }}>
-          <Box>
+        <GradientRoundedBox sx={{ mb: '90px', display: 'flex', overflow: 'hidden' }}>
+          <Box sx={{ position: 'relative', width: '40%', '& img': { width: '100%', height: '100%', position: 'absolute', objectFit: 'cover' } }}>
             <img
               src='images/pages/landing/interact.jpg'
               alt=''
               className='landing-h-100'
             />
           </Box>
-          <Box sx={{ p: 8, flex: 1 }}>
-            <Typography fontSize={"36px"} color={"#782FEE"} fontWeight={"700"} >
+          <Box sx={{ p: 6, flex: 1 }}>
+            <Typography fontSize={"27px"} color={"#782FEE"} fontWeight={"700"} >
               What can you earn with interact?
             </Typography>
             <Typography
-              mt='30px'
-              fontSize={"26px"}
+              mt='23px'
+              fontSize={"20px"}
               fontWeight={"400"}
               color={"#4D4657"}
               data-aos="fade-down"
@@ -568,7 +596,7 @@ const LandingPage = () => {
             </Typography>
             <Typography
               mt={1}
-              fontSize={"24px"}
+              fontSize={"18px"}
               color={"#70677E"}
               fontWeight={"400"}
               data-aos="fade-down"
@@ -579,7 +607,7 @@ const LandingPage = () => {
             </Typography>
             <Typography
               mt={4}
-              fontSize={"26px"}
+              fontSize={"20px"}
               fontWeight={"500"}
               color={"#4D4657"}
               data-aos="fade-up-left"
@@ -590,7 +618,7 @@ const LandingPage = () => {
             </Typography>
             <Typography
               mt={1} 
-              fontSize={"24px"} 
+              fontSize={"18px"} 
               color={"#70677E"}
               data-aos="fade-down"
             >
@@ -602,29 +630,29 @@ const LandingPage = () => {
         </GradientRoundedBox>
 
         <Stack width={"100%"}>
-          <Grid container spacing={7}>
+          <Grid container spacing={5}>
             {blockList.map(data => (
               <FeatureCard key={data.id} data={data} />
             ))}
           </Grid>
         </Stack>
 
-        <Stack width={"100%"} sx={{ mt: 15 }}>
-          <Grid container spacing={10}>
+        <Stack width={"100%"} sx={{ mt: 12 }}>
+          <Grid container spacing={8}>
             <Grid item xs={12} sm={6} md={6}>
               <Typography
                 variant='h3'
                 component='h2'
-                sx={{ fontWeight: 600, fontSize: "32px", color: "#4D4657", lineHeight: '46px' }}
+                sx={{ fontWeight: 600, fontSize: "24px", color: "#4D4657", lineHeight: '40px' }}
               >
                 Together, you can:
                 <Box
                   className='landing-game-border'
-                  sx={{ pl: 5, mt: 5 }}
+                  sx={{ pl: 4, mt: 4 }}
                 >
                   <Box data-aos="fade-right" data-aos-duration="1000">
                     <Typography
-                      fontSize={"26px"}
+                      fontSize={"20px"}
                       color={"#70677E"}
                       fontWeight={"400"}
                       sx={{ '& > :not(.MuiTypography-body1)': { fontWeight: 700, color: "#782FEE" } }}
@@ -633,16 +661,16 @@ const LandingPage = () => {
                       <Typography
                         variant="body1"
                         component="span"
-                        fontSize={"26px"}
+                        fontSize={"20px"}
                         color={"#3D3649"}
                         fontWeight={"400"}
                       >F</Typography>rom competitive games like Valorant & Chess to.... GeoGuessr
                       or mini putt in Discord activities
                     </Typography>
                   </Box>
-                  <Box sx={{ mt: 2 }} data-aos="fade-left">
+                  <Box sx={{ mt: '12px' }} data-aos="fade-left">
                     <Typography
-                      fontSize={"26px"}
+                      fontSize={"20px"}
                       color={"#70677E"}
                       fontWeight={"400"}
                       sx={{ '& > span': { fontWeight: 700, color: "#782FEE" } }}
@@ -657,9 +685,9 @@ const LandingPage = () => {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ mt: 2 }} data-aos="fade-right">
+                  <Box sx={{ mt: '12px' }} data-aos="fade-right">
                     <Typography
-                      fontSize={"26px"}
+                      fontSize={"20px"}
                       color={"#70677E"}
                       fontWeight={"700"}
                       sx={{
@@ -678,7 +706,7 @@ const LandingPage = () => {
                 </Box>
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6} md={6}>
+            <Grid item xs={12} sm={6} md={6} sx={{ display: 'flex', alignItems: 'center' }}>
               <img
                 src='images/pages/landing/together.png'
                 alt=''
@@ -691,22 +719,22 @@ const LandingPage = () => {
           </Grid>
         </Stack>
 
-        <Stack width={"100%"} sx={{ mt: 15 }}>
+        <Stack width={"100%"} sx={{ mt: 12 }}>
           <Accordion
             className='landing-accordion'
             sx={{
-              px: 6,
-              py: 4,
+              px: 4,
+              py: 3,
               boxShadow: "0px 0px 27px 7px rgba(120, 47, 238, 0.15)"
             }}
           >
             <AccordionSummary
               aria-controls="panel1a-content"
               id="panel1a-header"
-              expandIcon={<ArrowDropUpRoundedIcon color="primary" sx={{ fontSize: '60px' }} />}
+              expandIcon={<ArrowDropUpRoundedIcon color="primary" sx={{ fontSize: '45px' }} />}
             >
               <Typography
-                fontSize={"36px"}
+                fontSize={"27px"}
                 color={"#782FEE"}
                 fontWeight={"700"}
               >
@@ -716,14 +744,14 @@ const LandingPage = () => {
             <AccordionDetails>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Box sx={{ width: { sm: '45%' } }}>
-                  <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;Content creators <span>start a time-limited campaign </span>
                     (lasting 10 days, by default) with a goal, offering <span>1-on-1
                       interactions to fans </span>(eg. play a game, chatting <span>via Discord
                         or Google Meet</span>) that are <span>scheduled in the 10 weeks (by
                           default) after the campaign ends.</span>
                   </Typography>
-                  <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;Fans try to be selected via the <span>giveaway </span>(with a
                     <span> free entry option</span>) or the <span>auction </span>(be a top bidder on the
                     leaderboard; pricier but a guaranteed interaction).  Fans pay immediately for the giveaway;
@@ -731,18 +759,18 @@ const LandingPage = () => {
                   </Typography>
                 </Box>
                 <Box sx={{ flex: 1 }}>
-                  <Typography fontSize={"21px"}>
+                  <Typography fontSize={"16px"}>
                     💜&nbsp;When new fans try to enter the auction/giveaway,
                     they have to create an account & input their general
                     availability from Mon-Sun (editable on profile).
                   </Typography>
-                  <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;After the campaign ends,<span> selected fans (winners)
                       will have interactions assigned to them over the
                       interaction window duration, </span>10 weeks by default
                     (with auction winners having priority).
                   </Typography>
-                  <Typography fontSize={"21px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;The content creator<span> selects when they are available
                       week-by-week </span>(creators have to lock in their availability by
                     Friday midnight (EST) for the next week, and can<span> sync with
@@ -754,19 +782,11 @@ const LandingPage = () => {
             </AccordionDetails>
           </Accordion>
         </Stack>
-        <Stack direction="column" alignItems="center" sx={{ pt: 14 }}>
-          <InteractFlashyButton
-            radius={"5px 23px"}
-            aos="fade-up"
-            onClick={() => navigate('/a/what-is-interact')}
-          >
-            <Typography sx={{ fontSize: "24px", px: 4, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
-              Create a campaign now!
-            </Typography>
-          </InteractFlashyButton>
-          <Typography sx={{ mt: 2, mb: 5, fontSize: "20px", textAlign: "center", color: '#A79BBB', lineHeight: '36px' }}>
-            Get started for free, create a campaign in under half an hour
-          </Typography>
+        <Stack sx={{ pt: 14, mb: 3 }}>
+          <CampaignButtonGroup
+            title='Create a campaign now'
+            goToPage={() => navigate('/a/what-is-interact')}
+          />
         </Stack>
       </Stack>
     </Stack>
