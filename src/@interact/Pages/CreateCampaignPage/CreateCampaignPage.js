@@ -557,8 +557,6 @@ function CreateCampaignPage() {
 				)}{" "}
 			</Span>
 			<IconButton
-				disableRipple
-				disableFocusRipple
 				onClick={() => navigate(`/u/${user.name}`)}
 			>
 				<Close sx={{ color: "text.secondary" }} />
