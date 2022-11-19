@@ -36,15 +36,10 @@ function ForgotPassword() {
         <br></br>
         <div className='ButtonsWrapper' style={{margin:10}}>
           <InteractFlashyButton onClick={()=>sendPasswordReset(email)}>
-            Reset Password
+            Reset password
           </InteractFlashyButton>
         </div>
-        <div style={{ paddingTop: 20 }}>
-          Don't remember your email? <Link to='/signup'>Contact Support.</Link>
-        </div>
-
-
-
+        <br></br>
       </div>
       {/* </div> */}
     </div>

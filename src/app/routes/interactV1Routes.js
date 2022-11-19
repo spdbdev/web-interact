@@ -22,7 +22,8 @@ import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 
 import AuthGuard from "@jumbo/services/auth/AuthGuard";
-import ForgotPassword from "app/pages/auth-pages/forgot-password";
+import ForgotPassword from "@interact/Pages/SignUpPage/ForgotPassword";
+import ResetPassword from "@interact/Pages/SignUpPage/ResetPassword";
 
 const interactV1Routes = [
   {
@@ -42,12 +43,20 @@ const interactV1Routes = [
     element: <SignInPage />,
   },
   {
+    path: "/",
+    element: <SignInPage />,
+  },
+  {
     path: "/a/signup",
     element: <SignUpPage2 />,
   },
   {
     path: "/a/forgotpassword",
     element: <ForgotPassword/>
+  },
+  {
+    path: "/a/resetpassword",
+    element: <ResetPassword/>
   },
   {
     path: "/a/termsandconditions",
@@ -60,9 +69,9 @@ const interactV1Routes = [
   {
     path: "/u/:username",
     element: (
-      <AuthGuard>
+      //<AuthGuard>
         <Page component={UserProfilePage} layout="vertical-default" />
-      </AuthGuard>
+      //</AuthGuard>
     ),
   },
   {

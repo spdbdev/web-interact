@@ -292,7 +292,7 @@ export default function SchedulingTab({
                   })
                 }
                 renderInput={(params) => <TextField {...params} />}
-                minDateTime={startDateTime}
+                minDateTime={moment(startDateTime).add(5, "days")}
                 minutesStep={15}
                 maxDateTime={moment(startDateTime).add(20, "days")}
               />

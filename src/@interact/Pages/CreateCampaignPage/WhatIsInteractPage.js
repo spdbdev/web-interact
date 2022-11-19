@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect } from "react";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
 
@@ -141,6 +142,9 @@ const WhatIsInteractFAQs = [
 ];
 
 function SpecialAccordion({ question, answer, defaultExpanded }) {
+  //const { user } = useCurrentUser();
+  //const navigate = useNavigate();
+
   return (
     <Accordion defaultExpanded={defaultExpanded}>
       <AccordionSummary
@@ -186,8 +190,8 @@ export default function WhatIsInteractPage() {
       >
         <Box sx={{ alignSelf: "flex-end" }}>
           <IconButton
-            disableRipple
-            disableFocusRipple
+            //disableRipple
+            //disableFocusRipple
             onClick={() => navigate(`/u/`)}
           >
             <Close sx={{ color: "text.secondary" }} />
