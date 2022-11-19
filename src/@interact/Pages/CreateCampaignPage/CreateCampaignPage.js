@@ -382,10 +382,9 @@ function CreateCampaignPage() {
   const navigate = useNavigate();
   //If unathenticated redirect to signup
   useEffect(() => {
-    if (!authUser) {
-      navigate("/a/signup");
-    }
-  }, []);
+    if(loading) return;
+    if(!authUser) navigate("/a/signup");
+  }, [authUser, loading]);
 
   useEffect(() => {
     // Fixes a bug where sidebar is hidden but remains "open" when
