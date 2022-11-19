@@ -350,7 +350,7 @@ function CreateCampaignPage() {
 	const campaignAddedRef = useRef(false);
 	const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 	const { data, setData, isAutosaving, lastSavedAt, autosaveError } = useAutosaveCampaign(campaignData, campaignId);
-
+  const navigate = useNavigate();
   //If unathenticated redirect to signup
   useEffect(()=>{
     console.log("User>>>",user);
@@ -368,7 +368,6 @@ function CreateCampaignPage() {
 	}, [sidebarOptions]);
 
 
-  	const navigate = useNavigate();
   	const updateAccountId = async () => {
 		try{
 			if(auth?.currentUser?.uid)

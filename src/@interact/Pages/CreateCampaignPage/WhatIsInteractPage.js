@@ -142,12 +142,8 @@ const WhatIsInteractFAQs = [
 ];
 
 function SpecialAccordion({ question, answer, defaultExpanded }) {
-  const { user } = useCurrentUser();
-  const navigate = useNavigate();
-
-  useEffect(()=>{
-    if(!user) navigate('/a/signup');
-  },[]);
+  //const { user } = useCurrentUser();
+  //const navigate = useNavigate();
 
   return (
     <Accordion defaultExpanded={defaultExpanded}>
@@ -194,8 +190,8 @@ export default function WhatIsInteractPage() {
       >
         <Box sx={{ alignSelf: "flex-end" }}>
           <IconButton
-            disableRipple
-            disableFocusRipple
+            //disableRipple
+            //disableFocusRipple
             onClick={() => navigate(`/u/`)}
           >
             <Close sx={{ color: "text.secondary" }} />
