@@ -48,6 +48,7 @@ import InteractMethodTab from "./Tabs/InteractMethodTab";
 import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import Medals from "../../Images/allCreatorRanks.png";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function FAQSidebarWrapper({ title, children }) {
   return (
@@ -372,6 +373,7 @@ function CreateCampaignPage() {
 
   const [campaignData, setCampaignData] = useState();
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
+  const [authUser, loading, error] = useAuthState(auth);
   const { user } = useCurrentUser();
   const campaignAddedRef = useRef(false);
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
@@ -380,8 +382,7 @@ function CreateCampaignPage() {
   const navigate = useNavigate();
   //If unathenticated redirect to signup
   useEffect(() => {
-    console.log("User>>>", user);
-    if (!user) {
+    if (!authUser) {
       navigate("/a/signup");
     }
   }, []);

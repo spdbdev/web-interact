@@ -43,6 +43,10 @@ const interactV1Routes = [
     element: <SignInPage />,
   },
   {
+    path: "/",
+    element: <SignInPage />,
+  },
+  {
     path: "/a/signup",
     element: <SignUpPage2 />,
   },
