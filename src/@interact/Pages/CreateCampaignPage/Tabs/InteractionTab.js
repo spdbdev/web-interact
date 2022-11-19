@@ -133,6 +133,10 @@ export default function InteractionTab({
             interactionDurations={interactionDurations}
             setInteractionDurations={setInteractionDurations}
           />
+          <Typography sx={{ fontSize: 12 }}>
+            Based on these values, you can include a total of{" "}
+            {interactionsLimit} interactions in your campaign.
+          </Typography>
         </Stack>
       </CreateCampaignItemWrapper>
       <CreateCampaignItemWrapper>
@@ -207,7 +211,7 @@ export default function InteractionTab({
           <Span sx={{ fontWeight: 600 }}>
             {data?.numAuctionInteractions + data?.numGiveawayInteractions} fans
           </Span>{" "}
-          over the period of{" "} <br></br>
+          over the period of <br></br>
           <Span sx={{ fontWeight: 600 }}>
             {getDateFromTimestamp({ timestamp: data?.endDateTime?.seconds })}
           </Span>{" "}

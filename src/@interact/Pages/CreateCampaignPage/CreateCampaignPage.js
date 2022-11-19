@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import {Box, Button, ButtonBase, Container, IconButton, Input, Slide, Stack, Typography} from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonBase,
+  Container,
+  IconButton,
+  Input,
+  Slide,
+  Stack,
+  Typography,
+} from "@mui/material";
 import CampaignCreationTabs from "./CampaignCreationTabs";
 import BasicsTab from "./Tabs/BasicsTab";
 import SchedulingTab from "./Tabs/SchedulingTab";
@@ -16,7 +26,17 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 import CampaignCategorySelect from "./CampaignCategorySelect";
 import SoloPage from "app/layouts/solo-page/SoloPage";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-import { doc, query, updateDoc, collection, getDoc, getDocs, setDoc, where, addDoc } from "firebase/firestore";
+import {
+  doc,
+  query,
+  updateDoc,
+  collection,
+  getDoc,
+  getDocs,
+  setDoc,
+  where,
+  addDoc,
+} from "firebase/firestore";
 
 import { Close, ExpandLess } from "@mui/icons-material";
 import Span from "@jumbo/shared/Span";
@@ -29,17 +49,15 @@ import { fetchCampaign, addCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import Medals from "../../Images/allCreatorRanks.png";
 
-
-
 function FAQSidebarWrapper({ title, children }) {
-	return (
-		<div>
-			<Typography variant="h4" color="primary.contrastText">
-				{title}
-			</Typography>
-			{children}
-		</div>
-	);
+  return (
+    <div>
+      <Typography variant="h4" color="primary.contrastText">
+        {title}
+      </Typography>
+      {children}
+    </div>
+  );
 }
 
 const FAQText = {
@@ -55,24 +73,27 @@ const FAQText = {
       </Span>{" "}
       ⭐ Via Discord (fans link their Discord accounts; when it’s their turn to
       interact, fans join the creator’s server and are given a special role
-      automatically) or Google Meet (unique Google Meet link). <br></br>⭐ You may also
-      stream it live and/or record it (users have agreed to photo/video release
-      in the terms & conditions).
+      automatically) or Google Meet (unique Google Meet link). <br></br>⭐ You
+      may also stream it live and/or record it (users have agreed to photo/video
+      release in the terms & conditions).
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Why interact with fans?
       </Span>{" "}
-      ⭐ Form a closer bond with your fans who have been in your corner, cheering you on as 
-      you continue to grow as a creator & a human; everyone also gets to see the fan-interactions 
-      produced (or highlights) where they can learn more & see a different side to you.
-      <br></br>⭐ Meeting your most loyal fans is fun & fulfilling. It’s a wonderful feeling to see 
-      their eyes light up. These aren’t tedious requests nor formal lessons; there are no restrictions—you 
-      have complete freedom & control to stop talking to users and kick them at your discretion. Just 
-      chill with your fans on your own schedule.
-      <br></br>⭐ Do it all with minimal effort & complete control: our scheduling algorithm is focused 
-      on flexibility for the creator; one only has to input their specific availability week-by-week, 
-      3 days in advance (on Friday at the latest, week starts on Monday).
+      ⭐ Form a closer bond with your fans who have been in your corner,
+      cheering you on as you continue to grow as a creator & a human; everyone
+      also gets to see the fan-interactions produced (or highlights) where they
+      can learn more & see a different side to you.
+      <br></br>⭐ Meeting your most loyal fans is fun & fulfilling. It’s a
+      wonderful feeling to see their eyes light up. These aren’t tedious
+      requests nor formal lessons; there are no restrictions—you have complete
+      freedom & control to stop talking to users and kick them at your
+      discretion. Just chill with your fans on your own schedule.
+      <br></br>⭐ Do it all with minimal effort & complete control: our
+      scheduling algorithm is focused on flexibility for the creator; one only
+      has to input their specific availability week-by-week, 3 days in advance
+      (on Friday at the latest, week starts on Monday).
     </FAQSidebarWrapper>
   ),
   1: (
@@ -96,25 +117,26 @@ const FAQText = {
       scheduled events will show up as unavailable timeslots automatically on
       your creator schedule tab (in your Interact profile page); after you lock
       in your availability for a week, your interactions with fans are scheduled
-      and can be exported to your calendar. <br></br>⭐ Fans can select their availability
-      from Mon-Sun in general as long as they have an account, even before
-      they've acquired any interactions (a minimum of 5 hours of the week have
-      to be selected). Fans also select a preference for time of day (in their
-      timezone), morning (6am to 10:30 am), noon (10:30 am to 1:30 pm),
+      and can be exported to your calendar. <br></br>⭐ Fans can select their
+      availability from Mon-Sun in general as long as they have an account, even
+      before they've acquired any interactions (a minimum of 5 hours of the week
+      have to be selected). Fans also select a preference for time of day (in
+      their timezone), morning (6am to 10:30 am), noon (10:30 am to 1:30 pm),
       afternoon (1:30pm to 6pm), evening (6pm to 10:30pm), midnight (10:30pm to
-      1:30am), gremlin time (1:30 am to 6am). <br></br>⭐ The first week after the campaign
-      (starting Monday) is when interactions will start to be booked. <br></br>⭐ When the
-      campaign ends, creators are shown the availability of all of their fans
-      continuously (shown X number of fans that are available for each time
-      slot), and release a specific schedule week-by-week on Friday 11:59 pm at
-      the latest (except for the first week where creators have until Sunday
-      11:59pm to lock in a schedule for the next week starting Monday), with the
-      ability to choose how many interactions to do that week. We then allocate
-      the best fitting fans as soon as the creator locks in their schedule for
-      each week. <br></br>⭐ Fans & creators can reschedule. Rescheduled fans will be added
-      back into the matching algorithm pool & matched accordingly once again. <br></br>⭐ By
-      the last week, fans that creators are not able to meet are refunded. This
-      means that if a fan or creator reschedules an interaction in the last
+      1:30am), gremlin time (1:30 am to 6am). <br></br>⭐ The first week after
+      the campaign (starting Monday) is when interactions will start to be
+      booked. <br></br>⭐ When the campaign ends, creators are shown the
+      availability of all of their fans continuously (shown X number of fans
+      that are available for each time slot), and release a specific schedule
+      week-by-week on Friday 11:59 pm at the latest (except for the first week
+      where creators have until Sunday 11:59pm to lock in a schedule for the
+      next week starting Monday), with the ability to choose how many
+      interactions to do that week. We then allocate the best fitting fans as
+      soon as the creator locks in their schedule for each week. <br></br>⭐
+      Fans & creators can reschedule. Rescheduled fans will be added back into
+      the matching algorithm pool & matched accordingly once again. <br></br>⭐
+      By the last week, fans that creators are not able to meet are refunded.
+      This means that if a fan or creator reschedules an interaction in the last
       week, the fan is refunded.
     </FAQSidebarWrapper>
   ),
@@ -123,13 +145,14 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Why giveaway + auction format?
       </Span>{" "}
-      Both affluent & everyday fans have an opportunity to interact: <br></br>⭐ The
-      giveaway allows all of your fans—for free or for a few dollars—to support
-      you & achieve the campaign goal while getting a chance to interact with a
-      content creator they love. <br></br>⭐ The auction makes it fair by giving your most
-      loyal fans the option to get an interaction with 100% certainty; your most
-      loyal fans who want to tell you, their favorite creator, about themselves
-      will save up birthday money / holiday wishes for an interaction with you.
+      Both affluent & everyday fans have an opportunity to interact: <br></br>⭐
+      The giveaway allows all of your fans—for free or for a few dollars—to
+      support you & achieve the campaign goal while getting a chance to interact
+      with a content creator they love. <br></br>⭐ The auction makes it fair by
+      giving your most loyal fans the option to get an interaction with 100%
+      certainty; your most loyal fans who want to tell you, their favorite
+      creator, about themselves will save up birthday money / holiday wishes for
+      an interaction with you.
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         <br />
@@ -197,44 +220,43 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         What activities can I do with a fan in an interaction?{" "}
       </Span>{" "}
-      ⭐ Playing games (from competitive games like Valorant & Chess to…. GeoGuessr
-      or mini putt in Discord activities). <br></br>⭐ Discussing topics fans are passionate
-      about, commentating, and learning from each other (fans can screen share:
-      they might show off their own creations, favorite clips of your content
-      and ask for advice in your field of expertise… or just anime. You could
-      also spice it up with a Try Not to Laugh challenge, watching funny YouTube
-      videos via Discord activities).
+      ⭐ Playing games (from competitive games like Valorant & Chess to….
+      GeoGuessr or mini putt in Discord activities). <br></br>⭐ Discussing
+      topics fans are passionate about, commentating, and learning from each
+      other (fans can screen share: they might show off their own creations,
+      favorite clips of your content and ask for advice in your field of
+      expertise… or just anime. You could also spice it up with a Try Not to
+      Laugh challenge, watching funny YouTube videos via Discord activities).
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         <br />
         Why do fans want personal interactions?
       </Span>{" "}
-      Most fans can only afford spending a few dollars (can’t afford expensive 
-      merch & shipping); but, they don’t have a compelling reason to give you 
-      some coffee money. Having a chance to personally interact & gain 
+      Most fans can only afford spending a few dollars (can’t afford expensive
+      merch & shipping); but, they don’t have a compelling reason to give you
+      some coffee money. Having a chance to personally interact & gain
       recognition from you is an attractive incentive (via the giveaway):
-      <br></br>⭐Fans like you—as social platforms are so one-sided, fans give you attention weekly or
-      even daily without being able to receive any meaningful attention or
-      recognition back. They treat you as someone they trust and/or a relatable
-      friend, but have never been able to fulfill that relationship. Thus, fans
-      want to be recognized by you & build a relationship by showing off their
-      talents (e.g. best X-main in this game, astute questions & insights in X,
-      musical/artistic talent, athleticism, or comedic genius). 
-      <br></br>⭐ Fans want to
-      discuss & make their own viewpoints known on subjects they are deeply
-      passionate about, where you’re one of the leaders in that
-      subject/community (from anime to politics, from history to frontier tech,
-      from reviews & tier lists to educational animations). 
-      <br></br>⭐ Fame—if a fan’s
-      interaction was interesting, creators can post highlights of it or the
-      interaction is part of a live-streaming/podcasting scenario where the fan
-      is recognized by many fellow fans & viewers (react to content together,
-      try not to laugh challenge, etc. even if you don’t create that type of
-      content yet, expand your variety—fans love to watch drama & discourse, or
-      just something new). Interacting with fans as part of your content is
-      effective & appealing since other fans are envious & garners large
-      popularity (Mr. Beast, fans who don’t make money are still ecstatic).
-      Creating fresh content is one of the largest challenges we face, why not
-      add some spice?
+      <br></br>⭐Fans like you—as social platforms are so one-sided, fans give
+      you attention weekly or even daily without being able to receive any
+      meaningful attention or recognition back. They treat you as someone they
+      trust and/or a relatable friend, but have never been able to fulfill that
+      relationship. Thus, fans want to be recognized by you & build a
+      relationship by showing off their talents (e.g. best X-main in this game,
+      astute questions & insights in X, musical/artistic talent, athleticism, or
+      comedic genius).
+      <br></br>⭐ Fans want to discuss & make their own viewpoints known on
+      subjects they are deeply passionate about, where you’re one of the leaders
+      in that subject/community (from anime to politics, from history to
+      frontier tech, from reviews & tier lists to educational animations).
+      <br></br>⭐ Fame—if a fan’s interaction was interesting, creators can post
+      highlights of it or the interaction is part of a live-streaming/podcasting
+      scenario where the fan is recognized by many fellow fans & viewers (react
+      to content together, try not to laugh challenge, etc. even if you don’t
+      create that type of content yet, expand your variety—fans love to watch
+      drama & discourse, or just something new). Interacting with fans as part
+      of your content is effective & appealing since other fans are envious &
+      garners large popularity (Mr. Beast, fans who don’t make money are still
+      ecstatic). Creating fresh content is one of the largest challenges we
+      face, why not add some spice?
     </FAQSidebarWrapper>
   ),
   5: (
@@ -249,11 +271,11 @@ const FAQText = {
       Here, you can tell your fans how they'll be able to interact with you via
       Discord (⭐ fans link their Discord accounts; when it’s their turn to
       interact, fans join the creator’s server and are given a special role
-      automatically 5 minutes before their scheduled interaction; the roles is 
-      removed 15 minutes after the interaction end time) or 
-      Google Meet (unique Google Meet link). Are you going to
-      stream the interaction live and/or record it (If you wish to play a game,
-      what is the game? Which region/server?) <br />
+      automatically 5 minutes before their scheduled interaction; the roles is
+      removed 15 minutes after the interaction end time) or Google Meet (unique
+      Google Meet link). Are you going to stream the interaction live and/or
+      record it (If you wish to play a game, what is the game? Which
+      region/server?) <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         "What can we do in an interaction?"
@@ -301,16 +323,17 @@ const FAQText = {
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         Is there protection against bots/abusers?
       </Span>{" "}
-      ⭐ The creator can ban & unban (lifetime) any participant of their 
-      campaigns from their current and future campaigns. You can also delete any 
-      comment on your campaigns (with the ability to also ban the user who made 
-      that comment). A ban button is next to users on the ‘supporters’ tab of your 
-      campaign and also on the user profile page when you have scheduled interactions with a fan. 
-      ⭐ Users have to AUTHORIZE a payment method to bid or enter the giveaway 
-      (meaning their payment method is valid via a small void transaction usually).
-      ⭐ Every fan has until the end of the drop to bid & enter the giveaway instead 
-      of a first-come-first-serve basis.
- <br />
+      ⭐ The creator can ban & unban (lifetime) any participant of their
+      campaigns from their current and future campaigns. You can also delete any
+      comment on your campaigns (with the ability to also ban the user who made
+      that comment). A ban button is next to users on the ‘supporters’ tab of
+      your campaign and also on the user profile page when you have scheduled
+      interactions with a fan. ⭐ Users have to AUTHORIZE a payment method to
+      bid or enter the giveaway (meaning their payment method is valid via a
+      small void transaction usually). ⭐ Every fan has until the end of the
+      drop to bid & enter the giveaway instead of a first-come-first-serve
+      basis.
+      <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
         When can I start the next campaign?
@@ -335,236 +358,253 @@ const FAQText = {
 };
 
 function CreateCampaignPage() {
-	// initialize lastCompleteTabIndex to -1 in firestore
-	const { campaignId } = useParams();
-	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-	const [hasInitialTabBeenSetFromDatabase, setHasInitialTabBeenSetFromDatabase] = useState(false);
-	const [FAQSideBarText, setFAQSideBarText] = useState("");
+  // initialize lastCompleteTabIndex to -1 in firestore
+  const { campaignId } = useParams();
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const [
+    hasInitialTabBeenSetFromDatabase,
+    setHasInitialTabBeenSetFromDatabase,
+  ] = useState(false);
+  const [FAQSideBarText, setFAQSideBarText] = useState("");
 
-	const [searchParams, setSearchParams] = useSearchParams();
-	const [accountId, setAccountId] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [accountId, setAccountId] = useState(null);
 
-	const [campaignData, setCampaignData] = useState();
-	const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
-	const { user } = useCurrentUser();
-	const campaignAddedRef = useRef(false);
-	const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-	const { data, setData, isAutosaving, lastSavedAt, autosaveError } = useAutosaveCampaign(campaignData, campaignId);
+  const [campaignData, setCampaignData] = useState();
+  const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
+  const { user } = useCurrentUser();
+  const campaignAddedRef = useRef(false);
+  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+  const { data, setData, isAutosaving, lastSavedAt, autosaveError } =
+    useAutosaveCampaign(campaignData, campaignId);
   const navigate = useNavigate();
   //If unathenticated redirect to signup
-  useEffect(()=>{
-    console.log("User>>>",user);
-    if(!user){
-      navigate('/a/signup');
+  useEffect(() => {
+    console.log("User>>>", user);
+    if (!user) {
+      navigate("/a/signup");
     }
-  },[])
+  }, []);
 
-	useEffect(() => {
-		// Fixes a bug where sidebar is hidden but remains "open" when
-		// navigating to this screen from the user profile
-		if (sidebarOptions.open === true) {
-			setSidebarOptions({ open: false });
-		}
-	}, [sidebarOptions]);
+  useEffect(() => {
+    // Fixes a bug where sidebar is hidden but remains "open" when
+    // navigating to this screen from the user profile
+    if (sidebarOptions.open === true) {
+      setSidebarOptions({ open: false });
+    }
+  }, [sidebarOptions]);
 
+  const updateAccountId = async () => {
+    try {
+      if (auth?.currentUser?.uid) {
+        const q = query(
+          collection(db, "users"),
+          where("uid", "==", auth?.currentUser?.uid)
+        );
+        const colledoc = await getDocs(q);
+        const data = colledoc.docs[0].data();
+        if (accountId) {
+          const userUpdated = doc(db, "users", colledoc.docs[0].id);
+          const res = await updateDoc(userUpdated, {
+            accountId: accountId,
+          });
+        } else {
+          setAccountId(data.accountId);
+        }
+      }
+      setSelectedTabIndex(5);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  	const updateAccountId = async () => {
-		try{
-			if(auth?.currentUser?.uid)
-			{
-				const q = query(collection(db, "users"), where("uid", "==", auth?.currentUser?.uid));
-				const colledoc = await getDocs(q);
-				const data = colledoc.docs[0].data();
-				if(accountId){
-					const userUpdated = doc(db, "users", colledoc.docs[0].id);
-					const res = await updateDoc(userUpdated, {
-						accountId: accountId
-					});
-				}
-				else{
-					setAccountId(data.accountId);
-				}
-			}
-			setSelectedTabIndex(5); 
-		}
-		catch(err){
-			console.log(err);
-		}
-  	}
+  useEffect(() => {
+    setAccountId(searchParams.get("accountId"));
+    if (accountId) {
+      updateAccountId();
+    }
+  }, [accountId]);
 
+  useEffect(() => {
+    // data is for checking when all autosave data has been autosaved
+    // Based on data, it will update campaignData which is used to populate form fields
+    handleCampaign();
+  }, [data, lastSavedAt, user]);
 
-	useEffect(() => {
-		setAccountId(searchParams.get("accountId"));
-		if(accountId){
-			updateAccountId();
-		}
-	}, [accountId]);
+  useEffect(() => {
+    setFAQSideBarText(FAQText[selectedTabIndex]);
+    if (
+      campaignData &&
+      selectedTabIndex !== campaignData.lastCompletedTabIndex
+    ) {
+      setData({ lastCompletedTabIndex: selectedTabIndex });
+    }
+  }, [selectedTabIndex]);
 
-	useEffect(() => {
-		// data is for checking when all autosave data has been autosaved
-		// Based on data, it will update campaignData which is used to populate form fields
-		handleCampaign();
-	}, [data, lastSavedAt, user]);
+  useEffect(() => {
+    const initialTabIndex = campaignData?.lastCompletedTabIndex;
+    if (initialTabIndex >= 0 && !hasInitialTabBeenSetFromDatabase) {
+      setSelectedTabIndex(initialTabIndex);
+      setHasInitialTabBeenSetFromDatabase(true);
+    }
+  }, [campaignData]);
 
-	useEffect(() => {
-		setFAQSideBarText(FAQText[selectedTabIndex]);
-		if (campaignData && selectedTabIndex !== campaignData.lastCompletedTabIndex) {
-			setData({ lastCompletedTabIndex: selectedTabIndex })
-		}
-	}, [selectedTabIndex]);
+  const getCampaign = async (campaignId) => {
+    let fetchedData = await fetchCampaign(campaignId);
+    if (fetchedData) {
+      setCampaignData(fetchedData, campaignId);
+    }
+  };
 
-	useEffect(() => {
-		const initialTabIndex = campaignData?.lastCompletedTabIndex;
-		if (initialTabIndex >= 0 && !hasInitialTabBeenSetFromDatabase) {
-			setSelectedTabIndex(initialTabIndex);
-			setHasInitialTabBeenSetFromDatabase(true);
-		}
-	}, [campaignData]);
+  const handleAddCampaign = async () => {
+    let newCampaignId = await addCampaign(user);
+    navigate(`/d/${newCampaignId}`);
+  };
 
-  	const getCampaign = async (campaignId) => {
-		let fetchedData = await fetchCampaign(campaignId);
-		if (fetchedData) {
-			setCampaignData(fetchedData, campaignId);
-		}
-	};
+  const handleCampaign = () => {
+    if (user) {
+      // Not ideal, but essentially checks if:
+      // 1) Data exists and is not just lastCompletedTabIndex AND
+      // 2) campaignId has not been passed, thus a new campaign
+      // 3) Campaign has not been added yet
+      if (
+        data &&
+        !(
+          data.lastCompletedTabIndex !== undefined &&
+          Object.keys(data).length === 1
+        ) &&
+        !campaignId &&
+        campaignAddedRef.current === false
+      ) {
+        campaignAddedRef.current = true;
+        handleAddCampaign();
+      } else if (campaignId) {
+        getCampaign(campaignId);
+      } else if (!campaignId) {
+        getCampaign("campaign-creation-test");
+      }
+    }
+  };
 
-	const handleAddCampaign = async () => {
-		let newCampaignId = await addCampaign(user);
-		navigate(`/d/${newCampaignId}`)
-	}
+  function renderTab() {
+    const tabProps = {
+      data: campaignData,
+      setData: setData,
+      selectedTabIndex,
+      setSelectedTabIndex,
+    };
 
-	const handleCampaign = () => {
-		if (user) {
-			// Not ideal, but essentially checks if:
-			// 1) Data exists and is not just lastCompletedTabIndex AND
-			// 2) campaignId has not been passed, thus a new campaign
-			// 3) Campaign has not been added yet
-			if (data && !(data.lastCompletedTabIndex !== undefined && Object.keys(data).length === 1) && !campaignId && campaignAddedRef.current === false) {
-				campaignAddedRef.current = true;
-				handleAddCampaign();
-			} else if (campaignId) {
-				getCampaign(campaignId);
-			} else if (!campaignId) {
-				getCampaign("campaign-creation-test");
-			}
-		}
-	};
+    switch (selectedTabIndex) {
+      case 0:
+        return <BasicsTab {...tabProps} />;
+      case 1:
+        return <SchedulingTab {...tabProps} />;
+      case 2:
+        return <InteractionTab {...tabProps} />;
+      case 3:
+        return <GoalVideoTab {...tabProps} />;
+      case 4:
+        return <InteractMethodTab {...tabProps} />;
+      case 5:
+        return <FAQTab {...tabProps} />;
+      case 6:
+        return <PaymentTab {...tabProps} />;
+      case 7:
+        return <PromotionTab {...tabProps} />;
+      default:
+        return <BasicsTab {...tabProps} selectedTabIndex={0} />;
+    }
+  }
 
-	function renderTab() {
-		const tabProps = {
-			data: campaignData,
-			setData: setData,
-			selectedTabIndex,
-			setSelectedTabIndex,
-		};
+  if (!campaignData) {
+    return <Loading />;
+  }
 
-		switch (selectedTabIndex) {
-			case 0:
-				return <BasicsTab {...tabProps} />;
-			case 1:
-				return <SchedulingTab {...tabProps} />;
-			case 2:
-				return <InteractionTab {...tabProps} />;
-			case 3:
-				return <GoalVideoTab {...tabProps} />;
-			case 4:
-				return <InteractMethodTab {...tabProps} />;
-			case 5:
-				return <FAQTab {...tabProps} />;
-			case 6:
-				return <PaymentTab {...tabProps} />;
-			case 7:
-				return <PromotionTab {...tabProps} />;
-			default:
-				return <BasicsTab {...tabProps} selectedTabIndex={0} />;
-		}
-	}
+  return (
+    <Slide
+      direction="right"
+      timeout={1000}
+      in={true}
+      mountOnEnter
+      unmountOnExit
+    >
+      <Box
+        sx={{
+          display: "flex",
+          position: "relative",
+          flexDirection: "row",
+          height: "100%",
+          width: "100%",
+          padding: 0,
+          backgroundColor: "background.default",
+        }}
+      >
+        <SideBar
+          isSideBarCollapsed={isSideBarCollapsed}
+          setIsSideBarCollapsed={setIsSideBarCollapsed}
+          FAQSideBarText={FAQSideBarText}
+        />
+        <Box
+          sx={{
+            width: isSideBarCollapsed ? "40px" : "260px",
+          }}
+        ></Box>
+        <Container
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <Container sx={{ display: "flex", justifyContent: "center" }}>
+            <ButtonBase
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                color: "text.hint",
+              }}
+              onClick={() => navigate("/a/what-is-interact")}
+            >
+              <ExpandLess />
+              <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
+            </ButtonBase>
+          </Container>
 
-	if (!campaignData) {
-		return <Loading />;
-	}
-
-	return (
-		<Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
-		<Box
-			sx={{
-			display: "flex",
-			position: "relative",
-			flexDirection: "row",
-			height: "100%",
-			width: "100%",
-			padding: 0,
-			backgroundColor: "background.default",
-			}}
-		>
-			<SideBar
-			isSideBarCollapsed={isSideBarCollapsed}
-			setIsSideBarCollapsed={setIsSideBarCollapsed}
-			FAQSideBarText={FAQSideBarText}
-			/>
-			<Box
-			sx={{
-				width: isSideBarCollapsed ? "40px" : "260px",
-			}}
-			></Box>
-			<Container
-			sx={{
-				flex: 1,
-				display: "flex",
-				flexDirection: "column",
-				width: "100%",
-				height: "100%",
-			}}
-			>
-			<Container sx={{ display: "flex", justifyContent: "center" }}>
-				<ButtonBase
-				sx={{
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-					color: "text.hint",
-				}}
-				onClick={() => navigate("/a/what-is-interact")}
-				>
-				<ExpandLess />
-				<Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
-				</ButtonBase>
-			</Container>
-
-			<CampaignCreationTabs
-				selectedTabIndex={selectedTabIndex}
-				setSelectedTabIndex={setSelectedTabIndex}
-			/>
-			<Stack
-				direction="column"
-				flex={1}
-				justifyContent="space-evenly"
-				spacing={2}
-				pb={10}
-				position="relative"
-			>
-				{campaignData !== campaignId ? renderTab() : null}
-			</Stack>
-			</Container>
-			<Box sx={{ position: "absolute", top: 10, right: 10 }}>
-			<Span sx={{ color: "text.hint" }}>
-				{autosaveError ? (
-				<Span sx={{ color: "error" }}>Could not autosave.</Span>
-				) : isAutosaving ? (
-				"Saving..."
-				) : (
-				<Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
-				)}{" "}
-			</Span>
-			<IconButton
-				onClick={() => navigate(`/u/${user.name}`)}
-			>
-				<Close sx={{ color: "text.secondary" }} />
-			</IconButton>
-			</Box>
-		</Box>
-		</Slide>
-	);
+          <CampaignCreationTabs
+            selectedTabIndex={selectedTabIndex}
+            setSelectedTabIndex={setSelectedTabIndex}
+          />
+          <Stack
+            direction="column"
+            flex={1}
+            justifyContent="space-evenly"
+            spacing={2}
+            pb={10}
+            position="relative"
+          >
+            {campaignData !== campaignId ? renderTab() : null}
+          </Stack>
+        </Container>
+        <Box sx={{ position: "absolute", top: 10, right: 10 }}>
+          <Span sx={{ color: "text.hint" }}>
+            {autosaveError ? (
+              <Span sx={{ color: "error" }}>Could not autosave.</Span>
+            ) : isAutosaving ? (
+              "Saving..."
+            ) : (
+              <Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
+            )}{" "}
+          </Span>
+          <IconButton onClick={() => navigate(`/u/${user.name}`)}>
+            <Close sx={{ color: "text.secondary" }} />
+          </IconButton>
+        </Box>
+      </Box>
+    </Slide>
+  );
 }
 
 export default CreateCampaignPage;
