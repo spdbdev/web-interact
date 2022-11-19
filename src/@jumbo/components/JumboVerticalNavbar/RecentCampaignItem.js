@@ -6,7 +6,7 @@ import useJumboLayoutSidebar from "@jumbo/hooks/useJumboLayoutSidebar";
 import {SIDEBAR_VIEWS} from "@jumbo/utils/constants/layout";
 import {useTranslation} from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
+import CustomMarquee from './CustomMarquee';
 const menuBefore = {
     left: 0,
     top: 0,
@@ -38,6 +38,7 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
         <ListItemButton
             component={"li"}
             style={{padding:'8px 30px'}}
+            onClick={()=>navigate(item?.campaignUri)}
             sx={{
                 p: 0,
                 overflow: 'hidden',
@@ -53,7 +54,7 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                             backgroundColor: theme => theme.palette.nav.tick.hover,
                         }} : {}
                 },
-                ...(location.pathname === item.uri) ? {
+                ...(location.pathname === item.campaignUri) ? {
                     color: theme => theme.palette.nav.action.active,
                     backgroundColor: theme => theme.palette.nav.background.active,
                     ...(!isMiniAndClosed) ? {'&::before': {
@@ -71,7 +72,6 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                 }}
                 >
                 <img
-                    onClick={()=>navigate(item?.campaignUri)}
                     src={item?.photoURL}
                     alt={'No Image'}
                     style={{
@@ -83,19 +83,10 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                 />
             </div>
             <div style={{overflow:'hidden',height:'30px'}}>
-                <div  
-                    className='move_campaigin_title'
-                    onClick={()=>navigate(item?.campaignUri)}
-                    style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        fontSize:'13px',
-                        width:'fit-content',
-                    }}
-                    >
-                    {label}
-                </div>
+                <CustomMarquee
+                    text={label}
+                >
+                </CustomMarquee>
                 <ListItemText
                     primary={
                     <>

@@ -47,36 +47,16 @@
   }
 }
 
-.move_campaigin_title {
-  font-weight: bold;
-  position: relative;
-  animation: campaign_title_move 15s infinite;
-  animation-timing-function: linear;
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
 }
 
-@keyframes campaign_title_move {
-  0%   {
-    transform: translateX(0%);
-    margin-left: 0%;
-  }
-  20%   {
-    transform: translateX(0%);
-    margin-left: 0%;
-  }
-  40%   { 
-    transform: translateX(-100%);
-    margin-left: 100%;
-  }
-  60%   { 
-    transform: translateX(-100%);
-    margin-left: 100%;
-  }
-  80% {
-    transform: translateX(0%);
-    margin-left: 0%;
-  }
-  100% {
-    transform: translateX(0%);
-    margin-left: 0%;
-  }
+.marquee-text {
+  width: fit-content;
+  white-space: nowrap;
+  color:#7352C7;
+  font-weight: 800;
 }

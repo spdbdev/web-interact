@@ -111,11 +111,11 @@ const Sidebar = () => {
 
   const interactMenus = [
     {
-      label: "sidebar.menu.home",
+      label: "HOME",
       type: "section",
       children: [
         {
-          uri: "/u/"+user?.name,
+          uri: user?.name ? "/u/"+user?.name : "/u/",
           label: "Profile",
           type: "nav-item",
           icon: <PersonOutlineIcon sx={{ fontSize: 20 }} />,
@@ -179,9 +179,6 @@ const SidebarHeader = () => {
   useEffect(async () => {
     setSidebarOptions({ open: true });
   }, []);
-  const isMiniAndClosed = React.useMemo(() => {
-    return sidebarOptions?.view === SIDEBAR_VIEWS.MINI && !sidebarOptions?.open;
-  }, [sidebarOptions.view, sidebarOptions.open]);
 
   return (
     <React.Fragment>
