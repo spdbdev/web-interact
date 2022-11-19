@@ -6,7 +6,7 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardElement, useStripe, useElements, PaymentRequestButtonElement, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
 import { formatMoney, getDateFromTimestamp } from "@interact/Components/utils";
 import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
 import "./CampaignPage.css";
@@ -23,6 +23,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from '@mui/material/IconButton';
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import PaymentRequestForm from "@interact/Components/paymentRequestForm";
 
 const style = {
   position: "absolute",
@@ -425,7 +426,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         >
         <Box sx={style}>
           <div className="wrapper">
-            <div className="innerWrapper">
+            {/* <div className="innerWrapper">
               <IconButton
                 onClick={handleClose}
                 style={{ float: "right", cursor: "pointer",marginTop:"-8px" }}
@@ -483,6 +484,13 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
                   Submit
                 </InteractFlashyButton>
               </div>
+            </div> */}
+            
+            <div className="innerWrapper">
+              <PaymentRequestForm />
+              <CardNumberElement />
+              <CardExpiryElement />
+              <CardCvcElement />
             </div>
           </div>
         </Box>
