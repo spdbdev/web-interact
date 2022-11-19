@@ -350,6 +350,14 @@ function CreateCampaignPage() {
 	const campaignAddedRef = useRef(false);
 	const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 	const { data, setData, isAutosaving, lastSavedAt, autosaveError } = useAutosaveCampaign(campaignData, campaignId);
+  const navigate = useNavigate();
+  //If unathenticated redirect to signup
+  useEffect(()=>{
+    console.log("User>>>",user);
+    if(!user){
+      navigate('/a/signup');
+    }
+  },[])
 
 	useEffect(() => {
 		// Fixes a bug where sidebar is hidden but remains "open" when
@@ -360,7 +368,6 @@ function CreateCampaignPage() {
 	}, [sidebarOptions]);
 
 
-  	const navigate = useNavigate();
   	const updateAccountId = async () => {
 		try{
 			if(auth?.currentUser?.uid)
@@ -550,8 +557,6 @@ function CreateCampaignPage() {
 				)}{" "}
 			</Span>
 			<IconButton
-				disableRipple
-				disableFocusRipple
 				onClick={() => navigate(`/u/${user.name}`)}
 			>
 				<Close sx={{ color: "text.secondary" }} />

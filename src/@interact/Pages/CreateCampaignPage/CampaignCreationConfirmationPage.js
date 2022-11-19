@@ -90,8 +90,8 @@ export default function CampaignCreationConfirmationPage() {
     >
       <Box sx={{ position: "fixed", top: 10, right: 10 }}>
         <IconButton
-          disableRipple
-          disableFocusRipple
+          //disableRipple
+          //disableFocusRipple
           onClick={() => navigate(`/u/${user.username}`)}
         >
           <Close sx={{ color: "text.secondary" }} />

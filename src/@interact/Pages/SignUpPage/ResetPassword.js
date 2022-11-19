@@ -73,7 +73,7 @@ function ResetPassword() {
           </InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20 }}>
-          Already have an account? <Link to='/a/signin'>Sign In</Link>
+          Already have an account? <Link to='/a/signin'>Sign in</Link>
         </div>
 
 

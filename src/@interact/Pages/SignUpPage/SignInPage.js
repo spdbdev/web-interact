@@ -55,7 +55,7 @@ function SignInPage() {
           <Link to='/a/forgotpassword'>Forgot password</Link>
         </div>
         <div style={{ paddingTop: 20 }}>
-          Don't have an account? <Link to='/signup'>Sign up now.</Link>
+          Don't have an account? <Link to='/a/signup'>Sign up now</Link>
         </div>
 
 

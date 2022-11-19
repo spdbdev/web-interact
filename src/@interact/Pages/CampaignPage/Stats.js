@@ -77,7 +77,7 @@ export function FollowButton({ user, targetUser }) {
 
 	function onFollowButtonClicked() {
 		if(user === undefined) {
-			console.log("You need to sign in to follow user");
+			console.log("You need to sign in to follow other users");
 			navigate("/a/signin");
 			return;
 		}
