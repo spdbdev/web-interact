@@ -111,7 +111,7 @@ function CampaignInfo({
   return (
     <div className="InfoContainer">
       <br></br>
-      <Box sx={{ borderBottom: 1, borderColor: "divider", color: "#782eee" }}>
+      <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: "divider", color: "#782fee" }}>
         <Tabs
           value={value}
           onChange={handleChange}
