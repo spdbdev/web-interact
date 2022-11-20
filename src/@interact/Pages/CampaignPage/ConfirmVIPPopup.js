@@ -12,13 +12,14 @@ import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./popupstyle.css";
 import { IconButton, Stack } from "@mui/material";
 import { Close } from '@mui/icons-material';
+import PaymentRequestForm from "@interact/Components/paymentRequestForm";
 
 export default function ConfirmVIPPopup({
   openstate,
   settheOpenPopup,
   closefunction,
   allprimarymethod,
-  onchangeclick,
+  onaddclick,
   price,
   userCostomerId,
   bidAction,
@@ -29,9 +30,10 @@ export default function ConfirmVIPPopup({
   const [paymentId, setpaymentId] = useState();
   const [showtext, setShowText] = useState(false);
   const Swal = useSwalWrapper();
-  const changeEvent = () => {
+  const addEvent = () => {
     // settheOpenPopup(false);
-    onchangeclick();
+  closefunction();
+    onaddclick();
   };
 
   const selectPaymentId = (pmid) => {
@@ -115,40 +117,36 @@ const paymentResponse = (price,resp = null) => {
             id="alert-dialog-description"
             style={{ marginBottom: "20px" }}
           >
-            <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', marginBottom: '12px'}}>
-              Entry price: ${Number.parseFloat(price).toFixed(2)}
-            </Typography>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '100px', marginBottom: '12px'}}>
+              <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
+                Entry price: ${Number.parseFloat(price).toFixed(2)}
+              </Typography>
+              <div style={{ width: "200px" }}>
+                <PaymentRequestForm price={price} handleSubmit={closefunction} />
+              </div>
+            </div>
+            <div onClick={addEvent} style={{ cursor: "pointer", marginBottom: '20px' }}>
+              <Typography variant="h6" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', fontSize: '13px' }}>
+                Add new payment method
+              </Typography>
+            </div>
             {allprimarymethod.length > 0 ? (
               allprimarymethod.map((item, index) => {
                 return (
                   <>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: 'flex-start',
-                        gap: '50px',
-                        margin: "8px 0px",
-                      }}
-                    >
-                      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '220px', gap: '5px'}}>
-                        <input
-                          type="radio"
-                          value={item.id}
-                          name="paymentid"
-                          checked={selectPaymentMethod === item.id && "checked"}
-                          onChange={() => selectPaymentId(item.id)}
-                          style={{margin: '0px', accentColor: '#7c35ee'}}
-                        />
-                        <img src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"} alt="icon" />
-                        <Typography variant="h6" gutterBottom style={{fontSize: '13px', margin: "0px", textTransform: 'capitalize'}}>
-                          <span style={{fontWeight: '700'}}>{item.card.brand}</span> ending in {item.card.last4}
-                        </Typography>
-                      </div>
-                      <div onClick={changeEvent} style={{ cursor: "pointer" }}>
-                        <Typography variant="h6" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', fontSize: '13px' }}>
-                          Change
-                        </Typography>
-                      </div>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '220px', gap: '5px', margin: '8px 0px'}}>
+                      <input
+                        type="radio"
+                        value={item.id}
+                        name="paymentid"
+                        checked={selectPaymentMethod === item.id && "checked"}
+                        onChange={() => selectPaymentId(item.id)}
+                        style={{margin: '0px', accentColor: '#7c35ee'}}
+                      />
+                      <img src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"} alt="icon" />
+                      <Typography variant="h6" gutterBottom style={{fontSize: '13px', margin: "0px", textTransform: 'capitalize'}}>
+                        <span style={{fontWeight: '700'}}>{item.card.brand}</span> ending in {item.card.last4}
+                      </Typography>
                     </div>
                   </>
                 );

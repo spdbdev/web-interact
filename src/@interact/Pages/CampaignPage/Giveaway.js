@@ -7,7 +7,7 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Select from "react-select";
 import {query, setDoc, serverTimestamp, getCountFromServer, increment, collection, getDoc, getDocs, where, addDoc, updateDoc, doc} from "firebase/firestore";
 import Modal from "@mui/material/Modal";
@@ -24,7 +24,7 @@ import "./CampaignPage.css";
 import { formatMoney } from "@interact/Components/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
-
+import PaymentRequestForm from "@interact/Components/paymentRequestForm";
 
 
 const style = {
@@ -76,6 +76,8 @@ export default function Giveaway({
 	const [openPopup, setOpenPopup] = useState(false);
 	const [selectedPaymentMethod,setSelectedPaymentMethod] = useState(null);
 
+	const [paymentMethods, setPaymentMethods] = useState([]);
+	const [userCostomerId, setUserCostomerId] = useState(null);
 
 	const navigate = useNavigate();
 	const Swal = useSwalWrapper();
@@ -385,81 +387,6 @@ export default function Giveaway({
 
 
 
-
-
-	const [cardInfo, setCardInfo] = useState({
-		name: "",
-		expiry: "",
-		number: "",
-		address: {
-			line: "",
-			postalCode: "",
-		},
-	});
-	const [updateCardInfo, setUpdateCardInfo] = useState({
-		pid: "",
-		name: "",
-		country: "",
-		state: "",
-		city: "",
-		postalCode: "",
-	});
-	const [locations, setLocations] = useState({
-		countries: "",
-		states: "",
-		cities: "",
-	});
-	const [selectedLocation, setSelectedLocation] = useState({
-		country: {},
-		city: {},
-		state: {},
-	});
-	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [userCostomerId, setUserCostomerId] = useState(null);
-
-	function handleChangeAddressLine(e) {
-		const { value } = e.target;
-		setCardInfo((prev) => {
-			return { ...prev, address: { ...prev.address, line: value } };
-		});
-	}
-	function handleChangeName(e) {
-		const { value } = e.target;
-		setCardInfo((prev) => {
-			return { ...prev, name: value };
-		});
-	}
-	function parseForSelect(arr) {
-		return arr.map((item) => ({
-			label: item.name,
-			value: item.isoCode ? item.isoCode : item.name,
-		}));
-	}
-	function handleSelectCountry(country) {
-		setSelectedLocation((prev) => {
-			return { ...prev, country };
-		});
-		setCardInfo({
-			...cardInfo,
-			country: country.value,
-		});
-	}
-	function handleSelectState(state) {
-		const cities = City.getCitiesOfState(
-			selectedLocation.country.value,
-			state.value
-		);
-		setSelectedLocation((prev) => {
-			return { ...prev, state };
-		});
-
-		setLocations((prev) => ({ ...prev, cities: parseForSelect(cities) }));
-	}
-	function handleSelectCity(city) {
-		setSelectedLocation((prev) => {
-			return { ...prev, city };
-		});
-	}
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const closefunction = () => {
@@ -467,22 +394,11 @@ export default function Giveaway({
 	};
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		const address = cardInfo.address;
-		const billingDetails = {
-			name: cardInfo.name,
-			address: {
-				country: cardInfo.country,
-				state: address.state,
-				city: address.city,
-				line1: address.line,
-			},
-		};
 
 		try {
 		stripe.createPaymentMethod({
 				type: "card",
-				billing_details: billingDetails,
-				card: elements.getElement(CardElement),
+				card: elements.getElement(CardNumberElement),
 			})
 			.then((resp) => {
 				const pmid = resp.paymentMethod.id;
@@ -525,81 +441,42 @@ export default function Giveaway({
 			settheOpenPopup={setOpenPopup}
 			closefunction={closefunction}
 			allprimarymethod={paymentMethods}
-			onchangeclick={handleOpen}
+			onaddclick={handleOpen}
 			price={vipEntryPrice}
 			userCostomerId={userCostomerId}
 			selectPaymentMethod={selectedPaymentMethod}
 			setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
 		<Modal
-			open={open}
-			onClose={handleClose}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
-			>
-			<Box sx={style}>
-			<div className="wrapper">
-				<div className="innerWrapper">
-				<IconButton
-					onClick={handleClose}
-					style={{ float: "right", cursor: "pointer", marginTop: "-8px" }}
-					color="primary"
-					aria-label="upload picture"
-					component="label"
-				>
-					<CancelIcon />
-				</IconButton>
-				<div className="title">Add Payment Method</div>
-				<div className="row">
-					<label>Cardholder Name</label>
-					<input
-					onChange={handleChangeName}
-					type="text"
-					name="name"
-					placeholder="Enter card holder name"
-					/>
-				</div>
-				<div className="rowPaymentInput">
-					<CardElement ref={card} />
-				</div>
-
-				<div className="rowSelect">
-					<label>Country</label>
-					<Select
-					options={resturnOption()}
-					onChange={handleSelectCountry}
-					/>
-				</div>
-
-				<div className="addressWrapper">
-					<div className="row">
-					<label>Address</label>
-					<input
-						onChange={handleChangeAddressLine}
-						type="text"
-						name="address"
-						placeholder="Enter Full Address"
-					/>
-					</div>
-					<div className="checkbox-div card-body-text">
-					<input
-						type="checkbox"
-						disabled="disabled"
-						id="subscribe"
-						name="subscribe"
-						checked
-					/>
-					Save Card
-					</div>
-
-					<InteractFlashyButton onClick={handleSubmit}>
-					Submit
-					</InteractFlashyButton>
-				</div>
-				</div>
-			</div>
-			</Box>
-		</Modal>
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <div className="wrapper">
+          <div className="innerWrapper" style={{ width: "500px" }}>
+            <PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
+            <div className="payment-divider" />
+            <div className="stripe-card-wrapper">
+              <div className="number_input">
+                  <label htmlFor="#" className="stripe-card_field_label">Card Number</label>
+                  <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
+              </div>
+              <div className="expiry_input">
+                  <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+                  <CardExpiryElement className={"expiry_input"} />
+              </div>
+              <div className="cvc_input">
+                  <label htmlFor="#" className="stripe-card_field_label">CVC</label>
+                  <CardCvcElement className={"cvc_input"} />
+              </div>
+            </div>
+            <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Add new payment method</InteractFlashyButton>
+          </div>
+        </div>
+      </Box>
+    </Modal>
 
 		<JumboCardQuick
 			title={"Giveaway"}

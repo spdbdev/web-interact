@@ -6,22 +6,51 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { CardElement, useStripe, useElements, PaymentRequestButtonElement, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
+import {
+  CardElement,
+  useStripe,
+  useElements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+} from "@stripe/react-stripe-js";
 import { formatMoney, getDateFromTimestamp } from "@interact/Components/utils";
-import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  setDoc,
+  addDoc,
+  getDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import "./CampaignPage.css";
-import {Button, Divider, OutlinedInput, InputAdornment, useScrollTrigger, Tooltip, InputLabel, FormControl, 
-  Container, Typography, Box, Stack, Select, MenuItem} from "@mui/material";
+import {
+  Button,
+  Divider,
+  OutlinedInput,
+  InputAdornment,
+  useScrollTrigger,
+  Tooltip,
+  InputLabel,
+  FormControl,
+  Container,
+  Typography,
+  Box,
+  Stack,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
-import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
-import supported_transfer_countries from "./countrylist";
 import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from '@mui/material/IconButton';
-import { fetchUserByName, followUser } from '../../../firebase';
+import IconButton from "@mui/material/IconButton";
+import { fetchUserByName, followUser } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import PaymentRequestForm from "@interact/Components/paymentRequestForm";
 
@@ -30,123 +59,137 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  // width: 700,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  padding: 0,
+  width: 400,
 };
 
-export default function Auction({isCampaignEnded, bids, campaignData, bidAction }) {
-	const [bidAmount, setBidAmount] = useState(0);
-	const [autoBidAmount, setAutoBidAmount] = useState(0);
-	const [minBidAmount, setMinBidAmount] = useState(0);
-	const [maxBidAmount, setMaxBidAmount] = useState(0);
-	const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
-	const [desiredRanking, setDesiredRanking] = useState(1);
+export default function Auction({
+  isCampaignEnded,
+  bids,
+  campaignData,
+  bidAction,
+}) {
+  const [bidAmount, setBidAmount] = useState(0);
+  const [autoBidAmount, setAutoBidAmount] = useState(0);
+  const [minBidAmount, setMinBidAmount] = useState(0);
+  const [maxBidAmount, setMaxBidAmount] = useState(0);
+  const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
+  const [desiredRanking, setDesiredRanking] = useState(1);
+  const [manualRanking, setManualRanking] = useState(1);
 
   const [user, loading, error] = useAuthState(auth);
-  const [currentUser,setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
   const stripe = useStripe();
   const [open, setOpen] = useState(false);
   const elements = useElements();
-  const card = useRef();
   const [openPopup, setOpenPopup] = useState(false);
   const [openPopup1, setOpenPopup1] = useState(false);
   const [selectPopUp, setselectPopUp] = useState(1);
   const paymentRef = useRef();
-  const [selectPaymentMethod, setSelectPaymentMethod] = useState('');
+  const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
 
+  useEffect(() => {
+    if (Object.entries(campaignData).length > 0 && bids.length > 0) {
+      if (campaignData.numAuctionInteractions) {
+        setNumAuctionInteractions(campaignData.numAuctionInteractions);
+      }
 
-	useEffect(() => {
-		if (Object.entries(campaignData).length > 0 && bids.length > 0) {
-			if (campaignData.numAuctionInteractions) {
-				setNumAuctionInteractions(campaignData.numAuctionInteractions);
-			}
+      if (bids.length >= campaignData.numAuctionInteractions) {
+        let lastPrice = bids[campaignData.numAuctionInteractions - 1].price;
+        if (lastPrice >= campaignData.auctionMinBid) {
+          setMinBidAmount(parseFloat(lastPrice) + 0.5);
+          setBidAmount(parseFloat(lastPrice) + 0.5);
+        } else {
+          setMinBidAmount(campaignData.auctionMinBid);
+          setBidAmount(campaignData.auctionMinBid);
+        }
+      } else {
+        setMinBidAmount(campaignData.auctionMinBid);
+        setBidAmount(campaignData.auctionMinBid);
+      }
+    }
+  }, [campaignData, bids]);
 
-			if (bids.length >= campaignData.numAuctionInteractions) 
-			{
-				let lastPrice = bids[campaignData.numAuctionInteractions - 1].price;
-				if (lastPrice >= campaignData.auctionMinBid) {
-					setMinBidAmount(parseFloat(lastPrice) + 0.5);
-					setBidAmount(parseFloat(lastPrice) + 0.5);
-				} else {
-					setMinBidAmount(campaignData.auctionMinBid);
-					setBidAmount(campaignData.auctionMinBid);
-				}
-			} else {
-				setMinBidAmount(campaignData.auctionMinBid);
-				setBidAmount(campaignData.auctionMinBid);
-			}
-		}
-	}, [campaignData, bids]);
+  useEffect(() => {
+    document.getElementById("auctionCard").onmousemove = (e) => {
+      for (const card of document.getElementsByClassName("auctionCard")) {
+        const rect = card.getBoundingClientRect(),
+          x = e.clientX - rect.left,
+          y = e.clientY - rect.top;
 
-	useEffect(()=>{
-		document.getElementById("auctionCard").onmousemove = e => {
-		for(const card of document.getElementsByClassName("auctionCard")) {
-			const rect = card.getBoundingClientRect(),
-		
-				x = e.clientX - rect.left,
-				y = e.clientY - rect.top;
-		
-			card.style.setProperty("--mouse-x", `${x}px`);
-			card.style.setProperty("--mouse-y", `${y}px`);
-		};
-		}
-	})
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+      }
+    };
+  });
 
-	const handleBidAmount = function(e){
-		if(parseInt(e.target.value) >= parseInt(minBidAmount) && parseInt(e.target.value) <= parseInt(maxBidAmount)){
-			setBidAmount(e.target.value);
-		}
-	}
+  const handleBidAmount = function (e) {
+    if (
+      parseInt(e.target.value) >= parseInt(minBidAmount) &&
+      parseInt(e.target.value) <= parseInt(maxBidAmount)
+    ) {
+      setBidAmount(e.target.value);
+    }
 
-	const onAutoBidAmountChange = function(e){
-		if(parseInt(e.target.value) >= parseInt(minBidAmount) && parseInt(e.target.value) <= parseInt(maxBidAmount)){
-			setAutoBidAmount(e.target.value);
-		}
-	}
+    for (let i = 0; i < bids.length; i++) {
+      if (e.target.value < Number(bids[i].price)) {
+        setManualRanking(i + 1);
+        return;
+      }
+    }
+  };
 
-	const handleMaxBidAmount = function(value){
-		if(bids.length > 0)
-		{
-			let sortedBids = bids;
-			let bidAtDesiredRanking = sortedBids[parseInt(value) - 1];
-			let thirtyPer = (bidAtDesiredRanking?.price/100) * 30;
-			let maxIncrement = 5;
-			if(thirtyPer > 5){
-				maxIncrement = thirtyPer;
-			}
-			maxIncrement = Math.round(maxIncrement*2)/2;
+  const onAutoBidAmountChange = function (e) {
+    if (
+      parseInt(e.target.value) >= parseInt(minBidAmount) &&
+      parseInt(e.target.value) <= parseInt(maxBidAmount)
+    ) {
+      setAutoBidAmount(e.target.value);
+    }
+  };
 
-			setMaxBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
-			setAutoBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
-			if(!bidAtDesiredRanking){
-				setMaxBidAmount(0.00);
-				setAutoBidAmount(0.00);
-			}
-		}
+  const handleMaxBidAmount = function (value) {
+    if (bids.length > 0) {
+      let sortedBids = bids;
+      let bidAtDesiredRanking = sortedBids[parseInt(value) - 1];
+      let thirtyPer = (bidAtDesiredRanking?.price / 100) * 30;
+      let maxIncrement = 5;
+      if (thirtyPer > 5) {
+        maxIncrement = thirtyPer;
+      }
+      maxIncrement = Math.round(maxIncrement * 2) / 2;
 
-		if(parseInt(value) > bids.length){
-			setMaxBidAmount(0.00);
-		}
-	}
+      setMaxBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
+      setAutoBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
+      if (!bidAtDesiredRanking) {
+        setMaxBidAmount(0.0);
+        setAutoBidAmount(0.0);
+      }
+    }
 
-	const handleDesiredRanking = function(e){
-		// prevent values less than 0 or higher than 20.
-		console.log("Num interactions",campaignData?.numAuctionInteractions)
-		e.target.value < 1
-		? (e.target.value = 1)
-		: e.target.value > parseInt(campaignData?.numAuctionInteractions)
-		? (e.target.value = campaignData?.numAuctionInteractions)
-		: setDesiredRanking(e.target.value);
-		handleMaxBidAmount(e.target.value);
-	}
+    if (parseInt(value) > bids.length) {
+      setMaxBidAmount(0.0);
+    }
+  };
 
+  const handleDesiredRanking = function (e) {
+    // prevent values less than 0 or higher than 20.
+    console.log("Num interactions", campaignData?.numAuctionInteractions);
+    e.target.value < 1
+      ? (e.target.value = 1)
+      : e.target.value > parseInt(campaignData?.numAuctionInteractions)
+      ? (e.target.value = campaignData?.numAuctionInteractions)
+      : setDesiredRanking(e.target.value);
+    handleMaxBidAmount(e.target.value);
+  };
 
-	useEffect(()=>{
-		handleMaxBidAmount(desiredRanking);
-	},[])
+  useEffect(() => {
+    handleMaxBidAmount(desiredRanking);
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -154,104 +197,25 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
   const handlePupUpClose = () => {
     setOpen(false);
   };
-  const [cardInfo, setCardInfo] = useState({
-    name: "",
-    expiry: "",
-    number: "",
-    country: "",
-    address: {
-      line: "",
-      postalCode: "",
-    },
-  });
-  const [updateCardInfo, setUpdateCardInfo] = useState({
-    pid: "",
-    name: "",
-    country: "",
-    state: "",
-    city: "",
-    postalCode: "",
-  });
-  const [locations, setLocations] = useState({
-    countries: "",
-    states: "",
-    cities: "",
-  });
-  const [selectedLocation, setSelectedLocation] = useState({
-    country: {},
-    city: {},
-    state: {},
-  });
+
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [userCostomerId, setUserCostomerId] = useState(null);
-  function handleChangeAddressLine(e) {
-    const { value } = e.target;
-    setCardInfo((prev) => {
-      return { ...prev, address: { ...prev.address, line: value } };
-    });
-  }
-  function handleChangeName(e) {
-    const { value } = e.target;
-    setCardInfo((prev) => {
-      return { ...prev, name: value };
-    });
-  }
-  function parseForSelect(arr) {
-    return arr.map((item) => ({
-      label: item.name,
-      value: item.isoCode ? item.isoCode : item.name,
-    }));
-  }
-  function handleSelectCountry(country) {
-    setSelectedLocation((prev) => {
-      return { ...prev, country };
-    });
-    setCardInfo({
-      ...cardInfo,
-      country: country.value,
-    });
-  }
-  function handleSelectState(state) {
-    const cities = City.getCitiesOfState(
-      selectedLocation.country.value,
-      state.value
-    );
-    setSelectedLocation((prev) => {
-      return { ...prev, state };
-    });
 
-    setLocations((prev) => ({ ...prev, cities: parseForSelect(cities) }));
+  const handleOpen = () => {
+    setOpen(true);
   }
-  function handleSelectCity(city) {
-    setSelectedLocation((prev) => {
-      return { ...prev, city };
-    });
-  }
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const address = cardInfo.address;
-    const billingDetails = {
-      name: cardInfo.name,
-      address: {
-        country: cardInfo.country,
-        state: address.state,
-        city: address.city,
-        line1: address.line,
-      },
-    };
 
-    console.log(billingDetails)
     try {
       stripe
         .createPaymentMethod({
           type: "card",
-          billing_details: billingDetails,
-          card: elements.getElement(CardElement),
+          card: elements.getElement(CardNumberElement),
         })
         .then((resp) => {
-          console.log(resp.paymentMethod)
+          console.log(resp.paymentMethod);
           const pmid = resp.paymentMethod.id;
           if (pmid && userCostomerId) {
             getRequest(`/method/attach/${userCostomerId}/${pmid}`)
@@ -296,16 +260,10 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
       console.error(err);
     }
   };
-  const resturnOption = () => {
-    const options = supported_transfer_countries.map((item, index) => {
-      return { value: item.code, label: item.country };
-    });
-    return options;
-  };
+
   const verificationOfBid = () => {
     if (!user) return navigate("/");
     if (desiredRanking > 0) {
-
       getRequest(`/customer/method/${userCostomerId}`)
         .then((resp) => {
           const mdata = resp.data.paymentmethod.data;
@@ -333,7 +291,10 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
     // bidAction(bidAmount);
   };
   const verificationOfBid1 = () => {
-    console.log("manualbid")
+    console.log("manualbid");
+    console.log(bids);
+
+    console.log(manualRanking);
     if (!user) return navigate("/");
     getRequest(`/customer/method/${userCostomerId}`)
       .then((resp) => {
@@ -364,30 +325,43 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
   };
 
   useEffect(() => {
-    fetchUserName();    
+    fetchUserName();
   }, [user]);
 
-	function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
-	const options = [];
-	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
-		options.push(<MenuItem value={i} key={i}>{i}{nth(i)}</MenuItem>);
-	}
-	const followCampaign = async () => {
-    const targetUser = await fetchUserByName(campaignData?.person?.username);
-		if(user === undefined) {
-            console.log("You need to sign in to follow user");
-            navigate("/a/signin");
-            return;
-        }
-        if(!targetUser?.followers?.includes(user?.id)) {
-            followUser(user, targetUser);
-        }
+  function nth(n) {
+    return ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";
   }
-	const handleBidClick = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
-		followCampaign();
-		bidAction(amount, auto, desiredRanking, maxBidPrice, minBidPrice);
-	}
-	return (
+  const options = [];
+  for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
+    options.push(
+      <MenuItem value={i} key={i}>
+        {i}
+        {nth(i)}
+      </MenuItem>
+    );
+  }
+  const followCampaign = async () => {
+    const targetUser = await fetchUserByName(campaignData?.person?.username);
+    if (user === undefined) {
+      console.log("You need to sign in to follow user");
+      navigate("/a/signin");
+      return;
+    }
+    if (!targetUser?.followers?.includes(user?.id)) {
+      followUser(user, targetUser);
+    }
+  };
+  const handleBidClick = async (
+    amount,
+    auto = false,
+    desiredRanking = null,
+    maxBidPrice = null,
+    minBidPrice = null
+  ) => {
+    followCampaign();
+    bidAction(amount, auto, desiredRanking, maxBidPrice, minBidPrice);
+  };
+  return (
     <>
       <ConfirmAuctionPopup
         openstate={openPopup}
@@ -395,10 +369,10 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
         desiredRanking={desiredRanking}
-        onchangeclick={handleOpen}
+        onaddclick={handleOpen}
         price={maxBidAmount}
         userCostomerId={userCostomerId}
-        bidAction={bidAction}
+        bidAction={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}
         bidActionstatus={true}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
@@ -409,11 +383,11 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
         allprimarymethod={paymentMethods}
-        desiredRanking={desiredRanking}
-        onchangeclick={handleOpen}
+        desiredRanking={manualRanking}
+        onaddclick={handleOpen}
         price={bidAmount}
         userCostomerId={userCostomerId}
-        bidAction={bidAction}
+        bidAction={() => bidAction(bidAmount,false,null,null,minBidAmount)}
         bidActionstatus={true}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
@@ -423,79 +397,32 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        >
+      >
         <Box sx={style}>
           <div className="wrapper">
-            {/* <div className="innerWrapper">
-              <IconButton
-                onClick={handleClose}
-                style={{ float: "right", cursor: "pointer",marginTop:"-8px" }}
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-              >
-                <CancelIcon />
-              </IconButton>
-
-              <div className="title">Add Payment Method</div>
-              <div className="row">
-                <label>Cardholder Name</label>
-                <input
-                  onChange={handleChangeName}
-                  type="text"
-                  name="name"
-                  placeholder="Enter card holder name"
-                />
-              </div>
-              <div className="rowPaymentInput">
-                <CardElement ref={card} />
-              </div>
-
-              <div className="rowSelect">
-                <label>Country</label>
-                <Select
-                  options={resturnOption()}
-                  onChange={handleSelectCountry}
-                />
-              </div>
-
-              <div className="addressWrapper">
-                <div className="row">
-                  <label>Address</label>
-                  <input
-                    onChange={handleChangeAddressLine}
-                    type="text"
-                    name="address"
-                    placeholder="Enter Full Address"
-                  />
+            <div className="innerWrapper" style={{ width: "500px" }}>
+              <PaymentRequestForm price={maxBidAmount} handleSubmit={handlePupUpClose}/>
+              <div className="payment-divider" />
+              <div className="stripe-card-wrapper">
+                <div className="number_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Card Number</label>
+                    <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
                 </div>
-                <div className="checkbox-div card-body-text">
-                  <input
-                    type="checkbox"
-                    disabled="disabled"
-                    id="subscribe"
-                    name="subscribe"
-                    checked
-                  />
-                  Save Card
+                <div className="expiry_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+                    <CardExpiryElement className={"expiry_input"} />
                 </div>
-
-                <InteractFlashyButton onClick={handleSubmit}>
-                  Submit
-                </InteractFlashyButton>
+                <div className="cvc_input">
+                    <label htmlFor="#" className="stripe-card_field_label">CVC</label>
+                    <CardCvcElement className={"cvc_input"} />
+                </div>
               </div>
-            </div> */}
-            
-            <div className="innerWrapper">
-              <PaymentRequestForm />
-              <CardNumberElement />
-              <CardExpiryElement />
-              <CardCvcElement />
+              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Add new payment method</InteractFlashyButton>
             </div>
           </div>
         </Box>
       </Modal>
-    
+
       <JumboCardQuick
         title={"Auction"}
         id="auctionCard"
@@ -509,7 +436,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           justifyContent: "space-between",
         }}
         className="auctionCard"
-        >
+      >
         <Stack direction="column">
           <Typography>
             Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x{" "}
@@ -525,55 +452,60 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
 
           <Typography>
             In total, the top{" "}
-            <Span sx={{ color: "primary.main", fontWeight: 600 }}>{campaignData?.numAuctionInteractions}</Span>{" "}
-            bidders win interactions 
-            at the<br></br>end of the campaign ({getDateFromTimestamp({
+            <Span sx={{ color: "primary.main", fontWeight: 600 }}>
+              {campaignData?.numAuctionInteractions}
+            </Span>{" "}
+            bidders win interactions at the<br></br>end of the campaign (
+            {getDateFromTimestamp({
               timestamp: campaignData?.endDateTime?.seconds,
               format: "h:mm a [EST on] MMMM Do",
-            })})
+            })}
+            )
           </Typography>
         </Stack>
         <br></br>
         <Stack id="autoBidSection" direction="column" spacing={2}>
           <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-          <Typography variant="h6" color="text.secondary" mb={0}>
-            Auto-bid
-          </Typography>
-          <InfoTooltip
-            title="We'll automatically bid the lowest amount to stay at your 
+            <Typography variant="h6" color="text.secondary" mb={0}>
+              Auto-bid
+            </Typography>
+            <InfoTooltip
+              title="We'll automatically bid the lowest amount to stay at your 
             desired rank on the leaderboard until your max bid is reached (you'll be sent an email to increase your 'Max bid amount'). If others 
             bid more & your max bid amount is exceeded, your rank will be lowered (we 
               will automatically bid your max bid price if it is exceeded and still try 
               to get you the highest rank possible; you may still be on the leaderboard 
               or you may not be (no interaction)."
-          />
+            />
           </Stack>
 
           <FormControl sx={{ my: 1 }}>
-          <InputLabel htmlFor="desired-ranking">Desired ranking</InputLabel>
-          <Select
-            id="desired-ranking"
-            type="number"
-            style={{ height: 50 }}
-            value={desiredRanking}
-            label="Desired ranking"
-            onChange={(e) => handleDesiredRanking(e)}
-          >
-            {options}
-          </Select>
+            <InputLabel htmlFor="desired-ranking">Desired ranking</InputLabel>
+            <Select
+              id="desired-ranking"
+              type="number"
+              style={{ height: 50 }}
+              value={desiredRanking}
+              label="Desired ranking"
+              onChange={(e) => handleDesiredRanking(e)}
+            >
+              {options}
+            </Select>
           </FormControl>
           <FormControl sx={{ my: 1 }}>
-          <InputLabel htmlFor="max-bid-amount">Max bid amount</InputLabel>
-          <OutlinedInput
-            id="max-bid-amount"
-            type="number"
-            inputProps={{ step: ".50" }}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            style={{ height: 50 }}
-            value={formatMoney(autoBidAmount)}
-            label="Max bid amount"
-            onChange={(e) =>  onAutoBidAmountChange(e)}
-          />
+            <InputLabel htmlFor="max-bid-amount">Max bid amount</InputLabel>
+            <OutlinedInput
+              id="max-bid-amount"
+              type="number"
+              inputProps={{ step: ".50" }}
+              startAdornment={
+                <InputAdornment position="start">$</InputAdornment>
+              }
+              style={{ height: 50 }}
+              value={formatMoney(autoBidAmount)}
+              label="Max bid amount"
+              onChange={(e) => onAutoBidAmountChange(e)}
+            />
           </FormControl>
 
           {/*
@@ -582,46 +514,47 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           </InteractButton>
           */}
 
-          <InteractButton disabled={isCampaignEnded} onClick={() => verificationOfBid()}>
-          Place auto-bid
+          <InteractButton
+            disabled={isCampaignEnded}
+            onClick={() => verificationOfBid()}
+          >
+            Place auto-bid
           </InteractButton>
         </Stack>
         <Divider sx={{ my: 2 }}>or</Divider>
         <Stack id="normalBidSection" direction="column" spacing={2}>
           <Typography variant="h6" color="text.secondary" mb={0}>
-          Manual bid {" "}<InfoTooltip
-            title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking"
-            />
+            Manual bid{" "}
+            <InfoTooltip title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking" />
           </Typography>
 
           {/* <div>Original Price: <span class='Highlight'>{'$'}20</span></div> */}
 
-        <Stack direction="column" spacing={0.5}>
-          <FormControl sx={{ my: 1 }}>
-          <InputLabel htmlFor="enter-bid-price">Enter bid price</InputLabel>
-          <OutlinedInput
-            id="enter-bid-price"
-            type="number"
-            inputProps={{ step: ".50" }}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            style={{ height: 50 }}
-            value={formatMoney(bidAmount)}
-            label="Enter bid price"
-            onChange={(e) => handleBidAmount(e)}
-          />
-          </FormControl>
-          
-          <Typography>
-            Current lowest price to win:{" "}
-            <Span sx={{ color: "primary.main", fontWeight: 500 }}>
-            {"$"}
-            {minBidAmount
-              && `${ formatMoney(
-                minBidAmount
-              )}`}
-            </Span>
-          </Typography>
-        </Stack>
+          <Stack direction="column" spacing={0.5}>
+            <FormControl sx={{ my: 1 }}>
+              <InputLabel htmlFor="enter-bid-price">Enter bid price</InputLabel>
+              <OutlinedInput
+                id="enter-bid-price"
+                type="number"
+                inputProps={{ step: ".50" }}
+                startAdornment={
+                  <InputAdornment position="start">$</InputAdornment>
+                }
+                style={{ height: 50 }}
+                value={formatMoney(bidAmount)}
+                label="Enter bid price"
+                onChange={(e) => handleBidAmount(e)}
+              />
+            </FormControl>
+
+            <Typography>
+              Current lowest price to win:{" "}
+              <Span sx={{ color: "primary.main", fontWeight: 500 }}>
+                {"$"}
+                {minBidAmount && `${formatMoney(minBidAmount)}`}
+              </Span>
+            </Typography>
+          </Stack>
 
           {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
           {/*
@@ -629,8 +562,11 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
           Place bid
           </InteractButton>
           */}
-          <InteractButton disabled={isCampaignEnded} onClick={() => verificationOfBid1()}>
-          Place bid
+          <InteractButton
+            disabled={isCampaignEnded}
+            onClick={() => verificationOfBid1()}
+          >
+            Place bid
           </InteractButton>
           {/* </form> */}
         </Stack>
@@ -639,5 +575,5 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction 
         </Typography>
       </JumboCardQuick>
     </>
-	);
+  );
 }

@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-export default function InteractFlashyButton({ onClick, children, disabled}) {
+export default function InteractFlashyButton({ onClick, children, disabled, ...rest}) {
   return (
     <Button
       sx={{
@@ -23,6 +23,7 @@ export default function InteractFlashyButton({ onClick, children, disabled}) {
       onClick={onClick}
       type="submit"
       disabled={disabled}
+      {...rest}
     >
       {children}
     </Button>
