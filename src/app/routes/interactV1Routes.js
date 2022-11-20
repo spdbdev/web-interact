@@ -44,7 +44,8 @@ const interactV1Routes = [
   },
   {
     path: "/",
-    element: <SignInPage />,
+    element: <Navigate to=""/>, //keep it like this since we merge landing page branch soon, so "" will be the landing page
+    //element: <SignInPage />,
   },
   {
     path: "/a/signup",

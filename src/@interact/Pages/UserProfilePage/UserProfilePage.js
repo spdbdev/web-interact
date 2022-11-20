@@ -24,6 +24,7 @@ import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
 import Swal from 'sweetalert2';
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
+import Typography from "@mui/material/Typography";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -167,9 +168,20 @@ function UserProfilePage() {
           >
             {targetUser?.name}
           </div>
-          <div style={{ marginTop: 10, color: "white", marginBottom: 10 }}>
-            Manage your interactions, campaigns, availability, and settings.
-          </div>
+
+          <Typography
+            sx={{
+              mt: 1.69,
+              mb: 1.69,
+              fontSize: "14px",
+              textAlign: "center",
+              color: '#FFFFFF',
+              lineHeight: '20px',
+              maxWidth: '291.21px',
+            }}
+          >
+            Manage your interactions, campaigns, availability, and settings on this page.
+          </Typography>
           <div
             style={{
               display: "flex",
@@ -203,7 +215,7 @@ function UserProfilePage() {
         
         <Box sx={{ width: "100%" }}>
           <div className="InfoContainer">
-            <Box sx={{ mt:0.69, borderTop: 0, borderBottom: 0, borderColor: "divider"}}>
+            <Box sx={{ mt:0.42, borderTop: 0, borderBottom: 0, borderColor: "divider"}}>
               <Tabs
               value={tab}
               onChange={handleChange}
