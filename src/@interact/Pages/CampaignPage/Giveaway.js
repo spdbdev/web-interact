@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Divider, Typography, Box, Input, Stack } from "@mui/material";
+import { Divider, Typography, Box, Input, Stack, FormControlLabel, Checkbox } from "@mui/material";
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
@@ -25,7 +25,6 @@ import { formatMoney } from "@interact/Components/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
-
 
 const style = {
 	position: "absolute",
@@ -473,7 +472,11 @@ export default function Giveaway({
                   <CardCvcElement className={"cvc_input"} />
               </div>
             </div>
-            <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Pay</InteractFlashyButton>
+			<FormControlLabel style={{marginTop: '10px'}}
+                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+            />
+            <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Submit</InteractFlashyButton>
           </div>
         </div>
       </Box>

@@ -23,9 +23,9 @@ export default function ConfirmAuctionPopup({
   price,
   userCostomerId,
   bidAction,
-  bidActionstatus,
   selectPaymentMethod,
   setSelectedPaymentMethod,
+  autobid
 }) {
   const [paymentId, setpaymentId] = useState();
   const [showtext, setShowText] = useState(false);
@@ -57,12 +57,11 @@ const paymentResponse = (price,resp = null) => {
           settheOpenPopup(false);
           Swal.fire(
             "Congratulations!",
-            "You've successfully placed a bid.",
+            autobid == true ? "You've successfully placed an auto-bid." : "You've successfully placed a bid.",
             "success"
           );
-          if (bidActionstatus) {
-            bidAction(price);
-          }
+
+          bidAction(price);
         } else {
           settheOpenPopup(false);
           Swal.fire({

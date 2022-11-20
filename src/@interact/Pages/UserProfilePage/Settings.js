@@ -1,6 +1,6 @@
 import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, FormControlLabel, Checkbox, FormGroup } from "@mui/material";
 import "./UserProfilePage.css";
 import FollowerList from "./FollowerList";
 import { Link } from "react-router-dom";
@@ -17,13 +17,11 @@ import {
   doc,
 } from "firebase/firestore";
 import Typography from "@mui/material/Typography";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardElement, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Modal from "@mui/material/Modal";
-import logo from "./visa.png";
-import logo1 from "./master.png";
 
 import "./setting.css";
 
@@ -60,6 +58,8 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  padding: 0,
+  borderRadius: '5px'
 };
 
 function Settings() {
@@ -348,23 +348,12 @@ function Settings() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const address = cardInfo.address;
-    const billingDetails = {
-      name: cardInfo.name,
-      address: {
-        country: address.country,
-        state: address.state,
-        city: address.city,
-        line1: address.line,
-      },
-    };
 
     try {
       stripe
         .createPaymentMethod({
           type: "card",
-          billing_details: billingDetails,
-          card: elements.getElement(CardElement),
+          card: elements.getElement(CardNumberElement),
         })
         .then((resp) => {
           const pmid = resp.paymentMethod.id;
@@ -541,43 +530,33 @@ function Settings() {
       >
         <Box sx={style}>
           <div className="wrapper">
-            <div className="innerWrapper">
-              <div className="title">Add Payment Method</div>
-              <div className="row">
-                <label>Cardholder Name</label>
-                <input
-                  onChange={handleChangeName}
-                  type="text"
-                  name="name"
-                  placeholder="Enter card holder name"
-                />
-              </div>
-              <div className="rowPaymentInput">
-                <CardElement ref={card} />
-              </div>
-
-              <div className="addressWrapper">
-                <div className="row">
-                  <label>Address</label>
-                  <input
-                    onChange={handleChangeAddressLine}
-                    type="text"
-                    name="address"
-                    placeholder="Enter Full Address"
-                  />
+            <div className="innerWrapper" style={{ width: "500px" }}>
+            <div className="title" style={{fontSize:'20px'}}>Add Payment Method</div>
+              <div className="stripe-card-wrapper">
+                <div className="number_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Card Number</label>
+                    <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
                 </div>
-
-                <div className="btnContainer">
-                  <InteractFlashyButton onClick={handleSubmit}>
-                    Submit
-                  </InteractFlashyButton>
+                <div className="expiry_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+                    <CardExpiryElement className={"expiry_input"} />
+                </div>
+                <div className="cvc_input">
+                    <label htmlFor="#" className="stripe-card_field_label">CVC</label>
+                    <CardCvcElement className={"cvc_input"} />
                 </div>
               </div>
+              <FormControlLabel style={{marginTop: '10px'}}
+                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+              />
+              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Submit</InteractFlashyButton>
             </div>
           </div>
         </Box>
       </Modal>
 
+      
       <br />
 
       <Link to="/campaign" style={{ textDecoration: "none" }}>
@@ -714,10 +693,10 @@ function Settings() {
                     <img
                       style={{ width: "50px", height: "50px" }}
                       alt="profile-pic"
-                      src={logo}
+                      src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
                     />
                     <div style={{ marginLeft: "10px" }}>
-                      <Typography gutterBottom variant="h3" component="div">
+                      <Typography gutterBottom variant="h3" style={{textTransform: 'capitalize'}} component="div">
                         {item.card.brand} ending in {item.card.last4}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -786,25 +765,24 @@ function Settings() {
                         paddingBottom: "50px",
                       }}
                     >
-                      <div style={{ display: "flex", clear: "both" }}>
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          alt="profile-pic"
-                          src={logo}
-                        />
-                        <div style={{ marginLeft: "10px" }}>
-                          <Typography gutterBottom variant="h3" component="div">
+                      <div style={{ display: "flex", clear: "both", alignItems: "center", justifyContent: "flex-start", gap: "100px" }}>
+                        <div style={{ display: "flex", justifyContent: "flex-start", width: "400px", gap: "10px"}}>
+                          <img
+                            style={{ width: "50px", height: "50px" }}
+                            alt="profile-pic"
+                            src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
+                          />
+                          <Typography gutterBottom variant="h3" style={{textTransform: 'capitalize'}} component="div">
                             {item.card.brand} ending in {item.card.last4}
                           </Typography>
                         </div>
-                        <Typography
-                          gutterBottom
-                          variant="h3"
-                          component="div"
-                          style={{ marginLeft: "100px" }}
-                        >
-                          {item.card.country}
-                        </Typography>
+                          <Typography
+                            gutterBottom
+                            variant="h3"
+                            component="div"
+                          >
+                            {item.card.country}
+                          </Typography>
                       </div>
                       <div
                         style={{
@@ -874,22 +852,21 @@ function Settings() {
                       paddingBottom: "50px",
                     }}
                   >
-                    <div style={{ display: "flex", clear: "both" }}>
-                      <img
-                        style={{ width: "50px", height: "50px" }}
-                        alt="profile-pic"
-                        src={logo}
-                      />
-                      <div style={{ marginLeft: "10px" }}>
-                        <Typography gutterBottom variant="h3" component="div">
+                    <div style={{ display: "flex", clear: "both", alignItems: "center", justifyContent: "flex-start", gap: "20px" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", width: "400px", gap: "15px"}}>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          alt="profile-pic"
+                          src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
+                        />
+                        <Typography gutterBottom variant="h3" style={{textTransform: 'capitalize', margin: '0'}}>
                           {item.card.brand} ending in {item.card.last4}
                         </Typography>
                       </div>
                       <Typography
                         gutterBottom
                         variant="h3"
-                        component="div"
-                        style={{ marginLeft: "100px" }}
+                        style={{margin: '0'}}
                       >
                         {item.card.country}
                       </Typography>

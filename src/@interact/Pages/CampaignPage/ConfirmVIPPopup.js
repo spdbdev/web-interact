@@ -12,7 +12,7 @@ import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./popupstyle.css";
 import { IconButton, Stack } from "@mui/material";
 import { Close } from '@mui/icons-material';
-import PaymentRequestForm from "@interact/Components/paymentRequestForm";
+import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
 
 export default function ConfirmVIPPopup({
   openstate,

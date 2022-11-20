@@ -7,7 +7,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  CardElement,
   useStripe,
   useElements,
   CardNumberElement,
@@ -20,40 +19,43 @@ import {
   collection,
   getDocs,
   where,
-  setDoc,
-  addDoc,
-  getDoc,
-  updateDoc,
-  doc,
 } from "firebase/firestore";
 import "./CampaignPage.css";
 import {
-  Button,
   Divider,
   OutlinedInput,
   InputAdornment,
-  useScrollTrigger,
-  Tooltip,
   InputLabel,
   FormControl,
-  Container,
   Typography,
   Box,
   Stack,
   Select,
   MenuItem,
+  FormControlLabel,
+  Checkbox
 } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
 import { getRequest, postRequest } from "../../../utils/api";
 import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
-import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from "@mui/material/IconButton";
 import { fetchUserByName, followUser } from "../../../firebase";
-import useCurrentUser from "@interact/Hooks/use-current-user";
-import PaymentRequestForm from "@interact/Components/paymentRequestForm";
+import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
 
+import "@interact/Components/Stripe/Stripe.css";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  padding: 0,
+  width: 400,
+};
 
 export default function Auction({
   isCampaignEnded,
@@ -179,13 +181,6 @@ export default function Auction({
   useEffect(() => {
     handleMaxBidAmount(desiredRanking);
   }, []);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handlePopUpClose = () => {
-    setOpen(false);
-  };
 
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [userCostomerId, setUserCostomerId] = useState(null);
@@ -362,9 +357,9 @@ export default function Auction({
         price={maxBidAmount}
         userCostomerId={userCostomerId}
         bidAction={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}
-        bidActionstatus={true}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
+        autobid={true}
       />
 
       <ConfirmAuctionPopup
@@ -377,10 +372,45 @@ export default function Auction({
         price={bidAmount}
         userCostomerId={userCostomerId}
         bidAction={() => bidAction(bidAmount,false,null,null,minBidAmount)}
-        bidActionstatus={true}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
+        autobid={false}
       />
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <div className="wrapper">
+            <div className="innerWrapper" style={{ width: "500px" }}>
+              <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
+              <div className="payment-divider" />
+              <div className="stripe-card-wrapper">
+                <div className="number_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Card Number</label>
+                    <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
+                </div>
+                <div className="expiry_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+                    <CardExpiryElement className={"expiry_input"} />
+                </div>
+                <div className="cvc_input">
+                    <label htmlFor="#" className="stripe-card_field_label">CVC</label>
+                    <CardCvcElement className={"cvc_input"} />
+                </div>
+              </div>
+              <FormControlLabel style={{marginTop: '10px'}}
+                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+              />
+              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Submit</InteractFlashyButton>
+            </div>
+          </div>
+        </Box>
+      </Modal>
 
       <JumboCardQuick
         title={"Auction"}
