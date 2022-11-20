@@ -139,7 +139,7 @@ const paymentResponse = (price,resp = null) => {
                         name="paymentid"
                         checked={selectPaymentMethod === item.id && "checked"}
                         onChange={() => selectPaymentId(item.id)}
-                        style={{margin: '0px', accentColor: '#7c35ee'}}
+                        style={{margin: '0px', accentColor: '#782FEE'}}
                       />
                       <img src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"} alt="icon" />
                       <Typography variant="h6" gutterBottom style={{fontSize: '13px', margin: "0px", textTransform: 'capitalize'}}>
@@ -157,7 +157,7 @@ const paymentResponse = (price,resp = null) => {
             Confirm
           </InteractFlashyButton>
           <Typography variant="subtitle1" style={{fontWeight: '500', fontSize: '13px', lineHeight: '1.5', marginBottom: '17px', marginTop: '30px', color: 'black'}} >
-            You will only be charged if you're a winning bidder on the leaderboard at the <span style={{color: '#7c35ee'}}>end of the campaign.</span><br/>
+            You will only be charged if you're a winning bidder on the leaderboard at the <span style={{color: '#782FEE'}}>end of the campaign.</span><br/>
             <span style={{color: '#b1b1b1'}}>When you confirm your bid, you consent to an automatic charge via this payment method at the end of the campaign.</span>
           </Typography>
           <Typography variant="subtitle1" style={{fontWeight: '500', fontSize: '13px', color: '#b1b1b1'}} >
