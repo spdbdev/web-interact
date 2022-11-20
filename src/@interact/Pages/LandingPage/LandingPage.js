@@ -27,7 +27,7 @@ const VideoContainer = styled(RoundedBox)`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.4%;
   iframe {
     position: absolute;
     top: 0;
@@ -247,7 +247,7 @@ const LandingPage = () => {
                           lineHeight: '115%'
                         }}
                       >
-                        {" "}game
+                        {" "}game{" "}
                       </Typography>
                       <Typography
                         variant="body1"
@@ -259,7 +259,7 @@ const LandingPage = () => {
                           lineHeight: '115%'
                         }}
                       >
-                        ,
+                        /
                       </Typography>
                       <Typography
                         variant="body1"
@@ -1141,7 +1141,7 @@ const LandingPage = () => {
 
         <Stack sx={{ pt: 0, mb: 9 }}>
           <CampaignButtonGroup
-            title='o(*￣▽￣*)ブ&nbsp; Try it out'
+            title='o(*￣▽￣*)ブ&nbsp; Create a draft'
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>

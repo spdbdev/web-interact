@@ -180,7 +180,7 @@ export default function WhatIsInteractPage() {
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    padding-bottom: 56.35%;
+    padding-bottom: 56.25%;
     overflow: hidden;
     box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
     iframe {
