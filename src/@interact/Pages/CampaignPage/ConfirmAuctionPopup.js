@@ -93,7 +93,7 @@ const paymentResponse = (price,resp = null) => {
 
   return (
     <div>
-      <Dialog PaperProps={{ style: { borderBottomLeftRadius: 10, borderTopRightRadius: 10 } }}
+      <Dialog PaperProps={{ style: { borderRadius: 20, padding: 15 } }}
         open={openstate}
         onClose={closefunction}
         aria-labelledby="alert-dialog-title"
@@ -115,15 +115,13 @@ const paymentResponse = (price,resp = null) => {
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            style={{ marginBottom: "20px" }}
+            style={{ marginBottom: "30px" }}
           >
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '100px', marginBottom: '12px'}}>
-              <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
-                Your bid amount: ${Number.parseFloat(price).toFixed(2)}
-              </Typography>
-              <div style={{ width: "200px" }}>
-                <PaymentRequestForm price={price} handleSubmit={closefunction} />
-              </div>
+            <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
+              Your bid amount: ${Number.parseFloat(price).toFixed(2)}
+            </Typography>
+            <div style={{ width: "200px", marginBottom:"12px" }}>
+              <PaymentRequestForm price={price} handleSubmit={closefunction} />
             </div>
             <div onClick={addEvent} style={{ cursor: "pointer", marginBottom: '20px' }}>
               <Typography variant="h6" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', fontSize: '13px' }}>
@@ -134,7 +132,7 @@ const paymentResponse = (price,resp = null) => {
               allprimarymethod.map((item, index) => {
                 return (
                   <>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '220px', gap: '5px', margin: '8px 0px'}}>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '15px', margin: '15px 0px'}}>
                       <input
                         type="radio"
                         value={item.id}

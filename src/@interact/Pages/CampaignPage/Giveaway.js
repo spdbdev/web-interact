@@ -31,10 +31,11 @@ const style = {
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
-	// width: 700,
 	bgcolor: "background.paper",
 	boxShadow: 24,
 	p: 4,
+	padding: 0,
+	width: 400,
 };
 
 export default function Giveaway({
@@ -455,7 +456,7 @@ export default function Giveaway({
     >
       <Box sx={style}>
         <div className="wrapper">
-          <div className="innerWrapper" style={{ width: "500px" }}>
+          <div className="innerWrapper">
             <PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
             <div className="payment-divider" />
             <div className="stripe-card-wrapper">
