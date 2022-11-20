@@ -27,7 +27,7 @@ const VideoContainer = styled(RoundedBox)`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-bottom: 56.4%;
+  padding-bottom: 56.1%;
   iframe {
     position: absolute;
     top: 0;
@@ -68,17 +68,22 @@ const Card = styled(GradientRoundedBox)`
     background-position: 100% 100%;
     transform: scale(1.08, 1.03);
   }
-  &:hover .landing-gradient-text {
-    background: transparent;
-    color: white;
-    -webkit-text-fill-color: white;
-  }
-  &:hover .landing-subtitle {
-    visibility: visible;
-    opacity: 1;
-  }
-  &:hover .landing-gray-heart {
-    opacity: 1;
+  &:hover {
+    .landing-gradient-text {
+      background: transparent;
+      color: white;
+      -webkit-text-fill-color: white;
+    }
+    .landing-subtitle {
+      visibility: visible;
+      opacity: 1;
+    }
+    .landing-orange-text {
+      color: #FFD700;
+    }
+    .landing-gray-heart {
+      opacity: 1;
+    }
   }
   & > div {
     position: relative;
@@ -86,31 +91,72 @@ const Card = styled(GradientRoundedBox)`
     width: 100%;
     height: 100%;
   }
+  ${({ animated }) => animated && `
+    animation: glow 0.5s linear infinite;
+  `}
+  @keyframes glow {
+    0% {
+      box-shadow: 0px 0px 8px 2px rgba(120, 47, 238, 0.15);;
+    }
+    100% {
+      box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+    }
+  }
 `;
-/*
+
+const blockList = [
+  {
+    id: 1,
+    title: 'Offer the most special & in-demand perk: your attention',
+    description: `Interact helps you bring joy to your most loyal fans 
+                  who have grown with you not only as a creator, but as a human being. 
+                  Get to know these fans & give them the acnknowledgment they crave for.`,
+    icon: 'images/pages/landing/heart-book.svg',
+    aos: "flip-left"
+  },
+  {
+    id: 2,
+    title: 'Both affluent & everyday fans get to interact',
+    description: `Fans can enter the giveaway for free, having a chance of acquiring an interaction, 
+                  or spend a few dollars for a VIP entry (25x increased chance); 
+                  affluent fans can buy a guaranteed interaction via the auction.`,
+    icon: 'images/pages/landing/pig.svg',
+    aos: "flip-right"
+  },
+  {
+    id: 3,
+    title: 'Hassle-free & flexible scheduling',
+    description: `Input the times you want to interact week-by-week 
+                  we’ll handle the rest via our matching algo (including 2-way sync with Google, 
+                  Outlook & iCloud calendars to seamlessly mesh with your availability).`,
+    icon: 'images/pages/landing/calendar.svg',
+    aos: "flip-left"
+  }
+];
+
 const FeatureCard = ({ data }) => {
   return (
     <Grid item xs={12} sm={6} md={4} data-aos={data?.aos}>
-      <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
+      <GradientRoundedBox sx={{ alignItems: "center", p: 4, height: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '95px' } }}>
           <img src={data?.icon} alt='' />
         </Box>
         <Typography
           sx={{
-            fontSize: "21px",
+            fontSize: "27px",
             fontWeight: 600,
             color: "#4D4657",
             textAlign: "center",
-            lineHeight: '110%',
-            minHeight: '65px'
+            lineHeight: '120%',
+            minHeight: '97px'
           }}
         >
           {data.title}
         </Typography>
         <Typography
           sx={{
-            mt: 0,
-            fontSize: "15px",
+            mt: 2,
+            fontSize: "21px",
             fontWeight: 400,
             textAlign: "center",
             color: '#70677E',
@@ -119,18 +165,18 @@ const FeatureCard = ({ data }) => {
         >
           {data.description}
         </Typography>
-        <br></br>
       </GradientRoundedBox>
     </Grid>
   )
 };
-*/
-const AnimateCard = ({ radius, padding, children, reverse }) => {
+
+const AnimateCard = ({ radius, padding, children, reverse, animated }) => {
   return (
     <Card
       radius={radius ?? '0px'}
       sx={{ padding: padding ?? '10px',  }}
       reverse={reverse}
+      animated={animated}
     >
       <Box>
         {children}
@@ -143,23 +189,23 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
   return (
     <Stack direction="column" alignItems="center">
       <InteractFlashyButton
-        radius={"3px 17px"}
+        radius={"5px 23px"}
         aos="fade-up"
         onClick={() => goToPage()}
       >
-        <Typography sx={{ fontSize: "17px", px: 2, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
+        <Typography sx={{ fontSize: "23px", px: 2, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
          {title}
         </Typography>
       </InteractFlashyButton>
       <Typography
         sx={{
-          mt: 2.69,
-          mb: 0,
-          fontSize: "15px",
+          mt: 2,
+          mb: 2,
+          fontSize: "19px",
           textAlign: "center",
           color: '#A79BBB',
-          lineHeight: '23px',
-          maxWidth: '369px',
+          lineHeight: '25px',
+          maxWidth: '660px',
           '& > a': {
             color: '#782FEE',
             transition: 'color 0.2s linear'
@@ -171,7 +217,7 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
       >
         Get started for free, create a campaign in 15 minutes;{" "}
         <a href='mailto:andrew@interact.vip?Subject=Help me set things up on Interact'>send us an email</a>
-        &nbsp;with your social media link & we’ll be&nbsp;happy to personally help you set things up
+        {" "}with your social media link & we’ll be happy to personally help you set things up
       </Typography>
     </Stack>
   )
@@ -185,12 +231,12 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <Stack maxWidth={"1010px"} alignSelf="center">
+    <Stack maxWidth={"1310px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 7.69}}>
-          <Grid container spacing={6}>
+        <Stack width={"100%"} sx={{ mt: 12 }}>
+          <Grid container spacing={7}>
             <Grid item xs={12} sm={4} md={4}>
-              <AnimateCard padding='49px' radius='5px 27px' data-aos="fade-up">
+              <AnimateCard padding='64px' radius='5px 27px' data-aos="fade-up" animated='true'>
                 <Box
                   sx={{
                     display: 'flex',
@@ -203,8 +249,9 @@ const LandingPage = () => {
                     <Typography
                       variant="body1"
                       component='span'
+                      className='landing-orange-text'
                       sx={{
-                        fontSize: '28px',
+                        fontSize: '30px',
                         fontWeight: 800,
                         color: '#FF5C00',
                         lineHeight: '120%'
@@ -217,101 +264,79 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '28px',
+                        fontSize: '30px',
                         fontWeight: 800,
                         lineHeight: '120%'
                       }}
                     >
-                      your fans with 1-on-1 interactions.
+                      your fans with 1-on-1 interactions
                     </Typography>
-                    <Box sx={{ mt: 1 }} className='landing-subtitle'>
+                    <Box sx={{ mt: 3 }} className='landing-subtitle'>
                       <Typography
                         className="landing-gradient-text"
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        Interact makes it easy to offer your fans what they want most: to
+                        (game & chat); Interact
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
+                          color: '#FF5C00',
+                          lineHeight: '130%'
                         }}
+                        className='landing-orange-text'
                       >
-                        {" "}game{" "}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
-                        /
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
-                        }}
-                      >
-                        {" "}chat{" "}
+                        {" "}boosts{" "}
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        & finally be
+                        your income with our auction
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
+                          color: '#FF5C00',
+                          lineHeight: '130%'
                         }}
+                        className='landing-orange-text'
                       >
-                        {" "}recognized
+                        {" "}+{" "}
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        —forming a 2-way relationship.
+                        giveaway campaigns & minimizes logistical hassle with our intuitive scheduling
                       </Typography>
                     </Box>
                   </Box>
-                  <Box sx={{ '& img': { width: '50px' }, display: 'flex' }}>
+                  <Box sx={{ '& img': { width: '65px' }, display: 'flex' }}>
                     <img src='images/icons/logo.png' alt='' />
                   </Box>
                 </Box>
@@ -324,22 +349,13 @@ const LandingPage = () => {
             </Grid>
           </Grid>
         </Stack>
-
-        <Stack sx={{ mt: 8.69, mb: 10 }}>
-          <CampaignButtonGroup
-            title='Start a campaign'
-            goToPage={() => navigate('/a/what-is-interact')}
-          />
-        </Stack>
-        <GradientRoundedBox width={"100%"} sx={{ mt: -2 }} radius='27px'
-          data-aos="zoom-out-left"
-        >
+        <GradientRoundedBox width={"100%"} sx={{ mt: 12 }} radius='27px'>
           <Grid container>
-            <Grid item xs={12} sm={4} md={4} >
+            <Grid item xs={12} sm={4} md={4} data-aos='fade-left' data-aos-duration="500">
               <Image src='images/pages/landing/reward-left.jpeg' alt='' />
             </Grid>
-            <Grid item xs={12} sm={8} md={4} >
-              <AnimateCard padding='49px' radius='0px' reverse="true">
+            <Grid item xs={12} sm={8} md={4} data-aos='fade-left' data-aos-duration="600">
+              <AnimateCard padding='64px' radius='0px' reverse="true">
                 <Box
                   sx={{
                     height: '100%',
@@ -355,170 +371,102 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '28px',
+                        fontSize: '30px',
                         fontWeight: 800,
                         lineHeight: '120%'
                       }}
                     >
-                      Your time is scarce; make it
+                      Let your fans be
                     </Typography>
                     <Typography
                       variant="body1"
                       component='span'
                       sx={{
-                        fontSize: '28px',
+                        fontSize: '30px',
                         fontWeight: 800,
                         color: '#FF5C00',
                         lineHeight: '120%'
                       }}
+                      className='landing-orange-text'
                     >
-                      {" "}worthwhile
+                      {" "}recognized
                     </Typography>
-                    <Typography
-                      variant="body1"
-                      component='span'
-                      className="landing-gradient-text"
-                      sx={{
-                        fontSize: '28px',
-                        fontWeight: 800,
-                        lineHeight: '120%'
-                      }}
-                    >
-                      .
-                    </Typography>
-                    <Box sx={{ mt: 1 }} className='landing-subtitle'>
+                    <Box sx={{ mt: 3 }} className='landing-subtitle'>
                       <Typography
                         className="landing-gradient-text"
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        Tap into this
+                        After spending countless hours watching you, fans have
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
+                          color: '#FF5C00',
+                          lineHeight: '130%'
                         }}
+                        className='landing-orange-text'
                       >
-                        {" "}rising demand{" "}
+                        &nbsp;grown with you&nbsp;
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        &{" "}
+                        not only as a creator, but
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%',
+                          color: '#FF5C00',
+                          lineHeight: '130%',
+                          display: 'block'
                         }}
+                        className='landing-orange-text'
                       >
-                        maximize your income
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
-                      . Ex: offer 50 thirty minute interactions in a 10 day campaign, earning
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%',
-                        }}
-                      >
-                        {" "}$5K-$7K{" "}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
-                        with 1000 fans mostly spending a few $; then interact with the winners for
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%',
-                        }}
-                      >
-                        {" "}3 hours a week{" "}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
-                        over 2 months.
+                        &nbsp;as a person
                       </Typography>
                     </Box>
                   </Box>
-                  <Box sx={{ mt: 3.69, width: '57px', position: 'relative' }}>
+                  <Box sx={{ width: '73px', position: 'relative' }}>
                     <img src='images/pages/landing/heart-round.png' alt='' className='landing-heart' />
                     <img src='images/pages/landing/gray-heart-round.png' alt='' className='landing-gray-heart' />
                   </Box>
                 </Box>
               </AnimateCard>
             </Grid>
-            <Grid item xs={12} sm={8} md={4}>
+            <Grid item xs={12} sm={8} md={4} data-aos='fade-left' data-aos-duration="700">
               <Image src='images/pages/landing/reward-right.jpg' alt='' />
             </Grid>
           </Grid>
         </GradientRoundedBox>
 
-        <Stack width={"100%"} sx={{ mt: 10 }}>
-          <Grid container spacing={6} data-aos="fade-right">
+        <Stack width={"100%"} sx={{ mt: 12 }}>
+          <Grid container spacing={7} data-aos="fade-right">
             <Grid item xs={12} sm={8} md={8}>
               <GradientRoundedBox sx={{ display: 'flex' }} radius='5px 27px'>
                 <Image src='images/pages/landing/loyal-fans.jpg' alt='' />
               </GradientRoundedBox>
             </Grid>
             <Grid item xs={12} sm={4} md={4} data-aos="fade-down">
-              <AnimateCard padding='49px' radius='27px 5px'>
+              <AnimateCard padding='64px' radius='27px 5px'>
                 <Box
                   sx={{
                     height: '100%',
@@ -538,457 +486,194 @@ const LandingPage = () => {
                     <Typography
                       variant="body1"
                       component='span'
-                      className="landing-gradient-text"
                       sx={{
-                        fontSize: '28px',
-                        fontWeight: 800,
-                        lineHeight: '120%',
-                      }}
-                    >
-                      Total control &{" "}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      component='span'
-                      sx={{
-                        fontSize: '21px',
+                        fontSize: '30px',
                         fontWeight: 800,
                         color: '#FF5C00',
-                        lineHeight: '169%'
+                        lineHeight: '120%'
                       }}
+                      className='landing-orange-text'
                     >
-                      intuitive{" "}
+                      Your{" "}
                     </Typography>
                     <Typography
                       variant="body1"
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '21px',
+                        fontSize: '30px',
                         fontWeight: 800,
                         lineHeight: '120%',
                       }}
                     >
-                      scheduling.
+                      hours,<br />
                     </Typography>
-                    <Box sx={{ mt: 1 }} className='landing-subtitle'>
+                    <Typography
+                      variant="body1"
+                      component='span'
+                      sx={{
+                        fontSize: '30px',
+                        fontWeight: 800,
+                        color: '#FF5C00',
+                        lineHeight: '120%'
+                      }}
+                      className='landing-orange-text'
+                    >
+                      your{" "}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component='span'
+                      className="landing-gradient-text"
+                      sx={{
+                        fontSize: '30px',
+                        fontWeight: 800,
+                        lineHeight: '120%',
+                      }}
+                    >
+                      schedule
+                    </Typography>
+                    <Box sx={{ mt: 3 }} className='landing-subtitle'>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        After the campaign, choose your 
-                        availability every week (we'll automatically match fans).
+                        Get to know your fans for a
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
+                          color: '#FF5C00',
+                          lineHeight: '130%'
                         }}
+                        className='landing-orange-text'
                       >
-                        {" "}Seamlessly mesh with your schedule
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
-                        {" "}with 2-way calendar sync (Google, Apple, iCloud). +You can
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
-                        }}
-                      >
-                        {" "}delete comments
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
-                        {" "}&
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          color: '#FFD700',
-                          lineHeight: '115%'
-                        }}
-                      >
-                        {" "}ban&nbsp;hooligans
+                        {" "}few hours{" "}
                       </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '23px',
                           fontWeight: 600,
-                          lineHeight: '115%'
+                          lineHeight: '130%'
                         }}
                       >
-                        .
+                        a week over 1-2 months; flexibly choose your availability
+                        week-by-week, and we’ll match you with fans who have won an interaction in the campaign
                       </Typography>
                     </Box>
                   </Box>
-                  <Box sx={{ '& img': { width: '37px' }, display: 'flex' }}>
-                    <img src='images/pages/landing/calendar.svg' alt='' />
+                  <Box sx={{ '& img': { width: '54px' }, display: 'flex', position: 'relative' }}>
+                    <img src='/images/pages/landing/calendar-icon.png' alt='' className='landing-heart' />
+                    <img src='/images/pages/landing/gray-calendar-icon.png' alt='' className='landing-gray-heart' />
                   </Box>
                 </Box>
               </AnimateCard>
             </Grid>
           </Grid>
         </Stack>
-        <Box sx={{ width: '76.9%' }}>
-          <VideoContainer mt={12} mb={10}>
+        <Box sx={{ width: '80%' }}>
+          <VideoContainer mt={18} mb={11}>
             <iframe
               title='youtube'
-              src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc?rel=0'
+              src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc'
               allowFullScreen
             />
           </VideoContainer>
         </Box>
-
-        <Stack width={"100%"}>
-          <Grid container spacing={5.621}>
-            <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
-              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
-                  <img src={'images/pages/landing/heart-book.svg'} alt='' />
-                </Box>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  You’re a key part of their weekly / daily
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#782FEE",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  {" "}routine
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  .
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  Show some love to these fans who have
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}grown with you not only as a creator, but as a person
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    mb: 1,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  . Meanwhile, you’re getting fresh content with new people to spice things up.
-                </Typography>
-              </GradientRoundedBox>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4} data-aos={"flip-right"}>
-              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
-                  <img src={'images/pages/landing/pig.svg'} alt='' />
-                </Box>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  Auction: the
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#782FEE",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  {" "}top bidders{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  on the leaderboard win.
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  at the end of the campaign. If you choose to offer 20 interactions, the top 20 bidders win. Thus,
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}more affluent fans{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  can bid for a
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}guaranteed interaction{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    mb: 1,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  .
-                </Typography>
-              </GradientRoundedBox>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
-              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
-                  <img src={'images/pages/landing/calendar.svg'} alt='' />
-                </Box>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  Giveaway: fans can enter for
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#782FEE",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  {" "}free / a few $
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  .
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  All fans can get a chance to interact: they can enter the giveaway for free, or
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}spare some pocket change{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                   for a
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}VIP entry{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    mb: 1,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  (a couple dollars for a 25x increased chance).
-                </Typography>
-              </GradientRoundedBox>
-            </Grid>
-
-          </Grid>
-        </Stack>
-
-
-
-        <Stack sx={{ mb: 10, mt:10 }}>
+        <Stack sx={{ mb: 10 }}>
           <CampaignButtonGroup
-            title='Create a campaign now!'
+            title='Start a campaign'
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>
+        <GradientRoundedBox sx={{ mb: '110px', display: 'flex', overflow: 'hidden' }}>
+          <Box sx={{ position: 'relative', width: '40%', '& img': { width: '100%', height: '100%', position: 'absolute', objectFit: 'cover' } }}>
+            <img
+              src='images/pages/landing/interact.jpg'
+              alt=''
+              className='landing-h-100'
+            />
+          </Box>
+          <Box sx={{ p: 8, flex: 1 }}>
+            <Typography fontSize={"35px"} color={"#782FEE"} fontWeight={"700"} >
+              What can you earn with interact?
+            </Typography>
+            <Typography
+              mt='29px'
+              fontSize={"26px"}
+              fontWeight={"400"}
+              color={"#4D4657"}
+              data-aos="fade-down"
+              sx={{ '& > span': { fontWeight: 600 } }}
+            >
+              Earn<span> $5K to $7K per campaign </span>
+              with around 1000 loyal fans who spend only a few dollars, in exchange for ~50 hours of interactions.
+            </Typography>
+            <Typography
+              mt={1}
+              fontSize={"23px"}
+              color={"#70677E"}
+              fontWeight={"400"}
+              data-aos="fade-down"
+              sx={{
+                '& > .currency': { fontWeight: 500 },
+                '& > .bold': { fontWeight: '700', textDecoration: 'underline'}
+              }}
+            >
+              Campaigns reserve interactions for 2 months usually (<span className='bold'>a few hours</span> of getting to know fans <span className='bold'>each week</span>), so 5 campaigns = 10 months of interactions, generating
+              <span className='currency'> $25K to $35K</span> annually.
+            </Typography>
+            <Typography
+              mt={4}
+              fontSize={"26px"}
+              fontWeight={"500"}
+              color={"#4D4657"}
+              data-aos="fade-up-left"
+              sx={{ '& > span': { textDecoration: "underline", fontWeight: 700 } }}
+            >
+              <span>Extra income </span>with
+              <span> no opportunity cost</span>
+            </Typography>
+            <Typography
+              mt={1} 
+              fontSize={"23px"} 
+              color={"#70677E"}
+              data-aos="fade-down"
+            >
+              You’ll get fresh content for your stream, and your streaming schedule can stay
+              the same without additional hours. You can even make use of highlights from
+              interactions to spice up new videos.
+            </Typography>
+          </Box>
+        </GradientRoundedBox>
 
-        <Stack width={"100%"} sx={{ mt: 0 }}>
-          <Grid container spacing={10.3}>
+        <Stack width={"100%"}>
+          <Grid container spacing={6}>
+            {blockList.map(data => (
+              <FeatureCard key={data.id} data={data} />
+            ))}
+          </Grid>
+        </Stack>
+
+        <Stack width={"100%"} sx={{ mt: 12 }}>
+          <Grid container spacing={7}>
             <Grid item xs={12} sm={6} md={6}>
               <Typography
                 variant='h3'
                 component='h2'
-                sx={{ fontWeight: 600, fontSize: "21px", color: "#4D4657", lineHeight: '17px' }}
+                sx={{ fontWeight: 600, fontSize: "30px", color: "#4D4657", lineHeight: '40px' }}
               >
                 Together, you can:
                 <Box
@@ -997,7 +682,7 @@ const LandingPage = () => {
                 >
                   <Box data-aos="fade-right" data-aos-duration="1000">
                     <Typography
-                      fontSize={"17px"}
+                      fontSize={"25px"}
                       color={"#70677E"}
                       fontWeight={"400"}
                       sx={{ '& > :not(.MuiTypography-body1)': { fontWeight: 700, color: "#782FEE" } }}
@@ -1006,16 +691,16 @@ const LandingPage = () => {
                       <Typography
                         variant="body1"
                         component="span"
-                        fontSize={"17px"}
+                        fontSize={"25px"}
                         color={"#3D3649"}
                         fontWeight={"400"}
                       >F</Typography>rom competitive games like Valorant & Chess to.... GeoGuessr
                       or mini putt in Discord activities
                     </Typography>
                   </Box>
-                  <Box sx={{ mt: '12px' }} data-aos="fade-left">
+                  <Box sx={{ mt: '15px' }} data-aos="fade-left">
                     <Typography
-                      fontSize={"17px"}
+                      fontSize={"25px"}
                       color={"#70677E"}
                       fontWeight={"400"}
                       sx={{ '& > span': { fontWeight: 700, color: "#782FEE" } }}
@@ -1030,9 +715,9 @@ const LandingPage = () => {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ mt: '12px' }} data-aos="fade-right">
+                  <Box sx={{ mt: '15px' }} data-aos="fade-right">
                     <Typography
-                      fontSize={"17px"}
+                      fontSize={"25px"}
                       color={"#70677E"}
                       fontWeight={"700"}
                       sx={{
@@ -1045,13 +730,26 @@ const LandingPage = () => {
                         WebkitTextFillColor: "transparent",
                       }}
                     >
-                      No more 1-way parasocial weirdness, get to know each other & have fun!
+                      Interact!
                     </Typography>
                   </Box>
                 </Box>
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6} md={6} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={6}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                '& img': {
+                  boxShadow: '0px 0px 27px 7px rgba(120, 47, 238, 0.15)',
+                  borderRadius: '45px'
+                }
+              }}
+            >
               <img
                 src='images/pages/landing/together.png'
                 alt=''
@@ -1079,7 +777,7 @@ const LandingPage = () => {
               expandIcon={<ArrowDropUpRoundedIcon color="primary" sx={{ fontSize: '45px' }} />}
             >
               <Typography
-                fontSize={"27px"}
+                fontSize={"35px"}
                 color={"#782FEE"}
                 fontWeight={"700"}
               >
@@ -1089,14 +787,14 @@ const LandingPage = () => {
             <AccordionDetails>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Box sx={{ width: { sm: '45%' } }}>
-                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"20px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;Content creators <span>start a time-limited campaign </span>
-                    (lasting 10 days, by default) with a goal, offering <span>1 on 1
+                    (lasting 10 days, by default) with a goal, offering <span>1-on-1
                       interactions to fans </span>(eg. play a game, chatting <span>via Discord
                         or Google Meet</span>) that are <span>scheduled in the 10 weeks (by
                           default) after the campaign ends.</span>
                   </Typography>
-                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"20px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;Fans try to be selected via the <span>giveaway </span>(with a
                     <span> free entry option</span>) or the <span>auction </span>(be a top bidder on the
                     leaderboard; pricier but a guaranteed interaction).  Fans pay immediately for the giveaway;
@@ -1104,18 +802,18 @@ const LandingPage = () => {
                   </Typography>
                 </Box>
                 <Box sx={{ flex: 1 }}>
-                  <Typography fontSize={"16px"}>
+                  <Typography fontSize={"20px"}>
                     💜&nbsp;When new fans try to enter the auction/giveaway,
                     they have to create an account & input their general
                     availability from Mon-Sun (editable on profile).
                   </Typography>
-                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"20px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;After the campaign ends,<span> selected fans (winners)
                       will have interactions assigned to them over the
                       interaction window duration, </span>10 weeks by default
                     (with auction winners having priority).
                   </Typography>
-                  <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
+                  <Typography fontSize={"20px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;The content creator<span> selects when they are available
                       week-by-week </span>(creators have to lock in their availability by
                     Friday midnight (EST) for the next week, and can<span> sync with
@@ -1127,69 +825,9 @@ const LandingPage = () => {
             </AccordionDetails>
           </Accordion>
         </Stack>
-
-        <GradientRoundedBox sx={{ mt: 10, mb: 10, display: 'flex', overflow: 'hidden' }}>
-          <Box sx={{ position: 'relative', width: '40%', '& img': { width: '100%', height: '100%', position: 'absolute', objectFit: 'cover' } }}>
-            <img
-              src='images/pages/landing/interact.jpg'
-              alt=''
-              className='landing-h-100'
-            />
-          </Box>
-          <Box sx={{ p: 6, flex: 1 }}>
-            <Typography fontSize={"27px"} color={"#782FEE"} fontWeight={"700"} >
-              What can you earn with interact?
-            </Typography>
-            <Typography
-              mt='23px'
-              fontSize={"19px"}
-              fontWeight={"400"}
-              color={"#4D4657"}
-              data-aos="fade-down"
-              sx={{ '& > span': { fontWeight: 600 } }}
-            >
-              Earn<span> $5K to $7K per campaign </span>
-              with 1000 fans who mostly spend a few dollars, while you offer ~50 hours of interactions.
-            </Typography>
-            <Typography
-              mt={1}
-              fontSize={"17px"}
-              color={"#70677E"}
-              fontWeight={"400"}
-              data-aos="fade-down"
-              sx={{ '& > span': { fontWeight: 500 } }}
-            >
-              Campaigns reserve interactions for 2 months usually (a few hours of getting to know fans each week), so 5 campaigns = 10 months of interactions, generating
-              <span> $25K to $35K</span> annually.
-            </Typography>
-            <Typography
-              mt={4}
-              fontSize={"19px"}
-              fontWeight={"500"}
-              color={"#4D4657"}
-              data-aos="fade-up-left"
-              sx={{ '& > span': { textDecoration: "underline", fontWeight: 700 } }}
-            >
-              <span>Extra income </span>with
-              <span> no opportunity cost</span>
-            </Typography>
-            <Typography
-              mt={1}
-              mb={1.21} 
-              fontSize={"17px"} 
-              color={"#70677E"}
-              data-aos="fade-down"
-            >
-              You’ll get fresh content for your stream, and your streaming schedule can stay
-              the same without additional hours. You can even make use of highlights from
-              interactions to spice up new videos.
-            </Typography>
-          </Box>
-        </GradientRoundedBox>
-
-        <Stack sx={{ pt: 0, mb: 9 }}>
+        <Stack sx={{ pt: 14, mb: 3 }}>
           <CampaignButtonGroup
-            title='o(*￣▽￣*)ブ&nbsp; Create a draft'
+            title='Create a campaign now'
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>

@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 const PrivacyPolicyPage = () => {
   return (
@@ -238,8 +238,8 @@ const PrivacyPolicyPage = () => {
         >
           Use of Your Personal Data
         </Typography>
-        <Typography>
-          The Company may use Personal Data for the following purposes:
+        <Box>
+          <Typography sx={{ m:0 }}>The Company may use Personal Data for the following purposes:</Typography>
           <ul>
             <li>To provide and maintain our Service, including to monitor the usage of our Service.</li>
             <li>
@@ -271,7 +271,7 @@ const PrivacyPolicyPage = () => {
               marketing and your experience.
             </li>
           </ul>
-        </Typography>
+        </Box>
       </Stack>
     </Stack>
   )

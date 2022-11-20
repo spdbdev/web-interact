@@ -22,12 +22,12 @@ const Footer = () => {
         width='100%'
         alignSelf='center'
         sx={{
-          py: 4,
+          py: 5,
           px: {xl: 0, lg: 6, xs: 4 },
         }}
       >
         <Stack
-          direction='row'
+          direction={{ xs: 'column', sm: 'row' }}
           alignItems='center'
           justifyContent='space-between'
           width='100%'
@@ -40,19 +40,19 @@ const Footer = () => {
           <Link href="/a/faq" underline="hover">FAQ</Link>
           <Link href="/a/campaign-creator-faq" underline="hover">Campaign creator FAQ</Link>
           <Link href="/a/privacy-policy" underline="hover">Privacy policy</Link>
-          <Link href="/a/campaign-creator-faq" underline="hover">Campaign creator FAQ</Link>
+          <Link href="/a/terms-conditions" underline="hover">Terms & conditions</Link>
         </Stack>
         <Div
           sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             mt: 2
           }}
         >
-          <img src={InteractLogo} width={120} alt='' />
-          <Typography variant={"body1"} sx={{ color: "text.disabled", ml: 2 }}>
+          <img src={InteractLogo} width={150} alt='' />
+          <Typography variant={"body1"} sx={{ color: "text.disabled", mt: 1, fontSize: '12px' }}>
             Copyright Interact © 2022
           </Typography>
         </Div>

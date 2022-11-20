@@ -4,20 +4,9 @@ import { ExpandMore } from '@mui/icons-material';
 const CampaignCreatorFaqPage = () => {
   const faqList = [
     {
-      question: 'What is Interact?',
+      question: 'How it works?',
       answer: (
         <>
-          <p>💜 Interact helps you bring joy to your most loyal fans who have grown with
-            you not only  as a creator, but as a human being.</p>
-          <p>💜 Both affluent & everyday fans have an opportunity to interact (one can purchase
-            a guaranteed interaction via auction; with the giveaway, one can enter for free
-            or spend a few dollars for a VIP entry). </p>
-          <p>💜 We minimize logistical hassle and make it worth your time (while creating
-            content/streaming, making an additional $100+ an hour with only 1000 devoted fans). </p>
-          <p>💜 This is FREE MONEY at no opportunity cost since you get fresh content for your stream
-            (your streaming scheduling can stay the same, no additional hours needed) and/or you
-            can make use of highlights from interactions to spice up new videos.</p>
-          <h4>How it works</h4>
           <p>💜 Content creators start a time-limited campaign (lasting 10 days, by default) with
             a goal, offering 1-on-1 interactions to fans (eg. play a game, chatting via Discord or Google
             Meet) that are scheduled in the 10 weeks (by default) after the campaign ends.</p>
@@ -31,8 +20,16 @@ const CampaignCreatorFaqPage = () => {
             the interaction window duration, 10 weeks by default (with auction winners having priority).</p>
           <p>💜 The content creator selects when they are available week-by-week (creators have to lock in their
             availability by Friday midnight (EST) for the next week, and can sync with their personal Google,
-            Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.</p>
-          <h4>Why interact with fans?</h4>
+            Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.
+          </p>
+        </>
+      ),
+      expand: true
+    },
+    {
+      question: 'Why interact with fans?',
+      answer: (
+        <>
           <p>💜 Form a closer bond with your fans who have been in your corner, cheering you on as you continue to
             grow as a creator & a human; everyone also gets to see the fan-interactions produced (or highlights)
             where they can learn more & see a different side to you.</p>
@@ -42,8 +39,16 @@ const CampaignCreatorFaqPage = () => {
             fans on your own schedule.</p>
           <p>💜 Do it all with minimal effort & complete control: our scheduling algorithm is focused on flexibility
             for the creator; one only has to input their specific availability week-by-week, 3 days in advance
-            (on Friday at the latest, week starts on Monday).</p>
-          <h4>How much money can I make?</h4>
+            (on Friday at the latest, week starts on Monday).
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'How much money can I make?',
+      answer: (
+        <>
           <p>💜 Maximize profits with Interact’s hybrid giveaway + auction campaign. Our special automated auction
             bidding allows affluent fans to support the creator much more & gives a 100% success-rate option to fans
             (for fairness’ sake); it's the premium option as auction interactions are scheduled to occur first.
@@ -58,68 +63,90 @@ const CampaignCreatorFaqPage = () => {
             evening per week); this is effectively being paid an extra $100 to $140 per hour while streaming/creating
             additional content while getting to meet & chill with your devoted fans. In a year, if a creator launches
             5 of these campaigns that reserve interactions for 2 months at a time (10 months of interactions), that’s
-            <span style={{ backgroundColor: 'yellow' }}>an additional $25K to $35K gross revenue annually.</span></p>
-          <h4>Why do fans want personal interactions?</h4>
-          <p>💜 Most fans can only afford spending a few dollars (can’t afford expensive merch & shipping);
-            but, they don’t have a compelling reason to give you some coffee money. Having a chance to personally
-            interact & gain recognition from you is an attractive incentive (via the giveaway):</p>
-          <ul>
-            <li>
-              Fans like you—as social platforms are so one-sided, fans give you attention weekly or even daily
-              without being able to receive any meaningful attention or recognition back. They treat you as someone
-              they trust and/or a relatable friend, but have never been able to fulfill that relationship.
-              Thus, fans want to be recognized by you & build a relationship by showing off their talents
-              (e.g. best X-main in this game, astute questions & insights in X, musical/artistic talent,
-              athleticism, or comedic genius).
-            </li>
-            <li>
-              Fans want to discuss & make their own viewpoints known on subjects they are deeply passionate about,
-              where you’re one of the leaders in that subject/community (from anime to politics, from history to
-              frontier tech, from reviews & tier lists to educational animations).
-            </li>
-            <li>
-              Fame—if a fan’s interaction was interesting, creators can post highlights of it or the interaction
-              is part of a live-streaming/podcasting scenario where the fan is recognized by many fellow fans &
-              viewers (react to content together, try not to laugh challenge, etc. even if you don’t create that
-              type of content yet, expand your variety—fans love to watch drama & discourse, or just something new).
-              Interacting with fans as part of your content is effective & appealing since other fans are envious &
-              garners large popularity (Mr. Beast, fans who don’t make money are still ecstatic). Creating fresh
-              content is one of the largest challenges we face, why not add some spice?
-            </li>
-          </ul>
-          <h4>How’s Interact different from viewer games?</h4>
-          <p>💜 If you’ve tried viewer games before, it was probably spontaneous (pulling users from stream chat),
-            benefiting only users who are paying attention in those few minutes & are able to play at that time.
-            Interact helps you & your fans plan ahead, organizing interactions with flexible scheduling (smart algo matching);
-            this greatly increases demand since all fans have the opportunity to vie for an interaction via our unique
-            auction + giveaway campaigns (moreover, Interact creates FOMO with 5-20 day
-            campaigns + incentive to support you with a fun goal).</p>
-        </>
-      ),
-      expand: true
-    },
-    {
-      question: 'Basic',
-      answer: (
-        <>
-          <p>💜 Be yourself and be true to your personality; fans want to talk to the real you and want to connect with you.</p>
-          <p>💜 Drive hype & FOMO: it’s a fan’s only chance for a few months usually. If they miss out they’ll sit in
-            envy of other lucky fans who get to interact with a content creator they love.</p>
+            <span style={{ backgroundColor: 'yellow' }}>an additional $25K to $35K gross revenue annually.</span>
+          </p>
         </>
       ),
       expand: false
     },
     {
-      question: 'Scheduling',
+      question: 'Why do fans want personal interactions?',
       answer: (
         <>
-          <h4>When do fans interact?</h4>
-          <p>Fans have interactions assigned to them in the 10 weeks (by default, or the Interaction window duration
+          <p>
+            💜 Most fans can only afford spending a few dollars (can’t afford expensive merch & shipping); but, they
+            don’t have a compelling reason to give you some coffee money. Having a chance to personally interact & gain
+            recognition from you is an attractive incentive (via the giveaway):
+          </p>
+          <ul>
+            <li>
+              Fans like you—as social platforms are so one-sided, fans give you attention weekly or even daily without being
+              able to receive any meaningful attention or recognition back. They treat you as someone they trust and/or a relatable
+              friend, but have never been able to fulfill that relationship. Thus, fans want to be recognized by you & build a relationship
+              by showing off their talents (e.g. best X-main in this game, astute questions & insights in X, musical/artistic talent,
+              athleticism, or comedic genius).
+            </li>
+            <li>
+              Fans want to discuss & make their own viewpoints known on subjects they are deeply passionate about, where you’re one of the leaders
+              in that subject/community (from anime to politics, from history to frontier tech, from reviews & tier lists to educational animations). 
+            </li>
+            <li>
+              Fame—if a fan’s interaction was interesting, creators can post highlights of it or the interaction is part of a live-streaming/podcasting
+              scenario where the fan is recognized by many fellow fans & viewers (react to content together, try not to laugh challenge, etc.
+              even if you don’t create that type of content yet, expand your variety—fans love to watch drama & discourse, or just something new).
+              Interacting with fans as part of your content is effective & appealing since other fans are envious & garners large popularity (Mr. Beast,
+              fans who don’t make money are still ecstatic). Creating fresh content is one of the largest challenges we face, why not add some spice?
+            </li>
+          </ul>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'How’s Interact different from viewer games?',
+      answer: (
+        <>
+          <p>💜 If you’ve tried viewer games before, it was probably spontaneous (pulling users from stream chat),
+            benefiting only users who are paying attention in those few minutes & are able to play at that time.
+            Interact helps you & your fans plan ahead, organizing interactions with flexible scheduling (smart algo matching);
+            this greatly increases demand since all fans have the opportunity to vie for an interaction via our unique
+            auction + giveaway campaigns (moreover, Interact creates FOMO with 5-20 day
+            campaigns + incentive to support you with a fun goal).
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    // {
+    //   question: 'Basic',
+    //   answer: (
+    //     <>
+    //       <p>💜 Be yourself and be true to your personality; fans want to talk to the real you and want to connect with you.</p>
+    //       <p>💜 Drive hype & FOMO: it’s a fan’s only chance for a few months usually. If they miss out they’ll sit in
+    //         envy of other lucky fans who get to interact with a content creator they love.</p>
+    //     </>
+    //   ),
+    //   expand: false
+    // },
+    {
+      question: 'When do fans interact?',
+      answer: (
+        <>
+          <p>
+            Fans have interactions assigned to them in the 10 weeks (by default, or the Interaction window duration
             of your choice) after the campaign ends, where auction winners have interactions generally scheduled first,
             with priority over giveaway winners. The only thing a fan can control is their own general availability,
             as they wait to get matched with the content creator who locks in their schedule week by week, at the latest
-            by Friday midnight for the upcoming week.</p>
-          <h4>How does scheduling work?</h4>
+            by Friday midnight for the upcoming week.
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'How does scheduling work?',
+      answer: (
+        <>
           <p>💜 You can sync with your Google, Outlook or iCloud calendar, where your scheduled events will show up as
             unavailable timeslots automatically on your creator schedule tab (in your Interact profile page);
             after you lock in your availability for a week, your interactions with fans are scheduled
@@ -149,17 +176,24 @@ const CampaignCreatorFaqPage = () => {
       expand: false
     },
     {
-      question: 'Interaction',
+      question: 'How does the giveaway work?',
       answer: (
         <>
-          <h4>How does the giveaway work?</h4>
           <p>Anyone can join the giveaway with a free entry or support a creator with a few dollars for a VIP entry that increases your
             chances of winning by 25x (but first, you have to correctly answer a skill based math question). Users can upgrade from the
             free to VIP entry (only 1 entry is allowed per user). Winners are drawn at the end of the campaign. Each time a user loses,
             their next giveaway with the same creator will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier
             (meaning up to a total 4x chance for a free entry or a total 100x chance if it is a VIP entry; this only resets on
-            winning an interaction in the giveaway).</p>
-          <h4>How does the auction & leaderboard work?</h4>
+            winning an interaction in the giveaway).
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'How does the auction & leaderboard work?',
+      answer: (
+        <>
           <p>Fans place a bid to be on the leaderboard. If the fan is still on the leaderboard when the campaign ends, they’ll win
             an interaction. If a fan places in the top 3 on the leaderboard, their interaction will be longer in duration
             compared to a normal interaction.</p>
@@ -172,7 +206,14 @@ const CampaignCreatorFaqPage = () => {
               might not be, meaning meaning no interaction (you'll be sent an email to increase your max bid).
             </li>
           </ul>
-          <h4>Why giveaway + auction format?</h4>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'Why giveaway + auction format?',
+      answer: (
+        <>
           <p>Both affluent & everyday fans have an opportunity to interact:</p>
           <ol>
             <li>
@@ -185,12 +226,27 @@ const CampaignCreatorFaqPage = () => {
               wishes for an interaction with you.
             </li>
           </ol>
-          <h4>What activities can I do with a fan in an interaction?</h4>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'What activities can I do with a fan in an interaction?',
+      answer: (
+        <>
           <p>💜 Playing games (from competitive games like Valorant & Chess to…. GeoGuessr or Mini Putt in Discord activities).</p>
           <p>💜 Discussing topics fans are passionate about, commentating, and learning from each other (fans can screen share: they might
             show off their own creations, favorite clips of your content and ask for advice in your field of expertise… or just anime.
-            You could also spice it up with a Try Not to Laugh challenge, watching funny YouTube videos via Discord activities).</p>
-          <h4>How are interactions carried out?</h4>
+            You could also spice it up with a Try Not to Laugh challenge, watching funny YouTube videos via Discord activities).
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'How are interactions carried out?',
+      answer: (
+        <>
           <p>💜 Via Discord (fans link their Discord accounts; when it’s their turn to interact, fans join the creator’s server and
             are given a special role automatically) or Google Meet (unique Google Meet link).</p>
           <p>💜 You may also stream it live and/or record it (users have agreed to photo/video release in the terms & conditions.</p>
@@ -199,36 +255,37 @@ const CampaignCreatorFaqPage = () => {
       expand: false
     },
     {
-      question: 'Goal & Video',
+      question: 'Goal',
       answer: (
         <>
-          <h4>Goal</h4>
           <p>💜 You must create a goal but the goal is non-binding, interactions are still carried out with those who have supported
             you even if the goal is not reached. The goal gives fans incentive to pledge more to help you reach
             your goal in this limited amount of time.<br />You can make the goal content that you already might plan to release soon.
-            They can be casual or complex:</p>
+            They can be casual or complex:
+          </p>
           <ul>
             <li>I won’t have to sell my kidney to feed myself</li>
             <li>Get RTX 4090, upgrade streaming setup</li>
             <li>I will jump off a plane</li>
             <li>New video with behind-the-scenes & bloopers</li>
           </ul>
-          <h4>💜 Make a quick video explaining your Interact campaign to fans</h4>
-          <p>For example:<br />Do you want to play a game of Valorant with me, showing off your skills? You definitely deserve to be higher
-          ranked but matchmaking has toyed with your heart. Talk to me about your troubles, or ask questions, and I’ll answer your concerns
-          while probably roasting you. Get to know me, and let me get to know my awesome fans; it’ll be fun!<br />Of course you’re also getting
-          us closer to the goal of $5,000 where I’ll eat a spoonful of Da Bomb; the spice definitely exaggerated, I’m not worried.
-          This campaign ends on December 10th, so don’t miss out! These are the only interactions we’ll have for the next few months.
-          Go to interact.vip/cool</p>
+          <p>💜 Make a quick video explaining your Interact campaign to fans</p>
+          <p>
+            For example:<br />Do you want to play a game of Valorant with me, showing off your skills? You definitely deserve to be higher
+            ranked but matchmaking has toyed with your heart. Talk to me about your troubles, or ask questions, and I’ll answer your concerns
+            while probably roasting you. Get to know me, and let me get to know my awesome fans; it’ll be fun!<br />Of course you’re also getting
+            us closer to the goal of $5,000 where I’ll eat a spoonful of Da Bomb; the spice definitely exaggerated, I’m not worried.
+            This campaign ends on December 10th, so don’t miss out! These are the only interactions we’ll have for the next few months.
+            Go to interact.vip/cool
+          </p>
         </>
       ),
       expand: false
     },
     {
-      question: 'Payment',
+      question: 'How do fees work?',
       answer: (
         <>
-          <h4>How do fees work?</h4>
           <p>💜 We only make money when you do. We’re not making money from any fees; we instead share costs with you;
             Interact only takes a cut after all of the referral, email, & payment processing fees.</p>
           <p>💜 We take our 17%-2% commission after sharing the fees (including payment processing of 2.9% + 0.30c, foreign exchange
@@ -242,30 +299,36 @@ const CampaignCreatorFaqPage = () => {
             <li>Platinum, $100K = 10%</li>
             <li>Diamond, $1M = 2%.</li>
           </ul>
+          <img src='/images/pages/landing/all-creator-rank.png' width='300px' alt='' />
         </>
       ),
       expand: false
     },
     {
-      question: 'How does the auction & leaderboard work?',
+      question: 'When do you get paid?',
       answer: (
         <>
-          <h4>When do you get paid?</h4>
           <p>Within 3 business days after the campaign is completed.</p>
         </>
       ),
       expand: false
     },
     {
-      question: 'Promotion',
+      question: 'What URLs do old campaigns use when I launch a new campaign?',
       answer: (
         <>
-          <h4>What URLs do old campaigns use when I launch a new campaign?</h4>
           <p>If you launch a new campaign and you want to use the same URL as before,
-            like <a href='https://www.interact.vip/pewdiepie'>www.interact.vip/pewdiepie</a> the old campaign will be assigned an URL consisting
-            of your username and a number, like <a href='https://www.interact.vip/c/username_1'>www.interact.vip/c/username_1</a>, where the number
-            denotes your 1st, 2nd, 3rd, etc. campaigns. You may only reserve 1 URL at a time.</p>
-          <h4>Protection against bots/abusers?</h4>
+          like <a href='https://www.interact.vip/pewdiepie'>www.interact.vip/pewdiepie</a> the old campaign will be assigned an URL consisting
+          of your username and a number, like <a href='https://www.interact.vip/c/username_1'>www.interact.vip/c/username_1</a>, where the number
+          denotes your 1st, 2nd, 3rd, etc. campaigns. You may only reserve 1 URL at a time.</p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'Protection against bots/abusers?',
+      answer: (
+        <>
           <p>💜 The creator can ban & unban (lifetime) any participant of their campaigns from their current and future campaigns.
             You can also delete any comment on your campaigns (with the ability to also ban the user who made that comment).
             A ban button is next to users on the ‘supporters’ tab of your campaign and also on the user profile page when you
@@ -273,16 +336,26 @@ const CampaignCreatorFaqPage = () => {
           <p>💜 Users have to AUTHORIZE a payment method to bid or enter the giveaway (meaning their payment method is valid
             via a small void transaction usually).</p>
           <p>💜 Every fan has until the end of the drop to bid & enter the giveaway instead of a first-come-first-serve basis.</p>
-          <h4>When can I start the next campaign?</h4>
-          <p>The next campaign has to end after all of your currently scheduled interactions would be completed. Ex: 50 interactions with
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'When can I start the next campaign?',
+      answer: (
+        <>
+          <p>
+            The next campaign has to end after all of your currently scheduled interactions would be completed. Ex: 50 interactions with
             fans over 2 months from March 1st to April 28th, then your new campaign can start on April 19th and end on May 1st if you want
             a 10 day campaign. It can start even earlier if you would want a 15 or 20 day campaign; it’s just that the end date has to be
-            after all of the interactions are completed.</p>
+            after all of the interactions are completed.
+          </p>
         </>
       ),
       expand: false
     }
   ]
+
   return (
     <Stack maxWidth='1440px' alignSelf='center'>
       <Stack flexDirection='column' sx={{ p: 4 }}>
