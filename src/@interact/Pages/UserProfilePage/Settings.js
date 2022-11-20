@@ -59,7 +59,7 @@ const style = {
   boxShadow: 24,
   p: 4,
   padding: 0,
-  borderRadius: '5px'
+  borderRadius: 15
 };
 
 function Settings() {
@@ -530,7 +530,7 @@ function Settings() {
       >
         <Box sx={style}>
           <div className="wrapper">
-            <div className="innerWrapper" style={{ width: "500px" }}>
+            <div className="innerWrapper">
             <div className="title" style={{fontSize:'20px'}}>Add Payment Method</div>
               <div className="stripe-card-wrapper">
                 <div className="number_input">

@@ -93,7 +93,7 @@ const paymentResponse = (price,resp = null) => {
 
   return (
     <div>
-      <Dialog PaperProps={{ style: { borderBottomLeftRadius: 10, borderTopRightRadius: 10 } }}
+      <Dialog PaperProps={{ style: { borderRadius: 20, padding: 15 } }}
         open={openstate}
         onClose={closefunction}
         aria-labelledby="alert-dialog-title"
@@ -102,31 +102,29 @@ const paymentResponse = (price,resp = null) => {
       >
         <DialogTitle id="alert-dialog-title" style={{ background: "#FAFAFA", marginBottom: '17px' }}>
           <Stack direction="row" alignItems="center" spacing={1} style={{display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <Typography variant="h2" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', marginBottom: 0 }}>
+            <Typography variant="h2" gutterBottom style={{ color: "#782FEE", textDecoration: 'underline', marginBottom: 0 }}>
               Confirm VIP entry
             </Typography>
             <IconButton onClick={closefunction} style={{ padding: 0 }}> <Close /> </IconButton>
           </Stack>
           
           <Typography variant="subtitle1" gutterBottom style={{fontWeight: '500', fontSize: '13px', color: 'black'}} >
-            You have an <span style={{color: '#7c35ee'}}>X%</span> chance of winning with your VIP entry (100x chance multiplier: 25x VIP entry $ 4x loss multiplier)
+            You have an <span style={{color: '#782FEE'}}>X%</span> chance of winning with your VIP entry (100x chance multiplier: 25x VIP entry $ 4x loss multiplier)
           </Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            style={{ marginBottom: "20px" }}
+            style={{ marginBottom: "30px" }}
           >
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '100px', marginBottom: '12px'}}>
-              <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
-                Entry price: ${Number.parseFloat(price).toFixed(2)}
-              </Typography>
-              <div style={{ width: "200px" }}>
-                <PaymentRequestForm price={price} handleSubmit={closefunction} />
-              </div>
+            <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
+              Entry price: <span style={{color: '#782FEE'}}>${Number.parseFloat(price).toFixed(2)}</span>
+            </Typography>
+            <div style={{ width: "200px", marginBottom:"15px", marginTop:"30px" }}>
+              <PaymentRequestForm price={price} handleSubmit={closefunction} />
             </div>
             <div onClick={addEvent} style={{ cursor: "pointer", marginBottom: '20px' }}>
-              <Typography variant="h6" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', fontSize: '13px' }}>
+              <Typography variant="h6" gutterBottom style={{ color: "#782FEE", textDecoration: 'underline', fontSize: '13px' }}>
                 Add new payment method
               </Typography>
             </div>
@@ -134,14 +132,14 @@ const paymentResponse = (price,resp = null) => {
               allprimarymethod.map((item, index) => {
                 return (
                   <>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '220px', gap: '5px', margin: '8px 0px'}}>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '15px', margin: '15px 0px'}}>
                       <input
                         type="radio"
                         value={item.id}
                         name="paymentid"
                         checked={selectPaymentMethod === item.id && "checked"}
                         onChange={() => selectPaymentId(item.id)}
-                        style={{margin: '0px', accentColor: '#7c35ee'}}
+                        style={{margin: '0px', accentColor: '#782FEE'}}
                       />
                       <img src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"} alt="icon" />
                       <Typography variant="h6" gutterBottom style={{fontSize: '13px', margin: "0px", textTransform: 'capitalize'}}>

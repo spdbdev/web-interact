@@ -33,8 +33,10 @@ import {
   Select,
   MenuItem,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  IconButton
 } from "@mui/material";
+import WestIcon from '@mui/icons-material/West';
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
@@ -55,6 +57,7 @@ const style = {
   p: 4,
   padding: 0,
   width: 400,
+  borderRadius: 15
 };
 
 export default function Auction({
@@ -185,6 +188,14 @@ export default function Auction({
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [userCostomerId, setUserCostomerId] = useState(null);
 
+  const handleBackPopup = () => {
+    setOpen(false);
+    if (selectPopUp === 1) {
+      setOpenPopup(true);
+    } else {
+      setOpenPopup1(true);
+    }
+  }
   const handleOpen = () => {
     setOpen(true);
   }
@@ -385,7 +396,7 @@ export default function Auction({
       >
         <Box sx={style}>
           <div className="wrapper">
-            <div className="innerWrapper" style={{ width: "500px" }}>
+            <div className="innerWrapper">
               <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
               <div className="payment-divider" />
               <div className="stripe-card-wrapper">

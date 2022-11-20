@@ -36,6 +36,7 @@ const style = {
 	p: 4,
 	padding: 0,
 	width: 400,
+	borderRadius: 15
 };
 
 export default function Giveaway({
