@@ -331,12 +331,14 @@ const LandingPage = () => {
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>
-        <GradientRoundedBox width={"100%"} sx={{ mt: -2 }} radius='27px'>
+        <GradientRoundedBox width={"100%"} sx={{ mt: -2 }} radius='27px'
+          data-aos="zoom-out-left"
+        >
           <Grid container>
-            <Grid item xs={12} sm={4} md={4}>
+            <Grid item xs={12} sm={4} md={4} >
               <Image src='images/pages/landing/reward-left.jpg' alt='' />
             </Grid>
-            <Grid item xs={12} sm={8} md={4} data-aos="fade-left">
+            <Grid item xs={12} sm={8} md={4} >
               <AnimateCard padding='49px' radius='0px' reverse="true">
                 <Box
                   sx={{
@@ -495,8 +497,7 @@ const LandingPage = () => {
                       </Typography>
                     </Box>
                   </Box>
-                  <br></br><br></br>
-                  <Box sx={{ width: '47px', position: 'relative' }}>
+                  <Box sx={{ mt: 3.69, width: '57px', position: 'relative' }}>
                     <img src='images/pages/landing/heart-round.png' alt='' className='landing-heart' />
                     <img src='images/pages/landing/gray-heart-round.png' alt='' className='landing-gray-heart' />
                   </Box>
