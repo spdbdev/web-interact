@@ -154,12 +154,12 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
       <Typography
         sx={{
           mt: 2.69,
-          mb: 1,
+          mb: 0,
           fontSize: "15px",
           textAlign: "center",
           color: '#A79BBB',
-          lineHeight: '25px',
-          maxWidth: '550px',
+          lineHeight: '23px',
+          maxWidth: '369px',
           '& > a': {
             color: '#782FEE',
             transition: 'color 0.2s linear'
@@ -171,7 +171,7 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
       >
         Get started for free, create a campaign in 15 minutes;{" "}
         <a href='mailto:andrew@interact.vip?Subject=Help me set things up on Interact'>send us an email</a>
-        {" "}with your social media link & we’ll be happy to personally help you set things up
+        &nbsp;with your social media link & we’ll be&nbsp;happy to personally help you set things up
       </Typography>
     </Stack>
   )
