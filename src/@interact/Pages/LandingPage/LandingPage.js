@@ -187,7 +187,7 @@ const LandingPage = () => {
   return (
     <Stack maxWidth={"1010px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 7 }}>
+        <Stack width={"100%"} sx={{ mt: 6.21 }}>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={4} md={4}>
               <AnimateCard padding='49px' radius='5px 27px' data-aos="fade-up">
@@ -324,10 +324,8 @@ const LandingPage = () => {
             </Grid>
           </Grid>
         </Stack>
-        <br></br>
-        <br></br>
-        <br></br>
-        <Stack sx={{ mb: 10 }}>
+
+        <Stack sx={{ mt: 8.69, mb: 10 }}>
           <CampaignButtonGroup
             title='Start a campaign'
             goToPage={() => navigate('/a/what-is-interact')}
