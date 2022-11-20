@@ -149,7 +149,7 @@ function UserProfilePage() {
           sx={{
             backgroundImage: "linear-gradient(to bottom right, #4b26a3, #d442f5)",
             width: "100%",
-            py: 4,
+            py: 3.69,
             borderRadius: 2,
           }}
         >

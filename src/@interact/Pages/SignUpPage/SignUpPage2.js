@@ -69,16 +69,24 @@ function SignUpPage2() {
     }else if(JSON.stringify(name).includes('\\')){
       setNameError("Cannot contain '\\'")
       isValid = false;
+    }else if(JSON.stringify(name).match("undefined")){
+      setNameError("Username cannot be 'undefined'")
+      isValid = false;
     }else{
       setNameError("");
     }
+
     if(/^[A-Za-z\s]+$/.test(legalName)){
+      setLegalNameError("");
+    }else if (JSON.stringify(legalName).match("")){
       setLegalNameError("");
     }else{
       setLegalNameError("Invalid name");
       isValid = false;
     }
     return isValid;
+
+    
   }
 
   const register = () => {
@@ -265,18 +273,6 @@ function SignUpPage2() {
           </Select>
           </FormControl>
         </div>
-
-        <div className="TextInputWrapper">
-          <TextField
-            error={legalNameError.length > 0}
-            id="outlined-basic"
-            label="Legal name"
-            variant="outlined"
-            value={legalName}
-            helperText={legalNameError}
-            onChange={(e) => setLegalName(e.target.value)}
-          />
-        </div>
         
         <div style={{width:"80%", align: "center", padding:"10px"}}>
           <Alert severity="warning">
@@ -296,6 +292,17 @@ function SignUpPage2() {
           />
         </div>
         
+        <div className="TextInputWrapper">
+          <TextField
+            error={legalNameError.length > 0}
+            id="outlined-basic"
+            label="Name"
+            variant="outlined"
+            value={legalName}
+            helperText={legalNameError}
+            onChange={(e) => setLegalName(e.target.value)}
+          />
+        </div>
 
         <div className="TextInputWrapper">
           <TextField

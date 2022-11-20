@@ -11,7 +11,7 @@ const interactMenus = [
     type: "section",
     children: [
       {
-        uri: "/u/",
+        uri: "/u/"+user?.name,
         label: "Profile",
         type: "nav-item",
         icon: <PersonOutlineIcon sx={{ fontSize: 20 }} />,

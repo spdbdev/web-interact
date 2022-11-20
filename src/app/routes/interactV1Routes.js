@@ -44,7 +44,6 @@ const interactV1Routes = [
   },
   {
     path: "/",
-    element: <Navigate to=""/>, //keep it like this since we merge landing page branch soon, so "" will be the landing page
     //element: <SignInPage />,
   },
   {
@@ -77,6 +76,14 @@ const interactV1Routes = [
   },
   {
     path: "/u/",
+    element: (
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
+    ),
+  },
+  {
+    path: "/u/undefined",
     element: (
       <AuthGuard>
         <Page component={UserProfilePage} layout="vertical-default" />

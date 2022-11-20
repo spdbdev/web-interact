@@ -50,7 +50,7 @@ const AuthUserDropdown = () => {
   const onLogout = () => {
     //mutation.mutate();
     logout();
-    navigate("/a/signin");
+    navigate("/");
   };
 
   return (
