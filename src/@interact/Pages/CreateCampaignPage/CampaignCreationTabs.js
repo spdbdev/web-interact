@@ -3,15 +3,16 @@ import { Tab, Tabs } from "@mui/material";
 import { Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-export const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
+export const StyledTab = styled((props) => <Tab {...props} />)(
   ({ theme }) => ({
     // this uses the theme we passed to the ThemeProvider in App.js
     textTransform: "none",
     fontWeight: 400,
-    fontSize: "16px",
-    color: theme.palette.text.primary,
+    fontSize: "16.21px",
+    color: "DD00FF",
     "&.Mui-selected": {
-      color: theme.palette.text.primary,
+      color: "#782FEE",
+      //color: theme.palette.text.primary,
     },
     cursor: "default",
   })

@@ -40,21 +40,20 @@ function SignInPage() {
         or
         <br />
         <div className='TextInputWrapper'>
-          <TextField id="outlined-basic" label="Email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <TextField id="outlined-basic" label="Username or email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className='TextInputWrapper'>
           <TextField id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
         </div>
-        <br></br>
-        <div className='ButtonsWrapper' style={{margin:10}}>
+        <div className='ButtonsWrapper' style={{margin:10, paddingTop: 13.69}}>
           <InteractFlashyButton onClick={()=>loginWithEmailAndPassword(email, password)}>
             Log in
           </InteractFlashyButton>
         </div>
-        <div style={{ paddingTop: 20 }}>
+        <div style={{ paddingTop: 20, paddingTop: 13.69}}>
           <Link to='/a/forgotpassword'>Forgot password</Link>
         </div>
-        <div style={{ paddingTop: 20 }}>
+        <div style={{ paddingTop: 7, paddingBottom: 16.21 }}>
           Don't have an account? <Link to='/a/signup'>Sign up now</Link>
         </div>
 

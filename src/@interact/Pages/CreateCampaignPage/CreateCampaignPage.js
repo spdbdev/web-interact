@@ -591,7 +591,7 @@ function CreateCampaignPage() {
         <Box sx={{ position: "absolute", top: 10, right: 10 }}>
           <Span sx={{ color: "text.hint" }}>
             {autosaveError ? (
-              <Span sx={{ color: "error" }}>Could not autosave.</Span>
+              <Span sx={{ color: "error" }}>Enter anything to create a new draft</Span>
             ) : isAutosaving ? (
               "Saving..."
             ) : (

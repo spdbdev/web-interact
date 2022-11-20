@@ -502,10 +502,10 @@ export default function Giveaway({
 			id="giveawayCard"
 			className="giveawayCard"
 			>
-			<Box>
+			<Box mt={1.21}>
 				<div>
 				<Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span> x 30
-				minute interactions
+				min interactions
 				</div>
 				<div>
 				<Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span>{" "}
