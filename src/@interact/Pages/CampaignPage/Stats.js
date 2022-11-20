@@ -35,6 +35,7 @@ export default function Stats({ campaignData, bids }) {
 		<GoalDisplay campaignData={campaignData} bids={bids} />
 		<Stack
 			flex={1}
+			mb = {10}
 			direction="row"
 			alignItems="center"
 			justifyContent="space-evenly"

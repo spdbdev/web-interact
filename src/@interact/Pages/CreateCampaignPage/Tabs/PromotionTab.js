@@ -115,7 +115,7 @@ export default function PromotionTab({
           <br />
           WARNING: upon submitting this campaign draft, the inputted URL will 
           become the URL of this campaign; 
-          <span style={{ color: "#782eee", fontWeight: 600 }}>
+          <span style={{ color: "#782fee", fontWeight: 600 }}>
           {" "}if you have an active campaign with 
           this reserved URL, it will also be replaced when you press submit.
           </span>
