@@ -397,6 +397,7 @@ export default function Auction({
         <Box sx={style}>
           <div className="wrapper">
             <div className="innerWrapper">
+              <IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
               <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
               <div className="payment-divider" />
               <div className="stripe-card-wrapper">
@@ -515,7 +516,6 @@ export default function Auction({
           */}
 
           <InteractButton
-            disabled={isCampaignEnded}
             onClick={() => verificationOfBid()}
           >
             Place auto-bid

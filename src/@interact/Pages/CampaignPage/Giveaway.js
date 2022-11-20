@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Divider, Typography, Box, Input, Stack, FormControlLabel, Checkbox } from "@mui/material";
+import { Divider, Typography, Box, Input, Stack, FormControlLabel, Checkbox, IconButton } from "@mui/material";
+import WestIcon from '@mui/icons-material/West';
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
@@ -16,8 +17,6 @@ import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
 import ConfirmVIPPopup from "./ConfirmVIPPopup";
-import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from "@mui/material/IconButton";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./CampaignPage.css";
@@ -386,7 +385,10 @@ export default function Giveaway({
 		}
 	})
 
-
+	const handleBackPopup = () => {
+    setOpen(false);
+    setOpenPopup(true);
+  }
 
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
@@ -458,6 +460,7 @@ export default function Giveaway({
       <Box sx={style}>
         <div className="wrapper">
           <div className="innerWrapper">
+						<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
             <PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
             <div className="payment-divider" />
             <div className="stripe-card-wrapper">

@@ -1,6 +1,7 @@
 import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { Box, FormControlLabel, Checkbox, FormGroup } from "@mui/material";
+import { Box, FormControlLabel, Checkbox, IconButton } from "@mui/material";
+import { Close } from '@mui/icons-material';
 import "./UserProfilePage.css";
 import FollowerList from "./FollowerList";
 import { Link } from "react-router-dom";
@@ -531,6 +532,7 @@ function Settings() {
         <Box sx={style}>
           <div className="wrapper">
             <div className="innerWrapper">
+            <IconButton onClick={handleClose} style={{ padding: 0 }}> <Close /> </IconButton>
             <div className="title" style={{fontSize:'20px'}}>Add Payment Method</div>
               <div className="stripe-card-wrapper">
                 <div className="number_input">
