@@ -20,6 +20,7 @@ import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage
 import Error404 from "app/pages/extra-pages/Error404";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
+import UserDoesNotExist from "app/pages/extra-pages/UserDoesNotExist";
 
 import AuthGuard from "@jumbo/services/auth/AuthGuard";
 import ForgotPassword from "@interact/Pages/SignUpPage/ForgotPassword";
@@ -28,7 +29,7 @@ import ResetPassword from "@interact/Pages/SignUpPage/ResetPassword";
 const interactV1Routes = [
   {
     path: "*",
-    element: <Navigate to="/a/404"/>,
+    element: <Error404/>,
   },
   {
     path: "/a/404",
@@ -44,7 +45,7 @@ const interactV1Routes = [
   },
   {
     path: "/",
-    //element: <SignInPage />,
+    //element: <SignInPage />, this will be landing page
   },
   {
     path: "/a/signup",
@@ -67,6 +68,10 @@ const interactV1Routes = [
     element: <PrivacyPolicyPage/>,
   },
   {
+    path: "/u/",
+    element: <UserDoesNotExist />,
+  },
+  {
     path: "/u/:username",
     element: (
       //<AuthGuard>
@@ -75,20 +80,8 @@ const interactV1Routes = [
     ),
   },
   {
-    path: "/u/",
-    element: (
-      <AuthGuard>
-        <Page component={UserProfilePage} layout="vertical-default" />
-      </AuthGuard>
-    ),
-  },
-  {
     path: "/u/undefined",
-    element: (
-      <AuthGuard>
-        <Page component={UserProfilePage} layout="vertical-default" />
-      </AuthGuard>
-    ),
+    element: <UserDoesNotExist />,
   },
   {
     path: "/c/:campaignId",

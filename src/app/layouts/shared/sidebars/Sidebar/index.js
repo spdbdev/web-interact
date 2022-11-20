@@ -67,11 +67,11 @@ const Sidebar = () => {
             : "/c/",
           label: returnedValue[i]?.header?.title
             ? returnedValue[i]?.header?.title
-            : "No Title",
+            : "No title",
           creator_label: "Created by",
           creator_name: returnedValue[i]?.person?.username
             ? returnedValue[i]?.person?.username
-            : "No Name",
+            : "No name",
           creator_Uri: returnedValue[i]?.person?.username
             ? "/u/" + returnedValue[i]?.person?.username
             : "/u",

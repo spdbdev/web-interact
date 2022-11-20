@@ -148,7 +148,7 @@ export default function CampaignCreationSummaryPage() {
   } else {
     return (
       <Slide
-        direction="right"
+        direction="left"
         timeout={1000}
         in={true}
         mountOnEnter

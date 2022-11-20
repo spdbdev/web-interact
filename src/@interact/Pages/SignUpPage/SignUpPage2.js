@@ -31,6 +31,9 @@ import "./SignUpPage.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { getUserCountryName } from "@interact/Components/utils";
 
+import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
+
 // newer SignUpPage with birthday.
 function SignUpPage2() {
   const [birdthday, setBirthday] = React.useState(null);
@@ -57,6 +60,11 @@ function SignUpPage2() {
   const handleFileClick = function(){
     fileRef.current.click();
   }
+
+  const {setActiveLayout} = useJumboApp();
+  React.useEffect(() => {
+    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
+  }, []);
 
   const validate = function(){
     let isValid = true;

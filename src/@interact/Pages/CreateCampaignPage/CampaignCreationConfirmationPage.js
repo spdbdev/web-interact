@@ -92,7 +92,7 @@ export default function CampaignCreationConfirmationPage() {
         <IconButton
           //disableRipple
           //disableFocusRipple
-          onClick={() => navigate(`/u/${user.username}`)}
+          onClick={() => navigate(`/u/${user.name}`)}
         >
           <Close sx={{ color: "text.secondary" }} />
         </IconButton>

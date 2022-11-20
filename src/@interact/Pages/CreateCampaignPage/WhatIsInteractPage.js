@@ -177,7 +177,7 @@ export default function WhatIsInteractPage() {
   }, [sidebarOptions]);
 
   return (
-    <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
+    <Slide direction="up" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",
@@ -192,7 +192,7 @@ export default function WhatIsInteractPage() {
           <IconButton
             //disableRipple
             //disableFocusRipple
-            onClick={() => navigate(`/u/`)}
+            onClick={() => navigate(`/`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
