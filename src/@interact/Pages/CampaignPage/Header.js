@@ -30,7 +30,7 @@ export default function Header({ campaignData }) {
       </Typography>
       <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
         Created by
-        <span style={{ color: "#782eee", fontWeight: 600 }}>
+        <span style={{ color: "#782fee", fontWeight: 600 }}>
           {campaignData?.creatorName}
         </span>
       </Typography>

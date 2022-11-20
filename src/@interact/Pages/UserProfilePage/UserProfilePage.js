@@ -23,6 +23,8 @@ import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
 import Swal from 'sweetalert2';
+import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
+import Typography from "@mui/material/Typography";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -166,9 +168,20 @@ function UserProfilePage() {
           >
             {targetUser?.name}
           </div>
-          <div style={{ marginTop: 10, color: "white", marginBottom: 10 }}>
-            I love playing Smite and Minecraft
-          </div>
+
+          <Typography
+            sx={{
+              mt: 1.69,
+              mb: 1.69,
+              fontSize: "14px",
+              textAlign: "center",
+              color: '#FFFFFF',
+              lineHeight: '20px',
+              maxWidth: '291.21px',
+            }}
+          >
+            Manage your interactions, campaigns, availability, and settings on this page.
+          </Typography>
           <div
             style={{
               display: "flex",
@@ -199,40 +212,35 @@ function UserProfilePage() {
             <FollowButton user={user} targetUser={targetUser}/>
           </div>
         </Stack>
-
+        
         <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
+          <div className="InfoContainer">
+            <Box sx={{ mt:0.42, borderTop: 0, borderBottom: 0, borderColor: "divider"}}>
+              <Tabs
               value={tab}
               onChange={handleChange}
               aria-label="basic tabs example"
-              indicatorColor="secondary"
+              textColor="primary"
+              size="50"
               centered
-            >
-              <Tab
-                label="Campaigns"
-                {...a11yProps(0)}
-                style={{ color: "black" }}
-              />
-              <Tab
-                label="Schedule"
-                {...a11yProps(1)}
-                style={{ color: "black" }}
-              />
-              <Tab
-                label="Creator Schedule"
-                {...a11yProps(2)}
-                style={{ color: "black" }}
-              />
+              >
+              <StyledTab label="Campaigns" {...a11yProps(0)} />
               {user && (
-                <Tab
-                  label="Settings"
-                  {...a11yProps(3)}
-                  style={{ color: "black" }}
-                />
+                <StyledTab label="Fan availability"
+                {...a11yProps(1)}/>
               )}
-            </Tabs>
-          </Box>
+              {user && (
+                <StyledTab label="Creator availability"
+                {...a11yProps(2)}/>
+              )}
+              {user && (
+                <StyledTab label="Settings"
+                {...a11yProps(3)}/>
+              )}
+              </Tabs>
+            </Box>
+          </div>
+
           <TabPanel value={tab} index={0}>
             <FollowedCampaigns />
           </TabPanel>

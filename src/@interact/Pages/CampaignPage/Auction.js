@@ -427,7 +427,7 @@ export default function Auction({
         className="auctionCard"
       >
         <Stack direction="column">
-          <Typography>
+          <Typography mt={1.21}>
             Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x{" "}
             {campaignData?.interactionTopDurationTime} min interactions
           </Typography>
