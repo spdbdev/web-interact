@@ -551,10 +551,10 @@ const LandingPage = () => {
                       variant="body1"
                       component='span'
                       sx={{
-                        fontSize: '28px',
+                        fontSize: '21px',
                         fontWeight: 800,
                         color: '#FF5C00',
-                        lineHeight: '120%'
+                        lineHeight: '169%'
                       }}
                     >
                       intuitive{" "}
@@ -564,7 +564,7 @@ const LandingPage = () => {
                       component='span'
                       className="landing-gradient-text"
                       sx={{
-                        fontSize: '28px',
+                        fontSize: '21px',
                         fontWeight: 800,
                         lineHeight: '120%',
                       }}
@@ -607,7 +607,31 @@ const LandingPage = () => {
                           lineHeight: '115%'
                         }}
                       >
-                        {" "}via 2-way calendar sync (Google, Apple, iCloud).
+                        {" "}via 2-way calendar sync (Google, Apple, iCloud). You also have the
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: 600,
+                          color: '#FFD700',
+                          lineHeight: '115%'
+                        }}
+                      >
+                        {" "}power to delete comments & ban
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: 600,
+                          lineHeight: '115%'
+                        }}
+                      >
+                        .
                       </Typography>
                     </Box>
                   </Box>
