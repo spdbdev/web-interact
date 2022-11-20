@@ -409,6 +409,7 @@ export default function Giveaway({
 						if (resp.data.added) {
 							setPaymentMethods(resp.data.paymentmethod.data);
 							setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
+							setOpenPopup(true);
 						} else {
 						Swal.fire({
 							icon: "error",
@@ -472,7 +473,7 @@ export default function Giveaway({
                   <CardCvcElement className={"cvc_input"} />
               </div>
             </div>
-            <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Add new payment method</InteractFlashyButton>
+            <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Pay</InteractFlashyButton>
           </div>
         </div>
       </Box>

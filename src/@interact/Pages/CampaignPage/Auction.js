@@ -417,7 +417,7 @@ export default function Auction({
                     <CardCvcElement className={"cvc_input"} />
                 </div>
               </div>
-              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Add new payment method</InteractFlashyButton>
+              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Pay</InteractFlashyButton>
             </div>
           </div>
         </Box>

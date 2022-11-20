@@ -129,7 +129,7 @@ const paymentResponse = (price,resp = null) => {
             </div>
             <div onClick={addEvent} style={{ cursor: "pointer", marginBottom: '20px' }}>
               <Typography variant="h6" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', fontSize: '13px' }}>
-                Pay
+                Add new payment method
               </Typography>
             </div>
             {allprimarymethod.length > 0 ? (

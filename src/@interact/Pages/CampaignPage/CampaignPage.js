@@ -384,7 +384,7 @@ function CampaignPage(userData) {
               position: "relative",
             }}
           >
-            {/*<iframe
+            <iframe
               style={{ flex: 1, position: "absolute" }}
               src={campaignData?.videoUrl}
               title="YouTube video player"
@@ -393,7 +393,7 @@ function CampaignPage(userData) {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            />*/}
+            />
           </Box>
 
           {num_giveaway > 0 && campaignId != null ? (
