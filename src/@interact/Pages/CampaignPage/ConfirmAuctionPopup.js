@@ -102,14 +102,14 @@ const paymentResponse = (price,resp = null) => {
       >
         <DialogTitle id="alert-dialog-title" style={{ background: "#FAFAFA", marginBottom: '17px' }}>
           <Stack direction="row" alignItems="center" spacing={1} style={{display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <Typography variant="h2" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', marginBottom: 0 }}>
+            <Typography variant="h2" gutterBottom style={{ color: "#782FEE", textDecoration: 'underline', marginBottom: 0 }}>
               Confirm bid
             </Typography>
             <IconButton onClick={closefunction} style={{ padding: 0 }}> <Close /> </IconButton>
           </Stack>
           
           <Typography variant="subtitle1" gutterBottom style={{fontWeight: '500', fontSize: '13px', color: 'black'}} >
-            This bid will place you at <span style={{color: '#7c35ee'}}>{desiredRanking}th</span> place on the leaderboard (if no one else bids)
+            This bid will place you at <span style={{color: '#782FEE'}}>{desiredRanking}th</span> place on the leaderboard (if no one else bids)
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -118,13 +118,13 @@ const paymentResponse = (price,resp = null) => {
             style={{ marginBottom: "30px" }}
           >
             <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
-              Your bid amount: ${Number.parseFloat(price).toFixed(2)}
+              Your bid amount: <span style={{color: '#782FEE'}}>${Number.parseFloat(price).toFixed(2)}</span>
             </Typography>
-            <div style={{ width: "200px", marginBottom:"12px" }}>
+            <div style={{ width: "200px", marginBottom:"15px", marginTop:"30px" }}>
               <PaymentRequestForm price={price} handleSubmit={closefunction} />
             </div>
             <div onClick={addEvent} style={{ cursor: "pointer", marginBottom: '20px' }}>
-              <Typography variant="h6" gutterBottom style={{ color: "#7c35ee", textDecoration: 'underline', fontSize: '13px' }}>
+              <Typography variant="h6" gutterBottom style={{ color: "#782FEE", textDecoration: 'underline', fontSize: '13px' }}>
                 Add new payment method
               </Typography>
             </div>
