@@ -380,7 +380,7 @@ function CampaignPage(userData) {
               mr: 1,
               borderRadius: 3,
               overflow: "hidden",
-              paddingBottom: "35.25%",
+              paddingBottom: "36.821%",
               position: "relative",
             }}
           >
@@ -440,7 +440,7 @@ function CampaignPage(userData) {
             flexDirection: "row",
           }}
         >
-          <Box sx={{ flex: 1, mr: 3 }}>
+          <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7}}>
             {/* <CreatorName campaignData={campaignData} /> */}
             <CampaignInfo
               isCampaignEnded={isCampaignEnded}
@@ -452,7 +452,7 @@ function CampaignPage(userData) {
               // supporters={supporters}
             />
           </Box>
-          <Box sx={{ flex: 1, mt: 3 }}>
+          <Box sx={{ flex: 1, mt: 5, mb: 7 }}>
             <Faq campaignData={campaignData} />
           </Box>
         </Box>
