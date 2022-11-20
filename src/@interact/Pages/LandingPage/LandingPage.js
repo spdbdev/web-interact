@@ -699,6 +699,7 @@ const LandingPage = () => {
                 <Typography
                   sx={{
                     mt: 0,
+                    mb: 1,
                     fontSize: "15px",
                     fontWeight: 400,
                     textAlign: "center",
@@ -708,7 +709,6 @@ const LandingPage = () => {
                 >
                   . Meanwhile, you’re getting fresh content with new people to spice things up.
                 </Typography>
-                <br></br>
               </GradientRoundedBox>
             </Grid>
 
@@ -804,6 +804,7 @@ const LandingPage = () => {
                 <Typography
                   sx={{
                     mt: 0,
+                    mb: 1,
                     fontSize: "15px",
                     fontWeight: 400,
                     textAlign: "center",
@@ -813,7 +814,6 @@ const LandingPage = () => {
                 >
                   .
                 </Typography>
-                <br></br>
               </GradientRoundedBox>
             </Grid>
 
@@ -909,6 +909,7 @@ const LandingPage = () => {
                 <Typography
                   sx={{
                     mt: 0,
+                    mb: 1,
                     fontSize: "15px",
                     fontWeight: 400,
                     textAlign: "center",
@@ -918,7 +919,6 @@ const LandingPage = () => {
                 >
                   (a couple dollars for a 25x increased chance).
                 </Typography>
-                <br></br>
               </GradientRoundedBox>
             </Grid>
 
@@ -929,7 +929,7 @@ const LandingPage = () => {
 
         <Stack sx={{ mb: 10, mt:10 }}>
           <CampaignButtonGroup
-            title='Create a campaign draft'
+            title='Create a campaign now!'
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>
@@ -1141,7 +1141,7 @@ const LandingPage = () => {
 
         <Stack sx={{ pt: 0, mb: 9 }}>
           <CampaignButtonGroup
-            title='Create a campaign now!'
+            title='o(*￣▽￣*)ブ&nbsp; Try it out'
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>
