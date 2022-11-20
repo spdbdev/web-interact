@@ -336,7 +336,7 @@ const LandingPage = () => {
         >
           <Grid container>
             <Grid item xs={12} sm={4} md={4} >
-              <Image src='images/pages/landing/reward-left.jpg' alt='' />
+              <Image src='images/pages/landing/reward-left.jpeg' alt='' />
             </Grid>
             <Grid item xs={12} sm={8} md={4} >
               <AnimateCard padding='49px' radius='0px' reverse="true">
