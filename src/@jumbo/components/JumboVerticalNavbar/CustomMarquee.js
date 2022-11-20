@@ -36,7 +36,7 @@ const CustomMarquee = ({ text }) => {
           runAnimation(size)
         }, 2000)
       }
-    }, 100)
+    }, 70)
   }
 
   return (

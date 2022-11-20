@@ -18,7 +18,6 @@ import { light } from "@mui/material/styles/createPalette";
 
 export default function Header({ campaignData }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
-  console.log("campaignData", campaignData);
   return (
     <div className="Description">
       <Typography
@@ -37,11 +36,13 @@ export default function Header({ campaignData }) {
                 src={campaignData?.person?.photoUrl}
                 alt={'No Image'}
                 align="center"
+                className="profile_image"
                 style={{
                     objectFit: "cover",
                     width: 35,
                     height: 35,
                     borderRadius: 1000,
+                    marginLeft: "5px",
                 }}
             >
             </img>

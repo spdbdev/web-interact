@@ -19,6 +19,7 @@ import {
   fetchRecentCampaigns,
   followUser,
 } from "../../../../../firebase";
+import { getDateFromTimestamp } from "@interact/Components/utils";
 
 const Sidebar = () => {
   let { user } = useCurrentUser();
@@ -27,65 +28,86 @@ const Sidebar = () => {
     "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
   const [followingList, setFollowingList] = useState([]);
   const [recentCampaignList, setRecentCampaignList] = useState([]);
-  useEffect(async () => {
-    try {
-      const returnedValue = await fetchUsersByIds(user?.following);
-      let followingItemGroup = [];
-      for (let i = 0; i < returnedValue.length; i++) {
-        let data = {
-          uri: "/u/" + returnedValue[i].name,
-          label: returnedValue[i].name,
-          type: "nav-item",
-          icon: (
-            <RemoveCircleOutlineIcon
-              onClick={() => handleUserItemClick(returnedValue[i])}
-              sx={{ fontSize: 20 }}
-            />
-          ),
-          photoURL: returnedValue[i]?.photoURL
-            ? returnedValue[i]?.photoURL
-            : defaultPhotoURL,
-        };
-        followingItemGroup.push(data);
+
+  const getFollowingList = async () => {
+    if(user?.following) {
+      try {
+        const returnedValue = await fetchUsersByIds(user?.following);
+        let followingItemGroup = [];
+        for (let i = 0; i < returnedValue.length; i++) {
+          let data = {
+            uri: "/u/" + returnedValue[i].name,
+            label: returnedValue[i].name,
+            type: "nav-item",
+            icon: (
+              <RemoveCircleOutlineIcon
+                onClick={() => handleUserItemClick(returnedValue[i])}
+                sx={{ fontSize: 20 }}
+              />
+            ),
+            photoURL: returnedValue[i]?.photoURL
+              ? returnedValue[i]?.photoURL
+              : defaultPhotoURL,
+          };
+          followingItemGroup.push(data);
+        }
+        setFollowingList(followingItemGroup);
+      } catch (e) {
+        setFollowingList([]);
       }
-      setFollowingList(followingItemGroup);
-    } catch (e) {
+    }else {
       setFollowingList([]);
     }
-  }, [user?.following]);
+    
+  }
 
-  useEffect(async () => {
-    try {
-      const returnedValue = await fetchRecentCampaigns(
-        user?.recentCampaignData
-      );
-      let recentCampaignItemGroup = [];
-      for (let i = 0; i < returnedValue.length; i++) {
-        let data = {
-          campaignUri: returnedValue[i]?.id
-            ? "/c/" + returnedValue[i]?.id
-            : "/c/",
-          label: returnedValue[i]?.header?.title
-            ? returnedValue[i]?.header?.title
-            : "No Title",
-          creator_label: "Created by",
-          creator_name: returnedValue[i]?.person?.username
-            ? returnedValue[i]?.person?.username
-            : "No Name",
-          creator_Uri: returnedValue[i]?.person?.username
-            ? "/u/" + returnedValue[i]?.person?.username
-            : "/u",
-          type: "recent-campaign-item",
-          photoURL: returnedValue[i]?.person?.photoUrl
-            ? returnedValue[i]?.person?.photoUrl
-            : defaultPhotoURL,
-        };
-        recentCampaignItemGroup.push(data);
+  const getRecentCampaignList = async () => {
+    if(user?.recentCampaignData) {
+      try {
+        const returnedValue = await fetchRecentCampaigns(
+          user?.recentCampaignData
+        );
+        let recentCampaignItemGroup = [];
+        for (let i = 0; i < returnedValue.length; i++) {
+          let data = {
+            campaignUri: returnedValue[i]?.id
+              ? "/c/" + returnedValue[i]?.id
+              : "/c/",
+            label: returnedValue[i]?.header?.title
+              ? returnedValue[i]?.header?.title
+              : "No Title",
+            creator_label: returnedValue[i].endDate ? getDateFromTimestamp({
+                timestamp: returnedValue[i].endDate?.seconds,
+                format: "MMM Do"
+              }) : "No EndDate",
+            creator_name: returnedValue[i]?.person?.username
+              ? returnedValue[i]?.person?.username
+              : "No Name",
+            creator_Uri: returnedValue[i]?.person?.username
+              ? "/u/" + returnedValue[i]?.person?.username
+              : "/u",
+            type: "recent-campaign-item",
+            photoURL: returnedValue[i]?.person?.photoUrl
+              ? returnedValue[i]?.person?.photoUrl
+              : defaultPhotoURL,
+          };
+          recentCampaignItemGroup.push(data);
+        }
+        setRecentCampaignList(recentCampaignItemGroup);
+      } catch (e) {
+        setRecentCampaignList([]);
       }
-      setRecentCampaignList(recentCampaignItemGroup);
-    } catch (e) {
+    }else {
       setRecentCampaignList([]);
     }
+    
+  }
+  useEffect(() => {
+    getFollowingList();
+  }, [user?.following]);
+
+  useEffect(() => {
+    getRecentCampaignList();
   }, [user?.recentCampaignData]);
 
   const handleUserItemClick = (targetUser) => {
@@ -111,7 +133,7 @@ const Sidebar = () => {
 
   const interactMenus = [
     {
-      label: "HOME",
+      label: " ",
       type: "section",
       children: [
         {
@@ -176,7 +198,7 @@ const Sidebar = () => {
 
 const SidebarHeader = () => {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  useEffect(async () => {
+  useEffect(() => {
     setSidebarOptions({ open: true });
   }, []);
 
@@ -190,7 +212,7 @@ const SidebarHeader = () => {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                sx={{ ml: 0, mr: -1.5 }}
+                sx={{ ml: 0, mr: -1.5,zIndex:100 }}
                 onClick={() =>
                   setSidebarOptions({ open: !sidebarOptions.open })
                 }

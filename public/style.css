@@ -60,3 +60,18 @@
   color:#7352C7;
   font-weight: 800;
 }
+
+.profile_image {
+  width: "35px";
+  height: '35px';
+  border-radius: "1000px";
+  margin-left: "5px";
+}
+
+.homepage_link {
+  z-index: 1;
+}
+
+#searchbar_dropdown-label {
+  color: #475449;
+}

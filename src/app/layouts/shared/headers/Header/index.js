@@ -25,7 +25,7 @@ import InteractLogo from "@interact/Components/TopBar/tempLogo.png";
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const [dropdownSearchVisibility, setDropdownSearchVisibility] = React.useState(false);
+  const [dropdownSearchVisibility, setDropdownSearchVisibility] = React.useState(true);
   const { headerTheme } = useJumboHeaderTheme();
   const [isHovering, setIsHovering] = useState(false);
 
@@ -56,46 +56,16 @@ const Header = () => {
                   ? -2
                   : 0,
               mr: 3,
+              zIndex: 100,
             }}
             onClick={() => setSidebarOptions({ open: !sidebarOptions.open })}
           >
             {sidebarOptions?.open ? <MenuOpenIcon /> : <MenuIcon />}
           </IconButton>
         )}
-
-      <Slide in={dropdownSearchVisibility}>
-        <Div
-          sx={{
-            zIndex: 5,
-            left: 0,
-            right: 0,
-            position: "absolute",
-            height: "100%",
-            width:"100%"
-          }}
-        >
-          <SearchGlobal
-            sx={{
-              maxWidth: "none",
-              height: "100%",
-              display: "flex",
-              width:"100%",
-
-              "& .MuiInputBase-root": {
-                flex: 1,
-                borderRadius: 0,
-                background: (theme) => theme.palette.background.default,
-              },
-              "& .MuiInputBase-input": {
-                pr: 6,
-              },
-            }}
-          />
-        </Div>
-      </Slide>
-      <Link to="/"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      <Link to="/" className="homepage_link"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <img src={InteractLogo} width={120} />
       </Link>
@@ -106,9 +76,30 @@ const Header = () => {
         spacing={1.25}
         sx={{ ml: "auto" }}
       >
+        <Slide in={dropdownSearchVisibility}>
+          <Div>
+            <SearchGlobal
+              sx={{
+                maxWidth: "none",
+                height: "100%",
+                display: "flex",
+                width:"100%",
+
+                "& .MuiInputBase-root": {
+                  flex: 1,
+                  borderRadius: 0,
+                  background: (theme) => theme.palette.background.default,
+                },
+                "& .MuiInputBase-input": {
+                  pr: 6,
+                },
+              }}
+            />
+          </Div>
+        </Slide>
         <JumboIconButton
           elevation={25}
-          onClick={() => setDropdownSearchVisibility(true)}
+          onClick={() => setDropdownSearchVisibility(!dropdownSearchVisibility)}
         >
           <SearchIcon fontSize={"small"} />
         </JumboIconButton>
@@ -142,7 +133,8 @@ const Header = () => {
               variant={"contained"}
               type="submit"
           > Sign in
-          </Button> </Link>
+          </Button> 
+        </Link>
         }
       </Stack>
     </React.Fragment>

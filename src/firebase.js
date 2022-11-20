@@ -283,6 +283,12 @@ export const saveToRecentCampaignHistory = async (campaignId, user) => {
     if(currentRecentCampaignData?.includes(campaignId)) {
       return;
     }
+    const index = currentRecentCampaignData.indexOf(campaignId);
+    if (index > -1) {
+      //If CampaignId Exist in Array, Remove and Add to first.
+      currentRecentCampaignData.splice(index, 1);
+    }
+    
     let recentCampaignData = [campaignId];
     recentCampaignData = [...recentCampaignData, ...currentRecentCampaignData];
     let updatedRecentCampaignData = {
