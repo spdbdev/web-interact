@@ -249,7 +249,7 @@ export default function WhatIsInteractPage() {
                 <VideoWrapper>
                   <iframe
                     title='youtube'
-                    src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc'
+                    src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc?rel=0'
                     allowFullScreen
                   />
                 </VideoWrapper>

@@ -87,7 +87,7 @@ const Card = styled(GradientRoundedBox)`
     height: 100%;
   }
 `;
-
+/*
 const FeatureCard = ({ data }) => {
   return (
     <Grid item xs={12} sm={6} md={4} data-aos={data?.aos}>
@@ -124,7 +124,7 @@ const FeatureCard = ({ data }) => {
     </Grid>
   )
 };
-
+*/
 const AnimateCard = ({ radius, padding, children, reverse }) => {
   return (
     <Card
@@ -187,7 +187,7 @@ const LandingPage = () => {
   return (
     <Stack maxWidth={"1010px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 6.21 }}>
+        <Stack width={"100%"} sx={{ mt: 7.69}}>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={4} md={4}>
               <AnimateCard padding='49px' radius='5px 27px' data-aos="fade-up">
@@ -1126,7 +1126,8 @@ const LandingPage = () => {
               <span> no opportunity cost</span>
             </Typography>
             <Typography
-              mt={1} 
+              mt={1}
+              mb={1.21} 
               fontSize={"17px"} 
               color={"#70677E"}
               data-aos="fade-down"
