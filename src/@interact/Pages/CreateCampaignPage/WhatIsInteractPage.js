@@ -180,7 +180,7 @@ export default function WhatIsInteractPage() {
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    padding-bottom: 56.1%;
+    padding-bottom: 56.35%;
     overflow: hidden;
     box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
     iframe {
@@ -230,20 +230,19 @@ export default function WhatIsInteractPage() {
               <Stack sx={{ width: { sm: '35%' } }}>
                 <Typography
                   variant="h4"
-                  fontSize='18.5px'
+                  fontSize='18px'
                   sx={{
                     mb: 0,
-                    lineHeight: '29px'
+                    lineHeight: '28.21px'
                   }}
                 >
                   <strong style={{ fontWeight: 600 }}>
                     Extra income at no opportunity cost.
-                  </strong>{" "} Get to know & bring joy to your fans; we minimize logistical hassle and make it worth your time.
-                  💜 Raise $5k to $7k in a 10 day campaign
-                  with 1000 fans, in exchange for a few hours
-                  each week over 2 months (~50 hours total): getting fresh content for your stream &
-                  make use of highlights from interactions to spice up your new
-                  videos. That's 💜 $25K to $35K annually (5 campaigns = 10 months of interactions). {" "}
+                  </strong>{" "} Get to know & bring joy to your fans; we minimize logistical hassle and make it worth your time. 
+                  💜 Raise $5k to $7k in a 10 day campaign with 1000 fans (with the majority paying only a few dollars), in 
+                  exchange for a several hours of interactions a week over 2 months (~50 hours total). You’re getting fresh 
+                  content for your stream & can make use of highlights from interactions to spice up new videos. 
+                  That's 💜 $25K to $35K annually (5 campaigns = 10 months of interactions). {" "}
                 </Typography>
               </Stack>
               <Stack sx={{ width: { xs: '100%', sm: '59%' } }}>
