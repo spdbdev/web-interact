@@ -583,7 +583,7 @@ const LandingPage = () => {
                         }}
                       >
                         After the campaign, choose your 
-                        availability every week (we’ll automatically match fans).
+                        availability every week (we'll automatically match fans).
                       </Typography>
                       <Typography
                         variant="body1"
@@ -607,7 +607,7 @@ const LandingPage = () => {
                           lineHeight: '115%'
                         }}
                       >
-                        {" "}via 2-way calendar sync (Google, Apple, iCloud). You also have the
+                        {" "}with 2-way calendar sync (Google, Apple, iCloud). +You can
                       </Typography>
                       <Typography
                         variant="body1"
@@ -619,7 +619,31 @@ const LandingPage = () => {
                           lineHeight: '115%'
                         }}
                       >
-                        {" "}power to delete comments & ban
+                        {" "}delete comments
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: 600,
+                          lineHeight: '115%'
+                        }}
+                      >
+                        {" "}&
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        sx={{
+                          fontSize: '16px',
+                          fontWeight: 600,
+                          color: '#FFD700',
+                          lineHeight: '115%'
+                        }}
+                      >
+                        {" "}ban&nbsp;hooligans
                       </Typography>
                       <Typography
                         variant="body1"
