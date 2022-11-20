@@ -532,7 +532,7 @@ function Settings() {
         <Box sx={style}>
           <div className="wrapper">
             <div className="innerWrapper">
-            <IconButton onClick={handleClose} style={{ padding: 0 }}> <Close /> </IconButton>
+            <IconButton onClick={handleClose} style={{ padding: 0, float: 'right' }}> <Close /> </IconButton>
             <div className="title" style={{fontSize:'20px'}}>Add Payment Method</div>
               <div className="stripe-card-wrapper">
                 <div className="number_input">

@@ -516,6 +516,7 @@ export default function Auction({
           */}
 
           <InteractButton
+            disabled={isCampaignEnded}
             onClick={() => verificationOfBid()}
           >
             Place auto-bid
