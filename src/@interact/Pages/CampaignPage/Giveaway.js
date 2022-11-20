@@ -24,7 +24,7 @@ import "./CampaignPage.css";
 import { formatMoney } from "@interact/Components/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
-import PaymentRequestForm from "@interact/Components/paymentRequestForm";
+import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
 
 
 const style = {

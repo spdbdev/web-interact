@@ -12,8 +12,7 @@ import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./popupstyle.css";
 import { IconButton, Stack } from "@mui/material";
 import { Close } from '@mui/icons-material';
-import PaymentRequestForm from "@interact/Components/paymentRequestForm";
-
+import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
 export default function ConfirmAuctionPopup({
   openstate,
   settheOpenPopup,
@@ -57,8 +56,8 @@ const paymentResponse = (price,resp = null) => {
         
           settheOpenPopup(false);
           Swal.fire(
-            "Success!",
-            "Your payment has been made. Thanks",
+            "Congratulations!",
+            "You've successfully placed a bid.",
             "success"
           );
           if (bidActionstatus) {

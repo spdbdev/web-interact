@@ -55,7 +55,7 @@ const paymentResponse = (price,resp = null) => {
         
           settheOpenPopup(false);
           Swal.fire(
-            "Success!",
+            "Congratulations!",
             "Your payment has been made. Thanks",
             "success"
           );
