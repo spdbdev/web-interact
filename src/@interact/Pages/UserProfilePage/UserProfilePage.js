@@ -57,6 +57,8 @@ function UserProfilePage() {
     const { user } = useCurrentUser();
     const isCreator = user?.name == params.username ? true : false;
 
+    const [description,setDescription] = useState("Welcome to my profile page");
+
     const [tab, setTab] = React.useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
@@ -166,8 +168,9 @@ function UserProfilePage() {
           >
             {targetUser?.name}
           </div>
-          <div style={{ marginTop: 10, color: "white", marginBottom: 10 }}>
-            I love playing Smite and Minecraft
+          <div className="profile-desc--wrapper" >
+            <p>{description}</p>
+            <EditIcon className="profile-desc--edit"/>
           </div>
           <div
             style={{

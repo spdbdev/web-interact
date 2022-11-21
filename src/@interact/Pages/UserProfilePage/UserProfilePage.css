@@ -133,3 +133,23 @@
     background-color: #fff;
     cursor: pointer;
 }
+
+.profile-desc--wrapper{
+  margin-top: 10; 
+  color: white;
+  margin-bottom: 10px;
+  display:flex;
+  align-items: center;
+}
+
+svg.profile-desc--edit{
+  display: none;
+  width:0.8em;
+  height:0.8em;
+  margin-left:1rem;
+  cursor: pointer;
+}
+
+.profile-desc--wrapper:hover .profile-desc--edit{
+  display: inline-block;
+}
