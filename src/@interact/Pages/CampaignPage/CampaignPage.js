@@ -56,14 +56,6 @@ function CampaignPage(userData) {
 
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
 
-  useEffect(() => {
-    // Fixes a bug where sidebar is hidden but remains "open" when
-    // navigating to this screen
-    if (sidebarOptions.open === true) {
-      setSidebarOptions({ open: false });
-    }
-  }, [sidebarOptions]);
-
   const checkAuthentication = () => {
 		if(!user) {
 			navigate(`/a/signup?redirect=/c/${campaignId}`);

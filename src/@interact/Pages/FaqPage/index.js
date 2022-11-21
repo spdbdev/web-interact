@@ -4,7 +4,7 @@ import { ExpandMore } from '@mui/icons-material';
 const FaqPage = () => {
   const faqList = [
     {
-      question: 'How it works',
+      question: 'How it works?',
       answer: (
         <>
           <p>💜 Content creators start a time-limited campaign (lasting 10 days,

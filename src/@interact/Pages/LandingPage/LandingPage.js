@@ -11,7 +11,7 @@ import './LandingPage.css';
 const GradientRoundedBox = styled(Box)`
   width: 100%;
   background: #ffffff;
-  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.2169);
   border-radius: ${props => props.radius ?? '45px'};
   overflow: hidden;
 `;
@@ -19,7 +19,7 @@ const GradientRoundedBox = styled(Box)`
 const RoundedBox = styled(Box)`
   width: 100%;
   background: #ffffff;
-  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+  box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.2169);
   overflow: hidden;
 `;
 
@@ -68,17 +68,22 @@ const Card = styled(GradientRoundedBox)`
     background-position: 100% 100%;
     transform: scale(1.08, 1.03);
   }
-  &:hover .landing-gradient-text {
-    background: transparent;
-    color: white;
-    -webkit-text-fill-color: white;
-  }
-  &:hover .landing-subtitle {
-    visibility: visible;
-    opacity: 1;
-  }
-  &:hover .landing-gray-heart {
-    opacity: 1;
+  &:hover {
+    .landing-gradient-text {
+      background: transparent;
+      color: white;
+      -webkit-text-fill-color: white;
+    }
+    .landing-subtitle {
+      visibility: visible;
+      opacity: 1;
+    }
+    .landing-orange-text {
+      color: #FFD700;
+    }
+    .landing-white-heart {
+      opacity: 1;
+    }
   }
   & > div {
     position: relative;
@@ -86,31 +91,45 @@ const Card = styled(GradientRoundedBox)`
     width: 100%;
     height: 100%;
   }
+  ${({ animated }) => animated && `
+    animation: glow 3.21s linear infinite;
+  `}
+  @keyframes glow {
+    0% {
+      box-shadow: 0px 0px 8px 2px rgba(120, 47, 238, 0.2169);;
+    }
+    50% {
+      box-shadow: 0px 0px 47px 17px rgba(120, 47, 238, 0.2169);
+    }
+    100% {
+      box-shadow: 0px 0px 8px 2px rgba(120, 47, 238, 0.2169);
+    }
+  }
 `;
 /*
 const FeatureCard = ({ data }) => {
   return (
     <Grid item xs={12} sm={6} md={4} data-aos={data?.aos}>
-      <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
+      <GradientRoundedBox sx={{ alignItems: "center", p: 4, height: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '95px' } }}>
           <img src={data?.icon} alt='' />
         </Box>
         <Typography
           sx={{
-            fontSize: "21px",
+            fontSize: "27px",
             fontWeight: 600,
             color: "#4D4657",
             textAlign: "center",
-            lineHeight: '110%',
-            minHeight: '65px'
+            lineHeight: '120%',
+            minHeight: '97px'
           }}
         >
           {data.title}
         </Typography>
         <Typography
           sx={{
-            mt: 0,
-            fontSize: "15px",
+            mt: 2,
+            fontSize: "21px",
             fontWeight: 400,
             textAlign: "center",
             color: '#70677E',
@@ -119,18 +138,18 @@ const FeatureCard = ({ data }) => {
         >
           {data.description}
         </Typography>
-        <br></br>
       </GradientRoundedBox>
     </Grid>
   )
 };
 */
-const AnimateCard = ({ radius, padding, children, reverse }) => {
+const AnimateCard = ({ radius, padding, children, reverse, animated }) => {
   return (
     <Card
       radius={radius ?? '0px'}
       sx={{ padding: padding ?? '10px',  }}
       reverse={reverse}
+      animated={animated}
     >
       <Box>
         {children}
@@ -147,7 +166,7 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
         aos="fade-up"
         onClick={() => goToPage()}
       >
-        <Typography sx={{ fontSize: "17px", px: 2, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
+        <Typography sx={{ fontSize: "19.69px", py:0, px: 2, fontWeight: 500, lineHeight: '151.02%', color: '#FFEDF8' }}>
          {title}
         </Typography>
       </InteractFlashyButton>
@@ -185,12 +204,12 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <Stack maxWidth={"1010px"} alignSelf="center">
+    <Stack maxWidth={"1115.69px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 7.69}}>
+        <Stack width={"100%"} sx={{ mt: 8.269}}>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={4} md={4}>
-              <AnimateCard padding='49px' radius='5px 27px' data-aos="fade-up">
+              <AnimateCard padding='52.69px' radius='5px 27px' data-aos="fade-up" animated='true'>
                 <Box
                   sx={{
                     display: 'flex',
@@ -203,6 +222,7 @@ const LandingPage = () => {
                     <Typography
                       variant="body1"
                       component='span'
+                      className='landing-orange-text'
                       sx={{
                         fontSize: '28px',
                         fontWeight: 800,
@@ -224,13 +244,13 @@ const LandingPage = () => {
                     >
                       your fans with 1-on-1 interactions.
                     </Typography>
-                    <Box sx={{ mt: 1 }} className='landing-subtitle'>
+                    <Box sx={{ mt: 1.69 }} className='landing-subtitle'>
                       <Typography
                         className="landing-gradient-text"
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -241,7 +261,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
@@ -254,7 +274,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -265,7 +285,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
@@ -278,7 +298,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -289,7 +309,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
@@ -302,7 +322,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -339,7 +359,7 @@ const LandingPage = () => {
               <Image src='images/pages/landing/reward-left.jpeg' alt='' />
             </Grid>
             <Grid item xs={12} sm={8} md={4} >
-              <AnimateCard padding='49px' radius='0px' reverse="true">
+              <AnimateCard padding='52.69px' radius='0px' reverse="true">
                 <Box
                   sx={{
                     height: '100%',
@@ -371,6 +391,7 @@ const LandingPage = () => {
                         color: '#FF5C00',
                         lineHeight: '120%'
                       }}
+                      className='landing-orange-text'
                     >
                       {" "}worthwhile
                     </Typography>
@@ -386,13 +407,14 @@ const LandingPage = () => {
                     >
                       .
                     </Typography>
-                    <Box sx={{ mt: 1 }} className='landing-subtitle'>
+                    
+                    <Box sx={{ mt: 2 }} className='landing-subtitle'>
                       <Typography
                         className="landing-gradient-text"
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -403,7 +425,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
@@ -416,7 +438,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -427,7 +449,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%',
@@ -440,7 +462,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -451,7 +473,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%',
@@ -464,7 +486,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -475,7 +497,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%',
@@ -488,7 +510,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -499,7 +521,7 @@ const LandingPage = () => {
                   </Box>
                   <Box sx={{ mt: 3.69, width: '57px', position: 'relative' }}>
                     <img src='images/pages/landing/heart-round.png' alt='' className='landing-heart' />
-                    <img src='images/pages/landing/gray-heart-round.png' alt='' className='landing-gray-heart' />
+                    <img src='images/pages/landing/white-heart-round.png' alt='' className='landing-white-heart' />
                   </Box>
                 </Box>
               </AnimateCard>
@@ -518,7 +540,7 @@ const LandingPage = () => {
               </GradientRoundedBox>
             </Grid>
             <Grid item xs={12} sm={4} md={4} data-aos="fade-down">
-              <AnimateCard padding='49px' radius='27px 5px'>
+              <AnimateCard padding='52.69px' radius='27px 5px'>
                 <Box
                   sx={{
                     height: '100%',
@@ -556,6 +578,7 @@ const LandingPage = () => {
                         color: '#FF5C00',
                         lineHeight: '169%'
                       }}
+                      className='landing-orange-text'
                     >
                       intuitive{" "}
                     </Typography>
@@ -572,16 +595,16 @@ const LandingPage = () => {
                       scheduling.
                     </Typography>
                     <Box sx={{ mt: 1 }} className='landing-subtitle'>
-                      <Typography
-                        variant="body1"
-                        component='span'
+                    <Typography
+                      variant="body1"
+                      component='span'
                         className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                        }}
-                      >
+                      sx={{
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        lineHeight: '115%'
+                      }}
+                    >
                         After the campaign, choose your 
                         availability every week (we'll automatically match fans).
                       </Typography>
@@ -589,31 +612,31 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
                         }}
                       >
                         {" "}Seamlessly mesh with your schedule
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        component='span'
-                        className="landing-gradient-text"
-                        sx={{
-                          fontSize: '16px',
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      component='span'
+                      className="landing-gradient-text"
+                      sx={{
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
-                        }}
-                      >
+                      }}
+                    >
                         {" "}with 2-way calendar sync (Google, Apple, iCloud). +You can
-                      </Typography>
+                    </Typography>
                       <Typography
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
@@ -626,7 +649,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -637,7 +660,7 @@ const LandingPage = () => {
                         variant="body1"
                         component='span'
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           color: '#FFD700',
                           lineHeight: '115%'
@@ -650,7 +673,7 @@ const LandingPage = () => {
                         component='span'
                         className="landing-gradient-text"
                         sx={{
-                          fontSize: '16px',
+                          fontSize: '18px',
                           fontWeight: 600,
                           lineHeight: '115%'
                         }}
@@ -659,8 +682,9 @@ const LandingPage = () => {
                       </Typography>
                     </Box>
                   </Box>
-                  <Box sx={{ '& img': { width: '37px' }, display: 'flex' }}>
-                    <img src='images/pages/landing/calendar.svg' alt='' />
+                  <Box sx={{ '& img': { width: '47.69px' }, display: 'flex', position: 'relative' }}>
+                    <img src='/images/pages/landing/calendar-icon.png' alt='' className='landing-heart' />
+                    <img src='/images/pages/landing/white-calendar-icon.png' alt='' className='landing-white-heart' />
                   </Box>
                 </Box>
               </AnimateCard>
@@ -683,7 +707,7 @@ const LandingPage = () => {
               <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/heart-book.svg'} alt='' />
-                </Box>
+          </Box>
                 <Typography
                   sx={{
                     fontSize: "21px",
@@ -695,8 +719,8 @@ const LandingPage = () => {
                   }}
                 >
                   You’re a key part of their weekly / daily
-                </Typography>
-                <Typography
+            </Typography>
+            <Typography
                   sx={{
                     fontSize: "21px",
                     fontWeight: 600,
@@ -705,22 +729,22 @@ const LandingPage = () => {
                     lineHeight: '110%',
                     minHeight: '65px'
                   }}
-                >
+            >
                   {" "}routine
-                </Typography>
-                <Typography
-                  sx={{
+            </Typography>
+            <Typography
+              sx={{
                     fontSize: "21px",
                     fontWeight: 600,
                     color: "#4D4657",
                     textAlign: "center",
                     lineHeight: '110%',
                     minHeight: '65px'
-                  }}
-                >
+              }}
+            >
                   .
-                </Typography>
-                <Typography
+            </Typography>
+            <Typography
                   sx={{
                     mt: 0,
                     fontSize: "15px",
@@ -729,10 +753,10 @@ const LandingPage = () => {
                     color: '#70677E',
                     lineHeight: "120%"
                   }}
-                >
+            >
                   Show some love to these fans who have
-                </Typography>
-                <Typography
+            </Typography>
+            <Typography
                   sx={{
                     mt: 0,
                     fontSize: "15px",
@@ -741,9 +765,9 @@ const LandingPage = () => {
                     color: '#782FEE',
                     lineHeight: "120%"
                   }}
-                >
+            >
                   {" "}grown with you not only as a creator, but as a person
-                </Typography>
+            </Typography>
                 <Typography
                   sx={{
                     mt: 0,
@@ -764,7 +788,7 @@ const LandingPage = () => {
               <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/pig.svg'} alt='' />
-                </Box>
+          </Box>
                 <Typography
                   sx={{
                     fontSize: "21px",
@@ -862,7 +886,7 @@ const LandingPage = () => {
                 >
                   .
                 </Typography>
-              </GradientRoundedBox>
+        </GradientRoundedBox>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
@@ -1051,7 +1075,20 @@ const LandingPage = () => {
                 </Box>
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6} md={6} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={6}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                '& img': {
+                  boxShadow: '0px 0px 27px 7px rgba(120, 47, 238, 0.2769)',
+                  borderRadius: '45px'
+                }
+              }}
+            >
               <img
                 src='images/pages/landing/together.png'
                 alt=''
@@ -1070,7 +1107,7 @@ const LandingPage = () => {
             sx={{
               px: 4,
               py: 3,
-              boxShadow: "0px 0px 27px 7px rgba(120, 47, 238, 0.15)"
+              boxShadow: "0px 0px 27px 7px rgba(120, 47, 238, 0.2169)"
             }}
           >
             <AccordionSummary
@@ -1129,9 +1166,9 @@ const LandingPage = () => {
         </Stack>
 
         <GradientRoundedBox sx={{ mt: 10, mb: 10, display: 'flex', overflow: 'hidden' }}>
-          <Box sx={{ position: 'relative', width: '40%', '& img': { width: '100%', height: '100%', position: 'absolute', objectFit: 'cover' } }}>
+          <Box sx={{ position: 'relative', width: '41.69%', '& img': { width: '100%', height: '100%', position: 'absolute', objectFit: 'cover' } }}>
             <img
-              src='images/pages/landing/interact.jpg'
+              src='images/pages/landing/interactearn.jpeg'
               alt=''
               className='landing-h-100'
             />
@@ -1170,8 +1207,8 @@ const LandingPage = () => {
               data-aos="fade-up-left"
               sx={{ '& > span': { textDecoration: "underline", fontWeight: 700 } }}
             >
-              <span>Extra income </span>with
-              <span> no opportunity cost</span>
+              <span>Extra income</span> with&nbsp;
+              <span>no opportunity cost</span>
             </Typography>
             <Typography
               mt={1}

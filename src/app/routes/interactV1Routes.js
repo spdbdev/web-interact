@@ -29,39 +29,39 @@ import PrivacyPolicyPage from "@interact/Pages/PrivacyPolicyPage";
 const interactV1Routes = [
   {
     path: "*",
-    element: <Navigate to="/a/400"/>,
+    element: <Error404 layout="vertical-default" />
   },
   {
-    path: "/a/400",
-    element: <Error404/>
+    path: "/a/404",
+    element: <Error404 layout="vertical-default" />
   },
   {
     path: "/a/500",
-    element: <Error500/>
+    element: <Error500 layout="vertical-default" />
   },
   {
     path: "/a/signin",
-    element: <SignInPage />,
+    element: <SignInPage layout="vertical-default" />,
   },
   {
     path: "/a/signup",
-    element: <SignUpPage2 />,
+    element: <SignUpPage2 layout="vertical-default" />,
   },
   {
     path: "/a/terms-conditions",
-    element: <TermsAndConditionsPage/>,
+    element: <TermsAndConditionsPage layout="vertical-default" />,
   },
   {
     path: "/a/privacy-policy",
-    element: <PrivacyPolicyPage/>,
+    element: <PrivacyPolicyPage layout="vertical-default" />,
   },
   {
     path: "/a/faq",
-    element: <FaqPage />
+    element: <FaqPage layout="vertical-default" />
   },
   {
     path: "/a/campaign-creator-faq",
-    element: <CampaignCreatorFaqPage />
+    element: <CampaignCreatorFaqPage layout="vertical-default" />
   },
   {
     path: "/u/:username",
@@ -84,16 +84,16 @@ const interactV1Routes = [
   },
   {
     path: "/c/:campaignId",
-    element: <CampaignPage />,
+    element: <CampaignPage layout="vertical-default" />,
   },
 
   {
     path: "/a/settings",
-    element: <Settings/>,
+    element: <Settings layout="vertical-default" />,
   },
   {
     path: "/c/",
-    element: <CampaignPage />,
+    element: <CampaignPage layout="vertical-default" />,
   },
 
   {
@@ -136,20 +136,8 @@ const interactV1Routes = [
     ),
   },
   {
-    path: "/a/receipts-and-paystubs",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/campaigncreatorfaq",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
     path: "/",
-    element: <LandingPage />
+    element: <LandingPage layout="vertical-default" />
     // element: (
     //   <Page component={LandingPage} layout="solo-page" />
     // ),
