@@ -21,8 +21,10 @@ export const StyledTab = styled((props) => <Tab {...props} />)(
 export default function CampaignCreationTabs({
   selectedTabIndex,
   setSelectedTabIndex,
-  TABS
 }) {
+  const handleTabChange = (event, newTabIndex) => {
+    event.preventDefault(); // prevent clicking tabs
+  };
 
   return (
     <Container
@@ -37,18 +39,20 @@ export default function CampaignCreationTabs({
     >
       <Tabs
         value={selectedTabIndex}
-        onChange={(_,index)=> {
-          setSelectedTabIndex(index)
-        }}
+        onChange={handleTabChange}
         centered={true}
         textColor="primary"
         variant="fullWidth"
         aria-label="icon label tabs example"
       >
-        {Object.keys(TABS).map((tabIndex) => {
-          const tab = TABS[tabIndex];
-          return (<StyledTab key={tabIndex} label={tab.label} disabled={!tab.navigated} />);
-        })}
+        <StyledTab label="Basics" />
+        <StyledTab label="Scheduling" />
+        <StyledTab label="Interaction" />
+        <StyledTab label="Goal & video" />
+        <StyledTab label="Interaction method" />
+        <StyledTab label="FAQ" />
+        <StyledTab label="Payment" />
+        <StyledTab label="Promotion" />
       </Tabs>
     </Container>
   );

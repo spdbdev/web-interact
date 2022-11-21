@@ -84,7 +84,6 @@ export default function InteractMethodTab({
   setData,
   selectedTabIndex,
   setSelectedTabIndex,
-  setValid
 }) {
   const [title, setTitle] = useState(data?.title);
   const [description, setDescription] = useState(data?.description);
@@ -129,10 +128,6 @@ export default function InteractMethodTab({
     setData,
     formValidationConditions,
   });
-  
-  setValid && setValid(isTabValidated);
-
-  
 
   const Swal = useSwalWrapper();
 
