@@ -17,7 +17,7 @@ export const localizationServices = {
      * Returns ISO timezone format, i.e CST, EST, PST, etc
      */
     getDeviceTimezone: () => {
-        new Intl.DateTimeFormat('en-us', { timeZoneName: 'short' })
+        return new Intl.DateTimeFormat('en-us', { timeZoneName: 'short' })
             .formatToParts(new Date())
             .find(part => part.type == "timeZoneName")
             .value
