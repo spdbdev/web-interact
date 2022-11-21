@@ -11,7 +11,7 @@ import './SignUpPage.css'
 import useCurrentUser from '@interact/Hooks/use-current-user';
 import Loading from '@interact/Components/Loading/Loading';
 import InteractFlashyButton from '@interact/Components/Button/InteractFlashyButton';
-import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
 
 function SignInPage() {

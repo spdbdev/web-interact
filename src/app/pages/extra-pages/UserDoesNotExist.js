@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FormControl from "@mui/material/FormControl";
 import Div from "@jumbo/shared/Div";
 import {useJumboApp} from "@jumbo/hooks";
-import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import { useNavigate } from 'react-router-dom';
 import InteractFlashyButton from '@interact/Components/Button/InteractFlashyButton';
 

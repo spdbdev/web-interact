@@ -31,7 +31,7 @@ import "./SignUpPage.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { getUserCountryName } from "@interact/Components/utils";
 
-import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
 
 // newer SignUpPage with birthday.
