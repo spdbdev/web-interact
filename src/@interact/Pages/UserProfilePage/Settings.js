@@ -26,6 +26,8 @@ import Modal from "@mui/material/Modal";
 
 import "./setting.css";
 
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
+
 import {
   getAuth,
   updatePassword,
@@ -68,6 +70,7 @@ function Settings() {
   const [passwordAgain, setPasswordAgain] = useState("");
   const [oldpassword, setOldPassword] = useState("");
   const [email, setEmail] = useState("");
+  const Swal = useSwalWrapper();
   const [open, setOpen] = React.useState(false);
   const [openmodal, setOpenModal] = React.useState(false);
 
@@ -212,14 +215,37 @@ function Settings() {
   };
   const handleClose1 = () => setOpenModal(false);
 
-  const updatePassword = async () => {
+  const updateNewPassword = async () => {
     // Get the value of the old password
-    if (password === oldpassword) {
-      const credential = EmailAuthProvider.credential(user?.email, oldpassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
+    console.log("update password start");
+    console.log(oldpassword)
+    const credential = EmailAuthProvider.credential(user?.email, oldpassword);
+    reauthenticateWithCredential(auth.currentUser, credential)
+    .then(() => {
+      updatePassword(auth.currentUser, password)
+      .then(() => {
+        Swal.fire(
+          "Success!",
+          "Password Successfully Updated",
+          "success"
+        );
+      })
+      .catch(err => {
+        Swal.fire(
+          "Failed!",
+          "Oops...",
+          "error"
+        );
+      })
+    })
+    .catch(err => {
+      Swal.fire(
+        "Error!",
+        "Old Password Not Matched",
+        "error"
+      );
+    });
 
-      await updatePassword(auth.currentUser, password);
-    }
   };
 
   const updateemailofloginusre = async () => {
@@ -861,7 +887,7 @@ function Settings() {
       <Typography variant="h2" gutterBottom>
         Change password
       </Typography>
-      <div className="TextInputWrapper">
+      <div className="TextInputWrapper ChangePasswordDiv">
         <TextField
           id="outlined-basic"
           label="Old Password"
@@ -872,7 +898,7 @@ function Settings() {
         />
       </div>
 
-      <div className="TextInputWrapper">
+      <div className="TextInputWrapper ChangePasswordDiv">
         <TextField
           id="outlined-basic"
           label="New password"
@@ -882,7 +908,7 @@ function Settings() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className="TextInputWrapper">
+      <div className="TextInputWrapper ChangePasswordDiv">
         <TextField
           id="outlined-basic"
           label="Retype your password"
@@ -902,7 +928,7 @@ function Settings() {
       />
       <br />
       <div className="ButtonsWrapper">
-        <InteractFlashyButton onClick={updatePassword}>
+        <InteractFlashyButton onClick={updateNewPassword}>
           Change password
         </InteractFlashyButton>
 

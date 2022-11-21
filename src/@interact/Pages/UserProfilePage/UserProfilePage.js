@@ -25,7 +25,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import Swal from 'sweetalert2';
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import Typography from "@mui/material/Typography";
-import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
 
 function TabPanel(props) {

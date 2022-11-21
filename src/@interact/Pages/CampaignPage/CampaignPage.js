@@ -35,7 +35,7 @@ import { sortBids } from "@interact/Components/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory } from "../../../firebase";
 import React from "react";
-import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
 
 function CampaignPage(userData) {
