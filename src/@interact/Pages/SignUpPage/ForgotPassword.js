@@ -8,6 +8,7 @@ import './SignUpPage.css'
 import useCurrentUser from '@interact/Hooks/use-current-user';
 import Loading from '@interact/Components/Loading/Loading';
 import InteractFlashyButton from '@interact/Components/Button/InteractFlashyButton';
+import Typography from "@mui/material/Typography";
 
 function ForgotPassword() {
 
@@ -31,15 +32,18 @@ function ForgotPassword() {
 
         <br />
         <div className='TextInputWrapper'>
-          <TextField id="outlined-basic" label="Email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <TextField id="outlined-basic" label="Username or email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <br></br>
         <div className='ButtonsWrapper' style={{margin:10}}>
           <InteractFlashyButton onClick={()=>sendPasswordReset(email)}>
             Reset password
           </InteractFlashyButton>
+          
         </div>
-        <br></br>
+        <br/>
+        <Typography sx={{color: '#b48df6'}}>If you can't find the email, check your spam folder!</Typography>
+        <br/><br/>
       </div>
       {/* </div> */}
     </div>

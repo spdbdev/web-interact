@@ -50,7 +50,7 @@ const AuthUserDropdown = () => {
   const onLogout = () => {
     //mutation.mutate();
     logout();
-    navigate("/a/signin");
+    navigate("/");
   };
 
   return (
@@ -85,7 +85,7 @@ const AuthUserDropdown = () => {
         <Divider />
         <nav>
           <List disablePadding sx={{ pb: 1 }}>
-            <ListItemButton onClick={()=>navigate("/u")}>
+            <ListItemButton onClick={()=>navigate(`/u/`)}>
               <ListItemIcon sx={{ minWidth: 36 }}>
                 <PersonOutlineIcon />
               </ListItemIcon>

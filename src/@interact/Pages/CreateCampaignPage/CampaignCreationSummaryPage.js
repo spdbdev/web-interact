@@ -47,9 +47,7 @@ export default function CampaignCreationSummaryPage() {
 
   useEffect(() => {
     const getCampaign = async () => {
-      let fetchedData = (
-        await getDoc(doc(db, "campaigns", campaignId))
-      ).data();
+      let fetchedData = (await getDoc(doc(db, "campaigns", campaignId))).data();
 
       setCampaignData(fetchedData);
     };
@@ -150,7 +148,7 @@ export default function CampaignCreationSummaryPage() {
   } else {
     return (
       <Slide
-        direction="down"
+        direction="left"
         timeout={1000}
         in={true}
         mountOnEnter

@@ -8,8 +8,8 @@ import {
 
 const layoutConfig = {
   sidebar: {
-    open: false,
-    hide: false,
+    open: true,
+    //hide: false,
     variant: SIDEBAR_VARIANTS.PERSISTENT,
     style: SIDEBAR_STYLES.FULL_HEIGHT,
     view: SIDEBAR_VIEWS.FULL,

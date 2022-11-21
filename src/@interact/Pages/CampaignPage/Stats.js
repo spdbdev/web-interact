@@ -35,6 +35,7 @@ export default function Stats({ campaignData, bids }) {
 		<GoalDisplay campaignData={campaignData} bids={bids} />
 		<Stack
 			flex={1}
+			mb = {10}
 			direction="row"
 			alignItems="center"
 			justifyContent="space-evenly"
@@ -77,7 +78,7 @@ export function FollowButton({ user, targetUser }) {
 
 	function onFollowButtonClicked() {
 		if(user === undefined) {
-			console.log("You need to sign in to follow user");
+			console.log("You need to sign in to follow other users");
 			navigate("/a/signin");
 			return;
 		}

@@ -10,9 +10,12 @@ import {
   Container,
   IconButton,
   Slide,
+  Alert,
   Stack,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/system";
+import SoloPage from "app/layouts/solo-page/SoloPage";
 import React, { useEffect } from "react";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +68,7 @@ const WhatIsInteractFAQs = [
           $25K to $35K gross revenue annually.
         </strong>
       </span>
-    ),    
+    ),
     defaultExpanded: true,
   },
   {
@@ -92,9 +95,9 @@ const WhatIsInteractFAQs = [
     question: <span>Why do fans want personal interactions?</span>,
     answer: (
       <span>
-        Most fans can only afford spending a few dollars (can’t afford expensive merch 
-        & shipping); but, they don’t have a compelling reason to give you some coffee 
-        money. Having a chance to personally interact & gain recognition from you is 
+        Most fans can only afford spending a few dollars (can’t afford expensive merch
+        & shipping); but, they don’t have a compelling reason to give you some coffee
+        money. Having a chance to personally interact & gain recognition from you is
         an attractive incentive (via the giveaway):
         <br></br>💜 Fans like you—as social platforms are so one-sided, fans give you attention weekly or
         even daily without being able to receive any meaningful attention or
@@ -142,12 +145,8 @@ const WhatIsInteractFAQs = [
 ];
 
 function SpecialAccordion({ question, answer, defaultExpanded }) {
-  const { user } = useCurrentUser();
-  const navigate = useNavigate();
-
-  useEffect(()=>{
-    if(!user) navigate('/a/signup');
-  },[]);
+  //const { user } = useCurrentUser();
+  //const navigate = useNavigate();
 
   return (
     <Accordion defaultExpanded={defaultExpanded}>
@@ -180,8 +179,33 @@ export default function WhatIsInteractPage() {
     }
   }, [sidebarOptions]);
 
+  const VideoWrapper = styled(Box)`
+    width: 100%;
+    background: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding-bottom: 56.25%;
+    overflow: hidden;
+    box-shadow: 0px 0px 27px 7px rgba(120, 47, 238, 0.15);
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  `;
+
+  const InteractLogo = styled('img')`
+    height: 65px;
+  `
+
+  const { user } = useCurrentUser();
+
   return (
-    <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
+    <Slide direction="up" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",
@@ -194,33 +218,56 @@ export default function WhatIsInteractPage() {
       >
         <Box sx={{ alignSelf: "flex-end" }}>
           <IconButton
-            disableRipple
-            disableFocusRipple
-            onClick={() => navigate(`/u/`)}
+            //disableRipple
+            //disableFocusRipple
+            onClick={() => navigate("/")}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
         </Box>
         <Stack direction="column" alignItems="center" width={"100%"}>
           <Stack spacing={1} mb={10} sx={{ maxWidth: 1000 }}>
-            <Stack direction="column" alignItems="center" spacing={2}>
-              <img src={InteractLogo} alt="" width={50} />
-              <Typography variant="h2">What Is Interact?</Typography>
+            <Stack direction='row' justifyContent='center' alignItems='center' sx={{ mb: 3 }}>
+              <Typography variant="h2" fontSize='21px' sx={{ mb: 0, mt: '1px', letterSpacing: '4px' }}>WHAT IS</Typography>
+              <InteractLogo src='/images/pages/interact/interact-logo.png' alt='' />
             </Stack>
-            <Typography variant="h5" sx={{ py: 4 }}>
-              💜 Interact helps you bring joy to your most loyal fans who have
-              grown with you not only as a creator, but as a human being. We
-              minimize logistical hassle and make it worth your time (while
-              creating content/streaming, making an additional $100+ an hour
-              with only 1000 devoted fans). <br></br> 💜 This is{" "}
-              <strong style={{ fontWeight: 600 }}>
-                extra income at no opportunity
-              </strong>{" "}
-              cost since you get fresh content for your stream (your streaming
-              scheduling can stay the same, no additional hours needed) and/or
-              you can make use of highlights from interactions to spice up new
-              videos.
-            </Typography>
+            <div style={{ width:"61.42%",padding:"2.69px"}}>
+              <Alert severity="warning">You're about to create a new campaign draft; 
+              {" "}<a href="/u/">visit your profile page</a>
+              {" "}to edit exisitng drafts.</Alert>
+            </div>
+            <br></br>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={7} alignItems="center" sx={{ mb: 5 }}>
+              <Stack sx={{ width: { sm: '35%' } }}>
+                <Typography
+                  variant="h4"
+                  fontSize='18px'
+                  sx={{
+                    mb: 0,
+                    lineHeight: '28.21px'
+                  }}
+                >
+                  <strong style={{ fontWeight: 600 }}>
+                    Extra income at no opportunity cost.
+                  </strong>{" "} Get to know & bring joy to your fans; we minimize logistical hassle and make it worth your time. 
+                  💜 Raise $5k to $7k in a 10 day campaign with 1000 fans (with the majority paying only a few dollars), in 
+                  exchange for a several hours of interactions a week over 2 months (~50 hours total). You’re getting fresh 
+                  content for your stream & can make use of highlights from interactions to spice up new videos. 
+                  That's 💜 $25K to $35K annually (5 campaigns = 10 months of interactions). {" "}
+                </Typography>
+              </Stack>
+              <Stack sx={{ width: { xs: '100%', sm: '59%' } }}>
+                <VideoWrapper>
+                  <iframe
+                    title='youtube'
+                    src='https://www.youtube-nocookie.com/embed/sIeYrczzcvc?rel=0'
+                    allowFullScreen
+                  />
+                </VideoWrapper>
+              </Stack>
+            </Stack>
+            <br></br>
+            <br></br>
             {WhatIsInteractFAQs?.map((item, key) => (
               <SpecialAccordion
                 key={key}

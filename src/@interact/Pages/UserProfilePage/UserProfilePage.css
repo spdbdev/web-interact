@@ -59,19 +59,19 @@
     display: block;
 }
 
-.image_item-form--lable{
+.image_item-form--label{
     padding: 9px 15px;
     border-radius: 4px;
     font-size: 18px;
     color: White;
     position: absolute;
     text-align: center;
-    top: 50%;
+    top: 50.69%;
     left: 50%;
     transform: translate(-50%,-50%);
 }
 .image-item-form-input{
-    height: 100px;
+    height: 200px;
     width: 100%;
     opacity: 0;
     cursor: pointer;

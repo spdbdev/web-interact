@@ -234,13 +234,12 @@ export default function SchedulingTab({
   return (
     <>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Campaign duration">
+        <TitleAndDesc title="Campaign duration—5 to 20 days">
           All times on the campaign are in EST (Eastern Standard Time). Set how
           long the campaign will be active. Enter a start date & time, then
           duration in days OR the end date & time. <br />
           <br />
-          Changing the duration will recalculate the end date, and vice-versa.
-          Campaigns can last 5 to 20 days. Recommended duration: 10 days. <br />
+          Changing the duration will recalculate the end date, and vice-versa. <br />
           <br />
           (You can customize your timezone in the scheduling process, when
           setting your available timeslots weekly; so can fans)
@@ -265,7 +264,7 @@ export default function SchedulingTab({
               minDateTime={moment()} // min date is current date/time
               minutesStep={15}
             />
-            <Stack direction="row" alignItems="center" spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={0} width={146.9}>
               <NumDurationInput
                 value={campaignDurationDays}
                 setValue={setCampaignDurationDays}
@@ -276,7 +275,8 @@ export default function SchedulingTab({
                 endDateTime={endDateTime}
                 interactionWindowDuration={interactionWindowDuration}
               />
-              <Typography sx={{ fontSize: 16 }}>days</Typography>
+              <Typography display="block" sx={{ fontSize: 16 }}>days </Typography>
+              
             </Stack>
             <FormControl>
               <DateTimePicker
@@ -292,7 +292,7 @@ export default function SchedulingTab({
                   })
                 }
                 renderInput={(params) => <TextField {...params} />}
-                minDateTime={startDateTime}
+                minDateTime={moment(startDateTime).add(5, "days")}
                 minutesStep={15}
                 maxDateTime={moment(startDateTime).add(20, "days")}
               />

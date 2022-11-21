@@ -41,19 +41,19 @@ const BasicTabs = () => {
             <Div sx={{width: '100%'}}>
                 <Div sx={{borderBottom: 1, borderColor: 'divider'}}>
                     <Tabs value={value} onChange={(event, newValue) => setValue(newValue)}>
-                        <Tab label="Item One" {...a11yProps(0)} />
-                        <Tab label="Item Two" {...a11yProps(1)} />
-                        <Tab label="Item Three" {...a11yProps(2)} />
+                        <Tab label="item one" {...a11yProps(0)} />
+                        <Tab label="item two"{...a11yProps(1)} />
+                        <Tab label="item three" {...a11yProps(2)} />
                     </Tabs>
                 </Div>
                 <TabPanel value={value} index={0}>
-                    Item One
+                    item one
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    Item Two
+                    item two
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Item Three
+                    item three
                 </TabPanel>
             </Div>
         </JumboDemoCard>

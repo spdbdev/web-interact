@@ -1,4 +1,4 @@
-import { TextField, Button,FormControl, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel } from "@mui/material";
+import { TextField, Button,FormControl, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel, Typography } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -31,6 +31,9 @@ import "./SignUpPage.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { getUserCountryName } from "@interact/Components/utils";
 
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
+
 // newer SignUpPage with birthday.
 function SignUpPage2() {
   const [birdthday, setBirthday] = React.useState(null);
@@ -58,6 +61,11 @@ function SignUpPage2() {
     fileRef.current.click();
   }
 
+  const {setActiveLayout} = useJumboApp();
+  React.useEffect(() => {
+    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
+  }, []);
+
   const validate = function(){
     let isValid = true;
     if(name.length > 15){
@@ -69,16 +77,24 @@ function SignUpPage2() {
     }else if(JSON.stringify(name).includes('\\')){
       setNameError("Cannot contain '\\'")
       isValid = false;
+    }else if(JSON.stringify(name).match("undefined")){
+      setNameError("Username cannot be 'undefined'")
+      isValid = false;
     }else{
       setNameError("");
     }
+
     if(/^[A-Za-z\s]+$/.test(legalName)){
+      setLegalNameError("");
+    }else if (JSON.stringify(legalName).match("")){
       setLegalNameError("");
     }else{
       setLegalNameError("Invalid name");
       isValid = false;
     }
     return isValid;
+
+    
   }
 
   const register = () => {
@@ -91,7 +107,7 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name,legalName, email, password, imageUrl, country)){
+    if(registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country)){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);
@@ -151,7 +167,7 @@ function SignUpPage2() {
     const dobDate = new Date(value);
     if((crrDate.getFullYear() - dobDate.getFullYear()) < 13){
       setBirthdayError(true);
-      setBirthdayErrorMessage('Age limit is 13 years');
+      setBirthdayErrorMessage('You must be over the age of 13');
     }else{
       setBirthdayError(false);
       setBirthdayErrorMessage(null);
@@ -226,8 +242,51 @@ function SignUpPage2() {
         <br />
         or
         <br />
-        <div style={{width:"80%",padding:"10px"}}>
-          <Alert severity="warning">Warning: username cannot be changed in the future</Alert>
+        
+        <div className="TextInputWrapper">
+          <TextField
+            id="outlined-basic"
+            label="Email address"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        <div className="TextInputWrapper">
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Date of birth"
+              value={birdthday}
+              onChange={(newValue) => {
+                handleBirthdayChange(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} error={birthdayError} helperText={birthdayErrorMessage} />}
+            />
+          </LocalizationProvider>
+        </div>
+        <div className="TextInputWrapper">
+          <FormControl>
+          <InputLabel id="country-label">Country</InputLabel>
+          <Select
+            labelId="country-label"
+            id="country-select"
+            value={country}
+            label="Country"
+            onChange={(e)=>setCountry(e.target.value)}
+          >
+            {Country.getAllCountries().map((country)=>{
+              return <MenuItem value={country.name}>{country.name}</MenuItem>
+            })}
+          </Select>
+          </FormControl>
+        </div>
+        
+        <div style={{width:"80%", align: "center", padding:"10px"}}>
+          <Alert severity="warning">
+            <Typography fontSize= {"13.21px"}>Username can't be changed in the future
+            </Typography>
+            </Alert>
         </div>
         <div className="TextInputWrapper">
           <TextField
@@ -240,26 +299,19 @@ function SignUpPage2() {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
+        
         <div className="TextInputWrapper">
           <TextField
             error={legalNameError.length > 0}
             id="outlined-basic"
-            label="Legal Name"
+            label="Name"
             variant="outlined"
             value={legalName}
             helperText={legalNameError}
             onChange={(e) => setLegalName(e.target.value)}
           />
         </div>
-        <div className="TextInputWrapper">
-          <TextField
-            id="outlined-basic"
-            label="Enter email address"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+
         <div className="TextInputWrapper">
           <TextField
             id="outlined-basic"
@@ -289,40 +341,14 @@ function SignUpPage2() {
             setIsPassValid(isValid);
           }}
         />
-        <div className="TextInputWrapper">
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Date of birth"
-              value={birdthday}
-              onChange={(newValue) => {
-                handleBirthdayChange(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} error={birthdayError} helperText={birthdayErrorMessage} />}
-            />
-          </LocalizationProvider>
-        </div>
-        <div className="TextInputWrapper">
-          <FormControl>
-          <InputLabel id="country-label">Country</InputLabel>
-          <Select
-            labelId="country-label"
-            id="country-select"
-            value={country}
-            label="Country"
-            onChange={(e)=>setCountry(e.target.value)}
-          >
-            {Country.getAllCountries().map((country)=>{
-              return <MenuItem value={country.name}>{country.name}</MenuItem>
-            })}
-          </Select>
-          </FormControl>
-        </div>
+
         {/* <FormControlLabel control={<Checkbox />} label={"I agree to all " + <a href='https://eforms.com/release/media/'>terms and services</a>} /> */}
         <div
           style={{
             display: "flex",
             justifContent: "center",
             alignItems: "center",
+            marginTop: 7.69
           }}
         >
           <Checkbox />
@@ -330,12 +356,11 @@ function SignUpPage2() {
             I agree to the <Link to="/a/termsandconditions">terms & conditions</Link> and the <Link to="/a/privacypolicy">privacy policy</Link>
           </span>
         </div>
-        <br></br>
-        <div className="ButtonsWrapper" style={{margin:10}}>
+        <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
           <InteractFlashyButton
           onClick={register}>Create account</InteractFlashyButton>
         </div>
-        <div style={{ paddingTop: 20 }}>
+        <div style={{ paddingTop: 20, paddingBottom: 16.21}}>
           Already have an account? <Link to="/a/signin">Log in</Link>
         </div>
       </div>

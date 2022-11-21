@@ -2,7 +2,7 @@ import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState,useRef } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Box } from "@mui/material";
+import { Box , Slide} from "@mui/material";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -23,6 +23,10 @@ import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
 import Swal from 'sweetalert2';
+import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
+import Typography from "@mui/material/Typography";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,7 +67,7 @@ function UserProfilePage() {
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
     const fileRef = useRef();
-    const [image, setImage] = React.useState("https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg");
+    const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
 
 
     const updatePhotoURL = async (url) => {
@@ -127,6 +131,11 @@ function UserProfilePage() {
       }
     };
 
+    const {setActiveLayout} = useJumboApp();
+    React.useEffect(() => {
+      setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
+    }, []);
+
     useEffect(() => {
       if (!user) return;
       if (!params.username) {
@@ -140,6 +149,7 @@ function UserProfilePage() {
     }, [params]);
 
     return (
+      <Slide direction="down" timeout={1621} in={true} mountOnEnter unmountOnExit>
       <div>
         <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
         <Stack
@@ -149,15 +159,25 @@ function UserProfilePage() {
           sx={{
             backgroundImage: "linear-gradient(to bottom right, #4b26a3, #d442f5)",
             width: "100%",
-            py: 4,
+            py: 3.69,
             borderRadius: 2,
           }}
         >
           <div className="image_item">
-            <input type="file" accept="image/*" style={{display:"none"}} onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
-            <EditIcon onClick={(e)=>handleFileClick(e)} style={{width:'1.3em',height:'1.3em'}} className="profile_pic--icon"/>
+            <form className="image_item-form">
+              <label className="image_item-form--label">Replace photo</label>
+              <input
+                className="image-item-form-input"
+                type="file"
+                accept="image/*"
+                id="image-item-form--input-id"
+                onChange={(e)=>handleChangeImage(e)} ref={fileRef}
+              ></input>
+            </form>
+            {/* <input type="file" onChange={handleChangeImage} /> */}
             <img className="profilePic" alt="profile-pic" src={image} />
           </div>
+
           <div
             style={{
               color: "white",
@@ -168,10 +188,20 @@ function UserProfilePage() {
           >
             {targetUser?.name}
           </div>
-          <div className="profile-desc--wrapper" >
-            <p>{description}</p>
-            <EditIcon className="profile-desc--edit"/>
-          </div>
+
+          <Typography
+            sx={{
+              mt: 1.69,
+              mb: 1.69,
+              fontSize: "14px",
+              textAlign: "center",
+              color: '#FFFFFF',
+              lineHeight: '20px',
+              maxWidth: '291.21px',
+            }}
+          >
+            Manage your interactions, campaigns, availability, and settings on this page.
+          </Typography>
           <div
             style={{
               display: "flex",
@@ -192,7 +222,7 @@ function UserProfilePage() {
                 fontSize: 20,
                 color: "#782fee",
                 marginRight: 20,
-                fontWeight: "bold",
+                fontWeight: "600",
                 cursor: "pointer",
                 borderRadius: 2,
               }}
@@ -202,40 +232,35 @@ function UserProfilePage() {
             <FollowButton user={user} targetUser={targetUser}/>
           </div>
         </Stack>
-
+        
         <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
+          <div className="InfoContainer">
+            <Box sx={{ mt:0.42, borderTop: 0, borderBottom: 0, borderColor: "divider"}}>
+              <Tabs
               value={tab}
               onChange={handleChange}
               aria-label="basic tabs example"
-              indicatorColor="secondary"
+              textColor="primary"
+              size="50"
               centered
-            >
-              <Tab
-                label="Campaigns"
-                {...a11yProps(0)}
-                style={{ color: "black" }}
-              />
-              <Tab
-                label="Schedule"
-                {...a11yProps(1)}
-                style={{ color: "black" }}
-              />
-              <Tab
-                label="Creator Schedule"
-                {...a11yProps(2)}
-                style={{ color: "black" }}
-              />
+              >
+              <StyledTab label="Campaigns" {...a11yProps(0)} />
               {user && (
-                <Tab
-                  label="Settings"
-                  {...a11yProps(3)}
-                  style={{ color: "black" }}
-                />
+                <StyledTab label="Fan availability"
+                {...a11yProps(1)}/>
               )}
-            </Tabs>
-          </Box>
+              {user && (
+                <StyledTab label="Creator availability"
+                {...a11yProps(2)}/>
+              )}
+              {user && (
+                <StyledTab label="Settings"
+                {...a11yProps(3)}/>
+              )}
+              </Tabs>
+            </Box>
+          </div>
+
           <TabPanel value={tab} index={0}>
             <FollowedCampaigns />
           </TabPanel>
@@ -252,6 +277,7 @@ function UserProfilePage() {
           </TabPanel>
         </Box>
       </div>
+      </Slide>
     );
 }
 
