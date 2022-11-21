@@ -533,10 +533,10 @@ function Settings() {
           <div className="wrapper">
             <div className="innerWrapper">
             <IconButton onClick={handleClose} style={{ padding: 0, float: 'right' }}> <Close /> </IconButton>
-            <div className="title" style={{fontSize:'20px'}}>Add Payment Method</div>
+            <div className="title" style={{fontSize:'20px'}}>Add payment method</div>
               <div className="stripe-card-wrapper">
                 <div className="number_input">
-                    <label htmlFor="#" className="stripe-card_field_label">Card Number</label>
+                    <label htmlFor="#" className="stripe-card_field_label">Card number</label>
                     <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
                 </div>
                 <div className="expiry_input">

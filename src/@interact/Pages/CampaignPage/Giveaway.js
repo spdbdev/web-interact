@@ -465,7 +465,7 @@ export default function Giveaway({
             <div className="payment-divider" />
             <div className="stripe-card-wrapper">
               <div className="number_input">
-                  <label htmlFor="#" className="stripe-card_field_label">Card Number</label>
+                  <label htmlFor="#" className="stripe-card_field_label">Card number</label>
                   <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
               </div>
               <div className="expiry_input">
