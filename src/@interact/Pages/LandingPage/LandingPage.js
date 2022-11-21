@@ -1079,7 +1079,7 @@ const LandingPage = () => {
               item
               xs={12}
               sm={6}
-              md={6}
+              md={5.3269}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
