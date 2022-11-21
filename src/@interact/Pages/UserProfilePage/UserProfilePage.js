@@ -190,7 +190,7 @@ function UserProfilePage() {
     const navigate = useNavigate();
     const params = useParams();
     const { user } = useCurrentUser();
-    const isCreator = user?.name == params.username ? true : false;
+    const isCreator = user?.name === params.username ? true : false;
 
     const [description, setDescription] = useState("Welcome to my profile page");
     const [tab, setTab] = React.useState(0);
@@ -207,6 +207,10 @@ function UserProfilePage() {
       	setDoc(doc(db, "users", user.id), {photoURL:url}, {merge:true});
     };
 
+	const updateDescription = async (description) => {
+		setDoc(doc(db, "users", user.id), {description:description}, {merge:true});
+  };
+
     const getTargetUser = async () => {
 		let defaultUser = await fetchUserByName(params.username);
 		setTargetUser(defaultUser);
@@ -214,6 +218,10 @@ function UserProfilePage() {
 			let userData = querySnapshot.data();
 			const id = querySnapshot.id;
 			setTargetUser({ ...userData, id });
+			if(user?.name != params.username){
+				setImage(userData.photoURL);
+				if(userData?.description?.length > 0) setDescription(userData.description);
+			}
 		});
     };
 
@@ -244,16 +252,16 @@ function UserProfilePage() {
     };
 
     useEffect(() => {
-      if (!user) return;
-      if (!params.username) {
-        navigate(user.name ? `/u/${user.name}` : "/")
-      }
-      setImage(user.photoURL);
+		if (!user) return;
+		if (!params.username) {
+			navigate(user.name ? `/u/${user.name}` : "/")
+		}
     }, [user]);
 
-    useEffect(()  => {
-      if(params.username) getTargetUser();
-    }, [params]);
+	useEffect(() => {
+		if(params.username) getTargetUser();
+	}, [params]);
+
 
     return (
       <Slide direction="down" timeout={1621} in={true} mountOnEnter unmountOnExit>
@@ -261,41 +269,40 @@ function UserProfilePage() {
         <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
 		<CropProfilePicture open={cropModalOpen} setOpen={setCropModalOpen} imgageObj={croppingImg} updatePhotoURL={updatePhotoURL} setImage={setImage} />
         <Stack
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          sx={{
-            backgroundImage: "linear-gradient(to bottom right, #4b26a3, #d442f5)",
-            width: "100%",
-            py: 3.69,
-            borderRadius: 2,
-          }}
-        	>
-          <div className="image_item">
-            <form className="image_item-form">
-              <label className="image_item-form--label">Replace photo</label>
-              <input
-                className="image-item-form-input"
-                type="file"
-                accept="image/*"
-                id="image-item-form--input-id"
-                onChange={(e)=>handleChangeImage(e)} ref={fileRef}
-              ></input>
-            </form>
-            {/* <input type="file" onChange={handleChangeImage} /> */}
-            <img className="profilePic" alt="profile-pic" src={image} />
-          </div>
+			direction="column"
+			alignItems="center"
+			justifyContent="center"
+			sx={{
+				backgroundImage: "linear-gradient(to bottom right, #4b26a3, #d442f5)",
+				width: "100%",
+				py: 3.69,
+				borderRadius: 2,
+			}}
+			>
+			<div className="image_item">
+				{ user?.name === params.username && <form className="image_item-form">
+					<label className="image_item-form--label">Replace photo</label>
+					<input
+						className="image-item-form-input"
+						type="file"
+						accept="image/*"
+						id="image-item-form--input-id"
+						onChange={(e)=>handleChangeImage(e)} ref={fileRef}
+					></input>
+				</form>}
+				{/* <input type="file" onChange={handleChangeImage} /> */}
+				<img className="profilePic" alt="profile-pic" src={image} />
+			</div>
 
-          <div
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              paddingTop: 10,
-            }}
-          >
-            {targetUser?.name}
-          </div>
+			<div style={{
+				color: "white",
+				fontSize: 20,
+				fontWeight: "bold",
+				paddingTop: 10,
+				}}
+				>
+				{targetUser?.name}
+			</div>
 
           <Typography
             sx={{
@@ -308,7 +315,7 @@ function UserProfilePage() {
               maxWidth: '291.21px',
             }}
           >
-            Manage your interactions, campaigns, availability, and settings on this page.
+            {description}
           </Typography>
           <div
             style={{
