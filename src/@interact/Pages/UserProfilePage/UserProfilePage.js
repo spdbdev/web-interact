@@ -63,7 +63,7 @@ function UserProfilePage() {
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
     const fileRef = useRef();
-    const [image, setImage] = React.useState("https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg");
+    const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
 
 
     const updatePhotoURL = async (url) => {
