@@ -24,7 +24,7 @@ const Sidebar = () => {
   let { user } = useCurrentUser();
   const Swal = useSwalWrapper();
   const defaultPhotoURL =
-    "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
+    "https://iili.io/HH6JxB1.md.jpg";
   const [followingList, setFollowingList] = useState([]);
   const [recentCampaignList, setRecentCampaignList] = useState([]);
   useEffect(async () => {
