@@ -220,7 +220,7 @@ export default function WhatIsInteractPage() {
           <IconButton
             //disableRipple
             //disableFocusRipple
-            onClick={() => navigate(`/u/${user.name}`)}
+            onClick={() => navigate(`/u/`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>

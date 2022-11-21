@@ -598,7 +598,7 @@ function CreateCampaignPage() {
               <Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
             )}{" "}
           </Span>
-          <IconButton onClick={() => navigate(`/u/${user.name}`)}>
+          <IconButton onClick={() => navigate(`/u/`)}>
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
         </Box>
