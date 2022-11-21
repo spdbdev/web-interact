@@ -60,11 +60,11 @@ const interactV1Routes = [
   },
   {
     path: "/a/forgotpassword",
-    element: <ForgotPassword/>
+    element: <ForgotPassword layout="vertical-default"/>
   },
   {
     path: "/a/resetpassword",
-    element: <ResetPassword/>
+    element: <ResetPassword layout="vertical-default"/>
   },
   {
     path: "/a/faq",
@@ -92,15 +92,15 @@ const interactV1Routes = [
   },
   {
     path: "/u/undefined",
-    element: <UserDoesNotExist />,
+    element: <Page component = {UserDoesNotExist} layout="vertical-default"/>,
   },
   {
     path: "/c/:campaignId",
-    element: <CampaignPage layout="vertical-default" />,
+    element:<Page component ={CampaignPage} layout="vertical-default"/>,
   },
   {
     path: "/c/",
-    element: <CampaignPage layout="vertical-default" />,
+    element:<Page component ={CampaignPage} layout="vertical-default"/>,
   },
 
   {

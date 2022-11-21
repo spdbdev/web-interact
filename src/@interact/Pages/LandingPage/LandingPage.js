@@ -7,6 +7,7 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import './LandingPage.css';
+import { useJumboLayoutSidebar, useJumboLayoutHeader } from "@jumbo/hooks";
 
 const GradientRoundedBox = styled(Box)`
   width: 100%;
@@ -195,18 +196,34 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
     </Stack>
   )
 }
-
-const LandingPage = () => {
-  const navigate = useNavigate();
-
+/* still doesn't return to correct proportion screen after closing any page with solo-page format
+function CheckSideBar(){
+  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+  const {  headerOptions, setHeaderOptions } = useJumboLayoutHeader();
   useEffect(() => {
-    AOS.init();
-  }, []);
+    // Fixes a bug where sidebar is open but remains "closed" when
+    // navigating to this screen
+    if (sidebarOptions.open === false) {
+      setSidebarOptions({ open: true });
+    }
+    if (headerOptions.open === false) {
+      setHeaderOptions({ open: true });
+    }
+  }, [sidebarOptions]);
+}
+*/
+const LandingPage = () => {
+const navigate = useNavigate();
+
+useEffect(() => {
+  AOS.init();
+}, []);
 
   return (
+    //CheckSideBar(),
     <Stack maxWidth={"1115.69px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 8.269}}>
+        <Stack width={"100%"} sx={{ mt: 9.269}}>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={4} md={4}>
               <AnimateCard padding='52.69px' radius='5px 27px' data-aos="fade-up" animated='true'>
