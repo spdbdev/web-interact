@@ -416,9 +416,9 @@ function CreateCampaignPage() {
       label: "Promotion",
     }
   };
-  console.log([campaignData,data])
+  console.log([data?.maxCompletedTabIndex, campaignData?.maxCompletedTabIndex])
   Object.keys(TABS_COMPONENTS).map(Number).map(tabIndex => {
-    if (campaignData?.lastCompletedTabIndex >= tabIndex){
+    if ((data?.maxCompletedTabIndex ?? campaignData?.maxCompletedTabIndex) >= tabIndex){
       TABS_COMPONENTS[tabIndex].navigated = true;
     }
   })
@@ -473,7 +473,7 @@ function CreateCampaignPage() {
   useEffect(() => {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
-    handleCampaign();
+    bootstrapCampaign();
   }, [data, lastSavedAt, user]);
 
   useEffect(() => {
@@ -495,12 +495,12 @@ function CreateCampaignPage() {
     }
   };
 
-  const handleAddCampaign = async () => {
+  const createCampaign = async () => {
     let newCampaignId = await addCampaign(user);
     navigate(`/d/${newCampaignId}`);
   };
 
-  const handleCampaign = () => {
+  const bootstrapCampaign = () => {
     if (user) {
       // Not ideal, but essentially checks if:
       // 1) Data exists and is not just lastCompletedTabIndex AND
@@ -516,7 +516,7 @@ function CreateCampaignPage() {
         campaignAddedRef.current === false
       ) {
         campaignAddedRef.current = true;
-        handleAddCampaign();
+        createCampaign();
       } else if (campaignId) {
         getCampaign(campaignId);
       } else if (!campaignId) {
@@ -529,15 +529,14 @@ function CreateCampaignPage() {
   const changeSelectedTabIndex = async (newIndex) => {
     if (isNaN(newIndex)) {
       newIndex = selectedTabIndex + 1;
-    }
+    } 
+    const _defaultMaxCompletedTabIndex = (data?.maxCompletedTabIndex ?? campaignData?.maxCompletedTabIndex ?? -1) || 0;
 
 
-    if (
-      campaignData &&
-      selectedTabIndex !== campaignData.lastCompletedTabIndex
-    ) {
-      await setData({ lastCompletedTabIndex: selectedTabIndex });
-    }
+    await setData({ 
+      lastCompletedTabIndex: selectedTabIndex,
+      maxCompletedTabIndex: selectedTabIndex > _defaultMaxCompletedTabIndex ? selectedTabIndex : _defaultMaxCompletedTabIndex,
+    });
 
     // Find max tab key
     const MAX_TAB_INDEX_KEY = Math.max(...Object.keys(TABS_COMPONENTS).map(Number));
