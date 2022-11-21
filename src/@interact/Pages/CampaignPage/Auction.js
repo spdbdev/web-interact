@@ -398,7 +398,9 @@ export default function Auction({
           <div className="wrapper">
             <div className="innerWrapper">
               <IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
-              <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
+              <div className="paymentRequestDiv">
+                <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
+              </div>
               <div className="payment-divider" />
               <div className="stripe-card-wrapper">
                 <div className="number_input">

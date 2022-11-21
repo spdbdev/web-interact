@@ -120,7 +120,7 @@ const paymentResponse = (price,resp = null) => {
             <Typography variant="h4" gutterBottom style={{fontWeight: '600', fontSize: '23px', margin: '0px'}}>
               Your bid amount: <span style={{color: '#782FEE'}}>${Number.parseFloat(price).toFixed(2)}</span>
             </Typography>
-            <div style={{ width: "200px", marginBottom:"15px", marginTop:"30px" }}>
+            <div className="paymentRequestDiv" style={{ width: "200px", marginBottom:"15px", marginTop:"30px" }}>
               <PaymentRequestForm price={price} handleSubmit={closefunction} />
             </div>
             <div onClick={addEvent} style={{ cursor: "pointer", marginBottom: '20px' }}>

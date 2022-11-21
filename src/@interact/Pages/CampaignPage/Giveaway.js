@@ -460,8 +460,10 @@ export default function Giveaway({
       <Box sx={style}>
         <div className="wrapper">
           <div className="innerWrapper">
-						<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
-            <PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
+			<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
+			<div className="paymentRequestDiv">
+            	<PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
+			</div>
             <div className="payment-divider" />
             <div className="stripe-card-wrapper">
               <div className="number_input">
