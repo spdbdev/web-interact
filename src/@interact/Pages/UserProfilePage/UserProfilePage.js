@@ -2,7 +2,7 @@ import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState,useRef } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Box } from "@mui/material";
+import { Box , Slide} from "@mui/material";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -140,6 +140,7 @@ function UserProfilePage() {
     }, [params]);
 
     return (
+      <Slide direction="down" timeout={1621} in={true} mountOnEnter unmountOnExit>
       <div>
         <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
         <Stack
@@ -257,6 +258,7 @@ function UserProfilePage() {
           </TabPanel>
         </Box>
       </div>
+      </Slide>
     );
 }
 

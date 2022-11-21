@@ -69,7 +69,11 @@ const interactV1Routes = [
   },
   {
     path: "/u/",
-    element: <UserDoesNotExist />,
+    element: (
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
+    ),
   },
   {
     path: "/u/:username",
