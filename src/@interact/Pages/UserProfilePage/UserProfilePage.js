@@ -208,7 +208,12 @@ function UserProfilePage() {
     };
 
 	const updateDescription = async (description) => {
-		setDoc(doc(db, "users", user.id), {description:description}, {merge:true});
+    try {
+      await setDoc(doc(db, "users", user.id), {description:description}, {merge:true});
+      setDescription(description);
+    } catch (error) {
+     console.log("Error while updating description",error); 
+    }
   };
 
     const getTargetUser = async () => {
@@ -227,6 +232,21 @@ function UserProfilePage() {
 
     const handleFileClick = function(){
       fileRef.current.click();
+    }
+
+    const handleEditDescription =async function(e){
+      const { value: text } = await Swal.fire({
+        title: "Description",
+        input: 'textarea',
+        inputValue: description,
+        inputPlaceholder: 'Enter your description...',
+        confirmButtonText: "Update",
+        inputAttributes: {
+          'aria-label': 'Enter your description here.'
+        },
+        showCancelButton: true
+      })
+      if(text) updateDescription(text);
     }
 
     const handleChange = (event, newValue) => {
@@ -317,9 +337,9 @@ function UserProfilePage() {
               maxWidth: '323.21px',
             }}
           >
-            {description}
+            {user?.description ? user.description : description}
           </Typography>
-          <EditIcon className="profile-desc--edit"/>
+          { user?.name === params.username && <EditIcon className="profile-desc--edit" onClick={(e)=>handleEditDescription(e)}/>}
           </Box>
           <div
             style={{
