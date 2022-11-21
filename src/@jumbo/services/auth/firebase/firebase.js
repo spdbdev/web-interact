@@ -5,6 +5,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPasswor
 import { getFirestore, query, getDocs, collection, where, addDoc, setDoc, doc} from "firebase/firestore";
 import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
+import { validateEmail } from "@jumbo/utils";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAztlkNsd8Lu86qj5D7Y9TbI6Wvt_hVjJw",
@@ -44,6 +45,12 @@ const signInWithGoogle = async () => {
 };
 
 const loginWithEmailAndPassword = async (email, password) => {
+  if(!validateEmail(email)){
+    const q = query(collection(db, "users"), where("name", "==", email))
+    const querySnapshot = await getDocs(q);
+    const docSnapshots = querySnapshot.docs[0];
+    if(docSnapshots) email = docSnapshots.data()?.email;
+  }
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
@@ -61,18 +68,20 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    postRequest("/user/register", formData)
-      .then(async (resp) => {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          name,
-          legalName,
-          authProvider: "local",
-          email,
-          customerId: resp.data.customer.id,
-          country,
-          photoURL:imageurl
-        });
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name,
+      legalName,
+      authProvider: "local",
+      email,
+      customerId:'',
+      country,
+      photoURL:imageurl
+    });
+
+    postRequest("/user/register", formData).then(async (resp) => {
+        setDoc(doc(db, "users", user.uid), {customerId: resp.data.customer.id}, {merge:true});
       })
       .catch((err) => {
         console.log(err);
@@ -85,6 +94,12 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 };
 
 const sendPasswordReset = async (email) => {
+  if(!validateEmail(email)){
+    const q = query(collection(db, "users"), where("name", "==", email))
+    const querySnapshot = await getDocs(q);
+    const docSnapshots = querySnapshot.docs[0];
+    if(docSnapshots) email = docSnapshots.data()?.email;
+  }
   try {
     await sendPasswordResetEmail(auth, email);
     Swal.fire("Success!", "Password reset link sent!", "success");
