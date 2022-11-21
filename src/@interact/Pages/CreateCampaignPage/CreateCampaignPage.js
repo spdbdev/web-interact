@@ -362,6 +362,9 @@ function CreateCampaignPage() {
   // initialize lastCompleteTabIndex to -1 in firestore
   const { campaignId } = useParams();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+
+  const [navigatedTabs, setNavigatedTabs] = useState([0])
+
   const [
     hasInitialTabBeenSetFromDatabase,
     setHasInitialTabBeenSetFromDatabase,
@@ -379,6 +382,45 @@ function CreateCampaignPage() {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
   const { data, setData, isAutosaving, lastSavedAt, autosaveError } =
     useAutosaveCampaign(campaignData, campaignId);
+
+
+  const TABS_COMPONENTS = {
+    0:{
+      component: BasicsTab,
+      label: "Basics",
+    },
+    1:{
+      component: SchedulingTab,
+      label: "Scheduling",
+    },
+    2:{
+      component: InteractionTab,
+      label: "Interaction",
+    },
+    3:{
+      component: GoalVideoTab,
+      label: "Goal",
+    },
+    4:{
+      component: InteractMethodTab,
+      label: "Interaction",
+    },
+    5:{
+      component: FAQTab,
+      label: "FAQ",
+    },
+    6:{
+      component: PaymentTab,
+      label: "Payment",
+    },
+    7:{
+      component: PromotionTab,
+      label: "Promotion",
+    }
+  };
+
+  navigatedTabs.map((tab) => TABS_COMPONENTS[tab].navigated = true);
+
   const navigate = useNavigate();
   //If unathenticated redirect to signup
   useEffect(() => {
@@ -486,34 +528,34 @@ function CreateCampaignPage() {
     }
   };
 
+
+  const changeSelectedTabIndex = (newIndex) => {
+    if (isNaN(newIndex)) {
+      newIndex = selectedTabIndex + 1;
+    }
+
+    if (newIndex > selectedTabIndex && !navigatedTabs.includes(newIndex)) {
+      setNavigatedTabs([...navigatedTabs, newIndex]);
+    }
+    setSelectedTabIndex(newIndex);
+  }
+
   function renderTab() {
     const tabProps = {
       data: campaignData,
       setData: setData,
-      selectedTabIndex,
-      setSelectedTabIndex,
+      setSelectedTabIndex: changeSelectedTabIndex,
     };
 
-    switch (selectedTabIndex) {
-      case 0:
-        return <BasicsTab {...tabProps} />;
-      case 1:
-        return <SchedulingTab {...tabProps} />;
-      case 2:
-        return <InteractionTab {...tabProps} />;
-      case 3:
-        return <GoalVideoTab {...tabProps} />;
-      case 4:
-        return <InteractMethodTab {...tabProps} />;
-      case 5:
-        return <FAQTab {...tabProps} />;
-      case 6:
-        return <PaymentTab {...tabProps} />;
-      case 7:
-        return <PromotionTab {...tabProps} />;
-      default:
-        return <BasicsTab {...tabProps} selectedTabIndex={0} />;
-    }
+
+
+    const ComponentClass = TABS_COMPONENTS[selectedTabIndex]?.component || BasicsTab;
+    
+    return React.createElement(ComponentClass, {
+      key: selectedTabIndex,
+      ...tabProps,
+    });
+    
   }
 
   if (!campaignData) {
@@ -574,8 +616,9 @@ function CreateCampaignPage() {
           </Container>
 
           <CampaignCreationTabs
+            TABS={TABS_COMPONENTS}
             selectedTabIndex={selectedTabIndex}
-            setSelectedTabIndex={setSelectedTabIndex}
+            setSelectedTabIndex={changeSelectedTabIndex}
           />
           <Stack
             direction="column"
