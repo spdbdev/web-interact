@@ -45,7 +45,7 @@ const SearchGlobal = ({ sx }) => {
                 title: data.name,
                 description: data.email,
                 id: data.uid,
-                photoURL: data?.photoURL ? data?.photoURL : "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg",
+                photoURL: data?.photoURL ? data?.photoURL : "https://iili.io/HH6JxB1.md.jpg",
                 type:'profile'
               }
               tempValues.push(obj)
@@ -69,7 +69,7 @@ const SearchGlobal = ({ sx }) => {
                 goalValue:campaign_data.goalValue ? campaign_data.goalValue : "No GoalValue",
                 username:campaign_data.person.username ? campaign_data.person.username : "No UserName",
                 id: campaign.id,
-                photoURL: campaign_data?.campaignVideoThumbnailLink ? campaign_data?.campaignVideoThumbnailLink : "https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg",
+                photoURL: campaign_data?.campaignVideoThumbnailLink ? campaign_data?.campaignVideoThumbnailLink : "https://iili.io/HH6JxB1.md.jpg",
                 type:'campaign'
               }
               tempValues.push(obj)
@@ -128,7 +128,6 @@ const SearchGlobal = ({ sx }) => {
               )}
               renderInput={(params) => (
                   <TextField
-                    placeholder="Search for users & campaigns..."
                     sx={{
                       "& .MuiAutocomplete-inputRoot": {
                         borderRadius: "50px",
@@ -141,7 +140,7 @@ const SearchGlobal = ({ sx }) => {
                       },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": {
-                          borderColor: "#ececec"
+                          borderColor: "#c5a5f8"
                         }
                       },
                     
