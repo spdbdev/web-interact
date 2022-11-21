@@ -68,18 +68,20 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    postRequest("/user/register", formData)
-      .then(async (resp) => {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          name,
-          legalName,
-          authProvider: "local",
-          email,
-          customerId: resp.data.customer.id,
-          country,
-          photoURL:imageurl
-        });
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name,
+      legalName,
+      authProvider: "local",
+      email,
+      customerId:'',
+      country,
+      photoURL:imageurl
+    });
+
+    postRequest("/user/register", formData).then(async (resp) => {
+        setDoc(doc(db, "users", user.uid), {customerId: resp.data.customer.id}, {merge:true});
       })
       .catch((err) => {
         console.log(err);
