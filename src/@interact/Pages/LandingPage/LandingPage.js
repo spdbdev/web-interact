@@ -196,7 +196,6 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
     </Stack>
   )
 }
-/* still doesn't return to correct proportion screen after closing any page with solo-page format
 function CheckSideBar(){
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
   const {  headerOptions, setHeaderOptions } = useJumboLayoutHeader();
@@ -209,9 +208,9 @@ function CheckSideBar(){
     if (headerOptions.open === false) {
       setHeaderOptions({ open: true });
     }
-  }, [sidebarOptions]);
+  }, [sidebarOptions] [headerOptions]);
 }
-*/
+
 const LandingPage = () => {
 const navigate = useNavigate();
 
@@ -220,7 +219,7 @@ useEffect(() => {
 }, []);
 
   return (
-    //CheckSideBar(),
+    CheckSideBar(),
     <Stack maxWidth={"1115.69px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
         <Stack width={"100%"} sx={{ mt: 9.269}}>
