@@ -61,6 +61,8 @@ function UserProfilePage() {
     const { user } = useCurrentUser();
     const isCreator = user?.name == params.username ? true : false;
 
+    const [description,setDescription] = useState("Welcome to my profile page");
+
     const [tab, setTab] = React.useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});

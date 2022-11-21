@@ -92,7 +92,7 @@ const interactV1Routes = [
   },
   {
     path: "/u/undefined",
-    element: <Page component = {UserDoesNotExist} layout="vertical-default"/>,
+    element: <Page component = {SignInPage} layout="vertical-default"/>,
   },
   {
     path: "/c/:campaignId",
@@ -133,10 +133,9 @@ const interactV1Routes = [
   },
   {
     path: "/",
-    element: <LandingPage layout="vertical-default" />
-    // element: (
-    //   <Page component={LandingPage} layout="solo-page" />
-    // ),
+    element: (
+        <Page component={LandingPage} layout="vertical-default" />
+    ),
   },
 ];
 
