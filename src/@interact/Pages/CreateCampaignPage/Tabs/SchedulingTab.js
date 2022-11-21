@@ -34,7 +34,6 @@ export default function SchedulingTab({
   ); //    moment.unix(data?.startDateTime)
 
 
-  debugger;
   const [endDateTime, setEndDateTime] = useState(
     moment.unix(data?.endDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //moment.unix(data?.endDateTime)
