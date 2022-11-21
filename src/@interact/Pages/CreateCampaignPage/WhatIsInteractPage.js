@@ -228,11 +228,13 @@ export default function WhatIsInteractPage() {
               <Typography variant="h2" fontSize='21px' sx={{ mb: 0, mt: '1px', letterSpacing: '4px' }}>WHAT IS</Typography>
               <InteractLogo src='/images/pages/interact/interact-logo.png' alt='' />
             </Stack>
-            <div style={{ width:"61.42%",padding:"2.69px"}}>
-              <Alert severity="warning">You're about to create a new campaign draft; 
-              {" "}<a href="/u/">visit your profile page</a>
-              {" "}to edit exisitng drafts.</Alert>
-            </div>
+            <Box display="flex" justifyContent="center">
+              <div style={{ width:"61.42%",padding:"2.69px"}}>
+                <Alert severity="warning">You're about to create a new campaign draft; 
+                {" "}<a href="/u/">visit your profile page</a>
+                {" "}to edit exisitng drafts.</Alert>
+              </div>
+            </Box>
             <br></br>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={7} alignItems="center" sx={{ mb: 5 }}>
               <Stack sx={{ width: { sm: '35%' } }}>
