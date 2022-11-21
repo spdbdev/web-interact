@@ -162,10 +162,20 @@ function UserProfilePage() {
           }}
         >
           <div className="image_item">
-            <input type="file" accept="image/*" style={{display:"none"}} onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
-            <EditIcon onClick={(e)=>handleFileClick(e)} style={{width:'1.3em',height:'1.3em'}} className="profile_pic--icon"/>
+            <form className="image_item-form">
+              <label className="image_item-form--label">Replace photo</label>
+              <input
+                className="image-item-form-input"
+                type="file"
+                accept="image/*"
+                id="image-item-form--input-id"
+                onChange={(e)=>handleChangeImage(e)} ref={fileRef}
+              ></input>
+            </form>
+            {/* <input type="file" onChange={handleChangeImage} /> */}
             <img className="profilePic" alt="profile-pic" src={image} />
           </div>
+
           <div
             style={{
               color: "white",
