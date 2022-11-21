@@ -296,7 +296,7 @@ function UserProfilePage() {
           >
             {targetUser?.name}
           </div>
-
+          <Box className="profile-desc--wrapper">
           <Typography
             sx={{
               mt: 1.69,
@@ -305,11 +305,15 @@ function UserProfilePage() {
               textAlign: "center",
               color: '#FFFFFF',
               lineHeight: '20px',
-              maxWidth: '291.21px',
+              marginLeft: '2rem',
+              paddingRight: '2rem',
+              maxWidth: '323.21px',
             }}
           >
             Manage your interactions, campaigns, availability, and settings on this page.
           </Typography>
+          <EditIcon className="profile-desc--edit"/>
+          </Box>
           <div
             style={{
               display: "flex",
