@@ -10,6 +10,7 @@ import {
   Container,
   IconButton,
   Slide,
+  Alert,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,6 +19,7 @@ import SoloPage from "app/layouts/solo-page/SoloPage";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
+import useCurrentUser from '@interact/Hooks/use-current-user';
 
 const WhatIsInteractFAQs = [
   {
@@ -197,6 +199,8 @@ export default function WhatIsInteractPage() {
     height: 65px;
   `
 
+  const { user } = useCurrentUser();
+
   return (
     <Slide direction="down" timeout={1000} in={true} mountOnEnter unmountOnExit>
       <Box
@@ -211,9 +215,9 @@ export default function WhatIsInteractPage() {
       >
         <Box sx={{ alignSelf: "flex-end" }}>
           <IconButton
-            disableRipple
-            disableFocusRipple
-            onClick={() => navigate(`/u/`)}
+            //disableRipple
+            //disableFocusRipple
+            onClick={() => navigate(`/u/${user.name}`)}
           >
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
@@ -224,7 +228,11 @@ export default function WhatIsInteractPage() {
               <Typography variant="h2" fontSize='21px' sx={{ mb: 0, mt: '1px', letterSpacing: '4px' }}>WHAT IS</Typography>
               <InteractLogo src='/images/pages/interact/interact-logo.png' alt='' />
             </Stack>
-            <br></br>
+            <div style={{ width:"61.42%",padding:"2.69px"}}>
+              <Alert severity="warning">You're about to create a new campaign draft; 
+              {" "}<a href="/u/">visit your profile page</a>
+              {" "}to edit exisitng drafts.</Alert>
+            </div>
             <br></br>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={7} alignItems="center" sx={{ mb: 5 }}>
               <Stack sx={{ width: { sm: '35%' } }}>

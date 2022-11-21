@@ -74,13 +74,10 @@ const interactV1Routes = [
   {
     path: "/u/",
     element: (
-      <Page component={UserProfilePage} layout="vertical-default" />
+      <AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      </AuthGuard>
     ),
-  },
-  {
-    path: "/interact/userold",
-    //element: <CrmDashboard/>,
-    element: <UserProfilePage />,
   },
   {
     path: "/c/:campaignId",

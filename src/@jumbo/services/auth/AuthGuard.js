@@ -8,7 +8,7 @@ function AuthGuard({children}) {
   const navigate = useNavigate();
 
   useEffect(()=>{
-    if(!user) navigate('/a/signup');
+    if(!user) navigate('/a/signin');
   },[]);
   return (
     <>
