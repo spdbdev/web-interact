@@ -26,6 +26,8 @@ import FaqPage from '@interact/Pages/FaqPage';
 import CampaignCreatorFaqPage from "@interact/Pages/CampaignCreatorFaqPage";
 import TermsAndConditionsPage from "@interact/Pages/TermsAndConditionsPage";
 import PrivacyPolicyPage from "@interact/Pages/PrivacyPolicyPage";
+import ForgotPassword from "@interact/Pages/SignUpPage/ForgotPassword";
+import ResetPassword from "@interact/Pages/SignUpPage/ResetPassword";
 
 const interactV1Routes = [
   {

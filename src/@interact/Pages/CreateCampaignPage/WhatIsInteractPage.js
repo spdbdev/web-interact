@@ -20,7 +20,6 @@ import React, { useEffect } from "react";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { useNavigate } from "react-router-dom";
 import InteractLogo from "../../Images/logo512.png";
-import useCurrentUser from '@interact/Hooks/use-current-user';
 
 const WhatIsInteractFAQs = [
   {
