@@ -32,47 +32,47 @@ import ResetPassword from "@interact/Pages/SignUpPage/ResetPassword";
 const interactV1Routes = [
   {
     path: "*",
-    element: <Error404 layout="vertical-default" />
+    element: <Page component ={Error404} layout="vertical-default" />
   },
   {
     path: "/a/404",
-    element: <Error404 layout="vertical-default" />
+    element: <Page component ={Error404} layout="vertical-default" />
   },
   {
     path: "/a/500",
-    element: <Error500 layout="vertical-default" />
+    element: <Page component ={Error500} layout="vertical-default" />
   },
   {
     path: "/a/signin",
-    element: <SignInPage layout="vertical-default" />,
+    element: <Page component ={SignInPage} layout="vertical-default" />,
   },
   {
     path: "/a/signup",
-    element: <SignUpPage2 layout="vertical-default" />,
+    element: <Page component ={SignUpPage2} layout="vertical-default" />,
   },
   {
     path: "/a/terms-conditions",
-    element: <TermsAndConditionsPage layout="vertical-default" />,
+    element: <Page component ={TermsAndConditionsPage} layout="vertical-default" />,
   },
   {
     path: "/a/privacy-policy",
-    element: <PrivacyPolicyPage layout="vertical-default" />,
+    element: <Page component ={PrivacyPolicyPage} layout="vertical-default" />,
   },
   {
     path: "/a/forgotpassword",
-    element: <ForgotPassword layout="vertical-default"/>
+    element: <Page component ={ForgotPassword} layout="vertical-default"/>
   },
   {
     path: "/a/resetpassword",
-    element: <ResetPassword layout="vertical-default"/>
+    element: <Page component ={ResetPassword} layout="vertical-default"/>
   },
   {
     path: "/a/faq",
-    element: <FaqPage layout="vertical-default" />
+    element: <Page component ={FaqPage} layout="vertical-default" />
   },
   {
     path: "/a/campaign-creator-faq",
-    element: <CampaignCreatorFaqPage layout="vertical-default" />
+    element: <Page component ={CampaignCreatorFaqPage} layout="vertical-default" />
   },
   {
     path: "/u/",

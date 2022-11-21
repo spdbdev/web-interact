@@ -131,11 +131,6 @@ function UserProfilePage() {
       }
     };
 
-    const {setActiveLayout} = useJumboApp();
-    React.useEffect(() => {
-      setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-    }, []);
-
     useEffect(() => {
       if (!user) return;
       if (!params.username) {

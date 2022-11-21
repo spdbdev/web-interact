@@ -196,20 +196,7 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
     </Stack>
   )
 }
-function CheckSideBar(){
-  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const {  headerOptions, setHeaderOptions } = useJumboLayoutHeader();
-  useEffect(() => {
-    // Fixes a bug where sidebar is open but remains "closed" when
-    // navigating to this screen
-    if (sidebarOptions.open === false) {
-      setSidebarOptions({ open: true });
-    }
-    if (headerOptions.open === false) {
-      setHeaderOptions({ open: true });
-    }
-  }, [sidebarOptions] [headerOptions]);
-}
+
 
 const LandingPage = () => {
 const navigate = useNavigate();
@@ -219,7 +206,7 @@ useEffect(() => {
 }, []);
 
   return (
-    CheckSideBar(),
+    //CheckSideBar(),
     <Stack maxWidth={"1115.69px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
         <Stack width={"100%"} sx={{ mt: 9.269}}>

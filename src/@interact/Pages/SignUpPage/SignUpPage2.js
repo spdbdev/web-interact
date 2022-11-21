@@ -61,11 +61,6 @@ function SignUpPage2() {
     fileRef.current.click();
   }
 
-  const {setActiveLayout} = useJumboApp();
-  React.useEffect(() => {
-    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-  }, []);
-
   const validate = function(){
     let isValid = true;
     if(name.length > 15){

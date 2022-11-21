@@ -8,7 +8,7 @@ import {
 
 const layoutConfig = {
   sidebar: {
-    open: true,
+    //open: false,
     hide: false,
     variant: SIDEBAR_VARIANTS.PERSISTENT,
     style: SIDEBAR_STYLES.FULL_HEIGHT,
@@ -19,11 +19,11 @@ const layoutConfig = {
   header: {
     hide: false,
     fixed: true,
-    open: true
+    //open: true
   },
   footer: {
     hide: false,
-    open: true,
+    //open: true,
   },
   root: {},
 };

@@ -25,11 +25,6 @@ function SignInPage() {
     if (user) navigate(`/u/${user.name}`);
   }, [user]);
 
-  const {setActiveLayout} = useJumboApp();
-  React.useEffect(() => {
-    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-  }, []);
-
   return (
     <div className='SignUpPage'>
       {/* <div className='CredentialsBox'> */}

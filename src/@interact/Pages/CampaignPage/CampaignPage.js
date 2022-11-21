@@ -82,10 +82,6 @@ function CampaignPage(userData) {
     }
   }, [user, campaignId]);
   
-  const {setActiveLayout} = useJumboApp();
-  React.useEffect(() => {
-    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-  }, []);
 
   const checkAuthentication = () => {
     if (!user) {
