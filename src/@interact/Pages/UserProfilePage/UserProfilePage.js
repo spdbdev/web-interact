@@ -202,7 +202,7 @@ function UserProfilePage() {
                 fontSize: 20,
                 color: "#782fee",
                 marginRight: 20,
-                fontWeight: "bold",
+                fontWeight: "600",
                 cursor: "pointer",
                 borderRadius: 2,
               }}
