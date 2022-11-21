@@ -54,14 +54,17 @@ function CampaignPage(userData) {
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
-  const [campaignId, setCampaignId] = useState(null);
+
+  let routeParams = useParams();
+  const [campaignId, setCampaignId] = useState(routeParams.campaignId);
 
   const num_giveaway = 10;
   const num_auction = 10;
   const { theme } = useJumboTheme();
   const navigate = useNavigate();
-  let { campaign_slug } = useParams();
-  if (!campaign_slug) campaign_slug = "test12345";
+
+
+  if (!campaignId) setCampaignId("test12345");
 
   /* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
@@ -97,16 +100,16 @@ function CampaignPage(userData) {
 
   const checkCampaignID = async () => {
     // check if the campaignId is a uid or custom_url
-    const docSnap = await getDoc(doc(db, "campaigns", campaign_slug));
+    const docSnap = await getDoc(doc(db, "campaigns", campaignId));
     if (!docSnap.exists()) {
       const customURLQ = query(
         collection(db, "campaigns"),
-        where("customURL", "==", campaign_slug)
+        where("customURL", "==", campaignId)
       );
       const customURLQuerySnapshot = await getDocs(customURLQ);
       var docSnapshots = customURLQuerySnapshot.docs[0];
       if (docSnapshots) setCampaignId(docSnapshots.id);
-    } else setCampaignId(campaign_slug);
+    } else setCampaignId(campaignId);
   };
 
   const getCampaignData = async () => {
