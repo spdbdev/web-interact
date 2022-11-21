@@ -11,6 +11,8 @@ import './SignUpPage.css'
 import useCurrentUser from '@interact/Hooks/use-current-user';
 import Loading from '@interact/Components/Loading/Loading';
 import InteractFlashyButton from '@interact/Components/Button/InteractFlashyButton';
+import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function SignInPage() {
 
@@ -23,6 +25,10 @@ function SignInPage() {
     if (user) navigate(`/u/${user.name}`);
   }, [user]);
 
+  const {setActiveLayout} = useJumboApp();
+  React.useEffect(() => {
+    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
+  }, []);
 
   return (
     <div className='SignUpPage'>

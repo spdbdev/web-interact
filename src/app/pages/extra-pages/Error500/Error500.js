@@ -11,7 +11,7 @@ const Error500 = () => {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        setActiveLayout(LAYOUT_NAMES.SOLO_PAGE);
+        setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
     }, []);
 
     return (
@@ -37,7 +37,6 @@ const Error500 = () => {
             >Sorry, the server has crashed <br></br> 
             <br></br>
             (┬┬﹏┬┬)</Typography>
-            <InteractFlashyButton variant="contained" onClick={()=>navigate('/')}>Go to home</InteractFlashyButton>
         </Div>
     );
 };

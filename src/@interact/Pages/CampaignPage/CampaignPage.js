@@ -34,6 +34,9 @@ import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
 import { sortBids } from "@interact/Components/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory } from "../../../firebase";
+import React from "react";
+import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function CampaignPage(userData) {
   const { user } = useCurrentUser();
@@ -78,6 +81,11 @@ function CampaignPage(userData) {
       checkPurchasedEntry();
     }
   }, [user, campaignId]);
+  
+  const {setActiveLayout} = useJumboApp();
+  React.useEffect(() => {
+    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
+  }, []);
 
   const checkAuthentication = () => {
     if (!user) {

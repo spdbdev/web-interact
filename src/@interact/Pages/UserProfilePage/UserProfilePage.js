@@ -2,7 +2,7 @@ import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState,useRef } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Box } from "@mui/material";
+import { Box , Slide} from "@mui/material";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -25,6 +25,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import Swal from 'sweetalert2';
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import Typography from "@mui/material/Typography";
+import {LAYOUT_NAMES} from "/home/virga/web-interact/src/app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,7 +65,7 @@ function UserProfilePage() {
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
     const fileRef = useRef();
-    const [image, setImage] = React.useState("https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person.jpg");
+    const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
 
 
     const updatePhotoURL = async (url) => {
@@ -127,6 +129,11 @@ function UserProfilePage() {
       }
     };
 
+    const {setActiveLayout} = useJumboApp();
+    React.useEffect(() => {
+      setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
+    }, []);
+
     useEffect(() => {
       if (!user) return;
       if (!params.username) {
@@ -140,6 +147,7 @@ function UserProfilePage() {
     }, [params]);
 
     return (
+      <Slide direction="down" timeout={1621} in={true} mountOnEnter unmountOnExit>
       <div>
         <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
         <Stack
@@ -154,10 +162,20 @@ function UserProfilePage() {
           }}
         >
           <div className="image_item">
-            <input type="file" accept="image/*" style={{display:"none"}} onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
-            <EditIcon onClick={(e)=>handleFileClick(e)} style={{width:'1.3em',height:'1.3em'}} className="profile_pic--icon"/>
+            <form className="image_item-form">
+              <label className="image_item-form--label">Replace photo</label>
+              <input
+                className="image-item-form-input"
+                type="file"
+                accept="image/*"
+                id="image-item-form--input-id"
+                onChange={(e)=>handleChangeImage(e)} ref={fileRef}
+              ></input>
+            </form>
+            {/* <input type="file" onChange={handleChangeImage} /> */}
             <img className="profilePic" alt="profile-pic" src={image} />
           </div>
+
           <div
             style={{
               color: "white",
@@ -202,7 +220,7 @@ function UserProfilePage() {
                 fontSize: 20,
                 color: "#782fee",
                 marginRight: 20,
-                fontWeight: "bold",
+                fontWeight: "600",
                 cursor: "pointer",
                 borderRadius: 2,
               }}
@@ -257,6 +275,7 @@ function UserProfilePage() {
           </TabPanel>
         </Box>
       </div>
+      </Slide>
     );
 }
 

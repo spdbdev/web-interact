@@ -522,7 +522,7 @@ function CreateCampaignPage() {
 
   return (
     <Slide
-      direction="right"
+      direction="left"
       timeout={1000}
       in={true}
       mountOnEnter
@@ -569,7 +569,7 @@ function CreateCampaignPage() {
               onClick={() => navigate("/a/what-is-interact")}
             >
               <ExpandLess />
-              <Typography sx={{ my: 0, py: 0 }}>What Is Interact?</Typography>
+              <Typography sx={{ my: 0, py: 0 }}>What is interact?</Typography>
             </ButtonBase>
           </Container>
 
@@ -598,7 +598,7 @@ function CreateCampaignPage() {
               <Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
             )}{" "}
           </Span>
-          <IconButton onClick={() => navigate(`/u/${user.name}`)}>
+          <IconButton onClick={() => navigate(`/u/`)}>
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
         </Box>
