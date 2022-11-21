@@ -28,6 +28,137 @@ import Typography from "@mui/material/Typography";
 import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
 
+
+import Modal from "@mui/material/Modal";
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css'
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+const style = {
+	position: "absolute",
+	top: "50%",
+	left: "50%",
+	transform: "translate(-50%, -50%)",
+	bgcolor: "background.paper",
+	boxShadow: 24,
+	p: 4,
+};
+function CropProfilePicture({open, setOpen, imgageObj, updatePhotoURL, setImage}){
+
+	const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
+	const [completedCrop, setCompletedCrop] = useState();
+	const [imageRef, setImageRef] = useState();
+	const [crop, setCrop] = useState({
+		unit: '%', // Can be 'px' or '%'
+		x: 25,
+		y: 25,
+		width: 50,
+		height: 50
+	});
+
+	const handleSubmit = async (event) => {
+    	//console.log("handleSubmit >>>", imgageObj, imageRef, completedCrop);
+
+    	if (imageRef && completedCrop.width && completedCrop.height) 
+		{
+			const croppedImageUrl = await getCroppedImg(imageRef, completedCrop, 'newFile.jpeg');
+      		//console.log("croppedImageUrl >>>", croppedImageUrl);
+			if(!croppedImageUrl) return;
+
+
+			const storageRef = ref(Storage, `/user_profile_pictures/${imgageObj.name}.jpg`);
+			const uploadTask = uploadBytesResumable(storageRef, croppedImageUrl);
+			uploadTask.on(
+				"state_changed",
+				(snapshot) => {
+					const percent = Math.round(
+						(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+					);
+				},
+				(err) => console.log(err),
+				() => {
+					getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+						console.log('getDownloadURL >>>', url);
+						setOpen(false);
+						updatePhotoURL(url);
+						setImage(url);
+					});
+				}
+			);
+      	}
+	}
+
+	function getCroppedImg(image, crop, fileName) {
+		const canvas = document.createElement('canvas');
+		const pixelRatio = window.devicePixelRatio;
+		const scaleX = image.naturalWidth / image.width;
+		const scaleY = image.naturalHeight / image.height;
+		const ctx = canvas.getContext('2d');
+		canvas.width = crop.width * pixelRatio * scaleX;
+		canvas.height = crop.height * pixelRatio * scaleY;
+		ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+		ctx.imageSmoothingQuality = 'high';
+		ctx.drawImage(
+			image,
+			crop.x * scaleX,
+			crop.y * scaleY,
+			crop.width * scaleX,
+			crop.height * scaleY,
+			0,
+			0,
+			crop.width * scaleX,
+			crop.height * scaleY
+		);
+		return new Promise((resolve, reject) => {
+			canvas.toBlob(
+				(blob) => {
+					if (!blob) {
+						console.error('Canvas is empty');
+						return;
+					}
+					blob.name = fileName;
+					resolve(blob);
+				},
+				'image/jpeg',
+				1
+			);
+		});
+	}
+
+	return (
+		<Modal
+			open={open}
+			onClose={handleClose}
+			aria-labelledby="modal-modal-title"
+			aria-describedby="modal-modal-description"
+			>
+
+			<Box sx={style}>
+			<div className="wrapper">
+			<div className="innerWrapper">
+
+				<ReactCrop crop={crop} 
+					onChange={c => setCrop(c)} 
+					onComplete={(c) => setCompletedCrop(c)} >
+
+					<img src={imgageObj.url} onLoad={(e) => setImageRef(e.currentTarget)} style={{maxWidth:'100%', maxHeight:'100%'}} alt="nothing" />
+				</ReactCrop>
+
+				<div className="btnContainer">
+					<InteractFlashyButton onClick={handleSubmit}>
+						Save
+					</InteractFlashyButton>
+				</div>
+
+			</div>
+			</div>
+			</Box>
+
+		</Modal>
+	);
+}
+
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -61,27 +192,29 @@ function UserProfilePage() {
     const { user } = useCurrentUser();
     const isCreator = user?.name == params.username ? true : false;
 
-    const [description,setDescription] = useState("Welcome to my profile page");
-
+    const [description, setDescription] = useState("Welcome to my profile page");
     const [tab, setTab] = React.useState(0);
     const [modalOpened, setModalOpened] = useState(false);
     const [targetUser, setTargetUser] = useState({});
     const fileRef = useRef();
     const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
 
+	console.log('isCreator >>>', user, params.username, isCreator);
+	const [cropModalOpen, setCropModalOpen] = React.useState(false);
+	const [croppingImg, setCroppingImg] = React.useState({});
 
     const updatePhotoURL = async (url) => {
-      setDoc(doc(db, "users", user.id), {photoURL:url}, {merge:true});
+      	setDoc(doc(db, "users", user.id), {photoURL:url}, {merge:true});
     };
 
     const getTargetUser = async () => {
-      let defaultUser = await fetchUserByName(params.username);
-      setTargetUser(defaultUser);
-      const userListener = onSnapshot(query(doc(db, "users",defaultUser.id)), (querySnapshot) => {
-        let userData = querySnapshot.data();
-        const id = querySnapshot.id;
-        setTargetUser({ ...userData, id });
-      });
+		let defaultUser = await fetchUserByName(params.username);
+		setTargetUser(defaultUser);
+		const userListener = onSnapshot(query(doc(db, "users", defaultUser.id)), (querySnapshot) => {
+			let userData = querySnapshot.data();
+			const id = querySnapshot.id;
+			setTargetUser({ ...userData, id });
+		});
     };
 
     const handleFileClick = function(){
@@ -89,52 +222,26 @@ function UserProfilePage() {
     }
 
     const handleChange = (event, newValue) => {
-      setTab(newValue);
+      	setTab(newValue);
     };
 
     const handleChangeImage = async (e) => {
-      const file = e.target.files[0];
-      const filesize = Math.round((file.size / 1024));
-      if(filesize >= 7168){
-        Swal.fire(
-          "Too Large!",
-          "Max 7mb file size is allowed.",
-          "error"
-          );
-        return;
-      }
-      if (file) {
-        const storageRef = ref(Storage, `/user_profile_pictures/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const percent = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-          },
-          (err) => console.log(err),
-          () => {
-            // download url
-            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-              updatePhotoURL(url);
-            });
-          }
-        );
-
-        var reader = new FileReader();
-        reader.onload = function () {
-          var dataURL = reader.result;
-          setImage(dataURL);
-        };
-        reader.readAsDataURL(file);
-      }
+		const file = e.target.files[0];
+		const filesize = Math.round((file.size / 1024));
+		if(filesize >= 7168){
+			Swal.fire("Too Large!", "Max 7mb file size is allowed.", "error");
+			return;
+		}
+      	if (file) {
+			var reader = new FileReader();
+			reader.onload = function () {
+				var dataURL = reader.result;
+				setCroppingImg({url:dataURL, name:file.name});
+				setCropModalOpen(true);
+			};
+			reader.readAsDataURL(file);
+      	}
     };
-
-    const {setActiveLayout} = useJumboApp();
-    React.useEffect(() => {
-      setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-    }, []);
 
     useEffect(() => {
       if (!user) return;
@@ -152,6 +259,7 @@ function UserProfilePage() {
       <Slide direction="down" timeout={1621} in={true} mountOnEnter unmountOnExit>
       <div>
         <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
+		<CropProfilePicture open={cropModalOpen} setOpen={setCropModalOpen} imgageObj={croppingImg} updatePhotoURL={updatePhotoURL} setImage={setImage} />
         <Stack
           direction="column"
           alignItems="center"
@@ -162,7 +270,7 @@ function UserProfilePage() {
             py: 3.69,
             borderRadius: 2,
           }}
-        >
+        	>
           <div className="image_item">
             <form className="image_item-form">
               <label className="image_item-form--label">Replace photo</label>

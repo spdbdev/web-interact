@@ -47,12 +47,15 @@ function SignUpPage2() {
   const [name, setName] = useState("");
   const [legalName, setLegalName] = useState("");
   const [nameError,setNameError] = useState("");
-  const [legalNameError,setLegalNameError] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [imageUrl,setImageUrl] = useState(null);
   const [image,setImage] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  
+  const [legalNameError,setLegalNameError] = useState("");
+  const [emailError,setEmailError] = useState("");
+
 
   const fileRef = useRef();
 
@@ -61,10 +64,12 @@ function SignUpPage2() {
     fileRef.current.click();
   }
 
-  const {setActiveLayout} = useJumboApp();
-  React.useEffect(() => {
-    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-  }, []);
+
+
+  const emailValid = (_email = email) => {
+    return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
+  }
+  
 
   const validate = function(){
     let isValid = true;
@@ -82,6 +87,15 @@ function SignUpPage2() {
       isValid = false;
     }else{
       setNameError("");
+    }
+
+
+    if (!emailValid) {
+      setEmailError("Invalid email");
+      isValid = false;
+    }
+    else{
+      setEmailError("");
     }
 
     if(/^[A-Za-z\s]+$/.test(legalName)){
@@ -249,7 +263,18 @@ function SignUpPage2() {
             label="Email address"
             variant="outlined"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              const emailInput = e.target.value;
+              if (!emailValid(emailInput)){
+                setEmailError("Invalid email");
+              }
+              else{
+                setEmailError("");
+              }
+              setEmail(emailInput);
+            }}
+            error={Boolean(emailError)}
+            helperText={emailError}
           />
         </div>
 

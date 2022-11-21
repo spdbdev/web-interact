@@ -172,8 +172,7 @@ export default function CampaignCreationSummaryPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/a/create-campaign")}
-            >
+              onClick={()=> navigate('/d/' + campaignId)}>
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>
             </ButtonBase>

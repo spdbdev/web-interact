@@ -25,10 +25,10 @@ function SignInPage() {
     if (user) navigate(`/u/${user.name}`);
   }, [user]);
 
-  const {setActiveLayout} = useJumboApp();
-  React.useEffect(() => {
-    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-  }, []);
+
+  const login = async () => {
+    await loginWithEmailAndPassword(email, password);
+  };
 
   return (
     <div className='SignUpPage'>
@@ -49,10 +49,12 @@ function SignInPage() {
           <TextField id="outlined-basic" label="Username or email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className='TextInputWrapper'>
-          <TextField id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
+          <TextField onKeyDown={(e)=>{
+            e.key === 'Enter' && login();
+          }} id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
         </div>
         <div className='ButtonsWrapper' style={{margin:10, paddingTop: 13.69}}>
-          <InteractFlashyButton onClick={()=>loginWithEmailAndPassword(email, password)}>
+          <InteractFlashyButton onClick={login}>
             Log in
           </InteractFlashyButton>
         </div>

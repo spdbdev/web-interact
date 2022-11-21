@@ -21,6 +21,7 @@ import {
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { Timestamp } from "firebase/firestore";
+import { useSelector } from "react-redux";
 
 export default function SchedulingTab({
   data,
@@ -31,6 +32,8 @@ export default function SchedulingTab({
   const [startDateTime, setStartDateTime] = useState(
     moment.unix(data?.startDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //    moment.unix(data?.startDateTime)
+
+
   const [endDateTime, setEndDateTime] = useState(
     moment.unix(data?.endDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //moment.unix(data?.endDateTime)
@@ -40,6 +43,9 @@ export default function SchedulingTab({
   const [interactionWindowDuration, setInteractionWindowDuration] = useState(
     data?.interactionWindow
   );
+
+
+  const DEVICE_TIMEZONE = useSelector((state) => state.localization.deviceTimezone);
 
   const [errors, setErrors] = useState(false);
 
@@ -234,8 +240,8 @@ export default function SchedulingTab({
   return (
     <>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Campaign duration—5 to 20 days">
-          All times on the campaign are in EST (Eastern Standard Time). Set how
+        <TitleAndDesc title="Campaign duration">
+          All times on the campaign are in {DEVICE_TIMEZONE} (your timezone). Set how
           long the campaign will be active. Enter a start date & time, then
           duration in days OR the end date & time. <br />
           <br />
@@ -327,14 +333,14 @@ export default function SchedulingTab({
                 format: "MMM Do, YYYY h:mm a",
               })}
             </Span>{" "}
-            EST until{" "}
+            {DEVICE_TIMEZONE} until{" "}
             <Span sx={{ fontWeight: 500 }}>
               {getDateFromTimestamp({
                 timestamp: data?.interactionEndDateTime?.seconds,
                 format: "MMM Do, YYYY h:mm a",
               })}
             </Span>{" "}
-            EST.
+            {DEVICE_TIMEZONE}.
           </Typography>
         </Stack>
       </CreateCampaignItemWrapper>

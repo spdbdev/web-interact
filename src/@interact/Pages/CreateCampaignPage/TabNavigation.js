@@ -9,6 +9,7 @@ export function TabNavigation({
   setSelectedTabIndex,
   disableNext,
   customErrorMessage,
+  MAX_TABS
 }) {
   const navigate = useNavigate();
   const Swal = useSwalWrapper();
@@ -25,11 +26,9 @@ export function TabNavigation({
       return;
     }
 
-    if (selectedTabIndex !== 7) {
-      setSelectedTabIndex(selectedTabIndex + 1);
-    } else {
-      navigate(`/a/campaign-creation-summary/${campaignId}`);
-    }
+    
+    setSelectedTabIndex(selectedTabIndex + 1);
+    
   }
 
   function handleBackButtonClick() {
