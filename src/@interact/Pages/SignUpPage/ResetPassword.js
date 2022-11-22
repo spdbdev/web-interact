@@ -17,10 +17,10 @@ function ResetPassword() {
   const [isPassValid,setIsPassValid] = useState(false);
   const navigate = useNavigate();
 
-  const handleResetPassword =  function(){
+  const handleResetPassword = async function(){
     if(!isPassValid) return;
-    console.log("is valid",oobCode);
-    confirmPasswordChange(oobCode,password);
+    const result = await confirmPasswordChange(oobCode,password);
+    if(result) navigate('/');
   }
 
   useEffect(async ()=>{

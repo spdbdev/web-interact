@@ -17,6 +17,11 @@ function ForgotPassword() {
   const { user } = useCurrentUser();
   const navigate = useNavigate();
 
+  const handlePasswordReset =async function(){
+    let result = await sendPasswordReset(email);
+    if(result) navigate('/');
+  }
+
   useEffect(() => {
     if (user) navigate(`/u/${user.name}`);
   }, [user]);
@@ -27,19 +32,16 @@ function ForgotPassword() {
       {/* <div className='CredentialsBox'> */}
 
       <div className='CredentialBox'>
-
         <img src={process.env.PUBLIC_URL + '/logo.png'} alt="logo" style={{ height: 100, padding: 20 }} />
-
         <br />
         <div className='TextInputWrapper'>
           <TextField id="outlined-basic" label="Username or email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <br></br>
         <div className='ButtonsWrapper' style={{margin:10}}>
-          <InteractFlashyButton onClick={()=>sendPasswordReset(email)}>
+          <InteractFlashyButton onClick={()=>handlePasswordReset()}>
             Reset password
           </InteractFlashyButton>
-          
         </div>
         <br/>
         <Typography sx={{color: '#b48df6'}}>If you can't find the email, check your spam folder!</Typography>

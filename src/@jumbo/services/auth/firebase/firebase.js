@@ -6,6 +6,7 @@ import { getFirestore, query, getDocs, collection, where, addDoc, setDoc, doc} f
 import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
 import { validateEmail } from "@jumbo/utils";
+import { Navigate } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAztlkNsd8Lu86qj5D7Y9TbI6Wvt_hVjJw",
@@ -104,10 +105,13 @@ const sendPasswordReset = async (email) => {
   }
   try {
     await sendPasswordResetEmail(auth, email);
-    Swal.fire("Success!", "Password reset link sent!", "success");
+    return Swal.fire("Success!", "Password reset link sent!", "success").then((result)=>{
+      if(result.isConfirmed) return true;
+      if(result.isDismissed) return false;
+    });
   } catch (err) {
-    console.error(err);
     Swal.fire("Error!", err.message, "error");
+    return false;
   }
 };
 
@@ -128,9 +132,13 @@ const verifyResetCode = async (code) => {
 const confirmPasswordChange = async (code,password) => {
   try{
     await confirmPasswordReset(auth,code,password);
-    Swal.fire("Success!", "Password has been changed!", "success");
+    return Swal.fire("Success!", "Password has been changed!", "success").then((result)=>{
+      if(result.isConfirmed) return true;
+      if(result.isDismissed) return false;
+    });
   }catch(err){
     Swal.fire("Error!",err.message, "error");
+    return false;
   }
 }
 
