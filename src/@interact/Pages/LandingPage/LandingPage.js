@@ -595,16 +595,16 @@ const LandingPage = () => {
                       scheduling.
                     </Typography>
                     <Box sx={{ mt: 1 }} className='landing-subtitle'>
-                    <Typography
-                      variant="body1"
-                      component='span'
-                        className="landing-gradient-text"
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        lineHeight: '115%'
-                      }}
-                    >
+                      <Typography
+                        variant="body1"
+                        component='span'
+                          className="landing-gradient-text"
+                        sx={{
+                          fontSize: '18px',
+                          fontWeight: 600,
+                          lineHeight: '115%'
+                        }}
+                      >
                         After the campaign, choose your 
                         availability every week (we'll automatically match fans).
                       </Typography>
@@ -619,19 +619,19 @@ const LandingPage = () => {
                         }}
                       >
                         {" "}Seamlessly mesh with your schedule
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      component='span'
-                      className="landing-gradient-text"
-                      sx={{
-                          fontSize: '18px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                      }}
-                    >
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            lineHeight: '115%'
+                        }}
+                      >
                         {" "}with 2-way calendar sync (Google, Apple, iCloud). +You can
-                    </Typography>
+                      </Typography>
                       <Typography
                         variant="body1"
                         component='span'
@@ -691,6 +691,7 @@ const LandingPage = () => {
             </Grid>
           </Grid>
         </Stack>
+
         <Box sx={{ width: '76.9%' }}>
           <VideoContainer mt={12} mb={10}>
             <iframe
@@ -704,47 +705,45 @@ const LandingPage = () => {
         <Stack width={"100%"}>
           <Grid container spacing={5.621}>
             <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
-              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
+              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%', textAlign: "center" }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/heart-book.svg'} alt='' />
-          </Box>
+                </Box>
                 <Typography
                   sx={{
                     fontSize: "21px",
                     fontWeight: 600,
                     color: "#4D4657",
-                    textAlign: "center",
                     lineHeight: '110%',
-                    minHeight: '65px'
                   }}
                 >
                   You’re a key part of their weekly / daily
-            </Typography>
-            <Typography
+                </Typography>
+                <Typography
                   sx={{
                     fontSize: "21px",
                     fontWeight: 600,
                     color: "#782FEE",
-                    textAlign: "center",
                     lineHeight: '110%',
                     minHeight: '65px'
                   }}
-            >
+                  component="label"
+                >
                   {" "}routine
-            </Typography>
-            <Typography
-              sx={{
+                  <Typography
+                  sx={{
                     fontSize: "21px",
                     fontWeight: 600,
                     color: "#4D4657",
-                    textAlign: "center",
                     lineHeight: '110%',
-                    minHeight: '65px'
-              }}
-            >
+                    width: "100%"
+                  }}
+                  component="span"
+                >
                   .
-            </Typography>
-            <Typography
+                </Typography>
+                </Typography>
+                <Typography
                   sx={{
                     mt: 0,
                     fontSize: "15px",
@@ -753,10 +752,10 @@ const LandingPage = () => {
                     color: '#70677E',
                     lineHeight: "120%"
                   }}
-            >
+                >
                   Show some love to these fans who have
-            </Typography>
-            <Typography
+                </Typography>
+                <Typography
                   sx={{
                     mt: 0,
                     fontSize: "15px",
@@ -765,9 +764,9 @@ const LandingPage = () => {
                     color: '#782FEE',
                     lineHeight: "120%"
                   }}
-            >
+                >
                   {" "}grown with you not only as a creator, but as a person
-            </Typography>
+                </Typography>
                 <Typography
                   sx={{
                     mt: 0,
@@ -788,7 +787,7 @@ const LandingPage = () => {
               <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/pig.svg'} alt='' />
-          </Box>
+                </Box>
                 <Typography
                   sx={{
                     fontSize: "21px",
@@ -796,7 +795,6 @@ const LandingPage = () => {
                     color: "#4D4657",
                     textAlign: "center",
                     lineHeight: '110%',
-                    minHeight: '65px'
                   }}
                 >
                   Auction: the
@@ -808,7 +806,6 @@ const LandingPage = () => {
                     color: "#782FEE",
                     textAlign: "center",
                     lineHeight: '110%',
-                    minHeight: '65px'
                   }}
                 >
                   {" "}top bidders{" "}
@@ -886,7 +883,7 @@ const LandingPage = () => {
                 >
                   .
                 </Typography>
-        </GradientRoundedBox>
+              </GradientRoundedBox>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
@@ -901,7 +898,6 @@ const LandingPage = () => {
                     color: "#4D4657",
                     textAlign: "center",
                     lineHeight: '110%',
-                    minHeight: '65px'
                   }}
                 >
                   Giveaway: fans can enter for
@@ -915,20 +911,21 @@ const LandingPage = () => {
                     lineHeight: '110%',
                     minHeight: '65px'
                   }}
+                  component="label"
                 >
                   {" "}free / a few $
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  .
+                  <Typography
+                    sx={{
+                      fontSize: "21px",
+                      fontWeight: 600,
+                      color: "#4D4657",
+                      textAlign: "center",
+                      lineHeight: '110%',
+                    }}
+                    component="span"
+                  >
+                    .
+                  </Typography>
                 </Typography>
                 <Typography
                   sx={{
@@ -993,11 +990,8 @@ const LandingPage = () => {
                 </Typography>
               </GradientRoundedBox>
             </Grid>
-
           </Grid>
         </Stack>
-
-
 
         <Stack sx={{ mb: 10, mt:10 }}>
           <CampaignButtonGroup

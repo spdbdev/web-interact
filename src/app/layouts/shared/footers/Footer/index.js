@@ -31,6 +31,7 @@ const Footer = () => {
           alignItems='center'
           justifyContent='space-between'
           width='77.96%'
+          height='74px'
           spacing={0}
           sx={{
             '& a': { color: '#A2B2C3', transition: 'color 0.2s linear' },
@@ -45,9 +46,9 @@ const Footer = () => {
           alignItems='center'
           justifyContent='space-between'
           width='77.96%'
+          height='74px'
           spacing={0}
           paddingTop={0}
-          paddingBottom ={4.69}
           sx={{
             '& a': { color: '#A2B2C3', transition: 'color 0.2s linear' },
             '& a:hover': { color: '#782fee' }
@@ -63,7 +64,6 @@ const Footer = () => {
           width='77.96%'
           spacing={0}
           paddingTop={0}
-          paddingBottom ={4.69}
           sx={{
             '& a': { color: '#A2B2C3', transition: 'color 0.2s linear' },
             '& a:hover': { color: '#782fee' }
