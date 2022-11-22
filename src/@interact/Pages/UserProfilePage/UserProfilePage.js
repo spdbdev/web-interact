@@ -208,13 +208,13 @@ function UserProfilePage() {
     };
 
 	const updateDescription = async (description) => {
-    try {
-      await setDoc(doc(db, "users", user.id), {description:description}, {merge:true});
-      setDescription(description);
-    } catch (error) {
-     console.log("Error while updating description",error); 
-    }
-  };
+		try {
+			await setDoc(doc(db, "users", user.id), {description:description}, {merge:true});
+			setDescription(description);
+		} catch (error) {
+			console.log("Error while updating description",error); 
+		}
+  	};
 
     const getTargetUser = async () => {
 		let defaultUser = await fetchUserByName(params.username);
@@ -231,7 +231,7 @@ function UserProfilePage() {
     };
 
     const handleFileClick = function(){
-      fileRef.current.click();
+      	fileRef.current.click();
     }
 
     const handleEditDescription =async function(e){
@@ -337,7 +337,7 @@ function UserProfilePage() {
               maxWidth: '323.21px',
             }}
           >
-            {user?.description ? user.description : description}
+            {description}
           </Typography>
           { user?.name === params.username && <EditIcon className="profile-desc--edit" onClick={(e)=>handleEditDescription(e)}/>}
           </Box>

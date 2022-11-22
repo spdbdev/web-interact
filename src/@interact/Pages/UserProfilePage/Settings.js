@@ -602,7 +602,7 @@ function Settings() {
             </Button>
           }
           open
-          title="Manage billing address"
+          title="Manage your saved payment (billing) methods"
           subheader="Add, update, or remove your billing address"
         />
         <hr />
