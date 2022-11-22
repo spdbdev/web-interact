@@ -21,7 +21,7 @@ export function TabNavigation({
         icon: "error",
         text:
           customErrorMessage ||
-          "All form fields are required before moving to the next campaign creation step.",
+          "All form fields are required",
       });
       return;
     }

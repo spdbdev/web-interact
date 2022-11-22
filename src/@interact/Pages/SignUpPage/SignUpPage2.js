@@ -435,7 +435,7 @@ function SignUpPage2() {
         
         <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
           <InteractFlashyButton
-          onClick={nextStep}>Next 🡺</InteractFlashyButton>
+          onClick={nextStep}>Next →</InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20, paddingBottom: 16.21}}>
           Already have an account? <Link to="/a/signin">Log in</Link>
@@ -446,7 +446,7 @@ function SignUpPage2() {
         <div className="CredentialBox">
           <div className="ButtonsWrapper" style={{margin:0, paddingTop:0, paddingBottom: 16.69}}>
             <InteractFlashyButton
-            onClick={prevStep}>🡸 Go back</InteractFlashyButton>
+            onClick={prevStep}>← Go back</InteractFlashyButton>
           </div>
                     <Typography fontSize={23.21} align="center" width={332.69} fontWeight={'500'}>Choose your{" "}</Typography>
                     <Typography color='#782fee' align="center" fontSize={23.21}  width={332.69} fontWeight={'500'}>general availability</Typography>

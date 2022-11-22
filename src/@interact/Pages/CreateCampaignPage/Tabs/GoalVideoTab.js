@@ -170,14 +170,11 @@ export default function GoalVideoTab({
       </Stack>
 
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Introduction video">
-          Include a link to a short YouTube video where you describe your
-          campaign and goal where you tell your fans about the goal, explain how
-          interactions work & how fans can acquire them in the campaign.
+        <TitleAndDesc title="Short video">
+          Include a link to a YouTube video where you explain what will happen (e.g. play a game, chat in Discord), state your goal, & how fans can acquire them in the campaign.
           <br />
           <br />
-          We'll automatically get the thumbnail from your video link. This is
-          what users will see when looking for your campaign.
+          If you wish, you may replace your thumbnail on the right; otherwise we'll use the thumbanil from the video.
           <br />
           <br />
           <Button

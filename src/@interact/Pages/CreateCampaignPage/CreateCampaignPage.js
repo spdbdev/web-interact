@@ -396,12 +396,12 @@ function CreateCampaignPage() {
       label: "Interaction",
     },
     3:{
-      component: GoalVideoTab,
-      label: "Goal",
+      component: InteractMethodTab,
+      label: "Interaction method",
     },
     4:{
-      component: InteractMethodTab,
-      label: "Interaction",
+      component: GoalVideoTab,
+      label: "Goal & video",
     },
     5:{
       component: FAQTab,
