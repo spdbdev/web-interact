@@ -45,12 +45,20 @@ const signInWithGoogle = async () => {
   }
 };
 
+const getUserByName = async (name) => {
+    const q = query(collection(db, "users"), where("nameInLowerCase", "==", name.toLowerCase()))
+    const querySnap = await getDocs(q);
+    if(querySnap.docs.length > 0){
+      const docSnap = querySnap.docs[0];
+      if(docSnap.exists()) return docSnap.data();
+    }
+    return null;
+};
+
 const loginWithEmailAndPassword = async (email, password) => {
   if(!validateEmail(email)){
-    const q = query(collection(db, "users"), where("name", "==", email))
-    const querySnapshot = await getDocs(q);
-    const docSnapshots = querySnapshot.docs[0];
-    if(docSnapshots) email = docSnapshots.data()?.email;
+    const doc = await getUserByName(email);
+    if(doc != null) email = doc.email;
   }
   try {
     await signInWithEmailAndPassword(auth, email, password);
@@ -73,6 +81,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name,
+      nameInLowerCase: name.toLowerCase(),
       legalName,
       authProvider: "local",
       email,
@@ -98,10 +107,8 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 
 const sendPasswordReset = async (email) => {
   if(!validateEmail(email)){
-    const q = query(collection(db, "users"), where("name", "==", email))
-    const querySnapshot = await getDocs(q);
-    const docSnapshots = querySnapshot.docs[0];
-    if(docSnapshots) email = docSnapshots.data()?.email;
+    const doc = await getUserByName(email);
+    if(doc) email = doc.email;
   }
   try {
     await sendPasswordResetEmail(auth, email);
@@ -151,5 +158,6 @@ export {
   sendPasswordReset,
   verifyResetCode,
   confirmPasswordChange,
+  getUserByName,
   logout,
 };
