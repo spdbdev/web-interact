@@ -7,6 +7,7 @@ import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
 import { validateEmail } from "@jumbo/utils";
 import { Navigate } from "react-router-dom";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAztlkNsd8Lu86qj5D7Y9TbI6Wvt_hVjJw",
@@ -22,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
-
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async () => {
@@ -45,12 +46,20 @@ const signInWithGoogle = async () => {
   }
 };
 
+const getUserByName = async (name) => {
+    const q = query(collection(db, "users"), where("nameInLowerCase", "==", name.toLowerCase()))
+    const querySnap = await getDocs(q);
+    if(querySnap.docs.length > 0){
+      const docSnap = querySnap.docs[0];
+      if(docSnap.exists()) return docSnap.data();
+    }
+    return null;
+};
+
 const loginWithEmailAndPassword = async (email, password) => {
   if(!validateEmail(email)){
-    const q = query(collection(db, "users"), where("name", "==", email))
-    const querySnapshot = await getDocs(q);
-    const docSnapshots = querySnapshot.docs[0];
-    if(docSnapshots) email = docSnapshots.data()?.email;
+    const doc = await getUserByName(email);
+    if(doc != null) email = doc.email;
   }
   try {
     await signInWithEmailAndPassword(auth, email, password);
@@ -73,6 +82,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name,
+      nameInLowerCase: name.toLowerCase(),
       legalName,
       authProvider: "local",
       email,
@@ -98,10 +108,8 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 
 const sendPasswordReset = async (email) => {
   if(!validateEmail(email)){
-    const q = query(collection(db, "users"), where("name", "==", email))
-    const querySnapshot = await getDocs(q);
-    const docSnapshots = querySnapshot.docs[0];
-    if(docSnapshots) email = docSnapshots.data()?.email;
+    const doc = await getUserByName(email);
+    if(doc) email = doc.email;
   }
   try {
     await sendPasswordResetEmail(auth, email);
@@ -145,11 +153,13 @@ const confirmPasswordChange = async (code,password) => {
 export {
   auth,
   db,
+  storage,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
   verifyResetCode,
   confirmPasswordChange,
+  getUserByName,
   logout,
 };

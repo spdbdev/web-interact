@@ -11,7 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useNavigate,useLocation } from "react-router-dom";
-import { auth, registerWithEmailAndPassword, signInWithGoogle } from "@jumbo/services/auth/firebase/firebase";
+import { auth, registerWithEmailAndPassword, signInWithGoogle, getUserByName } from "@jumbo/services/auth/firebase/firebase";
 import PasswordChecklist from "react-password-checklist";
 import {Country} from 'country-state-city';
 
@@ -31,7 +31,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 import "./SignUpPage.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { getUserCountryName } from "@interact/Components/utils";
+import { getUserCountryName } from "app/utils";
 
 import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
@@ -93,9 +93,15 @@ function SignUpPage2() {
   const emailValid = (_email = email) => {
     return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
   }
+
+  const checkDuplicate = async (name) => {
+    const doc = await getUserByName(name);
+    if(doc === null) return false;
+    else return true;
+  }
   
 
-  const validate = function(){
+  const validate = async function(){
     let isValid = true;
     if(name.length > 15){
       setNameError("Cannot be longer than 15 characters.");
@@ -108,6 +114,9 @@ function SignUpPage2() {
       isValid = false;
     }else if(JSON.stringify(name).match("undefined")){
       setNameError("Username cannot be 'undefined'")
+      isValid = false;
+    }else if(await checkDuplicate(name) === true){
+      setNameError("Name already in use");
       isValid = false;
     }else{
       setNameError("");
@@ -161,7 +170,7 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country,schedule,timeZone)){
+    if(registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country, schedule, timeZone)){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);

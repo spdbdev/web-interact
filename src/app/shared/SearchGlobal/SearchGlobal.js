@@ -7,7 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { query, collection, getDocs, where, startAt, endAt, orderBy } from "firebase/firestore";
 import { Link, useNavigate } from 'react-router-dom';
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 
 
 const SearchGlobal = ({ sx }) => {
