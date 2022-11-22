@@ -11,7 +11,7 @@ import TitleAndDesc, { TitleAndDescFullWidth } from "../CampaignTitleAndDesc";
 import InfoTooltip from "@interact/Components/InfoTooltip";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
-import { isValidHttpUrl } from "@interact/Components/utils";
+import { isValidHttpUrl } from "app/utils/www";
 import { checkCustomURLAgainstOtherCampaigns } from "../../../../firebase";
 
 export default function PromotionTab({

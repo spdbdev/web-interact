@@ -17,7 +17,7 @@ import Span from "@jumbo/shared/Span";
 import {
   formatMomentDate,
   getDateFromTimestamp,
-} from "../../../Components/utils.js";
+} from "app/utils";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { Timestamp } from "firebase/firestore";

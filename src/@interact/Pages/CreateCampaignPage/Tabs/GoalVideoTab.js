@@ -19,12 +19,17 @@ import CreateCampaignItemWrapper from "../CreateCampaignItemWrapper";
 import TitleAndDesc from "../CampaignTitleAndDesc";
 import { Add, Close } from "@mui/icons-material";
 import {
-  getYoutubeIDFromURL,
+	getYoutubeThumbnailURI,
   isValidHttpUrl,
-} from "@interact/Components/utils";
+  isValidYoutubeURL,
+} from "app/utils/www";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
-import { addTrailingZerosToDollarValue } from "@interact/Components/utils";
+import { addTrailingZerosToDollarValue } from "app/utils";
+
+import { ThumbnailWithEdit } from "@interact/Components/Thumbnail/ThumbnailWithEdit";
+
+const DEFAULT_VIDEO_PLACEHOLDER = "youtube.com/watch?v=";
 
 export default function GoalVideoTab({
   data,
@@ -38,7 +43,9 @@ export default function GoalVideoTab({
     addTrailingZerosToDollarValue(data?.goalValue)
   );
   const [campaignGoal, setCampaignGoal] = useState(data?.goal);
-  const [selectedVideo, setSelectedVideo] = useState(data?.campaignVideoLink);
+  const [selectedVideo, setSelectedVideo] = useState(
+    data?.campaignVideoLink ?? DEFAULT_VIDEO_PLACEHOLDER
+  );
   const [videoThumbnailLink, setVideoThumbnailLink] = useState(
     data?.campaignVideoThumbnailLink
   );
@@ -46,22 +53,24 @@ export default function GoalVideoTab({
     useState(false);
   const [errors, setErrors] = useState(false);
 
-  useEffect(() => {
-    function getVideoThumbnailLink() {
-      const id = getYoutubeIDFromURL(selectedVideo);
-      const link = `http://i3.ytimg.com/vi/${id}/hqdefault.jpg`;
-      setVideoThumbnailLink(link);
-      setData({
-        campaignVideoThumbnailLink: link,
-        campaignVideoLink: selectedVideo,
-      });
-    }
+ 
 
-    if (isValidHttpUrl(selectedVideo)) {
-      getVideoThumbnailLink();
-    } else {
-      setVideoThumbnailLink("incorrecturl");
-    }
+  useEffect(() => {
+
+	
+		if (!data.campaignVideoThumbnailLink){
+			if (isValidYoutubeURL(selectedVideo)) {
+				const link = getYoutubeThumbnailURI(selectedVideo);
+				setData({
+					campaignVideoThumbnailLink: link,
+					campaignVideoLink: selectedVideo,
+				});
+			} 
+			else {
+				setVideoThumbnailLink("incorrecturl");
+			}
+		}
+    
   }, [selectedVideo]);
 
   useEffect(() => {
@@ -130,7 +139,8 @@ export default function GoalVideoTab({
             get an interaction. These interactions will occur first, before
             giveaway winners, and the top 3 will get 90 minutes to chat, show
             off, & game with me.
-            <br></br><br></br>
+            <br></br>
+            <br></br>
           </Typography>
         </Box>
       </Modal>
@@ -154,6 +164,18 @@ export default function GoalVideoTab({
               inputProps={{ maxLength: 50 }}
               error={campaignGoal.length == 0}
               value={campaignGoal}
+              // onPaste={(e) => {
+              //   const pastedValue = e.clipboardData.getData("text");
+              //   console.log([
+              //     'Paste',
+              //     pastedValue,
+              //     e.target.value
+              //   ])
+              //   if (isValidYoutubeURL(e.target.value)) {
+              //     e.preventDefault();
+              //     setSelectedVideo(pastedValue);
+              //   }
+              // }}
               onChange={(e) => {
                 if (e.target.value.length > 0) {
                   setData({ goal: e.target.value });
@@ -189,45 +211,48 @@ export default function GoalVideoTab({
             Not sure what to say? See a sample script here
           </Button>
         </TitleAndDesc>
-        <Stack spacing={3}>
-          <Stack
+        <Stack spacing={3} maxWidth={380}>
+          {/* <Stack
             direction="column"
             alignItems="center"
             justifyContent="center"
             position="relative"
             sx={{
               bgcolor: "divider",
-              width: 280,
-              height: 150,
               borderRadius: 2,
               overflow: "hidden",
-              p: 2,
               textAlign: "center",
+              maxHeight: 218
             }}
           >
-            <img
-              style={{
-                width: "280px",
-                height: "150px",
-                objectFit: "cover",
-              }}
-              alt={"video-thumbnail"}
-              src={videoThumbnailLink}
-            />
-          </Stack>
-
+            
+            
+          </Stack> */}
+          <ThumbnailWithEdit
+            URI={videoThumbnailLink}
+            onImageChanged={async (newURI) => {
+              // Save new URI to campaign data
+              await setData({
+                campaignVideoThumbnailLink: newURI,
+              });
+              setVideoThumbnailLink(newURI);
+            }}
+          />
           <TextField
             variant="outlined"
             fullWidth
             label="Video link"
             value={selectedVideo}
-            error={!isValidHttpUrl(selectedVideo)}
+            error={!isValidYoutubeURL(selectedVideo)}
             onChange={(e) => {
               const nextValue = e.target.value;
-
-              setSelectedVideo(nextValue);
+              const isEmpty = !nextValue?.trim();
+              setSelectedVideo(isEmpty ? DEFAULT_VIDEO_PLACEHOLDER : nextValue);
             }}
           />
+          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            Suggestion: name the video by the goal or the title of this campaign
+          </Typography>
         </Stack>
       </CreateCampaignItemWrapper>
       {errors ? (

@@ -21,7 +21,7 @@ import IconButton from "@mui/material/IconButton";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./CampaignPage.css";
-import { formatMoney } from "@interact/Components/utils";
+import { formatMoney } from "app/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 
