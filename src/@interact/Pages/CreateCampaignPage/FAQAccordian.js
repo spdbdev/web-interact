@@ -139,8 +139,8 @@ export default function FAQAccordian({
           <br></br>💜 When the campaign ends, creators are shown the availability 
           of all of their fans continuously (shown X number of fans that are available 
           for each time slot), and release a specific schedule week-by-week on Friday 
-          midnight (11:59 pm EST) at the latest (except for the first week where creators 
-          have until Sunday midnight (11:59 pm EST) to lock in a schedule for the next 
+          midnight at the latest (except for the first week where creators 
+          have until Sunday midnight to lock in a schedule for the next 
           week starting Monday), with the ability to choose how many interactions to do 
           that week. We then allocate the best fitting fans as soon as the creator 
           locks in their schedule for each week.
@@ -177,7 +177,7 @@ export default function FAQAccordian({
           assigned to them over the interaction window duration, 10 weeks by default (with auction 
           winners having priority)
           <br></br>💜 The content creator selects when they are available week-by-week (creators 
-          have to lock in their availability by Friday midnight (EST) for the next week, and can 
+          have to lock in their availability by Friday midnight (your timezone) for the next week, and can 
           sync with their personal Google, Outlook or iCloud calendars); from this, with our 
           matching algorithm, interactions are scheduled.
 

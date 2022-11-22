@@ -54,7 +54,7 @@ const Footer = () => {
             '& a:hover': { color: '#782fee' }
           }}
         >
-          <Link href="/a/campaign-creator-faq" underline="hover">Campaign creator FAQ</Link>
+          <Link href="/a/creator-faq" underline="hover">Creator FAQ</Link>
           <Link href="/a/terms-and-conditions" underline="hover">Terms & conditions</Link>
           <Typography variant={"body1"} sx={{ color: "text.disabled", mt: 1, fontSize: '12px' }}>
             Copyright Interact © 2022

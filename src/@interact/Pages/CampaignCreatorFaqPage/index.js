@@ -19,32 +19,14 @@ const CampaignCreatorFaqPage = () => {
           <p>💜 After the campaign ends, selected fans (winners) will have interactions assigned to them over
             the interaction window duration, 10 weeks by default (with auction winners having priority).</p>
           <p>💜 The content creator selects when they are available week-by-week (creators have to lock in their
-            availability by Friday midnight (EST) for the next week, and can sync with their personal Google,
+            availability by Friday midnight (your timezone) for the next week, and can sync with their personal Google,
             Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.
           </p>
         </>
       ),
       expand: true
     },
-    {
-      question: 'Why interact with fans?',
-      answer: (
-        <>
-          <p>💜 Form a closer bond with your fans who have been in your corner, cheering you on as you continue to
-            grow as a creator & a human; everyone also gets to see the fan-interactions produced (or highlights)
-            where they can learn more & see a different side to you.</p>
-          <p>💜 Meeting your most loyal fans is fun & fulfilling. It’s a wonderful feeling to see their eyes light up.
-            These aren’t tedious requests nor formal lessons; there are no restrictions—you have complete
-            freedom & control to stop talking to users and kick them at your discretion. Just chill with your
-            fans on your own schedule.</p>
-          <p>💜 Do it all with minimal effort & complete control: our scheduling algorithm is focused on flexibility
-            for the creator; one only has to input their specific availability week-by-week, 3 days in advance
-            (on Friday at the latest, week starts on Monday).
-          </p>
-        </>
-      ),
-      expand: false
-    },
+    
     {
       question: 'How much money can I make?',
       answer: (
@@ -62,8 +44,48 @@ const CampaignCreatorFaqPage = () => {
             that’s around 5 hours a week of fan interaction over 2 months (only one or two interactions a day or one
             evening per week); this is effectively being paid an extra $100 to $140 per hour while streaming/creating
             additional content while getting to meet & chill with your devoted fans. In a year, if a creator launches
-            5 of these campaigns that reserve interactions for 2 months at a time (10 months of interactions), that’s
+            5 of these campaigns that reserve interactions for 2 months at a time (10 months of interactions), that’s{" "}
             <span style={{ backgroundColor: 'yellow' }}>an additional $25K to $35K gross revenue annually.</span>
+          </p>
+        </>
+      ),
+      expand: true
+    },
+    {
+      question: 'What happens to fans who don’t get an interaction by the end of the interaction period?',
+      answer: (
+        <>
+          <p>They will be automatically refunded from your connected bank account. This could happen if fans really can't match your available time slots. 
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'What happens if I miss a week during the interaction period?',
+      answer: (
+        <>
+          <p>After the campaign, if you don't lock in your availability for a week, you will just have to complete more interactions per week for the remaining weeks in the interaction period. 
+            If you miss the last week, then those fans who have not interacted will automatically be refunded (from your connected bank account).
+          </p>
+        </>
+      ),
+      expand: false
+    },
+    {
+      question: 'Why interact with fans?',
+      answer: (
+        <>
+          <p>💜 Form a closer bond with your fans who have been in your corner, cheering you on as you continue to
+            grow as a creator & a human; everyone also gets to see the fan-interactions produced (or highlights)
+            where they can learn more & see a different side to you.</p>
+          <p>💜 Meeting your most loyal fans is fun & fulfilling. It’s a wonderful feeling to see their eyes light up.
+            These aren’t tedious requests nor formal lessons; there are no restrictions—you have complete
+            freedom & control to stop talking to users and kick them at your discretion. Just chill with your
+            fans on your own schedule.</p>
+          <p>💜 Do it all with minimal effort & complete control: our scheduling algorithm is focused on flexibility
+            for the creator; one only has to input their specific availability week-by-week, 3 days in advance
+            (on Friday at the latest, week starts on Monday).
           </p>
         </>
       ),
@@ -160,8 +182,8 @@ const CampaignCreatorFaqPage = () => {
             <li>The first week after the campaign (starting Monday) is when interactions will start to be booked.</li>
             <li>
               When the campaign ends, creators are shown the availability of all of their fans continuously (shown X number of
-              fans that are available for each time slot), and release a specific schedule week-by-week on Friday midnight (11:59 pm EST)
-              at the latest (except for the first week where creators have until Sunday midnight (11:59 pm EST) to lock in a schedule for
+              fans that are available for each time slot), and release a specific schedule week-by-week on Friday midnight (11:59 pm, your timezone)
+              at the latest (except for the first week where creators have until Sunday midnight (11:59 pm, your timezone) to lock in a schedule for
               the next week starting Monday), with the ability to choose how many interactions to do that week. We then allocate the best
               fitting fans as soon as the creator locks in their schedule for each week.
             </li>
@@ -356,7 +378,7 @@ const CampaignCreatorFaqPage = () => {
   ]
 
   return (
-    <Stack maxWidth='1440px' alignSelf='center'>
+    <Stack maxWidth='821px' alignSelf='center'>
       <Stack flexDirection='column' sx={{ p: 4 }}>
         <Typography
           variant='h1'

@@ -71,7 +71,7 @@ const interactV1Routes = [
     element: <Page component ={FaqPage} layout="vertical-default" />
   },
   {
-    path: "/a/campaign-creator-faq",
+    path: "/a/creator-faq",
     element: <Page component ={CampaignCreatorFaqPage} layout="vertical-default" />
   },
   {
