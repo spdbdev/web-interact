@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
     popup: {
         width: '24em',
         overflow: 'hidden',
-        borderRadius: 8,
+        borderRadius: 27,
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.background.paper,
     },
