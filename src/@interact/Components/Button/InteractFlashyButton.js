@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 
+
 export default function InteractFlashyButton({
   onClick,
   children,
@@ -12,7 +13,7 @@ export default function InteractFlashyButton({
       sx={{
         ":hover": {
           background:
-            "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+            "linear-gradient(180deg, #782FEE -37.69%, #DD00FF 109.93%)", // theme.palette.primary.main
           color: "white",
         },
         background:
@@ -25,7 +26,7 @@ export default function InteractFlashyButton({
         px: 4,
         py: 1,
       }}
-      disableElevation
+      //disableElevation
       variant={"contained"}
       onClick={onClick}
       type="submit"

@@ -49,13 +49,21 @@ const useStyles = makeStyles(theme => ({
         fontSize: '0.875rem',
         lineHeight: 1.75,
         padding: theme.spacing(.75, 2),
-        borderRadius: 4,
+        borderRadius: "3px 11px",
         fontFamily: 'inherit',
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor:
+            "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
+        borderColor: "primary.main",
+        fontWeight: 600,
+        px: 4,
+        py: 1,
 
         '&:hover': {
-            backgroundColor: theme.palette.primary.dark,
+            background:
+              "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+            color: "white",
         }
+          
     },
     cancelButton: {
         border: 0,
