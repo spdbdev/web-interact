@@ -1,5 +1,5 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Close, ExpandMore } from "@mui/icons-material";
 import {

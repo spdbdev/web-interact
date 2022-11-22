@@ -4,7 +4,7 @@ import Loading from "@interact/Components/Loading/Loading";
 import {
   getDateFromTimestamp,
   getYoutubeIDFromURL,
-} from "@interact/Components/utils";
+} from "app/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { ExpandLess } from "@mui/icons-material";

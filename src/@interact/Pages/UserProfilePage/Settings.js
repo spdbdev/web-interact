@@ -5,7 +5,7 @@ import "./UserProfilePage.css";
 import FollowerList from "./FollowerList";
 import { Link } from "react-router-dom";
 import PasswordChecklist from "react-password-checklist";
-import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { auth, db, storage as Storage, logout } from "@jumbo/services/auth/firebase/firebase";
 
 import {
   query,
@@ -35,7 +35,7 @@ import {
   updateEmail,
 } from "firebase/auth";
 
-import Storage from "./firebasestorage";
+
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Country, State, City } from "country-state-city";

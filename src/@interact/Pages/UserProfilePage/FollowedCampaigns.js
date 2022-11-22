@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { collection, doc, getDoc, getDocs, query, where} from "firebase/firestore";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import CampaignsRow from "./CampaignsRow";
 
 

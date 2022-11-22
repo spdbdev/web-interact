@@ -23,7 +23,7 @@ import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboDemoCard from "@jumbo/components/JumboDemoCard";
-import { formatDate, formatMoney } from "../utils";
+import { formatDate, formatMoney } from "app/utils";
 import Div from "@jumbo/shared/Div";
 
 const columns = [

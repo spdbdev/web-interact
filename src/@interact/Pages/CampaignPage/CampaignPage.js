@@ -31,7 +31,7 @@ import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaig
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { auth, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
-import { sortBids } from "@interact/Components/utils";
+import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory } from "../../../firebase";
 import React from "react";
