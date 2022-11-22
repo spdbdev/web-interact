@@ -7,6 +7,7 @@ import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
 import { validateEmail } from "@jumbo/utils";
 import { Navigate } from "react-router-dom";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAztlkNsd8Lu86qj5D7Y9TbI6Wvt_hVjJw",
@@ -22,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
-
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async () => {
@@ -152,6 +153,7 @@ const confirmPasswordChange = async (code,password) => {
 export {
   auth,
   db,
+  storage,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,

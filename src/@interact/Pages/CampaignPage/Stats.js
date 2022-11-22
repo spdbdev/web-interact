@@ -6,7 +6,7 @@ import{Box,Divider,LinearProgress,Stack,Tooltip,Typography}from"@mui/material";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import InfoTooltip from "@interact/Components/InfoTooltip";
 import Span from "@jumbo/shared/Span";
-import { formatMoney } from "@interact/Components/utils";
+import { formatMoney } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { followUser,fetchUserByName } from "../../../firebase";
 import { db } from "@jumbo/services/auth/firebase/firebase";
