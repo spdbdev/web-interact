@@ -59,7 +59,7 @@ const loginWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country) => {
+const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country,schedule,timeZone) => {
   try {
     const formData = new FormData();
     formData.append("email", email);
@@ -77,7 +77,9 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
       email,
       customerId:'',
       country,
-      photoURL:imageurl
+      photoURL:imageurl,
+      schedule,
+      timezone:timeZone
     });
 
     postRequest("/user/register", formData).then(async (resp) => {

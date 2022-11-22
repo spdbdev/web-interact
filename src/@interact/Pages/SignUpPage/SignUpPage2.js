@@ -1,9 +1,11 @@
-import { TextField, Button,FormControl, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel, Typography } from "@mui/material";
+import { TextField, Button,FormControl, FormControlLabel, Checkbox,Alert, Icon, MenuItem,Select,InputLabel, Typography,Container, Tabs,styled,Tab } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useEffect, useState, useRef } from "react";
 import Swal from 'sweetalert2';
+import ScheduleSelector from 'react-schedule-selector'
+import TimezoneSelect from 'react-timezone-select'
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -33,6 +35,22 @@ import { getUserCountryName } from "@interact/Components/utils";
 
 import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
+import { TabContext, TabPanel } from "@mui/lab";
+
+const StyledTab = styled((props) => <Tab {...props} />)(
+  ({ theme }) => ({
+    // this uses the theme we passed to the ThemeProvider in App.js
+    textTransform: "none",
+    fontWeight: 400,
+    fontSize: "16.21px",
+    color: "#FFFFFF",
+    "&.Mui-selected": {
+      color: "#FFFFFF",
+      //color: theme.palette.text.primary,
+    },
+    cursor: "default",
+  })
+);
 
 // newer SignUpPage with birthday.
 function SignUpPage2() {
@@ -50,6 +68,10 @@ function SignUpPage2() {
   const [user, loading, error] = useAuthState(auth);
   const [imageUrl,setImageUrl] = useState(null);
   const [image,setImage] = useState(null);
+  const [selectedTabIndex,setSelectedTabIndex] = useState(0);
+  const [stepTwoVisited,setStepTwoVisited] = useState(false);
+  const [schedule, setSchedule] = useState([])
+  const [timeZone, setTimeZone] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -64,7 +86,9 @@ function SignUpPage2() {
     fileRef.current.click();
   }
 
-
+  const handleChange = (newSchedule) => {
+    setSchedule(newSchedule)
+  }
 
   const emailValid = (_email = email) => {
     return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
@@ -111,7 +135,7 @@ function SignUpPage2() {
     
   }
 
-  const register = () => {
+  const nextStep = () => {
     if (!validate() || birthdayError) return;
     if (!isPassValid) {
       Swal.fire(
@@ -121,7 +145,20 @@ function SignUpPage2() {
         );
       return;
     }
-    if(registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country)){
+    setSelectedTabIndex(selectedTabIndex+1);
+    setStepTwoVisited(true);
+  }
+
+  const register = () => {
+    if (!timeZone) {
+      Swal.fire(
+        "Required!",
+        "TimeZone is required",
+        "error"
+        );
+      return;
+    }
+    if(registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country,schedule,timeZone)){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);
@@ -216,7 +253,33 @@ function SignUpPage2() {
   return (
     <div className="SignUpPage">
       {/* <div className='CredentialsBox'> */}
-
+      <div>
+      <TabContext value={selectedTabIndex}>
+      <Container
+      disableGutters
+      sx={{
+        maxWidth: 1000,
+        mt: 1,
+        mb: 2,
+        width: '500px'
+      }}
+    >
+      <Tabs
+        value={selectedTabIndex}
+        onChange={(_,index)=> {
+          setSelectedTabIndex(index)
+        }}
+        centered={true}
+        textColor="primary"
+        variant="fullWidth"
+        indicatorColor="primary"
+        aria-label="icon label tabs example"
+      >
+        <StyledTab label="Details" />
+        <StyledTab label="Schedule" disabled={!stepTwoVisited}/>
+      </Tabs>
+      </Container>
+      <TabPanel value={0} index={0} style={{padding:'0'}}>
       <div className="CredentialBox">
         <img
           src={process.env.PUBLIC_URL + "/logo.png"}
@@ -383,13 +446,66 @@ function SignUpPage2() {
         </div>
         <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
           <InteractFlashyButton
-          onClick={register}>Create account</InteractFlashyButton>
+          onClick={nextStep}>Next</InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20, paddingBottom: 16.21}}>
           Already have an account? <Link to="/a/signin">Log in</Link>
         </div>
       </div>
+      </TabPanel>
+      <TabPanel value={1} index={1} style={{padding:'0'}}>
+        <div className="CredentialBox">
+        <div style={{textDecorationLine: 'underline'}}>Your availability</div>
+                    Choose your general availability from Monday to Sunday. You will be matched with the creator's weekly-released schedule according to the availability you set here.
+                    <br /><br />
+                    <ScheduleSelector
+                        selection={schedule}
+                        numDays={7}
+                        minTime={0}
+                        maxTime={24}
+                        rowGap='1px'
+                        columnGap='1px'
+                        hourlyChunks={4}
+                        onChange={handleChange} 
+                        unselectedColor='#ddd' 
+                        renderDateLabel={
+                            (date)=>{return <div>{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()]}</div>}
+                        }
+                        renderTimeLabel={
+                            (time)=>{
+                                const hour = time.getHours();
+                                const timestring = (hour==0 ? '12' : ((hour-1)%12+1).toString()).concat(hour<11 ? 'am' : 'pm');
+                                return (<div>{time.getMinutes()==0 ? timestring: null}</div>
+                            )}
+                        }
+                        startDate = {new Date('15 August 2022')}
+                        // renderDateCell={(datetime, selected, refSetter)=>{
+                        //     return (
+                        //         <div ref={refSetter} style={selected ? {height:10, backgroundColor:'#836fee'}:{height:10, backgroundColor: '#ccc'}}>
+
+                        //         </div>
+                        //     )
+                        // }}
+                        selectedColor='#782fee'
+                    />
+
+            <div style={{width:'100%',marginTop:'2rem'}}>
+              Time zone:
+              <TimezoneSelect 
+                  value={timeZone}
+                  onChange={(e)=>setTimeZone(e.value)}
+              />
+            </div>
+
+          <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
+            <InteractFlashyButton
+            onClick={register}>Create account</InteractFlashyButton>
+          </div>
+        </div>
+      </TabPanel>
+      </TabContext>
       {/* </div> */}
+      </div>
     </div>
   );
 }
