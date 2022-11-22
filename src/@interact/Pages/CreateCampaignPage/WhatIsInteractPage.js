@@ -30,7 +30,7 @@ const WhatIsInteractFAQs = [
         <br></br>💜 Fans try to be selected via the giveaway (with a free entry option) or the auction (be a top bidder on the leaderboard; pricier but a guaranteed interaction). Fans pay immediately for the giveaway; meanwhile in the auction, fans only pay if they win (charged at the end of the campaign).
         <br></br>💜 When new fans try to enter the auction/giveaway, they have to create an account & input their general availability from Mon-Sun (editable on profile).
         <br></br>💜 After the campaign ends, selected fans (winners) will have interactions assigned to them over the interaction window duration, 10 weeks by default (with auction winners having priority).
-        <br></br>💜 The content creator selects when they are available week-by-week (creators have to lock in their availability by Friday midnight (EST) for the next week, and can sync with their personal Google, Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.
+        <br></br>💜 The content creator selects when they are available week-by-week (creators have to lock in their availability by Friday midnight for the next week, and can sync with their personal Google, Outlook or iCloud calendars); from this, with our matching algorithm, interactions are scheduled.
 
       </span>
     ),
@@ -205,7 +205,7 @@ export default function WhatIsInteractPage() {
   const { user } = useCurrentUser();
 
   return (
-    <Slide direction="up" timeout={1000} in={true} mountOnEnter unmountOnExit>
+    <Slide direction="up" timeout={1369} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",

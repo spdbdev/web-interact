@@ -162,7 +162,7 @@ export default function CampaignCreationSummaryPage() {
     return (
       <Slide
         direction="left"
-        timeout={1000}
+        timeout={1369}
         in={true}
         mountOnEnter
         unmountOnExit

@@ -1158,7 +1158,7 @@ useEffect(() => {
                   <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;The content creator<span> selects when they are available
                       week-by-week </span>(creators have to lock in their availability by
-                    Friday midnight (EST) for the next week, and can<span> sync with
+                    Friday midnight for the next week, and can<span> sync with
                       their personal Google, Outlook or iCloud calendars</span>); from this,
                     <span>with our matching algorithm, interactions are scheduled.</span>
                   </Typography>

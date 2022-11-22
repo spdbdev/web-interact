@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from '@mui/material';
 
 const PrivacyPolicyPage = () => {
   return (
-    <Stack maxWidth='1440px' alignSelf='center' width={"100%"}>
+    <Stack maxWidth='821px' alignSelf='center' width={"100%"}>
       <Stack flexDirection='column' width={"100%"} sx={{ fontSize: '14px' }}>
         <Typography
           variant='h1'

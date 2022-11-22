@@ -443,7 +443,7 @@ function UserProfilePage() {
               >
                 <StyledTab label="Campaigns" {...a11yProps(0)} />
                 {user && (
-                  <StyledTab label="Fan availability" {...a11yProps(1)} />
+                  <StyledTab label="Availability" {...a11yProps(1)} />
                 )}
                 {user && (
                   <StyledTab label="Creator availability" {...a11yProps(2)} />

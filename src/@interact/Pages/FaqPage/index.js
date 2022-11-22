@@ -21,7 +21,7 @@ const FaqPage = () => {
             to them over the interaction window duration, 10 weeks by default (with auction
             winners having priority)</p>
           <p>💜 The content creator selects when they are available week-by-week (creators have
-            to lock in their availability by Friday midnight (EST) for the next week, and can sync
+            to lock in their availability by Friday midnight (in your timezone) for the next week, and can sync
             with their personal Google, Outlook or iCloud calendars); from this, with our matching
             algorithm, interactions are scheduled.</p>
         </>
@@ -148,8 +148,8 @@ const FaqPage = () => {
           <p>💜 The first week after the campaign (starting Monday) is when interactions will start to be booked.</p>
           <p>💜 When the campaign ends, creators are shown the availability of all of their fans continuously
             (shown X number of fans that are available for each time slot), and release a specific schedule week-by-week
-            on Friday midnight (11:59 pm EST) at the latest (except for the first week where creators have until Sunday
-            midnight (11:59 pm EST) to lock in a schedule for the next week starting Monday), with the ability to choose
+            on Friday midnight (11:59 pm, in your timezone) at the latest (except for the first week where creators have until Sunday
+            midnight (11:59 pm) to lock in a schedule for the next week starting Monday), with the ability to choose
             how many interactions to do that week. We then allocate the best fitting fans as soon as the creator
             locks in their schedule for each week.</p>
           <p>💜 Fans & creators can reschedule. Rescheduled fans will be added back into the matching
@@ -162,7 +162,7 @@ const FaqPage = () => {
     },
   ]
   return (
-    <Stack maxWidth='1440px' alignSelf='center'>
+    <Stack maxWidth='821px' alignSelf='center'>
       <Stack flexDirection='column' sx={{ p: 4 }}>
         <Typography
           variant='h1'
