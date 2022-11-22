@@ -432,19 +432,7 @@ function SignUpPage2() {
         />
 
         {/* <FormControlLabel control={<Checkbox />} label={"I agree to all " + <a href='https://eforms.com/release/media/'>terms and services</a>} /> */}
-        <div
-          style={{
-            display: "flex",
-            justifContent: "center",
-            alignItems: "center",
-            marginTop: 7.69
-          }}
-        >
-          <Checkbox />
-          <span>
-            I agree to the <Link to="/a/termsandconditions">terms & conditions</Link> and the <Link to="/a/privacypolicy">privacy policy</Link>
-          </span>
-        </div>
+        
         <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
           <InteractFlashyButton
           onClick={nextStep}>Next 🡺</InteractFlashyButton>
@@ -503,7 +491,19 @@ function SignUpPage2() {
                   onChange={(e)=>setTimeZone(e.value)}
               />
             </div>
-
+        <div
+          style={{
+            display: "flex",
+            justifContent: "center",
+            alignItems: "center",
+            marginTop: 17.69
+          }}
+        >
+          <Checkbox />
+          <span>
+            I agree to the <Link to="/a/terms-conditions">terms & conditions</Link> and the <Link to="/a/privacy-policy">privacy policy</Link>
+          </span>
+        </div>
           <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69, paddingBottom:17.69}}>
             <InteractFlashyButton
             onClick={register}>Create account</InteractFlashyButton>
