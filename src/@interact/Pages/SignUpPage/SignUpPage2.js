@@ -148,6 +148,9 @@ function SignUpPage2() {
     setSelectedTabIndex(selectedTabIndex+1);
     setStepTwoVisited(true);
   }
+  const prevStep = () => {
+    setSelectedTabIndex(selectedTabIndex-1);
+  }
 
   const register = () => {
     if (!timeZone) {
@@ -275,8 +278,6 @@ function SignUpPage2() {
         indicatorColor="primary"
         aria-label="icon label tabs example"
       >
-        <StyledTab label="Details" />
-        <StyledTab label="Schedule" disabled={!stepTwoVisited}/>
       </Tabs>
       </Container>
       <TabPanel value={0} index={0} style={{padding:'0'}}>
@@ -323,7 +324,7 @@ function SignUpPage2() {
         <div className="TextInputWrapper">
           <TextField
             id="outlined-basic"
-            label="Email address"
+            label="Email"
             variant="outlined"
             value={email}
             onChange={(e) => {
@@ -446,7 +447,7 @@ function SignUpPage2() {
         </div>
         <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
           <InteractFlashyButton
-          onClick={nextStep}>Next</InteractFlashyButton>
+          onClick={nextStep}>Next 🡺</InteractFlashyButton>
         </div>
         <div style={{ paddingTop: 20, paddingBottom: 16.21}}>
           Already have an account? <Link to="/a/signin">Log in</Link>
@@ -455,9 +456,15 @@ function SignUpPage2() {
       </TabPanel>
       <TabPanel value={1} index={1} style={{padding:'0'}}>
         <div className="CredentialBox">
-        <div style={{textDecorationLine: 'underline'}}>Your availability</div>
-                    Choose your general availability from Monday to Sunday. You will be matched with the creator's weekly-released schedule according to the availability you set here.
-                    <br /><br />
+          <div className="ButtonsWrapper" style={{margin:0, paddingTop:0, paddingBottom: 16.69}}>
+            <InteractFlashyButton
+            onClick={prevStep}>🡸 Go back</InteractFlashyButton>
+          </div>
+                    <Typography fontSize={23.21} align="center" width={332.69} fontWeight={'500'}>Choose your{" "}</Typography>
+                    <Typography color='#782fee' align="center" fontSize={23.21}  width={332.69} fontWeight={'500'}>general availability</Typography>
+                    <Typography fontSize={23.21} align="center"  width={332.69} fontWeight={'500'} mb={1.2121}>{" "}from Monday—Sunday.</Typography>
+                      <Typography align="center" width={332.69} fontWeight={'400'} mb={3.69}>After you win an interaction, 
+                      you will be matched with that creator's weekly released schedule according to the availability you set here (editable on your profile).</Typography>
                     <ScheduleSelector
                         selection={schedule}
                         numDays={7}
@@ -497,7 +504,7 @@ function SignUpPage2() {
               />
             </div>
 
-          <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
+          <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69, paddingBottom:17.69}}>
             <InteractFlashyButton
             onClick={register}>Create account</InteractFlashyButton>
           </div>

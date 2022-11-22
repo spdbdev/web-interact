@@ -46,7 +46,7 @@ function SignInPage() {
         or
         <br />
         <div className='TextInputWrapper'>
-          <TextField id="outlined-basic" label="Username or email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <TextField id="outlined-basic" label="Username or email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className='TextInputWrapper'>
           <TextField onKeyDown={(e)=>{
