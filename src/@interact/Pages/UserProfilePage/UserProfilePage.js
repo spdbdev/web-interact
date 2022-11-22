@@ -284,7 +284,7 @@ function UserProfilePage() {
 
 
     return (
-      <Slide direction="down" timeout={1621} in={true} mountOnEnter unmountOnExit>
+      <Slide direction="down" timeout={1969} in={true} mountOnEnter unmountOnExit>
       <div>
         <FollowerList open={modalOpened} setOpen={setModalOpened} followers={targetUser?.followers}/>
 		<CropProfilePicture open={cropModalOpen} setOpen={setCropModalOpen} imgageObj={croppingImg} updatePhotoURL={updatePhotoURL} setImage={setImage} />
