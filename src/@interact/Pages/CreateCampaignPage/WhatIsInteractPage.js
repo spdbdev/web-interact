@@ -205,7 +205,7 @@ export default function WhatIsInteractPage() {
   const { user } = useCurrentUser();
 
   return (
-    <Slide direction="up" timeout={1000} in={true} mountOnEnter unmountOnExit>
+    <Slide direction="up" timeout={1369} in={true} mountOnEnter unmountOnExit>
       <Box
         sx={{
           display: "flex",
