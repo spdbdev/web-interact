@@ -190,7 +190,7 @@ export default function Giveaway({
 		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
 		{
 			setDoc(
-				doc(db, "contributionAndGiveawayLossHistory", campaignData.person.id, 'users', user.uid), 
+				doc(db, "users", campaignData.person.id, 'Contributions', user.uid), 
 				{contributionTotal: increment(data.price)}, 
 				{ merge: true }
 			);

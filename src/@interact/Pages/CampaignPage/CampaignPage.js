@@ -168,15 +168,7 @@ function CampaignPage(userData) {
   };
 
   const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(
-      doc(
-        db,
-        "contributionAndGiveawayLossHistory",
-        creator_id,
-        "users",
-        user_id
-      )
-    );
+    const campaignHistoryUsers = await getDoc(doc(db, "users", creator_id, "GiveawayLossHistory", user_id));
     if (doc.exists) {
       const { numOfLoss } = campaignHistoryUsers.data();
       return parseInt(numOfLoss);
@@ -186,10 +178,7 @@ function CampaignPage(userData) {
 
   const getChanceMultiplier = async (_campaignData) => {
     if (!user?.uid) return;
-    let lostHistory = await getUserLostHistory(
-      _campaignData.person.id,
-      user.uid
-    );
+    let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;

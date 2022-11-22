@@ -143,9 +143,9 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 			  let doc = document.data();
 			  doc.id = document.id;
 			  const winnersdata = document.data();
-			  db.collection("contributionAndGiveawayLossHistory")
-				.doc(campaign.creatorName)
-				.collection("users")
+			  db.collection("users")
+				.doc(campaign.person.id)
+				.collection("Contributions")
 				.add({
 				  contributionTotal: winnersdata.price,
 				});
@@ -262,7 +262,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 				doc.price = Number(doc.price);
 				
 				let previousLoss = 0;
-				let docSnap = await db.collection("contributionAndGiveawayLossHistory").doc(creator_id).collection('users').doc(document.id).get();
+				let docSnap = await db.collection("users").doc(creator_id).collection('GiveawayLossHistory').doc(document.id).get();
 				if (docSnap.data()) {
 					let previousLossObj = docSnap.data();
 					previousLoss = Number(previousLossObj.numOfLoss);
@@ -320,7 +320,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 		if(result === 1) var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayWinners");
 		else var add_ref = db.collection("campaigns").doc(campaign_id).collection("GiveawayLosers");
 
-		var loss_ref = db.collection("contributionAndGiveawayLossHistory").doc(creator_id).collection('users');
+		var loss_ref = db.collection("users").doc(creator_id).collection('GiveawayLossHistory');
 		
 		data.forEach(document => {
 
