@@ -345,10 +345,9 @@ const CampaignCreatorFaqPage = () => {
       answer: (
         <>
           <p>
-            The next campaign has to end after all of your currently scheduled interactions would be completed. Ex: 50 interactions with
-            fans over 2 months from March 1st to April 28th, then your new campaign can start on April 19th and end on May 1st if you want
-            a 10 day campaign. It can start even earlier if you would want a 15 or 20 day campaign; it’s just that the end date has to be
-            after all of the interactions are completed.
+            You can start a draft for your next campaign at any time.
+            But you cannot put a scheduled start time sooner than the end time of any previously submitted campaigns' 
+            interaction duration window end time (you have to finish up the interactions from previous campaigns first).
           </p>
         </>
       ),
