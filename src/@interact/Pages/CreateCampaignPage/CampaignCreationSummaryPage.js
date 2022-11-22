@@ -24,6 +24,7 @@ import FAQAccordian from "./FAQAccordian";
 import { httpsCallable } from "firebase/functions";
 import { functions, publishCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import { campaignServices } from "app/services/campaign";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -91,6 +92,18 @@ export default function CampaignCreationSummaryPage() {
   ];
 
   async function submitCampaign() {
+    let overlappingCampaignDate = await campaignServices.hasOverlappingCampaign({
+      userId: user.id,
+      newCampaignStartDate: campaignData.startDateTime
+    });
+
+    if (overlappingCampaignDate ) {
+      Swal.fire({
+        icon: "error",
+        text: "You already have a campaign whose interactions end on " + overlappingCampaignDate + ". Please choose a different start date.",
+      });
+      return;
+    }
     const docRef = doc(db, "campaigns", campaignId); //this needs to be passed in programatically
     const Toast = Swal.mixin({
       toast: true,

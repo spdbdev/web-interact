@@ -6,7 +6,9 @@ import { USER_ACTIONS } from "../actions/user";
 
 
 
-const INIT_STATE = {};
+const INIT_STATE = {
+    loggedIn: false,
+};
 
 const reducerFunc = (state = INIT_STATE, action ) => {
     switch (action.type) {

@@ -416,7 +416,6 @@ function CreateCampaignPage() {
       label: "Promotion",
     }
   };
-  console.log([data?.maxCompletedTabIndex, campaignData?.maxCompletedTabIndex])
   Object.keys(TABS_COMPONENTS).map(Number).map(tabIndex => {
     if ((data?.maxCompletedTabIndex ?? campaignData?.maxCompletedTabIndex) >= tabIndex){
       TABS_COMPONENTS[tabIndex].navigated = true;
