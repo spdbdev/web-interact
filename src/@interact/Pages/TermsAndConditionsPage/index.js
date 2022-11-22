@@ -410,6 +410,7 @@ const TermsAndConditionsPage = () => {
           related to the use of or inability to use the Service, third-party software and/or third-party hardware used with the Service,
           or otherwise in connection with any provision of.
         </Typography>
+        <br></br>
       </Stack>
     </Stack>
   )

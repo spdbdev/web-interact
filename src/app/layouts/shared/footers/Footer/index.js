@@ -55,7 +55,7 @@ const Footer = () => {
           }}
         >
           <Link href="/a/campaign-creator-faq" underline="hover">Campaign creator FAQ</Link>
-          <Link href="/a/terms-conditions" underline="hover">Terms & conditions</Link>
+          <Link href="/a/terms-and-conditions" underline="hover">Terms & conditions</Link>
           <Typography variant={"body1"} sx={{ color: "text.disabled", mt: 1, fontSize: '12px' }}>
             Copyright Interact © 2022
           </Typography>

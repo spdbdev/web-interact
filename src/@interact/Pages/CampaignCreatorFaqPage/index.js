@@ -385,6 +385,7 @@ const CampaignCreatorFaqPage = () => {
             />
           ))}
         </Box>
+        <br></br>
       </Stack>
     </Stack>
   )

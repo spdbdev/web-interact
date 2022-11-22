@@ -191,6 +191,7 @@ const FaqPage = () => {
             />
           ))}
         </Box>
+        <br></br>
       </Stack>
     </Stack>
   )

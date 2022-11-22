@@ -501,7 +501,7 @@ function SignUpPage2() {
         >
           <Checkbox />
           <span>
-            I agree to the <Link to="/a/terms-conditions">terms & conditions</Link> and the <Link to="/a/privacy-policy">privacy policy</Link>
+            I agree to the <Link to="/a/terms-and-conditions">terms & conditions</Link> and the <Link to="/a/privacy-policy">privacy policy</Link>
           </span>
         </div>
           <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69, paddingBottom:17.69}}>

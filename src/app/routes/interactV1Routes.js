@@ -51,7 +51,7 @@ const interactV1Routes = [
     element: <Page component ={SignUpPage2} layout="vertical-default" />,
   },
   {
-    path: "/a/terms-conditions",
+    path: "/a/terms-and-conditions",
     element: <Page component ={TermsAndConditionsPage} layout="vertical-default" />,
   },
   {

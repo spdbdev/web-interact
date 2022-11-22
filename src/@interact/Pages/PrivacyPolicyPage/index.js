@@ -272,6 +272,7 @@ const PrivacyPolicyPage = () => {
             </li>
           </ul>
         </Box>
+        <br></br>
       </Stack>
     </Stack>
   )
