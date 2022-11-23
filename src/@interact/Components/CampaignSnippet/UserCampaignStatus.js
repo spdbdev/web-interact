@@ -12,6 +12,8 @@ export default function UserCampaignStatus({
   isCampaignFinished,
   hasUserWonGiveaway,
 }) {
+  function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
+  let ranking=userAuctionPosition
   return (
     <Stack direction="row" alignItems="center" spacing={1}>
       {showUserAvatar ? (
@@ -36,8 +38,8 @@ export default function UserCampaignStatus({
             {userAuctionPosition > auctionLeaderboardSpots ? (
               <Typography variant="caption">
                 {isCampaignFinished
-                  ? "Sorry, you didn't win an interaction."
-                  : "You're no longer on the leaderboard."}
+                  ? "Sorry, you didn't win an interaction"
+                  : "You're no longer in the top "+ auctionLeaderboardSpots+" bids"}
               </Typography>
             ) : (
               <Typography
@@ -47,9 +49,9 @@ export default function UserCampaignStatus({
                 }}
               >
                 {isCampaignFinished && statusType === 'bid'
-                  ? `You finished in ${userAuctionPosition}th place, you've received an
+                  ? `You finished in ${userAuctionPosition}${nth({userAuctionPosition})} place, you've received an
                 interaction!`
-                  : `You're in ${userAuctionPosition}th place, you'll receive an
+                  : `You're in ${userAuctionPosition}${nth(ranking)} place, you'll receive an
                 interaction!`}
               </Typography>
             )}
@@ -81,8 +83,8 @@ export default function UserCampaignStatus({
             >
               {isCampaignFinished && statusType === 'giveaway'
                 ? hasUserWonGiveaway
-                  ? "You've won the giveaway, so you get an interaction!"
-                  : "Sorry, looks like you didn't win the giveaway."
+                  ? "You've won an interaction in the giveaway!"
+                  : "Regrettably, you did not win. Your next giveaway entry will DOUBLE* the chance of winning!"
                 : `You've entered the giveaway with a ${userGiveawayWinChance}% chance
               of winning!`}
             </Typography>

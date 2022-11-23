@@ -96,7 +96,7 @@ export default function Giveaway({
 			setName(data.name);
 			isClientEmail(data.email);
 
-			setUserCostomerId(data.customerId);
+			setuserCustomerID(data.customerId);
 			data.id = colledoc.docs[0].id;
 			setCurrentUser(data);
 		} catch (err) {
@@ -319,7 +319,7 @@ export default function Giveaway({
 				toggleModal();
 				}); */
 
-				getRequest(`/customer/method/${userCostomerId}`)
+				getRequest(`/customer/method/${userCustomerID}`)
 				.then((resp) => {
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
@@ -420,7 +420,7 @@ export default function Giveaway({
 		state: {},
 	});
 	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [userCostomerId, setUserCostomerId] = useState(null);
+	const [userCustomerID, setuserCustomerID] = useState(null);
 
 	function handleChangeAddressLine(e) {
 		const { value } = e.target;
@@ -491,8 +491,8 @@ export default function Giveaway({
 			})
 			.then((resp) => {
 				const pmid = resp.paymentMethod.id;
-				if (pmid && userCostomerId) {
-					getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+				if (pmid && userCustomerID) {
+					getRequest(`/method/attach/${userCustomerID}/${pmid}`)
 					.then((resp) => {
 						setOpen(false);
 						if (resp.data.added) {
@@ -539,7 +539,7 @@ export default function Giveaway({
 			undertitle={``}
 			onchangeclick={handleOpen}
 			price={vipEntryPrice}
-			userCostomerId={userCostomerId}
+			userCustomerID={userCustomerID}
 			hovertext={hoverText}
 			hovereffect={true}
 			buyvip={true}

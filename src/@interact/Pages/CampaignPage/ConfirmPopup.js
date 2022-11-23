@@ -23,7 +23,7 @@ export default function ConfirmPopup({
 	onchangeclick,
 	settheOpenPopup,
 	price,
-	userCostomerId,
+	userCustomerID,
 	hovereffect,
 	hovertext,
 	bidAction,
@@ -75,11 +75,11 @@ export default function ConfirmPopup({
 		}
 	}
 	const confirmFuncion = () => {
-		// console.log(paymentId, userCostomerId);
+		// console.log(paymentId, userCustomerID);
 		const formData = new FormData();
 		formData.append("price", price);
 		formData.append("paymentmethodid", paymentId);
-		formData.append("customerId", userCostomerId);
+		formData.append("customerId", userCustomerID);
 		let url = "";
 		if (!price) {
 			paymentResponse(price);
