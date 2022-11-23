@@ -118,7 +118,7 @@ function Settings() {
   });
 
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCostomerId, setUserCostomerId] = useState(null);
+  const [userCustomerID, setuserCustomerID] = useState(null);
   const [defaultPaymentMethod, setDefaultPaymentMethod] = useState([]);
 
   const [useForReload, setuseForReload] = useState(1);
@@ -260,7 +260,7 @@ function Settings() {
 
       const data = colledoc.docs[0].data();
       setName(data.name);
-      setUserCostomerId(data.customerId);
+      setuserCustomerID(data.customerId);
       setUserId(colledoc.docs[0].id);
       console.log(colledoc.docs[0].id);
       setEmail(data.email);
@@ -368,8 +368,8 @@ function Settings() {
         })
         .then((resp) => {
           const pmid = resp.paymentMethod.id;
-          if (pmid && userCostomerId) {
-            getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+          if (pmid && userCustomerID) {
+            getRequest(`/method/attach/${userCustomerID}/${pmid}`)
               .then((resp) => {
                 setOpen(false);
                 if (resp.data.added) {
@@ -522,7 +522,7 @@ function Settings() {
                 </div>
                 <div className="btnContainer">
                   <InteractFlashyButton
-                    onClick={() => editpaymentmenthod(userCostomerId)}
+                    onClick={() => editpaymentmenthod(userCustomerID)}
                   >
                     Submit
                   </InteractFlashyButton>
