@@ -74,7 +74,7 @@ export default function Auction({
   const [desiredRanking, setDesiredRanking] = useState(1);
   const [manualRanking, setManualRanking] = useState(1);
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, error] = useAuthState(auth);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
   const stripe = useStripe();
@@ -85,6 +85,7 @@ export default function Auction({
   const [selectPopUp, setselectPopUp] = useState(1);
   const paymentRef = useRef();
   const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (Object.entries(campaignData).length > 0 && bids.length > 0) {
@@ -203,44 +204,69 @@ export default function Auction({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      stripe
-        .createPaymentMethod({
-          type: "card",
-          card: elements.getElement(CardNumberElement),
-        })
-        .then((resp) => {
-          console.log(resp.paymentMethod);
-          const pmid = resp.paymentMethod.id;
-          if (pmid && userCostomerId) {
-            getRequest(`/method/attach/${userCostomerId}/${pmid}`)
-              .then((resp) => {
-                setOpen(false);
-                if (resp.data.added) {
-                  setPaymentMethods(resp.data.paymentmethod.data);
-                  setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
-                  if (selectPopUp === 1) {
-                    setOpenPopup(true);
-                  } else {
-                    setOpenPopup1(true);
-                  }
-                } else {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "An error occured",
-                  });
-                }
-              })
-              .catch((err) => {
-                /*Handle Error */
+    setLoading(true);
+    stripe
+    .createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardNumberElement),
+    })
+    .then((resp) => {
+      console.log(resp.paymentMethod);
+      const pmid = resp?.paymentMethod?.id;
+      if (pmid && userCostomerId) {
+        getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+          .then((resp) => {
+            setOpen(false);
+            if (resp.data.added) {
+              setPaymentMethods(resp.data.paymentmethod.data);
+              setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+              setLoading(false);
+              if (selectPopUp === 1) {
+                setOpenPopup(true);
+              } else {
+                setOpenPopup1(true);
+              }
+            } else {
+              setLoading(false);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "An error occured",
               });
-          }
-          console.log(resp);
+            }
+          })
+          .catch((err) => {
+            /*Handle Error */
+            setOpen(false);
+            setLoading(false);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "An error occured",
+            });
+          });
+      }
+      else { //response error
+        setOpen(false);
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "An error occured",
         });
-    } catch (err) {
+      }
+      console.log(resp);
+    })
+    .catch((err) => {
       /* Handle Error*/
-    }
+      setOpen(false);
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "An error occured",
+      });
+    });
   };
 
   const fetchUserName = async () => {
@@ -420,7 +446,7 @@ export default function Auction({
                 control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
                 label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
               />
-              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Submit</InteractFlashyButton>
+              <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
             </div>
           </div>
         </Box>

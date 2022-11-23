@@ -51,8 +51,6 @@ export default function Giveaway({
 	winningChances,
 }) {
 	const stripe = useStripe();
-	const [stripeError, setStripeError] = useState("");
-	const [stripe_customer_id_new, set_Stripe_customer_id_new] = useState(false);
 
 	const elements = useElements();
 	const [priceToPay,setPriceToPay] = useState(0);
@@ -62,27 +60,20 @@ export default function Giveaway({
 	const [name, setName] = useState("");
 	const [loggedInUserData, setLoggedInUserData] = useState("");
 
-	const [isSubscribed, setIsSubscribed] = useState(false);
-	const [customerSet, isCustomerSet] = useState(false);
-	const [isActive, setIsActive] = useState(true);
-	const [cardBrand, setCardBrand] = useState(true);
-	const [last4, setLast4] = useState(true);
 	const [useSaveCard, setUseSaveCard] = useState(false);
 
 	const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const [open, setOpen] = useState(false);
-	const card = useRef();
 	const [openPopup, setOpenPopup] = useState(false);
 	const [selectedPaymentMethod,setSelectedPaymentMethod] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	const [paymentMethods, setPaymentMethods] = useState([]);
 	const [userCostomerId, setUserCostomerId] = useState(null);
 
 	const navigate = useNavigate();
 	const Swal = useSwalWrapper();
-	var logged_user_stripe_customer_id = false;
-
 
 	const fetchUserName = async () => {
 		try {
@@ -104,13 +95,9 @@ export default function Giveaway({
         if (user?.uid){
 			fetchUserName();
 			getDataGiveaway();
-        	get_stripe_customer_id();
 		}
 
-		if(logged_user_stripe_customer_id){
-			payment_method();
-		}
-    }, [user, logged_user_stripe_customer_id]);
+    }, [user]);
     localStorage.setItem('name', name);
 
     const getDataGiveaway = async () => {
@@ -121,54 +108,6 @@ export default function Giveaway({
             setLoggedInUserData(data);            
         }
     }
-
-    const get_stripe_customer_id = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user.uid);
-        const docSnap = await getDoc(docRef);
-        //console.log(docSnap);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            set_Stripe_customer_id_new(data);
-        } else {
-            logged_user_stripe_customer_id = false;
-        }  
-    }
-    logged_user_stripe_customer_id = stripe_customer_id_new.customer_id;
-    
-	const payment_method = () => {
-		if (logged_user_stripe_customer_id) {
-			postRequest("/get_payment_methods", {stripe_customer_id: logged_user_stripe_customer_id})
-			.then(function (response) {
-				var data = response.data;
-				if (data.status) {
-					isCustomerSet(true);
-					var brand = data.brand;
-					var last4 = data.last4;
-					setCardBrand(brand);
-					setLast4(last4);
-					setUseSaveCard(true);
-					//console.log("getting data" +logged_user_stripe_customer_id )
-				} else {
-					isCustomerSet(false);
-					//setUseSaveCard(false);
-					console.log("not getting data")
-				}
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-		} else {
-			isCustomerSet(false);
-		}
-	}
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setStripeError('');
-        }, 2000);
-
-        return () => clearInterval(interval);
-    }, [stripeError]);
 
     var vipEntryPrice = campaignData.giveawayVIPEntryCost ?? 0;
     var freeEntryPrice = "0";
@@ -194,39 +133,6 @@ export default function Giveaway({
 			setDoc(doc(db, "campaigns", campaignId), {campaignVIPtotal: increment(data.price)}, { merge: true });
 		}
     }
-
-    const saveDataInStripeCustomer = (stripe_customer_data) => {
-        // console.log(stripe_customer_data);
-        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data);
-        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data);
-    }
-
-
-    const handleClickToggle = event => {
-        // 👇️ toggle isActive state on click
-        event.preventDefault();
-        setUseSaveCard(current_a => !current_a);
-        setIsActive(current_b => !current_b);
-    };
-     
-
-    useEffect(() => {
-        //console.log('use save card value : ' + useSaveCard)
-
-    }, [useSaveCard])
-
-    const handleCheckBox = event => {
-        if (event.target.checked) {
-            //console.log('✅ Checkbox is checked');
-        } else {
-            //console.log('⛔️ Checkbox is NOT checked');
-        }
-        setIsSubscribed(current => !current);
-    };
-
-    const CARD_ELEMENT_OPTIONS = {
-        hidePostalCode: true,
-    };
 
     const collectFreeEntryPayment = async () => {
     	var data = {
@@ -398,39 +304,64 @@ export default function Giveaway({
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		try {
 		stripe.createPaymentMethod({
-				type: "card",
-				card: elements.getElement(CardNumberElement),
-			})
-			.then((resp) => {
-				const pmid = resp.paymentMethod.id;
-				if (pmid && userCostomerId) {
-					getRequest(`/method/attach/${userCostomerId}/${pmid}`)
-					.then((resp) => {
-						setOpen(false);
-						if (resp.data.added) {
-							setPaymentMethods(resp.data.paymentmethod.data);
-							setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
-							setOpenPopup(true);
-						} else {
+			type: "card",
+			card: elements.getElement(CardNumberElement),
+		})
+		.then((resp) => {
+			const pmid = resp.paymentMethod.id;
+			if (pmid && userCostomerId) {
+				getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+				.then((resp) => {
+					setOpen(false);
+					if (resp.data.added) {
+						setPaymentMethods(resp.data.paymentmethod.data);
+						setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
+						setLoading(false);
+						setOpenPopup(true);
+					} else {
+						setLoading(false);
 						Swal.fire({
 							icon: "error",
 							title: "Oops...",
 							text: "An error occured",
 						});
-						}
-					})
-					.catch((err) => {
-						/*Handle Error */
+					}
+				})
+				.catch((err) => {
+					/*Handle Error */
+					setOpen(false);
+					setLoading(false);
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "An error occured",
 					});
-				}
-				console.log(resp);
-			});
-		} catch (err) {
+				});
+			}
+			else {
+				setOpen(false);
+				setLoading(false);
+				Swal.fire({
+					icon: "error",
+					title: "Oops...",
+					text: "An error occured",
+				});
+			}
+			console.log(resp);
+		})
+		.catch((err) => {
 		/* Handle Error*/
-		}
-	};
+			setOpen(false);
+			setLoading(false);
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "An error occured",
+			});
+		});
+	}
+
 	const resturnOption = () => {
 		const options = supported_transfer_countries.map((item, index) => {
 			return { value: item.code, label: item.country };
@@ -483,7 +414,7 @@ export default function Giveaway({
                 control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
                 label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
             />
-            <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Submit</InteractFlashyButton>
+            <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
           </div>
         </div>
       </Box>
@@ -551,7 +482,10 @@ export default function Giveaway({
 					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
 
-				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
+				{/* <InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
+					Buy VIP entry
+				</InteractButton> */}
+				<InteractButton onClick={buyGiveawayAlert}>
 					Buy VIP entry
 				</InteractButton>
 				</Box>

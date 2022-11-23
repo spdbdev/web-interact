@@ -1,13 +1,13 @@
 import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
-import { Box, FormControlLabel, Checkbox, IconButton } from "@mui/material";
+import { Box, FormControlLabel, Checkbox, IconButton, Tabs } from "@mui/material";
 import { Close } from '@mui/icons-material';
 import "./UserProfilePage.css";
 import FollowerList from "./FollowerList";
 import { Link } from "react-router-dom";
 import PasswordChecklist from "react-password-checklist";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-
+import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import {
   query,
   collection,
@@ -48,7 +48,7 @@ import { async } from "@firebase/util";
 
 import { postRequest, getRequest } from "../../../utils/api";
 import Select from "react-select";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import InteractButton from "../../Components/Button/InteractButton";
@@ -65,6 +65,33 @@ const style = {
   borderRadius: 15
 };
 
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box style={{ padding: '24px', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{children}</div>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
 function Settings() {
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
@@ -73,6 +100,7 @@ function Settings() {
   const Swal = useSwalWrapper();
   const [open, setOpen] = React.useState(false);
   const [openmodal, setOpenModal] = React.useState(false);
+  const [submitLoading, setSubmitLoading] = React.useState(false);
 
   const [MLoaded, setsetMLoaded] = useState(1);
 
@@ -89,7 +117,6 @@ function Settings() {
   const stripe = useStripe();
 
   const elements = useElements();
-  const card = useRef();
 
   const [cardInfo, setCardInfo] = useState({
     name: "",
@@ -126,6 +153,11 @@ function Settings() {
   const [defaultPaymentMethod, setDefaultPaymentMethod] = useState([]);
 
   const [useForReload, setuseForReload] = useState(1);
+  const [tab, setTab] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setTab(newValue);
+  };
 
   function handleChangeAddressLine(e) {
     const { value } = e.target;
@@ -217,8 +249,7 @@ function Settings() {
 
   const updateNewPassword = async () => {
     // Get the value of the old password
-    console.log("update password start");
-    console.log(oldpassword)
+
     const credential = EmailAuthProvider.credential(user?.email, oldpassword);
     reauthenticateWithCredential(auth.currentUser, credential)
     .then(() => {
@@ -231,6 +262,7 @@ function Settings() {
         );
       })
       .catch(err => {
+        console.log(err);
         Swal.fire(
           "Failed!",
           "Oops...",
@@ -239,6 +271,7 @@ function Settings() {
       })
     })
     .catch(err => {
+      console.log(err);
       Swal.fire(
         "Error!",
         "Old Password Not Matched",
@@ -248,19 +281,42 @@ function Settings() {
 
   };
 
-  const updateemailofloginusre = async () => {
-    const user = doc(db, "users", userId);
-    updateDoc(user, {
-      email: email,
-    })
-      .then((response) => {
-        alert("updated");
+  const updateemailofloginuser = async () => {
+    const duplicateMsg = "Firebase: Error (auth/email-already-in-use).";
+    const recentLoginRequiredMsg = "Firebase: Error (auth/requires-recent-login).";
+    
+    updateEmail(auth.currentUser, email)
+    .then((res) => {
+      const user = doc(db, "users", userId);
+      updateDoc(user, {
+        email: email,
       })
-      .catch((error) => {
-        console.log(error.message);
+      .then((response) => {
+        Swal.fire(
+          "Success!",
+          "Email Successfully Updated",
+          "success"
+        );
+      })
+      .catch(err => {
+        console.log(error);
+        Swal.fire(
+          "Error!",
+          "An Error Occurred.",
+          "error"
+        );
       });
+    })
+    .catch(err => {
+      console.log(err);
+      Swal.fire(
+        "Error!",
+        (err.message == duplicateMsg || err.message == recentLoginRequiredMsg) ? "That email is already in use." : "Oops, An Error Occurred.",
+        "error"
+      );
+    });
 
-    await updateEmail(auth.currentUser, email);
+    // await updateEmail(auth.currentUser, email);
   };
 
   const getDefaultpaymentmethod = async () => {
@@ -375,38 +431,69 @@ function Settings() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setSubmitLoading(true);
 
-    try {
-      stripe
-        .createPaymentMethod({
-          type: "card",
-          card: elements.getElement(CardNumberElement),
-        })
-        .then((resp) => {
-          const pmid = resp.paymentMethod.id;
-          if (pmid && userCostomerId) {
-            getRequest(`/method/attach/${userCostomerId}/${pmid}`)
-              .then((resp) => {
-                setOpen(false);
-                if (resp.data.added) {
-                  setPaymentMethods(resp.data.paymentmethod.data);
-                } else {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "An error occured",
-                  });
-                }
-              })
-              .catch((err) => {
-                /*Handle Error */
+    stripe.createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardNumberElement),
+    })
+    .then((resp) => {
+      const pmid = resp?.paymentMethod?.id;
+      if (pmid && userCostomerId) {
+        getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+          .then((resp) => {
+            setOpen(false);
+            setSubmitLoading(false);
+            if (resp.data.added) {
+              setPaymentMethods(resp.data.paymentmethod.data);
+              Swal.fire(
+                "Success!",
+                "Added New Payment Method Successfully.",
+                "success"
+              );
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "An error occured",
               });
-          }
-          console.log(resp);
+            }
+          })
+          .catch((err) => {
+            setOpen(false);
+            setSubmitLoading(false);
+            console.log(err);
+            /*Handle Error */
+              Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "An error occured",
+            });
+          });
+      }
+      else {
+        setOpen(false);
+        setSubmitLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "An error occured",
         });
-    } catch (err) {
+      }
+      console.log(resp);
+    })
+    .catch((err) => {
+      console.log(err);
+      setOpen(false);
+      setSubmitLoading(false);
       /* Handle Error*/
-    }
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "An error occured",
+      });
+    });
+    
     setsetMLoaded(MLoaded++);
   };
 
@@ -437,25 +524,6 @@ function Settings() {
     fetchUserName();
   }, [user, loading, useForReload]);
 
-  const getall = async () => {
-    const q = query(collection(db, "stripeCustomers"));
-    const doc = await getDocs(q);
-    const paymearray = [];
-    if (doc.docs.length > 0) {
-      for (let index = 0; index < doc.docs.length; index++) {
-        const element = doc.docs[index].data();
-        if (element.uid === user?.uid) {
-          paymearray.push(element.card);
-        }
-        console.log(element, doc.docs.length);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getall();
-  }, []);
-
   useEffect(() => {
     getDefaultpaymentmethod();
   }, [paymentMethods]);
@@ -463,7 +531,7 @@ function Settings() {
   localStorage.setItem("name", name);
 
   return (
-    <div>
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <Modal
         open={openmodal}
         onClose={handleClose1}
@@ -578,7 +646,7 @@ function Settings() {
                 control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
                 label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
               />
-              <InteractFlashyButton onClick={handleSubmit} className="stripe-card_field_button">Submit</InteractFlashyButton>
+              <InteractFlashyButton onClick={handleSubmit} loading={submitLoading} className="stripe-card_field_button">Submit</InteractFlashyButton>
             </div>
           </div>
         </Box>
@@ -586,119 +654,60 @@ function Settings() {
 
       
       <br />
-
       <Link to="/campaign" style={{ textDecoration: "none" }}>
         <InteractFlashyButton>Manage Discord account</InteractFlashyButton>
       </Link>
       <br />
-      <br /><br /><br/>
-      <Card sx={{ maxWidth: 1000 }}>
-        <CardHeader
-          action={
-            <Button
-              onClick={handleOpen}
-              color="success"
-              style={{
-                margin: 10,
-                padding: "10px 20px",
-                // fontWeight:'bold',
-              }}
-              variant="outlined"
-            >
-              Add a new billing method
-            </Button>
-          }
-          open
-          title="Manage billing address"
-          subheader="Add, update, or remove your billing address"
-        />
-        <hr />
 
-        <CardHeader
-          title="Primary"
-          subheader="Your primary billing method is used for recurring payments"
-        />
-
-        <hr />
-        {}
-
-        {defaultPaymentMethod.length > 0 ? (
-          defaultPaymentMethod.map((item, index) => {
-            return (
-              <>
-                <CardContent
+      <Box style={{ width: '100%' }}>
+        <Box sx={{ borderTop: 0, borderBottom: 0, borderColor: "divider"}}>
+          <Tabs
+          value={tab}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+          textColor="primary"
+          size="50"
+          centered
+          >
+            <StyledTab label="Manage payment methods" {...a11yProps(0)} />
+            <StyledTab label="Change Password" {...a11yProps(1)} />
+            <StyledTab label="Change Email" {...a11yProps(2)}/>
+          </Tabs>
+        </Box>
+        <br />
+        <TabPanel style={{ width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center'}} value={tab} index={0}>
+          <Card style={{ maxWidth: '1000px', width: '100%'}}>
+            <CardHeader
+              action={
+                <Button
+                  onClick={handleOpen}
+                  color="success"
                   style={{
-                    borderBottom: "1px solid black",
-                    paddingBottom: "50px",
+                    margin: 10,
+                    padding: "10px 20px",
+                    textTransform: 'unset'
                   }}
+                  variant="outlined"
                 >
-                  <div style={{ display: "flex", clear: "both" }}>
-                    <img
-                      style={{ width: "50px", height: "50px" }}
-                      alt="profile-pic"
-                      src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
-                    />
-                    <div style={{ marginLeft: "10px" }}>
-                      <Typography gutterBottom variant="h3" style={{textTransform: 'capitalize'}} component="div">
-                        {item.card.brand} ending in {item.card.last4}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        You need a primary billing method when you have active
-                        contract or a balance due. To remove this one, set a new
-                        primary billing method first.
-                      </Typography>
-                    </div>
-                    <Typography
-                      gutterBottom
-                      variant="h3"
-                      component="div"
-                      style={{ marginLeft: "100px" }}
-                    >
-                      {item.card.country}
-                    </Typography>
-                  </div>
-                  <div
-                    style={{ display: "flex", float: "right", clear: "both" }}
-                  >
-                    <div
-                      style={{ color: "green", cursor: "pointer" }}
-                      onClick={() => handleOpen1(item.id)}
-                    >
-                      <span
-                        style={{
-                          padding: "0px 20px",
-                          borderRight: "1px solid lightgray",
-                          fontSize: "18px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Edit
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </>
-            );
-          })
-        ) : (
-          <>
-            <CardContent>
-              <Typography variant="h5" component="h2" color={"#D3D3D3"}>
-                No primary method
-              </Typography>
-            </CardContent>
-          </>
-        )}
+                  Add new payment method
+                </Button>
+              }
+              open
+              title="Manage your saved payment methods"
+              subheader="Add, update, or remove your payment address"
+            />
+            <hr />
 
-        <CardHeader
-          title="Additional"
-        />
-        <hr />
+            <CardHeader
+              title="Primary"
+              subheader="Your primary payment method is used for recurring payments"
+            />
 
-        {paymentMethods.length > 0 ? (
-          paymentMethods.map((item, index) => {
-            if (defaultPaymentMethod.length > 0) {
-              if (defaultPaymentMethod[0].id !== item.id) {
+            <hr />
+            {}
+
+            {defaultPaymentMethod.length > 0 ? (
+              defaultPaymentMethod.map((item, index) => {
                 return (
                   <>
                     <CardContent
@@ -707,31 +716,33 @@ function Settings() {
                         paddingBottom: "50px",
                       }}
                     >
-                      <div style={{ display: "flex", clear: "both", alignItems: "center", justifyContent: "flex-start", gap: "100px" }}>
-                        <div style={{ display: "flex", justifyContent: "flex-start", width: "400px", gap: "10px"}}>
-                          <img
-                            style={{ width: "50px", height: "50px" }}
-                            alt="profile-pic"
-                            src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
-                          />
-                          <Typography gutterBottom variant="h3" style={{textTransform: 'capitalize'}} component="div">
-                            {item.card.brand} ending in {item.card.last4}
+                      <div style={{ display: "flex", clear: "both" }}>
+                        <img
+                          style={{ width: "50px", height: "50px" }}
+                          alt="profile-pic"
+                          src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
+                        />
+                        <div style={{ marginLeft: "10px" }}>
+                          <Typography gutterBottom variant="h3" component="div">
+                            <snap style={{textTransform: 'capitalize'}}>{item.card.brand}</snap> ending in {item.card.last4}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            You need a primary payment method when you have active
+                            contract or a balance due. To remove this one, set a new
+                            primary payment method first.
                           </Typography>
                         </div>
-                          <Typography
-                            gutterBottom
-                            variant="h3"
-                            component="div"
-                          >
-                            {item.card.country}
-                          </Typography>
+                        <Typography
+                          gutterBottom
+                          variant="h3"
+                          component="div"
+                          style={{ marginLeft: "100px" }}
+                        >
+                          {item.card.country}
+                        </Typography>
                       </div>
                       <div
-                        style={{
-                          display: "flex",
-                          float: "right",
-                          clear: "both",
-                        }}
+                        style={{ display: "flex", float: "right", clear: "both" }}
                       >
                         <div
                           style={{ color: "green", cursor: "pointer" }}
@@ -748,229 +759,287 @@ function Settings() {
                             Edit
                           </span>
                         </div>
-                        <div
-                          style={{ color: "green", cursor: "pointer" }}
-                          onClick={() => setdefault(item.id, item.customer)}
-                        >
-                          <span
-                            style={{
-                              padding: "0px 20px",
-                              borderRight: "1px solid lightgray",
-                              fontSize: "18px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Set as primary{" "}
-                          </span>
-                        </div>
-                        <div
-                          style={{ color: "red", cursor: "pointer" }}
-                          onClick={() =>
-                            deletepaymentMethod(item.id, item.customer)
-                          }
-                        >
-                          <span
-                            style={{
-                              padding: "0px 20px",
-                              borderRight: "1px solid lightgray",
-                              fontSize: "18px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Delete
-                          </span>
-                        </div>
                       </div>
                     </CardContent>
                   </>
                 );
-              }
-            } else {
-              return (
-                <>
-                  <CardContent
-                    style={{
-                      borderBottom: "1px solid black",
-                      paddingBottom: "50px",
-                    }}
-                  >
-                    <div style={{ display: "flex", clear: "both", alignItems: "center", justifyContent: "flex-start", gap: "20px" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", width: "400px", gap: "15px"}}>
-                        <img
-                          style={{ width: "50px", height: "50px" }}
-                          alt="profile-pic"
-                          src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
-                        />
-                        <Typography gutterBottom variant="h3" style={{textTransform: 'capitalize', margin: '0'}}>
-                          {item.card.brand} ending in {item.card.last4}
-                        </Typography>
-                      </div>
-                      <Typography
-                        gutterBottom
-                        variant="h3"
-                        style={{margin: '0'}}
-                      >
-                        {item.card.country}
-                      </Typography>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        float: "right",
-                        clear: "both",
-                      }}
-                    >
-                      <div
-                        style={{ color: "green", cursor: "pointer" }}
-                        onClick={() => handleOpen1(item.id)}
-                      >
-                        <span
+              })
+            ) : (
+              <>
+                <CardContent>
+                  <Typography variant="h5" component="h2" color={"#D3D3D3"}>
+                    No primary method
+                  </Typography>
+                </CardContent>
+              </>
+            )}
+
+            <CardHeader
+              title="Additional"
+            />
+            <hr />
+
+            {paymentMethods.length > 0 ? (
+              paymentMethods.map((item, index) => {
+                if (defaultPaymentMethod.length > 0) {
+                  if (defaultPaymentMethod[0].id !== item.id) {
+                    return (
+                      <>
+                        <CardContent
                           style={{
-                            padding: "0px 20px",
-                            borderRight: "1px solid lightgray",
-                            fontSize: "18px",
-                            cursor: "pointer",
+                            borderBottom: "1px solid black",
+                            paddingBottom: "50px",
                           }}
                         >
-                          Edit
-                        </span>
-                      </div>
-                      <div
-                        style={{ color: "green", cursor: "pointer" }}
-                        onClick={() => setdefault(item.id, item.customer)}
+                          <div style={{ display: "flex", clear: "both", alignItems: "center", justifyContent: "flex-start", gap: "100px" }}>
+                            <div style={{ display: "flex", justifyContent: "flex-start", width: "400px", gap: "10px"}}>
+                              <img
+                                style={{ width: "50px", height: "50px" }}
+                                alt="profile-pic"
+                                src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
+                              />
+                              <Typography gutterBottom variant="h3" component="div">
+                                <snap style="style={{textTransform: 'capitalize'}}">{item.card.brand}</snap> ending in {item.card.last4}
+                              </Typography>
+                            </div>
+                              <Typography
+                                gutterBottom
+                                variant="h3"
+                                component="div"
+                              >
+                                {item.card.country}
+                              </Typography>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              float: "right",
+                              clear: "both",
+                            }}
+                          >
+                            <div
+                              style={{ color: "green", cursor: "pointer" }}
+                              onClick={() => handleOpen1(item.id)}
+                            >
+                              <span
+                                style={{
+                                  padding: "0px 20px",
+                                  borderRight: "1px solid lightgray",
+                                  fontSize: "18px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Edit
+                              </span>
+                            </div>
+                            <div
+                              style={{ color: "green", cursor: "pointer" }}
+                              onClick={() => setdefault(item.id, item.customer)}
+                            >
+                              <span
+                                style={{
+                                  padding: "0px 20px",
+                                  borderRight: "1px solid lightgray",
+                                  fontSize: "18px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Set as primary{" "}
+                              </span>
+                            </div>
+                            <div
+                              style={{ color: "red", cursor: "pointer" }}
+                              onClick={() =>
+                                deletepaymentMethod(item.id, item.customer)
+                              }
+                            >
+                              <span
+                                style={{
+                                  padding: "0px 20px",
+                                  borderRight: "1px solid lightgray",
+                                  fontSize: "18px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Delete
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </>
+                    );
+                  }
+                } else {
+                  return (
+                    <>
+                      <CardContent
+                        style={{
+                          borderBottom: "1px solid black",
+                          paddingBottom: "50px",
+                        }}
                       >
-                        <span
+                        <div style={{ display: "flex", clear: "both", alignItems: "center", justifyContent: "flex-start", gap: "20px" }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start", width: "400px", gap: "15px"}}>
+                            <img
+                              style={{ width: "50px", height: "50px" }}
+                              alt="profile-pic"
+                              src={item.card.brand === "visa" ? "https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" : "https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5e41b28c9848f.svg"}
+                            />
+                            <Typography gutterBottom variant="h3" style={{ margin: '0'}}>
+                              <snap style={{textTransform: 'capitalize'}}>{item.card.brand}</snap> ending in {item.card.last4}
+                            </Typography>
+                          </div>
+                          <Typography
+                            gutterBottom
+                            variant="h3"
+                            style={{margin: '0'}}
+                          >
+                            {item.card.country}
+                          </Typography>
+                        </div>
+                        <div
                           style={{
-                            padding: "0px 20px",
-                            borderRight: "1px solid lightgray",
-                            fontSize: "18px",
-                            cursor: "pointer",
+                            display: "flex",
+                            float: "right",
+                            clear: "both",
                           }}
                         >
-                          Set as primary{" "}
-                        </span>
-                      </div>
-                      <div
-                        style={{ color: "red", cursor: "pointer" }}
-                        onClick={() =>
-                          deletepaymentMethod(item.id, item.customer)
-                        }
-                      >
-                        <span
-                          style={{
-                            padding: "0px 20px",
-                            borderRight: "1px solid lightgray",
-                            fontSize: "18px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Delete
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </>
-              );
-            }
-          })
-        ) : (
-          <>
-            <CardContent>
-              <Typography variant="h5" component="h2" color={"#D3D3D3"}>
-                No additional method
-              </Typography>
-            </CardContent>
-          </>
-        )}
-      </Card>
-      <br/><br/><br/>
-      <Typography variant="h2" gutterBottom>
-        Change password
-      </Typography>
-      <div className="TextInputWrapper ChangePasswordDiv">
-        <TextField
-          id="outlined-basic"
-          label="Old Password"
-          variant="outlined"
-          type="password"
-          value={oldpassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-        />
-      </div>
+                          <div
+                            style={{ color: "green", cursor: "pointer" }}
+                            onClick={() => handleOpen1(item.id)}
+                          >
+                            <span
+                              style={{
+                                padding: "0px 20px",
+                                borderRight: "1px solid lightgray",
+                                fontSize: "18px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Edit
+                            </span>
+                          </div>
+                          <div
+                            style={{ color: "green", cursor: "pointer" }}
+                            onClick={() => setdefault(item.id, item.customer)}
+                          >
+                            <span
+                              style={{
+                                padding: "0px 20px",
+                                borderRight: "1px solid lightgray",
+                                fontSize: "18px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Set as primary{" "}
+                            </span>
+                          </div>
+                          <div
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() =>
+                              deletepaymentMethod(item.id, item.customer)
+                            }
+                          >
+                            <span
+                              style={{
+                                padding: "0px 20px",
+                                borderRight: "1px solid lightgray",
+                                fontSize: "18px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Delete
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </>
+                  );
+                }
+              })
+            ) : (
+              <>
+                <CardContent>
+                  <Typography variant="h5" component="h2" color={"#D3D3D3"}>
+                    No additional method
+                  </Typography>
+                </CardContent>
+              </>
+            )}
+          </Card>
+        </TabPanel>
+        <TabPanel sx={{ width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center'}} value={tab} index={1}>
+          <div>
+            <div className="TextInputWrapper ChangePasswordDiv">
+              <TextField
+                id="outlined-basic"
+                label="Old Password"
+                variant="outlined"
+                type="password"
+                value={oldpassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+            </div>
 
-      <div className="TextInputWrapper ChangePasswordDiv">
-        <TextField
-          id="outlined-basic"
-          label="New password"
-          variant="outlined"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div className="TextInputWrapper ChangePasswordDiv">
-        <TextField
-          id="outlined-basic"
-          label="Retype your password"
-          variant="outlined"
-          type="password"
-          value={passwordAgain}
-          onChange={(e) => setPasswordAgain(e.target.value)}
-        />
-      </div>
+            <div className="TextInputWrapper ChangePasswordDiv">
+              <TextField
+                id="outlined-basic"
+                label="New password"
+                variant="outlined"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="TextInputWrapper ChangePasswordDiv">
+              <TextField
+                id="outlined-basic"
+                label="Retype your password"
+                variant="outlined"
+                type="password"
+                value={passwordAgain}
+                onChange={(e) => setPasswordAgain(e.target.value)}
+              />
+            </div>
 
-      <PasswordChecklist
-        rules={["minLength", "number", "match"]}
-        minLength={5}
-        value={password}
-        valueAgain={passwordAgain}
-        onChange={(isValid) => {}}
-      />
-      <br />
-      <div className="ButtonsWrapper">
-        <InteractFlashyButton onClick={updateNewPassword}>
-          Change password
-        </InteractFlashyButton>
+            <PasswordChecklist
+              rules={["minLength", "number", "match"]}
+              minLength={5}
+              value={password}
+              valueAgain={passwordAgain}
+              onChange={(isValid) => {}}
+            />
+            <br />
+            <div className="ButtonsWrapper" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <InteractFlashyButton onClick={updateNewPassword}>
+                Change password
+              </InteractFlashyButton>
+            </div>
+          </div>
+        </TabPanel>
+        <TabPanel sx={{ width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center'}} value={tab} index={2}>
+          <div>
+            <div className="TextInputWrapper ChangeEmailDiv">
+              <TextField
+                id="outlined-basic"
+                label="Enter email address"
+                variant="outlined"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-        {/* <Button
-          style={{
-            margin: 10,
-            color: "white",
-            backgroundColor: "purple",
-            padding: "10px 20px",
-            // fontWeight:'bold',
-          }}
-          color="info"
-          onClick={updatePassword}
-        >
-          Change Password
-        </Button> */}
-      </div>
-      <br />
-      {/*
-      <Typography variant="h2" gutterBottom>
-        Change Email
-      </Typography>
-      <div className="TextInputWrapper">
-        <TextField
-          id="outlined-basic"
-          label="Enter email address"
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
+            <div className="ButtonsWrapper" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <InteractFlashyButton onClick={updateemailofloginuser}>
+                Change Email
+              </InteractFlashyButton>
+            </div>
+          </div>
+        </TabPanel>
+                
+      </Box>
+    </div>                    
 
-      <div className="ButtonsWrapper">
-        <InteractFlashyButton onClick={updateemailofloginusre}>
-          Change Email
-        </InteractFlashyButton>
-      </div>
-      */}
-      <br />
-
-      
-    </div>
   );
 }
 
