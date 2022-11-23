@@ -529,14 +529,16 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
         className="auctionCard"
         >
         <Stack direction="column">
-          <Typography mt={1.21}>
+          <Typography mt={1.21} maxWidth={326.9}>
             The top{" "}
             <Span sx={{ color: "primary.main", fontWeight: 600 }}>{campaignData?.numAuctionInteractions}</Span>{" "}
-            bidders win interactions
-            at the end<br></br>of the campaign ({getDateFromTimestamp({
+            bidders win interactions & pay
+            at the end of the campaign ({getDateFromTimestamp({
               timestamp: campaignData?.endDateTime?.seconds,
               format: "h:mm a [EST on] MMM Do",
             })})
+            <Span sx={{color: "text.hint"}}>;
+            if you are no longer on the leaderboard, you won't be charged</Span>
           </Typography>
           <Typography >
             Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x{" "}
@@ -646,9 +648,6 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           Place bid
           </InteractButton>
         </Stack>
-        <Typography variant="caption" color="text.hint" mt={0.69} align='center'>
-          You won't be charged if you don't win
-        </Typography>
       </JumboCardQuick>
     </>
 	);
