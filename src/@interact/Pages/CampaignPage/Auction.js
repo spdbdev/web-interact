@@ -85,7 +85,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 		}
 		maxIncrement = Math.round(maxIncrement*2)/2;
     setMinBidAmount(campaignData.auctionMinBid);
+    setMinRankBidAmount(campaignData.auctionMinBid);
 		setBidAmount(parseFloat(campaignData.auctionMinBid)+maxIncrement);
+    setAutoBidAmount(parseFloat(campaignData.auctionMinBid) + maxIncrement);
 		if (Object.entries(campaignData).length > 0 && bids.length > 0) {
       let firstPrice = bids[1].price;
       setMinRankBidAmount(parseFloat(firstPrice));
