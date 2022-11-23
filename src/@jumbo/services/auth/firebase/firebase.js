@@ -16,12 +16,37 @@ const firebaseConfig = {
   measurementId: "G-LBQPPM4GPT",
 };
 
+const FinalSwal = Swal.mixin({
+  customClass: {
+      popup: 'custom_swal_popup',
+  }
+});
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
 const googleProvider = new GoogleAuthProvider();
+
+const getErrorMessage = (message) => {
+
+  let errMessage;
+  switch (message) {
+    case "Firebase: Error (auth/invalid-email).":
+      errMessage = "Invalid Email!";
+      break;
+    case "Firebase: Error (auth/wrong-password).":
+      errMessage = "Wrong Password!";
+    case "Firebase: Error (internal-error).":
+      errMessage = "You don't have access to this page unless you have clicked the link from the email!";
+    default:
+      errMessage = message;
+      break;
+  }
+
+  return errMessage;
+};
 
 const signInWithGoogle = async () => {
   try {
@@ -39,7 +64,7 @@ const signInWithGoogle = async () => {
     }
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
   }
 };
 
@@ -48,11 +73,11 @@ const loginWithEmailAndPassword = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
   }
 };
 
-const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country) => {
+const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country,schedule,timeZone) => {
   try {
     const formData = new FormData();
     formData.append("email", email);
@@ -79,7 +104,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
       });
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
     return false;
   }
 };
@@ -87,10 +112,10 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
-    Swal.fire("Success!", "Password reset link sent!", "success");
+    FinalSwal.fire("Success!", "Password reset link sent!", "success");
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
   }
 };
 
@@ -103,7 +128,7 @@ const verifyResetCode = async (code) => {
     await verifyPasswordResetCode(auth,code);
     return true;
   }catch(err){
-    Swal.fire("Error!",err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
     return false;
   }
 }
@@ -111,9 +136,9 @@ const verifyResetCode = async (code) => {
 const confirmPasswordChange = async (code,password) => {
   try{
     await confirmPasswordReset(auth,code,password);
-    Swal.fire("Success!", "Password has been changed!", "success");
+    FinalSwal.fire("Success!", "Password has been changed!", "success");
   }catch(err){
-    Swal.fire("Error!",err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
   }
 }
 

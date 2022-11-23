@@ -29,6 +29,7 @@ export default function ConfirmAuctionPopup({
 }) {
   const [paymentId, setpaymentId] = useState();
   const [showtext, setShowText] = useState(false);
+  const [loading, setLoading] = useState(false);
   const Swal = useSwalWrapper();
 
   const addEvent = () => {
@@ -50,28 +51,29 @@ export default function ConfirmAuctionPopup({
       }
     });
   }, [allprimarymethod]);
-const paymentResponse = (price,resp = null) => {
-  console.log(resp?.data);
-        if (!price || resp?.data?.paymentstatus) {
-        
-          settheOpenPopup(false);
-          Swal.fire(
-            "Congratulations!",
-            autobid == true ? "You've successfully placed an auto-bid." : "You've successfully placed a bid.",
-            "success"
-          );
 
-          bidAction(price);
-        } else {
-          settheOpenPopup(false);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Failed!",
-          });
-        }
-}
+  const paymentResponse = (price,resp = null) => {
+    console.log(resp?.data);
+    settheOpenPopup(false);
+    setLoading(false);
+    if (!price || resp?.data?.paymentstatus) {      
+      Swal.fire(
+        "Congratulations!",
+        autobid == true ? "You've successfully placed an auto-bid." : "You've successfully placed a bid.",
+        "success"
+      );
+      bidAction(price);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed!",
+      });
+    }
+  };
+
   const confirmFuncion = () => {
+    setLoading(true);
     console.log(paymentId, userCostomerId);
     const formData = new FormData();
     formData.append("price", price);
@@ -88,6 +90,8 @@ const paymentResponse = (price,resp = null) => {
       })
       .catch((err) => {
         console.log(err);
+        settheOpenPopup(false);
+        setLoading(false);
       });
   };
 
@@ -153,7 +157,7 @@ const paymentResponse = (price,resp = null) => {
               <></>
             )}
           </DialogContentText>
-          <InteractFlashyButton onClick={confirmFuncion}>
+          <InteractFlashyButton onClick={confirmFuncion} loading={loading}>
             Confirm
           </InteractFlashyButton>
           <Typography variant="subtitle1" style={{fontWeight: '500', fontSize: '13px', lineHeight: '1.5', marginBottom: '17px', marginTop: '30px', color: 'black'}} >
