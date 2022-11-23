@@ -31,7 +31,7 @@ export const DUMMY_CAMPAIGN = {
   lastCompletedTabIndex: -1,
   numAuctionInteractions: 28,
   numGiveawayInteractions: 13,
-  person: { id: "PNUa4JcusGMYowApbfPLflxAtap2", username: "umerhayat" },
+  person: { id: "PNUa4JcusGMYowApbfPLflxAtap2", username: "TestUser" },
   savedCustomURL: "campaign-1",
   shouldReserveURL: false,
   socials: {

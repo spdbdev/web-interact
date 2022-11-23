@@ -17,10 +17,11 @@ import Span from "@jumbo/shared/Span";
 import {
   formatMomentDate,
   getDateFromTimestamp,
-} from "../../../Components/utils.js";
+} from "app/utils";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { Timestamp } from "firebase/firestore";
+import { useSelector } from "react-redux";
 
 export default function SchedulingTab({
   data,
@@ -31,6 +32,8 @@ export default function SchedulingTab({
   const [startDateTime, setStartDateTime] = useState(
     moment.unix(data?.startDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //    moment.unix(data?.startDateTime)
+
+
   const [endDateTime, setEndDateTime] = useState(
     moment.unix(data?.endDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //moment.unix(data?.endDateTime)
@@ -40,6 +43,9 @@ export default function SchedulingTab({
   const [interactionWindowDuration, setInteractionWindowDuration] = useState(
     data?.interactionWindow
   );
+
+
+  const DEVICE_TIMEZONE = useSelector((state) => state.localization.deviceTimezone);
 
   const [errors, setErrors] = useState(false);
 
@@ -235,12 +241,11 @@ export default function SchedulingTab({
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign duration">
-          All times on the campaign are in EST (Eastern Standard Time). Set how
+          All times on the campaign are in {DEVICE_TIMEZONE} (your timezone). Set how
           long the campaign will be active. Enter a start date & time, then
           duration in days OR the end date & time. <br />
           <br />
-          Changing the duration will recalculate the end date, and vice-versa.
-          Campaigns can last 5 to 20 days. Recommended duration: 10 days. <br />
+          Changing the duration will recalculate the end date, and vice-versa. <br />
           <br />
           (You can customize your timezone in the scheduling process, when
           setting your available timeslots weekly; so can fans)
@@ -265,7 +270,7 @@ export default function SchedulingTab({
               minDateTime={moment()} // min date is current date/time
               minutesStep={15}
             />
-            <Stack direction="row" alignItems="center" spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={0} width={146.9}>
               <NumDurationInput
                 value={campaignDurationDays}
                 setValue={setCampaignDurationDays}
@@ -276,7 +281,8 @@ export default function SchedulingTab({
                 endDateTime={endDateTime}
                 interactionWindowDuration={interactionWindowDuration}
               />
-              <Typography sx={{ fontSize: 16 }}>days</Typography>
+              <Typography display="block" sx={{ fontSize: 16 }}>days </Typography>
+              
             </Stack>
             <FormControl>
               <DateTimePicker
@@ -292,7 +298,7 @@ export default function SchedulingTab({
                   })
                 }
                 renderInput={(params) => <TextField {...params} />}
-                minDateTime={startDateTime}
+                minDateTime={moment(startDateTime).add(5, "days")}
                 minutesStep={15}
                 maxDateTime={moment(startDateTime).add(20, "days")}
               />
@@ -327,14 +333,14 @@ export default function SchedulingTab({
                 format: "MMM Do, YYYY h:mm a",
               })}
             </Span>{" "}
-            EST until{" "}
+            {DEVICE_TIMEZONE} until{" "}
             <Span sx={{ fontWeight: 500 }}>
               {getDateFromTimestamp({
                 timestamp: data?.interactionEndDateTime?.seconds,
                 format: "MMM Do, YYYY h:mm a",
               })}
             </Span>{" "}
-            EST.
+            {DEVICE_TIMEZONE}.
           </Typography>
         </Stack>
       </CreateCampaignItemWrapper>

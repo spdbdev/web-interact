@@ -4,6 +4,7 @@
     align-items: center;
     /* height:100vh; */
     flex-direction: row;
+    padding-bottom: 100px;
     background-image: linear-gradient(to bottom right, #4b26a3, #d442f5);
 }
 
@@ -15,6 +16,7 @@
     border-radius:10px;
     padding:50px;
     padding-bottom:30px;
+    margin: 5rem 0;
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -80,9 +82,10 @@
     position: absolute;
     bottom: 15px;
     right: 15px;
-    border: 1px solid red;
+    border: 1px solid black;
     border-radius: 50%;
     padding: 1px;
-    color: red;
+    color: black;
+    background-color: #fff;
     cursor: pointer;
 }

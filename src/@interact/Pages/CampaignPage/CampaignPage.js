@@ -5,26 +5,41 @@ import Leaderboard from "@interact/Components/Leaderboard/Leaderboard";
 import Giveaway from "./Giveaway";
 import Auction from "./Auction";
 import Faq from "@interact/Components/Faq/Faq";
-import { DataGrid } from "@mui/x-data-grid";
 
-
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Header from "./Header";
 import Stats from "./Stats";
 import { useEffect, useState } from "react";
 
-import { doc, setDoc, addDoc, getDoc, getDocs, collection, query, where, orderBy, serverTimestamp, onSnapshot, getCountFromServer} from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  addDoc,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
+  serverTimestamp,
+  onSnapshot,
+  getCountFromServer,
+} from "firebase/firestore";
 import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
-import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
-import { auth, logout, db } from "@jumbo/services/auth/firebase/firebase";
+import { auth, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
-import { sortBids } from "@interact/Components/utils";
-
+import { sortBids } from "app/utils";
+import useCurrentUser from "@interact/Hooks/use-current-user";
+import { saveToRecentCampaignHistory } from "../../../firebase";
+import React from "react";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function CampaignPage(userData) {
+  const { user } = useCurrentUser();
   const [vipChanceMultiplier, setVipChanceMultiplier] = useState(25);
   const [freeChanceMultiplier, setFreeChanceMultiplier] = useState(1);
   const [campaignData, setCampaignData] = useState({});
@@ -33,36 +48,65 @@ function CampaignPage(userData) {
   const [comments, setComments] = useState([]);
   const [supporters, setSupporters] = useState([]);
   const [winningChances, setWiningChances] = useState({ vip: 100, free: 100 });
-  const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] = useState(false);
+  const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] =
+    useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
 
+  let routeParams = useParams();
+  const [campaignId, setCampaignId] = useState(routeParams.campaignId);
+
   const num_giveaway = 10;
   const num_auction = 10;
   const { theme } = useJumboTheme();
-  const campaignId = "test12345";
   const navigate = useNavigate();
-  let [user, loading] = useAuthState(auth);
-  // let user = {
-  //   uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-  //   photoUrl:
-  //     "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-  //   name: "biby",
-  //   email: "bibyliss@gmail.com",
-  //   customerId: "cus_MlMuNeDDsNVt2Z",
-  // };
 
-  const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+
+  if (!campaignId) setCampaignId("test12345");
+
+  /* let user = {
+		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
+		photoURL: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
+		name: "biby",
+		email: "bibyliss@gmail.com",
+		customerId: "cus_MlMuNeDDsNVt2Z",
+	}; */
+
+  useEffect(() => {
+    //if (loading) return;
+    //if (!user) return navigate("/"); // this page should be browsable without login
+    if (campaignId === null) checkCampaignID();
+    else {
+      //console.log('campaignId >>>>>', campaignId);
+      getCampaignData();
+      checkPurchasedEntry();
+    }
+  }, [user, campaignId]);
+  
 
   const checkAuthentication = () => {
-		if(!user) {
-			navigate(`/a/signup?redirect=/c/${campaignId}`);
-			return false;
-		};
-		return true;
-	}
+    if (!user) {
+      navigate(`/a/signup?redirect=/c/${campaignId}`);
+      return false;
+    }
+    return true;
+  };
+
+  const checkCampaignID = async () => {
+    // check if the campaignId is a uid or custom_url
+    const docSnap = await getDoc(doc(db, "campaigns", campaignId));
+    if (!docSnap.exists()) {
+      const customURLQ = query(
+        collection(db, "campaigns"),
+        where("customURL", "==", campaignId)
+      );
+      const customURLQuerySnapshot = await getDocs(customURLQ);
+      var docSnapshots = customURLQuerySnapshot.docs[0];
+      if (docSnapshots) setCampaignId(docSnapshots.id);
+    } else setCampaignId(campaignId);
+  };
 
   const getCampaignData = async () => {
     //campaigns change listener
@@ -71,14 +115,11 @@ function CampaignPage(userData) {
       (querySnapshot) => {
         let _campaignData = querySnapshot.data();
         setCampaignData(_campaignData);
-
-        // console.log("Campaign Data >>>>>>>>>>>", _campaignData);
-
+        saveToRecentCampaignHistory(campaignId, user);
         //Check Campaign End Time
         let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
-
         if (Object.entries(_campaignData).length > 0)
           getChanceMultiplier(_campaignData);
       }
@@ -94,7 +135,7 @@ function CampaignPage(userData) {
         });
         bidsList = sortBids(bidsList);
         setBids(bidsList);
-
+        if (!user?.email) return;
         let position = bidsList.findIndex(
           (element) => element.email === user.email
         );
@@ -124,40 +165,10 @@ function CampaignPage(userData) {
         setGiveaways(giveawayList);
       }
     );
-
-    // Using giveaways and bids instead of supporters.
-    // const supportersListener = onSnapshot(query(collection(db, 'campaigns', campaignId, "supporters")),(querySnapshot)=>{
-    // 	let supportersList = [];
-    // 	querySnapshot.forEach((doc) => {
-    // 		supportersList.push(doc.data());
-    // 	});
-    // 	setSupporters(supportersList[0].supporters);
-    // })
-
-    /* 
-		// replace these with listeners
-		setComments(
-		  await getFirebaseArray(
-		    collection(db, "campaigns", campaignId, "comments")
-		  )
-		);
-		setSupporters(
-		  await getFirebaseArray(
-		    collection(db, "campaigns", campaignId, "supporters")
-		  )
-		); */
   };
 
   const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(
-      doc(
-        db,
-        "contributionAndGiveawayLossHistory",
-        creator_id,
-        "users",
-        user_id
-      )
-    );
+    const campaignHistoryUsers = await getDoc(doc(db, "users", creator_id, "GiveawayLossHistory", user_id));
     if (doc.exists) {
       const { numOfLoss } = campaignHistoryUsers.data();
       return parseInt(numOfLoss);
@@ -166,10 +177,8 @@ function CampaignPage(userData) {
   };
 
   const getChanceMultiplier = async (_campaignData) => {
-    let lostHistory = await getUserLostHistory(
-      _campaignData.person.id,
-      user.uid
-    );
+    if (!user?.uid) return;
+    let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;
@@ -184,8 +193,6 @@ function CampaignPage(userData) {
     }
     setVipChanceMultiplier(vipMultiplier);
     setFreeChanceMultiplier(freeMultiplier);
-
-    //console.log("Lost history",lostHistory, 'vip chance',vipChanceMultiplier, 'free chance',freeChanceMultiplier);
     getChanceOfwinning(_campaignData, vipMultiplier, freeMultiplier);
   };
 
@@ -224,12 +231,11 @@ function CampaignPage(userData) {
 
         setWiningChances({ vip: vipChances, free: freeChances });
       }
-    } else {
-      console.log("No such collection!");
     }
   };
 
   const checkPurchasedEntry = async () => {
+    if (!user?.uid) return;
     const docRef = doc(db, "campaigns", campaignId, "Giveaway", user.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -240,7 +246,7 @@ function CampaignPage(userData) {
         setHasUserClaimedFreeEntry(true);
         setHasUserPurchasedVIPEntry(true);
       }
-      console.log("User Giveaway", data);
+      //console.log("User Giveaway", data);
     } else {
       console.log("No such document!");
     }
@@ -253,17 +259,16 @@ function CampaignPage(userData) {
     maxBidPrice = null,
     minBidPrice = null
   ) => {
-    if(!checkAuthentication()) return;
+    if (!checkAuthentication()) return;
     var userSnap = await getDocs(
       query(collection(db, "users"), where("uid", "==", user.uid))
     );
     let user_data = userSnap.docs[0];
-
     await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
       person: {
         username: user_data.data().name,
         id: user_data.id,
-        photoUrl: user.photoURL,
+        photoURL: user.photoURL,
       },
       desiredRanking,
       minBidPrice,
@@ -273,12 +278,11 @@ function CampaignPage(userData) {
       email: user.email,
       time: serverTimestamp(),
     });
-
     const snapshot = await getCountFromServer(
       collection(db, "campaigns", campaignId, "bids")
     );
     const counter = snapshot.data().count;
-    console.log("bids count: ", counter);
+    //console.log("bids count: ", counter);
 
     setDoc(
       doc(db, "campaigns", campaignId),
@@ -286,36 +290,6 @@ function CampaignPage(userData) {
       { merge: true }
     );
   };
-
-  useEffect(() => {
-    //if (loading) return;
-    //if (!user) return navigate("/");
-
-    console.log("User>>", user);
-    getCampaignData();
-    checkPurchasedEntry();
-  }, []);
-
-  /* useEffect(() => {
-		// Check if there is a campaignId in params
-		if (params.campaignId) {
-		  // Then, check if the campaign is a draft, 
-		  if (user && user.campaigns && user.campaigns[0] && user.campaigns[0].campaignStatus === "draft") {
-			// then redirect the user to /d/
-			navigate(createCampaignURL(user.campaigns[0]))
-		  } else {
-			// otherwise, proceed with getting campaign data
-			getCampaignData(params.campaignId);
-		  }
-		} else {
-		  // otherwise, check if user is authenticated
-		  if (user) {
-			// then redirect either to appropriate campaign, or to create campaign page
-			navigate(user.campaigns && user.campaigns[0] ? createCampaignURL(user.campaigns[0]) : "/a/create-campaign")
-		  }
-		}
-		console.log(params, !params.campaignId, user)
-	}, [user, params]); */
 
   function renderUserCampaignStatus() {
     if (
@@ -338,9 +312,10 @@ function CampaignPage(userData) {
           sx={{
             position: "fixed",
             bottom: 10,
-            left: 0,
+            left: "50%",
             zIndex: 4000,
-            width: "100%",
+            width: "auto",
+            transform: "translateX(-50%)",
           }}
         >
           <Box
@@ -401,7 +376,7 @@ function CampaignPage(userData) {
               mr: 1,
               borderRadius: 3,
               overflow: "hidden",
-              paddingBottom: "38.25%",
+              paddingBottom: "36.821%",
               position: "relative",
             }}
           >
@@ -417,8 +392,9 @@ function CampaignPage(userData) {
             />
           </Box>
 
-          {num_giveaway > 0 ? (
+          {num_giveaway > 0 && campaignId != null ? (
             <Giveaway
+              campaignId={campaignId}
               isCampaignEnded={isCampaignEnded}
               campaignData={campaignData}
               hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
@@ -460,7 +436,7 @@ function CampaignPage(userData) {
             flexDirection: "row",
           }}
         >
-          <Box sx={{ flex: 1, mr: 3 }}>
+          <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7}}>
             {/* <CreatorName campaignData={campaignData} /> */}
             <CampaignInfo
               isCampaignEnded={isCampaignEnded}
@@ -472,13 +448,10 @@ function CampaignPage(userData) {
               // supporters={supporters}
             />
           </Box>
-          <Box sx={{ flex: 1, mt: 3 }}>
+          <Box sx={{ flex: 1, mt: 5, mb: 7 }}>
             <Faq campaignData={campaignData} />
           </Box>
         </Box>
-
-        {/* <center style={{color:'gray'}}>Affiliate Program: Refer an influencer {'&'} earn up to $10,000! 5% of their first year of profits will be given to the referrer.</center> */}
-        {/* <center> <br/> some footer stuff <br /> </center> */}
       </Box>
     </JumboContentLayout>
   );

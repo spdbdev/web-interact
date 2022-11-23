@@ -16,7 +16,7 @@ export default function InteractButton({
         color: "primary.main",
         borderColor: "primary.main",
         textTransform: "none",
-        borderRadius: "2px 11px",
+        borderRadius: "3px 12.69px",
         borderWidth: 1,
         ...sx,
       }}

@@ -18,19 +18,12 @@ import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  Container,
-  Divider,
-  Link,
-  Stack,
-  Typography,
-  Grid,
-} from "@mui/material";
+import {Container, Divider, Link, Stack, Typography, Grid} from "@mui/material";
 import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboDemoCard from "@jumbo/components/JumboDemoCard";
-import { formatDate, formatMoney } from "../utils";
+import { formatDate, formatMoney } from "app/utils";
 import Div from "@jumbo/shared/Div";
 
 const columns = [
@@ -105,14 +98,14 @@ export default function Leaderboard({ campaignData, bids }) {
     >
       <Box style={{ height: "100%" }}>
         <Stack direction="row" alignItems="center">
-          <Typography variant="h4" sx={{ mr: 1, mb: 0 }}>
-            Leaderboard
+          <Typography variant="h4" sx={{ mb: 0 }}>
+            Leaderboard &nbsp;
           </Typography>
           <InfoTooltip
-            title="If you’re on the leaderboard at the end of the campaign, 
-        you will receive a premium interaction, occurring before all other interactions
-        (before winners from the giveaway); otherwise, if you are overthrown from the
-        leaderboard by the end of the campaign, you are not charged"
+            title="If you’re on the leaderboard at the end of the campaign, that means you are a top bidder who will win 
+            a premium interaction that occurs before winners from 
+            the giveaway; otherwise, if you are overthrown from the leaderboard by the end 
+            of the campaign, you are not charged"
           />
         </Stack>
         <Box style={{ height: "100%" }}>

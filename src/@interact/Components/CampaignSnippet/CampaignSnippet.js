@@ -2,16 +2,15 @@ import { Icon } from "@iconify/react";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import { Avatar, Box, Chip, Link, Stack, Typography } from "@mui/material";
 import ChipWithIconAvatar from "app/pages/components/mui/Chips/ChipWithIconAvatar";
-import { formatMoney } from "../utils";
+import { formatMoney } from "app/utils";
 import "./CampaignSnippet.css";
 import { useEffect, useRef } from "react";
 import UserCampaignStatus from "./UserCampaignStatus";
+
+
 export default function CampaignSnippet(props) {
+  
   const {info} = props;
-  useEffect(() =>{
-    console.log('CampaignSnippet'); 
-    console.log(props); 
-  },[info]);
   
   return (
     <JumboCardQuick noWrapper sx={{ maxWidth: 280, m: 2 }}>
@@ -37,7 +36,7 @@ export default function CampaignSnippet(props) {
             fontSize: 12,
           }}
           icon={<Icon icon="iconoir:warning-circled-outline" />}
-          label="Limited Interactions"
+          label="Limited interactions"
         />
       </Box>
       <Box sx={{ px: 1 }}>

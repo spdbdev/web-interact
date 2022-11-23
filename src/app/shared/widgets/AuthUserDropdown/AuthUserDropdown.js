@@ -1,12 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Avatar from "@mui/material/Avatar";
-import { authUser } from "./fake-db";
-import {
-  ListItemIcon,
-  ListItemText,
-  ThemeProvider,
-  Typography,
-} from "@mui/material";
+import {ListItemIcon, ListItemText, ThemeProvider, Typography} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -21,7 +15,7 @@ import Div from "@jumbo/shared/Div";
 import { useJumboTheme } from "@jumbo/hooks";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { query,collection,where, getDocs } from 'firebase/firestore'
+import { query, collection, where, getDocs, onSnapshot, doc } from 'firebase/firestore'
 
 
 const AuthUserDropdown = () => {
@@ -29,21 +23,19 @@ const AuthUserDropdown = () => {
   const navigate = useNavigate();
   const { theme } = useJumboTheme();
   const [user, loading, error] = useAuthState(auth);
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  
+  const [completeUser, setCompleteUser] = useState({})
 
-  const fetchUserName = async () => {
+  const fetchCompleteUser = async () => {
     try {
       const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-
       const colledoc = await getDocs(q);
-
       const data = colledoc.docs[0].data();
-      setName(data.name);
-      setEmail(data.email)
+      setCompleteUser(data);
+
+      const unsub = onSnapshot(doc(db, "users", colledoc.docs[0].id), (doc) => {
+        setCompleteUser(doc.data());
+      });
       
-    
     } catch (err) {
       console.error(err);
       alert("An error occured while fetching user data");
@@ -51,14 +43,14 @@ const AuthUserDropdown = () => {
   };
 
   useEffect(() => {
-    fetchUserName();
+    fetchCompleteUser();
   }, [user]);
 
 
   const onLogout = () => {
     //mutation.mutate();
     logout();
-    navigate("/");
+    navigate("/u/");
   };
 
   return (
@@ -66,7 +58,7 @@ const AuthUserDropdown = () => {
       <JumboDdPopover
         triggerButton={
           <Avatar
-            src={authUser.profile_pic}
+            src={completeUser.photoURL}
             sizes={"small"}
             sx={{ boxShadow: 25, cursor: "pointer" }}
           />
@@ -81,19 +73,19 @@ const AuthUserDropdown = () => {
           }}
         >
           <Avatar
-            src={authUser.profile_pic}
-            alt={name}
+            src={completeUser.photoURL}
+            alt={completeUser.name}
             sx={{ width: 60, height: 60, mb: 2 }}
           />
-          <Typography variant={"h5"}>{name}</Typography>
+          <Typography variant={"h5"}>{completeUser.name}</Typography>
           <Typography variant={"body1"} color="text.secondary">
-            {email}
+            {completeUser.email}
           </Typography>
         </Div>
         <Divider />
         <nav>
           <List disablePadding sx={{ pb: 1 }}>
-            <ListItemButton>
+            <ListItemButton onClick={()=>navigate(`/u/`+completeUser.name)}>
               <ListItemIcon sx={{ minWidth: 36 }}>
                 <PersonOutlineIcon />
               </ListItemIcon>

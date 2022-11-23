@@ -1,5 +1,5 @@
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import { Close, ExpandMore } from "@mui/icons-material";
 import {
@@ -90,9 +90,9 @@ export default function CampaignCreationConfirmationPage() {
     >
       <Box sx={{ position: "fixed", top: 10, right: 10 }}>
         <IconButton
-          disableRipple
-          disableFocusRipple
-          onClick={() => navigate(`/u/${user.username}`)}
+          //disableRipple
+          //disableFocusRipple
+          onClick={() => navigate(`/u/`+user.name)}
         >
           <Close sx={{ color: "text.secondary" }} />
         </IconButton>

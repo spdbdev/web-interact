@@ -20,9 +20,10 @@ import InteractionIcon from "../../../Images/interaction-icon.png";
 import {
   addTrailingZerosToDollarValue,
   getDateFromTimestamp,
-} from "@interact/Components/utils";
+} from "app/utils";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { TabNavigation } from "../TabNavigation";
+import { FormatUnderlined } from "@mui/icons-material";
 
 export default function InteractionTab({
   data,
@@ -111,8 +112,8 @@ export default function InteractionTab({
   return (
     <>
       <CreateCampaignItemWrapper>
-        <TitleAndDesc title="Availability">
-          How much time per week would you like to spend interacting with fans?
+        <TitleAndDesc title="Availability calculator">
+          How many hours per week would you like to spend with fans?
           <br />
           <br />
           How much time should each interaction take? The left handle sets the
@@ -120,7 +121,7 @@ export default function InteractionTab({
           amount of time in a premium interaction, which are awarded to the top
           3 auction winners.
         </TitleAndDesc>
-        <Stack spacing={3} sx={{ width: 300, pt: 4 }}>
+        <Stack spacing={1.69} sx={{ width: 300, pt: 2.21 }}>
           <InteractionAvailabilitySlider
             data={data}
             setData={setData}
@@ -135,6 +136,55 @@ export default function InteractionTab({
           />
         </Stack>
       </CreateCampaignItemWrapper>
+
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={5.69}
+        sx={{
+          background: "rgba(120, 47, 238, 0.1)",
+          p: 3.69,
+          borderRadius: 3,
+          boxShadow: "0px 0px 20px rgba(120, 47, 238, 0.15)",
+        }}
+      >
+        <img alt="interaction-icon" src={InteractionIcon} width={69} />
+        <Typography
+          sx={{
+            color: "primary.main",
+            fontWeight: 400,
+            fontSize: 18,
+          }}
+        >
+          With an average of{" "}
+          <Span sx={{ fontWeight: 600}}>
+            {data?.creatorWeeklyAvailability} hrs/week
+          </Span>
+          , you can get to know a max of{" "}
+          <Span sx={{ fontWeight: 600}}>
+            {interactionsLimit} fans ({interactionsLimit-3} x {data?.interactionDurationTime}{" "}
+            min interactions & 3 x {data?.interactionTopDurationTime} min
+            interactions)
+          </Span>{" "}
+            over the period of {" "}
+          <Span sx={{ fontWeight: 600 }}>
+            {getDateFromTimestamp({ timestamp: data?.endDateTime?.seconds })}
+          </Span>{" "}
+          to{" "}
+          <Span sx={{ fontWeight: 600 }}>
+            {getDateFromTimestamp({
+              timestamp: data?.interactionEndDateTime?.seconds,
+            })}
+          </Span>
+          <Span sx={{ fontSize:14.521}}><br />
+            (Suggestion: distribute the {interactionsLimit} interactions evenly, 
+          </Span>
+          <Span sx={{ fontWeight: 600, fontSize:14.521 }}> {" "}
+            around {(interactionsLimit/2)} each, between the auction & giveaway)
+          </Span>
+        </Typography>
+      </Stack>
+
       <CreateCampaignItemWrapper>
         <TitleAndDescFullWidth title="Auction">
           I'd like to auction{" "}
@@ -180,51 +230,7 @@ export default function InteractionTab({
           />
         </TitleAndDescFullWidth>
       </CreateCampaignItemWrapper>
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={14}
-        sx={{
-          background: "rgba(120, 47, 238, 0.1)",
-          p: 3,
-          borderRadius: 3,
-          boxShadow: "0px 0px 20px rgba(120, 47, 238, 0.15)",
-        }}
-      >
-        <img alt="interaction-icon" src={InteractionIcon} width={60} />
-        <Typography
-          sx={{
-            color: "primary.main",
-            fontWeight: 400,
-            fontSize: 18,
-          }}
-        >
-          With an average of{" "}
-          <Span sx={{ fontWeight: 600 }}>
-            {data?.creatorWeeklyAvailability} hrs/week
-          </Span>
-          , you can get to know{" "}
-          <Span sx={{ fontWeight: 600 }}>
-            {data?.numAuctionInteractions + data?.numGiveawayInteractions} fans
-          </Span>{" "}
-          over the period of{" "} <br></br>
-          <Span sx={{ fontWeight: 600 }}>
-            {getDateFromTimestamp({ timestamp: data?.endDateTime?.seconds })}
-          </Span>{" "}
-          to{" "}
-          <Span sx={{ fontWeight: 600 }}>
-            {getDateFromTimestamp({
-              timestamp: data?.interactionEndDateTime?.seconds,
-            })}
-          </Span>
-          .{" "}
-          <Span sx={{ color: "primary.light", fontSize: 14 }}>
-            ({getNumStdLengthInteractions()} x {data?.interactionDurationTime}{" "}
-            min interactions and 3 x {data?.interactionTopDurationTime} min
-            interactions)
-          </Span>
-        </Typography>
-      </Stack>
+      
       <TabNavigation
         disableNext={!isTabValidated}
         selectedTabIndex={selectedTabIndex}

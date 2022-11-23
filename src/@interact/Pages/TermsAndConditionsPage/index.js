@@ -2,7 +2,7 @@ import { Stack, Typography } from '@mui/material';
 
 const TermsAndConditionsPage = () => {
   return (
-    <Stack maxWidth='1440px' alignSelf='center' width={"100%"}>
+    <Stack maxWidth='821px' alignSelf='center' width={"100%"}>
       <Stack flexDirection='column' width={"100%"} sx={{ fontSize: '14px' }}>
         <Typography
           variant='h1'
@@ -410,6 +410,7 @@ const TermsAndConditionsPage = () => {
           related to the use of or inability to use the Service, third-party software and/or third-party hardware used with the Service,
           or otherwise in connection with any provision of.
         </Typography>
+        <br></br>
       </Stack>
     </Stack>
   )

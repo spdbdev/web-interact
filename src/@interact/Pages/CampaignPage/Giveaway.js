@@ -4,7 +4,6 @@ import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import Span from "@jumbo/shared/Span";
-
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
@@ -13,18 +12,19 @@ import Select from "react-select";
 import {query, setDoc, serverTimestamp, getCountFromServer, increment, collection, getDoc, getDocs, where, addDoc, updateDoc, doc} from "firebase/firestore";
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import Swal from "sweetalert2";
 import { Country, State, City } from "country-state-city";
-import { getRequest } from "../../../utils/api";
+import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
 import ConfirmPopup from "./ConfirmPopup";
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from "@mui/material/IconButton";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
-import axios from 'axios';
 import "./CampaignPage.css";
-import { formatMoney } from "@interact/Components/utils";
+import { formatMoney } from "app/utils";
+import { fetchUserByName, followUser } from '../../../firebase';
+import useCurrentUser from "@interact/Hooks/use-current-user";
+
 
 
 const style = {
@@ -38,13 +38,14 @@ const style = {
 	p: 4,
 };
 const autobid = ["By pressing 'Confirm', you will automatically follow the creator of this campaign & consent to receiving email updates from the campaigns",];
-const hoverText = "Only 1 entry is allowed per user. Each time a user loses, their next giveaway with the same creator will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to a total 100x chance with a VIP entry)";
+const hoverText = "Only 1 entry is allowed per user. Each time you lose, the next giveaway with the same creator will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to a total 100x chance with a VIP entry)";
 
 
 
 
 
 export default function Giveaway({
+	campaignId,
 	isCampaignEnded,
 	campaignData,
 	hasUserClaimedFreeEntry,
@@ -73,9 +74,8 @@ export default function Giveaway({
 	const [cardBrand, setCardBrand] = useState(true);
 	const [last4, setLast4] = useState(true);
 	const [useSaveCard, setUseSaveCard] = useState(false);
-	const campaignId = 'test12345';
 
-	const [user, loading, error] = useAuthState(auth);
+	const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const [open, setOpen] = useState(false);
 	const card = useRef();
@@ -96,7 +96,7 @@ export default function Giveaway({
 			setName(data.name);
 			isClientEmail(data.email);
 
-			setUserCostomerId(data.customerId);
+			setuserCustomerID(data.customerId);
 			data.id = colledoc.docs[0].id;
 			setCurrentUser(data);
 		} catch (err) {
@@ -104,79 +104,66 @@ export default function Giveaway({
 		}
 	};
 	useEffect(() => {
-        //if (!user?.uid) return navigate("/");
-        fetchUserName();
-    }, [user]);
+		//console.log('user >>>', user, campaignId);
+        if (user?.uid){
+			fetchUserName();
+			getDataGiveaway();
+        	get_stripe_customer_id();
+		}
+
+		if(logged_user_stripe_customer_id){
+			payment_method();
+		}
+    }, [user, logged_user_stripe_customer_id]);
     localStorage.setItem('name', name);
 
     const getDataGiveaway = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'Giveaway', user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             const data = docSnap.data();
             setLoggedInUserData(data);            
-        } else {
-            console.log("No such document!");
         }
     }
 
     const get_stripe_customer_id = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user?.uid);
+        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user.uid);
         const docSnap = await getDoc(docRef);
         //console.log(docSnap);
         if (docSnap.exists()) {
             const data = docSnap.data();
             set_Stripe_customer_id_new(data);
-            // console.log("data is :" + JSON.stringify(data));
-            // console.log("set_Stripe_customer_id is :" + JSON.stringify(stripe_customer_id_new));
-
-            
         } else {
-            // doc.data() will be undefined in this case
-            // console.log("No such document!");
-            logged_user_stripe_customer_id =false;
+            logged_user_stripe_customer_id = false;
         }  
     }
-
     logged_user_stripe_customer_id = stripe_customer_id_new.customer_id;
-
-
-    useEffect(() => {
-        getDataGiveaway();
-        get_stripe_customer_id();
-    }, [])
     
 	const payment_method = () => {
 		if (logged_user_stripe_customer_id) {
-			axios.post('http://localhost:4242/get_payment_methods', {
-					stripe_customer_id: logged_user_stripe_customer_id
-				})
-				.then(function (response) {
-					var data = response.data;
-					if (data.status) {
-						isCustomerSet(true);
-						var brand = data.brand;
-						var last4 = data.last4;
-						setCardBrand(brand);
-						setLast4(last4);
-						setUseSaveCard(true);
-						//console.log("getting data" +logged_user_stripe_customer_id )
-					} else {
-						isCustomerSet(false);
-						//setUseSaveCard(false);
-						console.log("not getting data")
-					}
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
+			postRequest("/get_payment_methods", {stripe_customer_id: logged_user_stripe_customer_id})
+			.then(function (response) {
+				var data = response.data;
+				if (data.status) {
+					isCustomerSet(true);
+					var brand = data.brand;
+					var last4 = data.last4;
+					setCardBrand(brand);
+					setLast4(last4);
+					setUseSaveCard(true);
+					//console.log("getting data" +logged_user_stripe_customer_id )
+				} else {
+					isCustomerSet(false);
+					//setUseSaveCard(false);
+					console.log("not getting data")
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
 		} else {
 			isCustomerSet(false);
 		}
-	}
-
-	if(logged_user_stripe_customer_id){
-		payment_method();
 	}
 
     useEffect(() => {
@@ -189,7 +176,6 @@ export default function Giveaway({
 
     var vipEntryPrice = campaignData.giveawayVIPEntryCost ?? 0;
     var freeEntryPrice = "0";
-    //console.log(userData);
 
     const saveDataInGiveaway = async (data) => {
         await setDoc(doc(db, "campaigns", campaignId, 'Giveaway', user?.uid), data);
@@ -204,7 +190,7 @@ export default function Giveaway({
 		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
 		{
 			setDoc(
-				doc(db, "contributionAndGiveawayLossHistory", campaignData.person.id, 'users', user.uid), 
+				doc(db, "users", campaignData.person.id, 'Contributions', user.uid), 
 				{contributionTotal: increment(data.price)}, 
 				{ merge: true }
 			);
@@ -282,9 +268,22 @@ export default function Giveaway({
 		};
 		return true;
 	}
-
+	const followCampaign = async () => {
+        const targetUser = await fetchUserByName(campaignData?.person?.username);
+		console.log("user", user);
+		console.log("targetuser", targetUser);
+		if(user === undefined) {
+            console.log("You need to sign in to follow user");
+            navigate("/a/signin");
+            return;
+        }
+        if(!targetUser?.followers?.includes(user?.id)) {
+            followUser(user, targetUser);
+        }
+    }
 	const buyGiveawayAlert = () => {
 		if(!checkAuthentication()) return;
+		followCampaign();
 		Swal.fire({
 			title: "Skill-testing question",
 			text: "Before you make this purchase, you must correctly answer the math question below:",
@@ -320,7 +319,7 @@ export default function Giveaway({
 				toggleModal();
 				}); */
 
-				getRequest(`/customer/method/${userCostomerId}`)
+				getRequest(`/customer/method/${userCustomerID}`)
 				.then((resp) => {
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
@@ -347,6 +346,7 @@ export default function Giveaway({
 
 	const freeGiveawayAlert = () => {
 		if(!checkAuthentication()) return;
+		followCampaign();
 		Swal.fire({
 			title: "Claim free entry?",
 			text: "Would you like to claim this free giveaway entry?",
@@ -420,7 +420,7 @@ export default function Giveaway({
 		state: {},
 	});
 	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [userCostomerId, setUserCostomerId] = useState(null);
+	const [userCustomerID, setuserCustomerID] = useState(null);
 
 	function handleChangeAddressLine(e) {
 		const { value } = e.target;
@@ -491,8 +491,8 @@ export default function Giveaway({
 			})
 			.then((resp) => {
 				const pmid = resp.paymentMethod.id;
-				if (pmid && userCostomerId) {
-					getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+				if (pmid && userCustomerID) {
+					getRequest(`/method/attach/${userCustomerID}/${pmid}`)
 					.then((resp) => {
 						setOpen(false);
 						if (resp.data.added) {
@@ -539,7 +539,7 @@ export default function Giveaway({
 			undertitle={``}
 			onchangeclick={handleOpen}
 			price={vipEntryPrice}
-			userCostomerId={userCostomerId}
+			userCustomerID={userCustomerID}
 			hovertext={hoverText}
 			hovereffect={true}
 			buyvip={true}
@@ -621,7 +621,7 @@ export default function Giveaway({
 				ml: 2,
 				display: "flex",
 				flexDirection: "column",
-				width: 400,
+				minWidth: 400,
 			}}
 			headerSx={{ pb: 0 }}
 			wrapperSx={{
@@ -634,31 +634,33 @@ export default function Giveaway({
 			id="giveawayCard"
 			className="giveawayCard"
 			>
-			<Box>
+			<Box mt={1.21}>
 				<div>
-				<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span> x 30
-				minute interactions
+				<Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span> x 30
+				min interactions
 				</div>
 				<div>
-				<Span sx={{ color: "primary.main", fontWeight: 500 }}>50</Span>{" "}
-				winners will be randomly chosen from the ticketholders at the end of
-				the campaign
+				<Span sx={{ color: "primary.main", fontWeight: 600 }}>50</Span>{" "}
+				winners will be chosen when the campaign ends
 				</div>
 			</Box>
 
 			<Box id="VIPGiveawaySection">
 				<Typography variant="h5" color="text.secondary" mt={1}>
-				VIP entry
+				VIP entry &nbsp;
+          		<InfoTooltip title="Get a 25x increased chance of winning" />
 				</Typography>
 
 				<span>
 				Chance multiplier: {vipChanceMultiplier}x
 				</span>
-				<Stack direction="row" spacing={1} alignItems="center">
-				<span>Chance of winning: {winningChances.vip}%</span>
+				<Stack direction="row" alignItems="center">
+				<span>Chance of winning: {winningChances.vip}%</span>&nbsp;&nbsp;
 				<InfoTooltip
-					title="Remember, the % chance of winning will go down as more fans
-				join the giveaway."
+					title="Only 1 entry is allowed per user. Each time you lose, the next giveaway with the same creator 
+					will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to 100x 
+						chance with a VIP entry). Remember, the chance of 
+						winning goes down as more fans enter."
 				/>
 				</Stack>
 				<Box sx={{ display: "flex", flexDirection: "row", mb: 1, mt: 1 }}>
@@ -701,8 +703,10 @@ export default function Giveaway({
 				<Stack direction="row" spacing={1} sx={{ mb: 1 }} alignItems="center">
 				<span>Chance of winning: {winningChances.free}%</span>
 				<InfoTooltip
-					title="Remember, the % chance of winning will go down as more fans
-				join the giveaway."
+					title="You can upgrade to a VIP entry at any time before the campaign ends. Each time you lose, 
+					the next giveaway with the same creator will have DOUBLE the chances of winning, stacking twice, 
+					4x loss multiplier (meaning up to a total 4x chance with a free entry). Remember, the % chance of 
+					winning goes down as more fans enter."
 				/>
 				</Stack>
 

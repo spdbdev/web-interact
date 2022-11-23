@@ -7,6 +7,7 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import './LandingPage.css';
+import { useJumboLayoutSidebar, useJumboLayoutHeader } from "@jumbo/hooks";
 
 const GradientRoundedBox = styled(Box)`
   width: 100%;
@@ -196,17 +197,19 @@ const CampaignButtonGroup = ({ title, goToPage }) => {
   )
 }
 
-const LandingPage = () => {
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    AOS.init();
-  }, []);
+const LandingPage = () => {
+const navigate = useNavigate();
+
+useEffect(() => {
+  AOS.init();
+}, []);
 
   return (
+    //CheckSideBar(),
     <Stack maxWidth={"1115.69px"} alignSelf="center">
       <Stack direction="column" alignItems="center" width={"100%"}>
-        <Stack width={"100%"} sx={{ mt: 8.269}}>
+        <Stack width={"100%"} sx={{ mt: 9.269}}>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={4} md={4}>
               <AnimateCard padding='52.69px' radius='5px 27px' data-aos="fade-up" animated='true'>
@@ -1080,7 +1083,7 @@ const LandingPage = () => {
                   <Typography fontSize={"16px"} sx={{ '& > span': { fontWeight: 700 } }}>
                     💜&nbsp;The content creator<span> selects when they are available
                       week-by-week </span>(creators have to lock in their availability by
-                    Friday midnight (EST) for the next week, and can<span> sync with
+                    Friday midnight for the next week, and can<span> sync with
                       their personal Google, Outlook or iCloud calendars</span>); from this,
                     <span>with our matching algorithm, interactions are scheduled.</span>
                   </Typography>

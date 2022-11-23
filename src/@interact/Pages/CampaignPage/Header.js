@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 import moment from "moment";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { light } from "@mui/material/styles/createPalette";
@@ -30,7 +30,7 @@ export default function Header({ campaignData }) {
       </Typography>
       <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
         Created by
-        <span style={{ color: "#782eee", fontWeight: 600 }}>
+        <span style={{ color: "#782fee", fontWeight: 600 }}>
           {campaignData?.creatorName}
         </span>
       </Typography>

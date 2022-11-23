@@ -26,11 +26,11 @@ export default function SideBarSupportForm() {
         }}
       ></Box>
       <Typography variant="body2" color={"primary.contrastText"}>
-        Have a question? Ask here and we’ll get back to you within 24 hours! (on weekdays)
+        Got questions? Send us a message, include your email & social media link
       </Typography>
 
       <TextField
-        placeholder="I was wondering how to..."
+        placeholder="We'll personally help you set things up; expect a response within 24 hours (on weekdays)"
         multiline
         variant="filled"
         InputProps={{

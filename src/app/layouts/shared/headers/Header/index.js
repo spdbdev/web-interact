@@ -18,13 +18,14 @@ import { Link,useLocation } from "react-router-dom";
 import Button from "@mui/material/Button";
 import {auth } from "@jumbo/services/auth/firebase/firebase";
 import {useState,useEffect} from 'react'
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import InteractLogo from "@interact/Components/TopBar/tempLogo.png";
 // import { useAuthState } from "react-firebase-hooks/auth";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const [dropdownSearchVisibility, setDropdownSearchVisibility] =
-    React.useState(false);
+  const [dropdownSearchVisibility, setDropdownSearchVisibility] = React.useState(false);
   const { headerTheme } = useJumboHeaderTheme();
   const [isHovering, setIsHovering] = useState(false);
 
@@ -37,17 +38,8 @@ const Header = () => {
   };
 
   auth.onAuthStateChanged(user=>{
-    console.log('onAuthStateChanged');
-    console.log(user);
-      setIsLoggedIn(!!user);
+    setIsLoggedIn(!!user);
   });
-// useEffect(() => {
-//   console.log('Logged In User Auth');
-//       console.log(auth);
-//       setIsLoggedIn(!!auth.currentUser);
-//         console.log(isLoggedIn);
-//       console.log(!isLoggedIn);
-// },[isLoggedIn,auth]);
 
   return (
     <React.Fragment>
@@ -99,29 +91,13 @@ const Header = () => {
               },
             }}
           />
-          <IconButton
-            sx={{
-              position: "absolute",
-              right: 15,
-              top: "50%",
-              color: "inherit",
-              transform: "translateY(-50%)",
-            }}
-            onClick={() => setDropdownSearchVisibility(false)}
-          >
-            <CloseIcon />
-          </IconButton>
         </Div>
       </Slide>
-      <Link to="/a/create-campaign/"
-       style={{
-        color: isHovering ? '#782fee' : '#222',
-        textDecoration: isHovering ? 'underline' : 'none',
-      }}
+      <Link to="/"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       >
-        Start a campaign
+        <img src={InteractLogo} width={120} />
       </Link>
 
       <Stack
@@ -140,14 +116,36 @@ const Header = () => {
         {isLoggedIn &&
         <>
         <NotificationsDropdown />
-        <AuthUserDropdown/>
+        <AuthUserDropdown />
         </>}
         {!isLoggedIn &&
         <Link to="/a/signin" style={{textDecoration: 'none'}}>
-          <Button variant={"contained"}>Sign In</Button></Link>}
+          <Button
+            sx={{
+              ":hover": {
+                 background:
+                  "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+                   color: "white",
+                },
+                background:
+                "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
+                  borderColor: "primary.main",
+                  fontWeight: 500,
+                  fontSize: 15.21,
+                  textTransform: "none",
+                  borderRadius: "3px 11px",
+                  borderWidth: 1,
+                  px: 3,
+                  py: 0.69,
+              }} 
+              //disableElevation
+              variant={"contained"}
+              type="submit"
+          > Sign in
+          </Button> </Link>
+        }
       </Stack>
     </React.Fragment>
   );
 };
-
 export default Header;

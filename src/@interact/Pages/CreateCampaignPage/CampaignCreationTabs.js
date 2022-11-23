@@ -3,15 +3,16 @@ import { Tab, Tabs } from "@mui/material";
 import { Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-export const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
+export const StyledTab = styled((props) => <Tab {...props} />)(
   ({ theme }) => ({
     // this uses the theme we passed to the ThemeProvider in App.js
     textTransform: "none",
     fontWeight: 400,
-    fontSize: "16px",
-    color: theme.palette.text.primary,
+    fontSize: "16.21px",
+    color: "DD00FF",
     "&.Mui-selected": {
-      color: theme.palette.text.primary,
+      color: "#782FEE",
+      //color: theme.palette.text.primary,
     },
     cursor: "default",
   })
@@ -20,10 +21,8 @@ export const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
 export default function CampaignCreationTabs({
   selectedTabIndex,
   setSelectedTabIndex,
+  TABS
 }) {
-  const handleTabChange = (event, newTabIndex) => {
-    event.preventDefault(); // prevent clicking tabs
-  };
 
   return (
     <Container
@@ -38,20 +37,18 @@ export default function CampaignCreationTabs({
     >
       <Tabs
         value={selectedTabIndex}
-        onChange={handleTabChange}
+        onChange={(_,index)=> {
+          setSelectedTabIndex(index)
+        }}
         centered={true}
         textColor="primary"
         variant="fullWidth"
         aria-label="icon label tabs example"
       >
-        <StyledTab label="Basics" />
-        <StyledTab label="Scheduling" />
-        <StyledTab label="Interaction" />
-        <StyledTab label="Goal & video" />
-        <StyledTab label="Interaction method" />
-        <StyledTab label="FAQ" />
-        <StyledTab label="Payment" />
-        <StyledTab label="Promotion" />
+        {Object.keys(TABS).map((tabIndex) => {
+          const tab = TABS[tabIndex];
+          return (<StyledTab key={tabIndex} label={tab.label} disabled={!tab.navigated} />);
+        })}
       </Tabs>
     </Container>
   );

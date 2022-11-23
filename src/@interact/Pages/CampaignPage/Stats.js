@@ -1,16 +1,30 @@
 import "./CampaignPage.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Socials from "@interact/Components/Socials/Socials";
 import{Box,Divider,LinearProgress,Stack,Tooltip,Typography}from"@mui/material";
 import InteractButton from "@interact/Components/Button/InteractButton";
 import InfoTooltip from "@interact/Components/InfoTooltip";
 import Span from "@jumbo/shared/Span";
-import { formatMoney } from "@interact/Components/utils";
-
+import { formatMoney } from "app/utils";
+import useCurrentUser from "@interact/Hooks/use-current-user";
+import { followUser,fetchUserByName } from "../../../firebase";
+import { db } from "@jumbo/services/auth/firebase/firebase";
+import { doc,query, onSnapshot } from "firebase/firestore";
 
 export default function Stats({ campaignData, bids }) {
 	let stats = campaignData.stats ?? {};
-
+	const { user } = useCurrentUser();
+	const [targetUser, setTargetUser] = useState({});
+	useEffect(async ()  => {
+		let defaultUser = await fetchUserByName(campaignData?.person?.username);
+		setTargetUser(defaultUser);
+		const userListener = onSnapshot(query(doc(db, "users",defaultUser.id)), (querySnapshot) => {
+			let userData = querySnapshot.data();
+			const id = querySnapshot.id;
+			setTargetUser({ ...userData, id });
+		});
+  	}, [campaignData?.person])
 	return (
 		<Stack
 		direction="row"
@@ -21,6 +35,7 @@ export default function Stats({ campaignData, bids }) {
 		<GoalDisplay campaignData={campaignData} bids={bids} />
 		<Stack
 			flex={1}
+			mb = {10}
 			direction="row"
 			alignItems="center"
 			justifyContent="space-evenly"
@@ -31,8 +46,8 @@ export default function Stats({ campaignData, bids }) {
 			direction="row"
 			divider={<Divider orientation="vertical" flexItem />}
 			>
-			<FollowButton />
-			<StatDisplay statValue={stats?.numFollowers} statTitle="Followers" />
+			<FollowButton user={user} targetUser={targetUser}/>
+			<StatDisplay statValue={targetUser && targetUser?.followers ? targetUser?.followers.length : 0} statTitle="Followers" />
 			<StatDisplay
 				statValue={campaignData.numGiveawayEntries ?? 0}
 				statTitle="Giveaway entries"
@@ -57,11 +72,24 @@ export default function Stats({ campaignData, bids }) {
 	);
 }
 
-export function FollowButton({ selected }) {
-	let [selectedState, setSelectedState] = useState(selected);
+export function FollowButton({ user, targetUser }) {
+	const navigate = useNavigate();
+	let selectedState = user !== undefined && targetUser !== {} && targetUser?.followers?.includes(user?.id) ? true : false;
+
+	function onFollowButtonClicked() {
+		if(user === undefined) {
+			console.log("You need to sign in to follow other users");
+			navigate("/a/signin");
+			return;
+		}
+		//Call function for follow/unfollow
+		selectedState ? followUser(user, targetUser, false) : followUser(user, targetUser, true);
+		selectedState = !selectedState;
+	}
+
 	return (
 		<InteractButton sx={{ width: 120 }} variant={selectedState ? "contained" : "outlined"}
-			onClick={() => setSelectedState(!selectedState)}>
+			disabled={user?.id === targetUser?.id ? true : false} onClick={() => onFollowButtonClicked()}>
 		<Span sx={{ color: selectedState ? "primary.contrastText" : "primary.main" }} >
 			{selectedState ? "Following ✓" : "Follow"}
 		</Span>

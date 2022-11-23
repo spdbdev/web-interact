@@ -19,11 +19,10 @@ import {CircularProgress} from "@mui/material";
 
 import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements } from '@stripe/react-stripe-js';
-import CaptureAuction from '@interact/Pages/CampaignPage/CaptureAuction';
 import { clearStorage } from "./utils/storage";
 import { DISCORD_LOCALSTORAGE_KEYS } from "./services/discord";
+import {campaignServices} from "./services/campaign";
 const stripePromise = loadStripe('pk_test_51LJU6pIRYjPm2gCpQ07Vg68jRq7XfRVpVLSygsbAR4r42iZCN3hWueDFUxeOXxHBiUg3tUp9ciZE4mfQjsFpIxEN00g6y5PWRS');
-
 
 
 clearStorage(
@@ -45,6 +44,7 @@ const queryClient = new QueryClient({
 const store = configureStore();
 
 function App() {
+    campaignServices.hasOverlappingCampaign().then();
     return (
         <Elements stripe={stripePromise}>
         <QueryClientProvider client={queryClient}>

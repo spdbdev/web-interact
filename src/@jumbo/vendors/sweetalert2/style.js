@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
     popup: {
         width: '24em',
         overflow: 'hidden',
-        borderRadius: 8,
+        borderRadius: 23,
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.background.paper,
     },
@@ -44,18 +44,26 @@ const useStyles = makeStyles(theme => ({
         border: 0,
         margin: '.3125em',
         cursor: 'pointer',
-        color: theme.palette.common.white,
+        color: '#808080',
         boxSizing: 'border-box',
         fontSize: '0.875rem',
         lineHeight: 1.75,
         padding: theme.spacing(.75, 2),
-        borderRadius: 4,
+        borderRadius: "1.69px 8.9px",
         fontFamily: 'inherit',
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor:
+            "#cccccc",
+        borderColor: "primary.main",
+        fontWeight: 600,
+        px: 4,
+        py: 1,
 
         '&:hover': {
-            backgroundColor: theme.palette.primary.dark,
+            background:
+              "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+            color: "white",
         }
+          
     },
     cancelButton: {
         border: 0,

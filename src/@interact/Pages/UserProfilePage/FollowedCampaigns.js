@@ -1,17 +1,16 @@
 import React from "react";
 import "./UserProfilePage.css";
-import CampaignSnippet from "../../Components/CampaignSnippet/CampaignSnippet";
 import MeetingBlocks from "./MeetingBlocks";
 
 
 import { useEffect, useRef, useState } from "react";
-import InteractButton from "@interact/Components/Button/InteractButton";
+import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import CampaignCategorySelect from "../CreateCampaignPage/CampaignCategorySelect";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { collection, doc, getDoc, getDocs, query, where} from "firebase/firestore";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import CampaignsRow from "./CampaignsRow";
 
 
@@ -23,7 +22,7 @@ function FollowedCampaigns() {
 	let user_id = id;
 	/* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-		photoUrl:
+		photoURL:
 		"https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
 		name: "biby",
 		email: "bibyliss@gmail.com",
@@ -77,7 +76,7 @@ function FollowedCampaigns() {
 
 	// checkUserSelection
 	const cus = async (campaignID, collectionName) => {
-		const docSnap = await getDoc(doc(db, "campaigns", campaignID, collectionName, user.uid));
+		const docSnap = await getDoc(doc(db, "campaigns", campaignID, collectionName, user?.uid));
 		if (docSnap.exists()) {
 			return true;
 		}
@@ -115,14 +114,11 @@ function FollowedCampaigns() {
 			<MeetingBlocks />
 		</div>
 		<div style={{ margin: 20 }}>
-			<InteractButton style={{ paddingLeft: 200 }}
-				onClick={() => navigate(`/a/create-campaign/`)} >
-				+ Create New Campaign
-			</InteractButton>
 		</div>
+		<br></br>
 		<CampaignsRow
 			currentCampaigns={currentCampaigns}
-			heading="Live campaigns"
+			heading="Followed campaigns"
 		/>
 		<CampaignsRow
 			currentCampaigns={interactionCampaigns}
