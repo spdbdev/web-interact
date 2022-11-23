@@ -624,5 +624,5 @@ export default function Auction({
       </Stack>
     </JumboCardQuick>
     </>
-  );
-}
+    );
+  }}
