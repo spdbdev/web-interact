@@ -47,6 +47,7 @@ const hoverText = "Only 1 entry is allowed per user. Each time you lose, the nex
 export default function Giveaway({
 	campaignId,
 	isCampaignEnded,
+	isCampaignScheduled,
 	campaignData,
 	hasUserClaimedFreeEntry,
 	hasUserPurchasedVIPEntry,
@@ -677,7 +678,7 @@ export default function Giveaway({
 					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
 
-				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
+				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled}>
 					Buy VIP entry
 				</InteractButton>
 				</Box>
@@ -711,7 +712,7 @@ export default function Giveaway({
 				</Stack>
 
 				<InteractButton onClick={freeGiveawayAlert}
-					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded} >
+					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled} >
 					Get a free entry
 				</InteractButton>
 			</Box>

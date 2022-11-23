@@ -54,6 +54,7 @@ function CampaignPage(userData) {
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
+  const [isCampaignScheduled, setIsCampaignScheduled] = useState(false);
 
   let routeParams = useParams();
   const [campaignId, setCampaignId] = useState(routeParams.campaignId);
@@ -118,8 +119,10 @@ function CampaignPage(userData) {
         saveToRecentCampaignHistory(campaignId, user);
         //Check Campaign End Time
         let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
+        let campaignStartDate = new Date(_campaignData.startDate.seconds *1000);
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
+        if (campaignStartDate - now > 0) setIsCampaignScheduled(true);
         if (Object.entries(_campaignData).length > 0)
           getChanceMultiplier(_campaignData);
       }
@@ -398,6 +401,7 @@ function CampaignPage(userData) {
             <Giveaway
               campaignId={campaignId}
               isCampaignEnded={isCampaignEnded}
+              isCampaignScheduled={isCampaignScheduled}
               campaignData={campaignData}
               hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
               hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
@@ -423,6 +427,7 @@ function CampaignPage(userData) {
             <Leaderboard campaignData={campaignData} bids={bids} />
             <Auction
               isCampaignEnded={isCampaignEnded}
+              isCampaignScheduled={isCampaignScheduled}
               bidAction={bid}
               campaignData={campaignData}
               bids={bids}
