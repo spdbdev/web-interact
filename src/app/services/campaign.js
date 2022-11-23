@@ -36,7 +36,7 @@ export const campaignServices = {
         for (const campaign of campaigns) {
             if (campaign.campaignStatus !== 'draft'){
                 const campaignO = await campaignServices.getCampaign(campaign.campaignId);
-                if (campaignO.interactionEndDateTime.seconds > newCampaignStartDate.seconds) {
+                if (campaignO.interactionEndDateTime?.seconds > newCampaignStartDate?.seconds) {
                     // Parse unix interactionEndDateTime.seconds and pretty print the date
                     const date = new Date(campaignO.interactionEndDateTime.seconds * 1000);
                     const dateString = date.toLocaleDateString();

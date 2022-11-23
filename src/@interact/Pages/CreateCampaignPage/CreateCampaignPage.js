@@ -555,6 +555,7 @@ function CreateCampaignPage() {
       data: campaignData,
       setData: setData,
       setSelectedTabIndex: changeSelectedTabIndex,
+      selectedTabIndex
     };
 
 
