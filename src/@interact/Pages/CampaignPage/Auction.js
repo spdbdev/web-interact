@@ -158,7 +158,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
 
 		if(parseInt(value) > bids.length){
 			setMaxBidAmount(parseFloat(minBidAmount)+10);
-      //this should never get triggered since desired rank can't be larger than bids.length
+      // this should never get triggered since desired rank can't be larger than bids.length
 		}
 	}
 
