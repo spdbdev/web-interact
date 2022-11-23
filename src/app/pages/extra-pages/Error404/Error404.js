@@ -17,7 +17,7 @@ const Error404 = () => {
     const {setActiveLayout} = useJumboApp();
 
     React.useEffect(() => {
-        setActiveLayout(LAYOUT_NAMES.SOLO_PAGE);
+        setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
     }, []);
 
     return (
@@ -54,7 +54,6 @@ const Error404 = () => {
                 />
                 </FormControl> */}
                 <br></br>
-            <InteractFlashyButton variant="contained" onClick={()=>navigate('/')}>Go to home</InteractFlashyButton>
         </Div>
     );
 };

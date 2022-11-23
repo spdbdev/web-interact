@@ -31,9 +31,12 @@ import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaig
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { auth, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
-import { sortBids } from "@interact/Components/utils";
+import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory } from "../../../firebase";
+import React from "react";
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function CampaignPage(userData) {
   const { user } = useCurrentUser();
@@ -51,14 +54,17 @@ function CampaignPage(userData) {
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
-  const [campaignId, setCampaignId] = useState(null);
+
+  let routeParams = useParams();
+  const [campaignId, setCampaignId] = useState(routeParams.campaignId);
 
   const num_giveaway = 10;
   const num_auction = 10;
   const { theme } = useJumboTheme();
   const navigate = useNavigate();
-  let { campaign_slug } = useParams();
-  if (!campaign_slug) campaign_slug = "test12345";
+
+
+  if (!campaignId) setCampaignId("test12345");
 
   /* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
@@ -78,6 +84,7 @@ function CampaignPage(userData) {
       checkPurchasedEntry();
     }
   }, [user, campaignId]);
+  
 
   const checkAuthentication = () => {
     if (!user) {
@@ -89,16 +96,16 @@ function CampaignPage(userData) {
 
   const checkCampaignID = async () => {
     // check if the campaignId is a uid or custom_url
-    const docSnap = await getDoc(doc(db, "campaigns", campaign_slug));
+    const docSnap = await getDoc(doc(db, "campaigns", campaignId));
     if (!docSnap.exists()) {
       const customURLQ = query(
         collection(db, "campaigns"),
-        where("customURL", "==", campaign_slug)
+        where("customURL", "==", campaignId)
       );
       const customURLQuerySnapshot = await getDocs(customURLQ);
       var docSnapshots = customURLQuerySnapshot.docs[0];
       if (docSnapshots) setCampaignId(docSnapshots.id);
-    } else setCampaignId(campaign_slug);
+    } else setCampaignId(campaignId);
   };
 
   const getCampaignData = async () => {
@@ -163,15 +170,7 @@ function CampaignPage(userData) {
   };
 
   const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(
-      doc(
-        db,
-        "contributionAndGiveawayLossHistory",
-        creator_id,
-        "users",
-        user_id
-      )
-    );
+    const campaignHistoryUsers = await getDoc(doc(db, "users", creator_id, "GiveawayLossHistory", user_id));
     if (doc.exists) {
       const { numOfLoss } = campaignHistoryUsers.data();
       return parseInt(numOfLoss);
@@ -181,10 +180,7 @@ function CampaignPage(userData) {
 
   const getChanceMultiplier = async (_campaignData) => {
     if (!user?.uid) return;
-    let lostHistory = await getUserLostHistory(
-      _campaignData.person.id,
-      user.uid
-    );
+    let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;

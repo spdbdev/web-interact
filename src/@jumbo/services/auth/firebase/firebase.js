@@ -5,6 +5,9 @@ import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithEmailAndPasswor
 import { getFirestore, query, getDocs, collection, where, addDoc, setDoc, doc} from "firebase/firestore";
 import { postRequest } from '../../../../utils/api';
 import Swal from 'sweetalert2';
+import { validateEmail } from "@jumbo/utils";
+import { Navigate } from "react-router-dom";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAztlkNsd8Lu86qj5D7Y9TbI6Wvt_hVjJw",
@@ -20,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
-
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async () => {
@@ -43,7 +46,21 @@ const signInWithGoogle = async () => {
   }
 };
 
+const getUserByName = async (name) => {
+    const q = query(collection(db, "users"), where("nameInLowerCase", "==", name.toLowerCase()))
+    const querySnap = await getDocs(q);
+    if(querySnap.docs.length > 0){
+      const docSnap = querySnap.docs[0];
+      if(docSnap.exists()) return docSnap.data();
+    }
+    return null;
+};
+
 const loginWithEmailAndPassword = async (email, password) => {
+  if(!validateEmail(email)){
+    const doc = await getUserByName(email);
+    if(doc != null) email = doc.email;
+  }
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
@@ -52,7 +69,7 @@ const loginWithEmailAndPassword = async (email, password) => {
   }
 };
 
-const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country) => {
+const registerWithEmailAndPassword = async (name,legalName, email, password, imageurl,country,schedule,timeZone) => {
   try {
     const formData = new FormData();
     formData.append("email", email);
@@ -61,22 +78,27 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    postRequest("/user/register", formData)
-      .then(async (resp) => {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          name,
-          legalName,
-          authProvider: "local",
-          email,
-          customerId: resp.data.customer.id,
-          country,
-          photoURL:imageurl
-        });
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name,
+      nameInLowerCase: name.toLowerCase(),
+      legalName,
+      authProvider: "local",
+      email,
+      customerId:'',
+      country,
+      photoURL:imageurl,
+      schedule,
+      timezone:timeZone
+    });
+    postRequest("/user/register", formData).then(async (resp) => {
+        setDoc(doc(db, "users", user.uid), {customerId: resp.data.customer.id}, {merge:true});
       })
       .catch((err) => {
         console.log(err);
       });
+      return true;
   } catch (err) {
     console.error(err);
     Swal.fire("Error!", err.message, "error");
@@ -85,12 +107,19 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
 };
 
 const sendPasswordReset = async (email) => {
+  if(!validateEmail(email)){
+    const doc = await getUserByName(email);
+    if(doc) email = doc.email;
+  }
   try {
     await sendPasswordResetEmail(auth, email);
-    Swal.fire("Success!", "Password reset link sent!", "success");
+    return Swal.fire("Success!", "Password reset link sent!", "success").then((result)=>{
+      if(result.isConfirmed) return true;
+      if(result.isDismissed) return false;
+    });
   } catch (err) {
-    console.error(err);
     Swal.fire("Error!", err.message, "error");
+    return false;
   }
 };
 
@@ -111,20 +140,26 @@ const verifyResetCode = async (code) => {
 const confirmPasswordChange = async (code,password) => {
   try{
     await confirmPasswordReset(auth,code,password);
-    Swal.fire("Success!", "Password has been changed!", "success");
+    return Swal.fire("Success!", "Password has been changed!", "success").then((result)=>{
+      if(result.isConfirmed) return true;
+      if(result.isDismissed) return false;
+    });
   }catch(err){
     Swal.fire("Error!",err.message, "error");
+    return false;
   }
 }
 
 export {
   auth,
   db,
+  storage,
   signInWithGoogle,
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
   sendPasswordReset,
   verifyResetCode,
   confirmPasswordChange,
+  getUserByName,
   logout,
 };

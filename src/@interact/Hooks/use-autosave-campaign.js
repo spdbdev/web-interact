@@ -29,48 +29,49 @@ export default function useAutosaveCampaign(campaignData) {
   // This is the side effect we want to run on users' changes.
   // It is responsible for persisting the changes in the database.
   // In this example, we use localStorage for simplicity.
-  const saveData = useCallback(
-    async (newData) => {
-      if (!campaignId) {
-        setAutosaveError(true);
-        setIsAutosaving(false);
-        return;
-      } else {
-        setIsAutosaving(true);
-        setAutosaveError(false);
-      }
+  const saveData = async (newData) => {
+    
+    if (!campaignId) {
+      setAutosaveError(true);
+      setIsAutosaving(false);
+    } else {
+      setIsAutosaving(true);
+      setAutosaveError(false);
 
       const docRef = doc(db, "campaigns", campaignId); //this needs to be passed in programatically
-      // const docRef = await doc(db, "campaigns", docId);
+    // const docRef = await doc(db, "campaigns", docId);
 
-      updateDoc(docRef, newData)
-        .then(() => {
-          setIsAutosaving(false);
-          setLastSavedAt(moment());
-        })
-        .catch((error) => {
-          setAutosaveError(true);
-          console.error(error);
-        }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
-      setData(newData);
-    },
-    [campaignId]
-  );
+    updateDoc(docRef, newData)
+      .then(() => {
+        setIsAutosaving(false);
+        setLastSavedAt(moment());
+      })
+      .catch((error) => {
+        setAutosaveError(true);
+        console.error(error);
+      }); // this is updating the campaign, provided it already exists. each time a new campaign is created, we would need to run an ".add" and init the fields instead of a ".update"
+    }
 
-  const debouncedSave = useCallback(
-    debounce(async (newData) => {
-      saveData(newData);
-    }, DEBOUNCE_SAVE_DELAY_MS),
-    [campaignId]
-  );
+  }
+
+  const debouncedSave = debounce(async (newData) => {
+    saveData(newData);
+  }, DEBOUNCE_SAVE_DELAY_MS)
 
   // This effect runs only when `data` changes.
   // Effectively achieving the auto-save functionality we wanted.
   useEffect(() => {
+    console.info('Rendered with data', data);
     if (data) {
-      debouncedSave(data);
+      //debouncedSave(data);
+      saveData(data).then();
     }
-  }, [data, debouncedSave]);
+  }, [data]);
 
-  return { data, setData, isAutosaving, lastSavedAt, autosaveError };
+
+  const _setData = (data) => {
+    console.info('Setting data', data);
+    setData(data);
+  }
+  return { data, setData:_setData, isAutosaving, lastSavedAt, autosaveError };
 }

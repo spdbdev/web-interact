@@ -11,7 +11,7 @@ import {
   Grid 
 } from "@mui/material";
 import moment from "moment";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 

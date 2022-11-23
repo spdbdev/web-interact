@@ -11,7 +11,7 @@ import TitleAndDesc, { TitleAndDescFullWidth } from "../CampaignTitleAndDesc";
 import InfoTooltip from "@interact/Components/InfoTooltip";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
-import { isValidHttpUrl } from "@interact/Components/utils";
+import { isValidHttpUrl } from "app/utils/www";
 import { checkCustomURLAgainstOtherCampaigns } from "../../../../firebase";
 
 export default function PromotionTab({
@@ -107,14 +107,11 @@ export default function PromotionTab({
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign URL">
-          Select a URL for this campaign.
+        <br />
+          Select a URL for this campaign. Note that this URL won't be reserved until you press submit. Upon submitting this campaign, the inputted URL will 
+          become the URL of this campaign. <br />
           <br />
-          <br />
-          Note that this URL won't be reserved until you finish the campaign
-          creation. <br />
-          <br />
-          WARNING: upon submitting this campaign draft, the inputted URL will 
-          become the URL of this campaign; 
+          WARNING: 
           <span style={{ color: "#782fee", fontWeight: 600 }}>
           {" "}if you have an active campaign with 
           this reserved URL, it will also be replaced when you press submit.
@@ -142,7 +139,7 @@ export default function PromotionTab({
               }
               label="Save URL for future campaigns"
             />
-            <InfoTooltip title="This will override any past saved URLs, you can only reserve 1 URL at a time." />
+            <InfoTooltip title="This will override any past saved URLs, you can only reserve 1 URL at a time" />
           </Stack>
         </Stack>
       </CreateCampaignItemWrapper>

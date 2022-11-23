@@ -21,7 +21,7 @@ import IconButton from "@mui/material/IconButton";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./CampaignPage.css";
-import { formatMoney } from "@interact/Components/utils";
+import { formatMoney } from "app/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 
@@ -96,7 +96,7 @@ export default function Giveaway({
 			setName(data.name);
 			isClientEmail(data.email);
 
-			setUserCostomerId(data.customerId);
+			setuserCustomerID(data.customerId);
 			data.id = colledoc.docs[0].id;
 			setCurrentUser(data);
 		} catch (err) {
@@ -190,7 +190,7 @@ export default function Giveaway({
 		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
 		{
 			setDoc(
-				doc(db, "contributionAndGiveawayLossHistory", campaignData.person.id, 'users', user.uid), 
+				doc(db, "users", campaignData.person.id, 'Contributions', user.uid), 
 				{contributionTotal: increment(data.price)}, 
 				{ merge: true }
 			);
@@ -319,7 +319,7 @@ export default function Giveaway({
 				toggleModal();
 				}); */
 
-				getRequest(`/customer/method/${userCostomerId}`)
+				getRequest(`/customer/method/${userCustomerID}`)
 				.then((resp) => {
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
@@ -420,7 +420,7 @@ export default function Giveaway({
 		state: {},
 	});
 	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [userCostomerId, setUserCostomerId] = useState(null);
+	const [userCustomerID, setuserCustomerID] = useState(null);
 
 	function handleChangeAddressLine(e) {
 		const { value } = e.target;
@@ -491,8 +491,8 @@ export default function Giveaway({
 			})
 			.then((resp) => {
 				const pmid = resp.paymentMethod.id;
-				if (pmid && userCostomerId) {
-					getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+				if (pmid && userCustomerID) {
+					getRequest(`/method/attach/${userCustomerID}/${pmid}`)
 					.then((resp) => {
 						setOpen(false);
 						if (resp.data.added) {
@@ -539,7 +539,7 @@ export default function Giveaway({
 			undertitle={``}
 			onchangeclick={handleOpen}
 			price={vipEntryPrice}
-			userCostomerId={userCostomerId}
+			userCustomerID={userCustomerID}
 			hovertext={hoverText}
 			hovereffect={true}
 			buyvip={true}
@@ -647,15 +647,15 @@ export default function Giveaway({
 
 			<Box id="VIPGiveawaySection">
 				<Typography variant="h5" color="text.secondary" mt={1}>
-				VIP entry {" "}
+				VIP entry &nbsp;
           		<InfoTooltip title="Get a 25x increased chance of winning" />
 				</Typography>
 
 				<span>
 				Chance multiplier: {vipChanceMultiplier}x
 				</span>
-				<Stack direction="row" spacing={1} alignItems="center">
-				<span>Chance of winning: {winningChances.vip}%</span>
+				<Stack direction="row" alignItems="center">
+				<span>Chance of winning: {winningChances.vip}%</span>&nbsp;&nbsp;
 				<InfoTooltip
 					title="Only 1 entry is allowed per user. Each time you lose, the next giveaway with the same creator 
 					will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to 100x 

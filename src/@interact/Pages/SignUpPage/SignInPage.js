@@ -11,6 +11,8 @@ import './SignUpPage.css'
 import useCurrentUser from '@interact/Hooks/use-current-user';
 import Loading from '@interact/Components/Loading/Loading';
 import InteractFlashyButton from '@interact/Components/Button/InteractFlashyButton';
+import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
+import {useJumboApp} from "@jumbo/hooks";
 
 function SignInPage() {
 
@@ -23,6 +25,10 @@ function SignInPage() {
     if (user) navigate(`/u/${user.name}`);
   }, [user]);
 
+
+  const login = async () => {
+    await loginWithEmailAndPassword(email, password);
+  };
 
   return (
     <div className='SignUpPage'>
@@ -40,13 +46,15 @@ function SignInPage() {
         or
         <br />
         <div className='TextInputWrapper'>
-          <TextField id="outlined-basic" label="Username or email address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <TextField id="outlined-basic" label="Username or email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className='TextInputWrapper'>
-          <TextField id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
+          <TextField onKeyDown={(e)=>{
+            e.key === 'Enter' && login();
+          }} id="outlined-basic" label="Password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} type='password' />
         </div>
         <div className='ButtonsWrapper' style={{margin:10, paddingTop: 13.69}}>
-          <InteractFlashyButton onClick={()=>loginWithEmailAndPassword(email, password)}>
+          <InteractFlashyButton onClick={login}>
             Log in
           </InteractFlashyButton>
         </div>

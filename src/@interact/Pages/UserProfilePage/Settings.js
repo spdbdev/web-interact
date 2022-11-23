@@ -5,7 +5,7 @@ import "./UserProfilePage.css";
 import FollowerList from "./FollowerList";
 import { Link } from "react-router-dom";
 import PasswordChecklist from "react-password-checklist";
-import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { auth, db, storage as Storage, logout } from "@jumbo/services/auth/firebase/firebase";
 
 import {
   query,
@@ -35,7 +35,7 @@ import {
   updateEmail,
 } from "firebase/auth";
 
-import Storage from "./firebasestorage";
+
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Country, State, City } from "country-state-city";
@@ -118,7 +118,7 @@ function Settings() {
   });
 
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCostomerId, setUserCostomerId] = useState(null);
+  const [userCustomerID, setuserCustomerID] = useState(null);
   const [defaultPaymentMethod, setDefaultPaymentMethod] = useState([]);
 
   const [useForReload, setuseForReload] = useState(1);
@@ -260,7 +260,7 @@ function Settings() {
 
       const data = colledoc.docs[0].data();
       setName(data.name);
-      setUserCostomerId(data.customerId);
+      setuserCustomerID(data.customerId);
       setUserId(colledoc.docs[0].id);
       console.log(colledoc.docs[0].id);
       setEmail(data.email);
@@ -368,8 +368,8 @@ function Settings() {
         })
         .then((resp) => {
           const pmid = resp.paymentMethod.id;
-          if (pmid && userCostomerId) {
-            getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+          if (pmid && userCustomerID) {
+            getRequest(`/method/attach/${userCustomerID}/${pmid}`)
               .then((resp) => {
                 setOpen(false);
                 if (resp.data.added) {
@@ -522,7 +522,7 @@ function Settings() {
                 </div>
                 <div className="btnContainer">
                   <InteractFlashyButton
-                    onClick={() => editpaymentmenthod(userCostomerId)}
+                    onClick={() => editpaymentmenthod(userCustomerID)}
                   >
                     Submit
                   </InteractFlashyButton>
@@ -581,95 +581,10 @@ function Settings() {
       <br />
 
       <Link to="/campaign" style={{ textDecoration: "none" }}>
-        <InteractFlashyButton>Manage Discord Account</InteractFlashyButton>
+        <InteractFlashyButton>Manage Discord account</InteractFlashyButton>
       </Link>
       <br />
-      <br />
-      <Typography variant="h2" gutterBottom>
-        Change Password
-      </Typography>
-      <div className="TextInputWrapper">
-        <TextField
-          id="outlined-basic"
-          label="Old Password"
-          variant="outlined"
-          type="password"
-          value={oldpassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-        />
-      </div>
-
-      <div className="TextInputWrapper">
-        <TextField
-          id="outlined-basic"
-          label="New password"
-          variant="outlined"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div className="TextInputWrapper">
-        <TextField
-          id="outlined-basic"
-          label="Retype your password"
-          variant="outlined"
-          type="password"
-          value={passwordAgain}
-          onChange={(e) => setPasswordAgain(e.target.value)}
-        />
-      </div>
-
-      <PasswordChecklist
-        rules={["minLength", "number", "match"]}
-        minLength={5}
-        value={password}
-        valueAgain={passwordAgain}
-        onChange={(isValid) => {}}
-      />
-      <br />
-      <div className="ButtonsWrapper">
-        <InteractFlashyButton onClick={updatePassword}>
-          Change Password
-        </InteractFlashyButton>
-
-        {/* <Button
-          style={{
-            margin: 10,
-            color: "white",
-            backgroundColor: "purple",
-            padding: "10px 20px",
-            // fontWeight:'bold',
-          }}
-          color="info"
-          onClick={updatePassword}
-        >
-          Change Password
-        </Button> */}
-      </div>
-      <br />
-      <Typography variant="h2" gutterBottom>
-        Change Email
-      </Typography>
-      <div className="TextInputWrapper">
-        <TextField
-          id="outlined-basic"
-          label="Enter Email Address"
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-
-      <div className="ButtonsWrapper">
-        <InteractFlashyButton onClick={updateemailofloginusre}>
-          Change Email
-        </InteractFlashyButton>
-      </div>
-
-      <br />
-      <br />
-
+      <br /><br /><br/>
       <Card sx={{ maxWidth: 1000 }}>
         <CardHeader
           action={
@@ -683,18 +598,18 @@ function Settings() {
               }}
               variant="outlined"
             >
-              Add a New Billing Method
+              Add a new billing method
             </Button>
           }
           open
-          title="Manage Billing address"
+          title="Manage your saved payment (billing) methods"
           subheader="Add, update, or remove your billing address"
         />
         <hr />
 
         <CardHeader
           title="Primary"
-          subheader="Your Primary billing method is used for recurring payments"
+          subheader="Your primary billing method is used for recurring payments"
         />
 
         <hr />
@@ -761,8 +676,8 @@ function Settings() {
         ) : (
           <>
             <CardContent>
-              <Typography variant="h4" component="h2">
-                No Primary Method
+              <Typography variant="h5" component="h2" color={"#D3D3D3"}>
+                No primary method
               </Typography>
             </CardContent>
           </>
@@ -770,7 +685,6 @@ function Settings() {
 
         <CardHeader
           title="Additional"
-          subheader="Your Primary billing method is used for recurring payments"
         />
         <hr />
 
@@ -957,13 +871,100 @@ function Settings() {
         ) : (
           <>
             <CardContent>
-              <Typography variant="h4" component="h2">
-                No Additional Method
+              <Typography variant="h5" component="h2" color={"#D3D3D3"}>
+                No additional method
               </Typography>
             </CardContent>
           </>
         )}
       </Card>
+      <br/><br/><br/>
+      <Typography variant="h2" gutterBottom>
+        Change password
+      </Typography>
+      <div className="TextInputWrapper">
+        <TextField
+          id="outlined-basic"
+          label="Old Password"
+          variant="outlined"
+          type="password"
+          value={oldpassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+        />
+      </div>
+
+      <div className="TextInputWrapper">
+        <TextField
+          id="outlined-basic"
+          label="New password"
+          variant="outlined"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div className="TextInputWrapper">
+        <TextField
+          id="outlined-basic"
+          label="Retype your password"
+          variant="outlined"
+          type="password"
+          value={passwordAgain}
+          onChange={(e) => setPasswordAgain(e.target.value)}
+        />
+      </div>
+
+      <PasswordChecklist
+        rules={["minLength", "number", "match"]}
+        minLength={5}
+        value={password}
+        valueAgain={passwordAgain}
+        onChange={(isValid) => {}}
+      />
+      <br />
+      <div className="ButtonsWrapper">
+        <InteractFlashyButton onClick={updatePassword}>
+          Change password
+        </InteractFlashyButton>
+
+        {/* <Button
+          style={{
+            margin: 10,
+            color: "white",
+            backgroundColor: "purple",
+            padding: "10px 20px",
+            // fontWeight:'bold',
+          }}
+          color="info"
+          onClick={updatePassword}
+        >
+          Change Password
+        </Button> */}
+      </div>
+      <br />
+      {/*
+      <Typography variant="h2" gutterBottom>
+        Change Email
+      </Typography>
+      <div className="TextInputWrapper">
+        <TextField
+          id="outlined-basic"
+          label="Enter email address"
+          variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <div className="ButtonsWrapper">
+        <InteractFlashyButton onClick={updateemailofloginusre}>
+          Change Email
+        </InteractFlashyButton>
+      </div>
+      */}
+      <br />
+
+      
     </div>
   );
 }

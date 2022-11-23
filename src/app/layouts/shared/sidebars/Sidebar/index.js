@@ -26,7 +26,7 @@ const Sidebar = () => {
   let { user } = useCurrentUser();
   const Swal = useSwalWrapper();
   const defaultPhotoURL =
-    "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
+    "https://iili.io/HH6JxB1.md.jpg";
   const [followingList, setFollowingList] = useState([]);
   const [recentCampaignList, setRecentCampaignList] = useState([]);
 
@@ -76,14 +76,14 @@ const Sidebar = () => {
               : "/c/",
             label: returnedValue[i]?.header?.title
               ? returnedValue[i]?.header?.title
-              : "No Title",
+              : "No title",
             creator_label: returnedValue[i].endDate ? getDateFromTimestamp({
                 timestamp: returnedValue[i].endDate?.seconds,
                 format: "MMM Do"
-              }) : "No EndDate",
+              }) : "No enddate",
             creator_name: returnedValue[i]?.person?.username
               ? returnedValue[i]?.person?.username
-              : "No Name",
+              : "No name",
             creator_Uri: returnedValue[i]?.person?.username
               ? "/u/" + returnedValue[i]?.person?.username
               : "/u",

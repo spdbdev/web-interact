@@ -11,8 +11,6 @@ import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 import Settings from "@interact/Pages/UserProfilePage/Settings";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
-import TermsAndConditionsPage from "@interact/Pages/TermsAndPolicyPage/TermsAndConditionsPage";
-import PrivacyPolicyPage from "@interact/Pages/TermsAndPolicyPage/PrivacyPolicyPage";
 import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
@@ -20,60 +18,61 @@ import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage
 import Error404 from "app/pages/extra-pages/Error404";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
+import UserDoesNotExist from "app/pages/extra-pages/UserDoesNotExist";
 
 import AuthGuard from "@jumbo/services/auth/AuthGuard";
+import LandingPage from "@interact/Pages/LandingPage/LandingPage";
+import FaqPage from '@interact/Pages/FaqPage';
+import CampaignCreatorFaqPage from "@interact/Pages/CampaignCreatorFaqPage";
+import TermsAndConditionsPage from "@interact/Pages/TermsAndConditionsPage";
+import PrivacyPolicyPage from "@interact/Pages/PrivacyPolicyPage";
 import ForgotPassword from "@interact/Pages/SignUpPage/ForgotPassword";
 import ResetPassword from "@interact/Pages/SignUpPage/ResetPassword";
 
 const interactV1Routes = [
   {
     path: "*",
-    element: <Navigate to="/a/404"/>,
+    element: <Page component ={Error404} layout="vertical-default" />
   },
   {
     path: "/a/404",
-    element: <Error404/>
+    element: <Page component ={Error404} layout="vertical-default" />
   },
   {
     path: "/a/500",
-    element: <Error500/>
+    element: <Page component ={Error500} layout="vertical-default" />
   },
   {
     path: "/a/signin",
-    element: <SignInPage />,
-  },
-  {
-    path: "/",
-    element: <Navigate to=""/>, //keep it like this since we merge landing page branch soon, so "" will be the landing page
-    //element: <SignInPage />,
+    element: <Page component ={SignInPage} layout="vertical-default" />,
   },
   {
     path: "/a/signup",
-    element: <SignUpPage2 />,
+    element: <Page component ={SignUpPage2} layout="vertical-default" />,
+  },
+  {
+    path: "/a/terms-and-conditions",
+    element: <Page component ={TermsAndConditionsPage} layout="vertical-default" />,
+  },
+  {
+    path: "/a/privacy-policy",
+    element: <Page component ={PrivacyPolicyPage} layout="vertical-default" />,
   },
   {
     path: "/a/forgotpassword",
-    element: <ForgotPassword/>
+    element: <Page component ={ForgotPassword} layout="vertical-default"/>
   },
   {
     path: "/a/resetpassword",
-    element: <ResetPassword/>
+    element: <Page component ={ResetPassword} layout="vertical-default"/>
   },
   {
-    path: "/a/termsandconditions",
-    element: <TermsAndConditionsPage/>,
+    path: "/a/faq",
+    element: <Page component ={FaqPage} layout="vertical-default" />
   },
   {
-    path: "/a/privacypolicy",
-    element: <PrivacyPolicyPage/>,
-  },
-  {
-    path: "/u/:username",
-    element: (
-      //<AuthGuard>
-        <Page component={UserProfilePage} layout="vertical-default" />
-      //</AuthGuard>
-    ),
+    path: "/a/creator-faq",
+    element: <Page component ={CampaignCreatorFaqPage} layout="vertical-default" />
   },
   {
     path: "/u/",
@@ -84,12 +83,24 @@ const interactV1Routes = [
     ),
   },
   {
+    path: "/u/:username",
+    element: (
+      //<AuthGuard>
+        <Page component={UserProfilePage} layout="vertical-default" />
+      //</AuthGuard>
+    ),
+  },
+  {
+    path: "/u/undefined",
+    element: <Page component = {SignInPage} layout="vertical-default"/>,
+  },
+  {
     path: "/c/:campaignId",
-    element: <CampaignPage />,
+    element:<Page component ={CampaignPage} layout="vertical-default"/>,
   },
   {
     path: "/c/",
-    element: <CampaignPage />,
+    element:<Page component ={CampaignPage} layout="vertical-default"/>,
   },
 
   {
@@ -121,21 +132,9 @@ const interactV1Routes = [
     ),
   },
   {
-    path: "/a/faq",
+    path: "/",
     element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/receipts-and-paystubs",
-    element: (
-      <Page component={<></>} layout="solo-page" />
-    ),
-  },
-  {
-    path: "/a/campaigncreatorfaq",
-    element: (
-      <Page component={<></>} layout="solo-page" />
+        <Page component={LandingPage} layout="vertical-default" />
     ),
   },
 ];
