@@ -362,6 +362,7 @@ function CreateCampaignPage() {
   // initialize lastCompleteTabIndex to -1 in firestore
   const { campaignId } = useParams();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+
   const [
     hasInitialTabBeenSetFromDatabase,
     setHasInitialTabBeenSetFromDatabase,
@@ -379,6 +380,49 @@ function CreateCampaignPage() {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
   const { data, setData, isAutosaving, lastSavedAt, autosaveError } =
     useAutosaveCampaign(campaignData, campaignId);
+
+
+  const TABS_COMPONENTS = {
+    0:{
+      component: BasicsTab,
+      label: "Basics",
+    },
+    1:{
+      component: SchedulingTab,
+      label: "Scheduling",
+    },
+    2:{
+      component: InteractionTab,
+      label: "Interaction",
+    },
+    3:{
+      component: InteractMethodTab,
+      label: "Interaction method",
+    },
+    4:{
+      component: GoalVideoTab,
+      label: "Goal & video",
+    },
+    5:{
+      component: FAQTab,
+      label: "FAQ",
+    },
+    6:{
+      component: PaymentTab,
+      label: "Payment",
+    },
+    7:{
+      component: PromotionTab,
+      label: "Promotion",
+    }
+  };
+  Object.keys(TABS_COMPONENTS).map(Number).map(tabIndex => {
+    if ((data?.maxCompletedTabIndex ?? campaignData?.maxCompletedTabIndex) >= tabIndex){
+      TABS_COMPONENTS[tabIndex].navigated = true;
+    }
+  })
+  
+
   const navigate = useNavigate();
   //If unathenticated redirect to signup
   useEffect(() => {
@@ -428,17 +472,11 @@ function CreateCampaignPage() {
   useEffect(() => {
     // data is for checking when all autosave data has been autosaved
     // Based on data, it will update campaignData which is used to populate form fields
-    handleCampaign();
+    bootstrapCampaign();
   }, [data, lastSavedAt, user]);
 
   useEffect(() => {
     setFAQSideBarText(FAQText[selectedTabIndex]);
-    if (
-      campaignData &&
-      selectedTabIndex !== campaignData.lastCompletedTabIndex
-    ) {
-      setData({ lastCompletedTabIndex: selectedTabIndex });
-    }
   }, [selectedTabIndex]);
 
   useEffect(() => {
@@ -456,12 +494,12 @@ function CreateCampaignPage() {
     }
   };
 
-  const handleAddCampaign = async () => {
+  const createCampaign = async () => {
     let newCampaignId = await addCampaign(user);
     navigate(`/d/${newCampaignId}`);
   };
 
-  const handleCampaign = () => {
+  const bootstrapCampaign = () => {
     if (user) {
       // Not ideal, but essentially checks if:
       // 1) Data exists and is not just lastCompletedTabIndex AND
@@ -477,7 +515,7 @@ function CreateCampaignPage() {
         campaignAddedRef.current === false
       ) {
         campaignAddedRef.current = true;
-        handleAddCampaign();
+        createCampaign();
       } else if (campaignId) {
         getCampaign(campaignId);
       } else if (!campaignId) {
@@ -486,34 +524,49 @@ function CreateCampaignPage() {
     }
   };
 
+
+  const changeSelectedTabIndex = async (newIndex) => {
+    if (isNaN(newIndex)) {
+      newIndex = selectedTabIndex + 1;
+    } 
+    const _defaultMaxCompletedTabIndex = (data?.maxCompletedTabIndex ?? campaignData?.maxCompletedTabIndex ?? -1) || 0;
+
+
+    await setData({ 
+      lastCompletedTabIndex: selectedTabIndex,
+      maxCompletedTabIndex: selectedTabIndex > _defaultMaxCompletedTabIndex ? selectedTabIndex : _defaultMaxCompletedTabIndex,
+    });
+
+    // Find max tab key
+    const MAX_TAB_INDEX_KEY = Math.max(...Object.keys(TABS_COMPONENTS).map(Number));
+
+    
+    if (newIndex > MAX_TAB_INDEX_KEY) {
+      navigate(`/a/campaign-creation-summary/${campaignId}`);
+      return;
+    }
+
+    setSelectedTabIndex(newIndex);
+
+  }
+
   function renderTab() {
     const tabProps = {
       data: campaignData,
       setData: setData,
-      selectedTabIndex,
-      setSelectedTabIndex,
+      setSelectedTabIndex: changeSelectedTabIndex,
+      selectedTabIndex
     };
 
-    switch (selectedTabIndex) {
-      case 0:
-        return <BasicsTab {...tabProps} />;
-      case 1:
-        return <SchedulingTab {...tabProps} />;
-      case 2:
-        return <InteractionTab {...tabProps} />;
-      case 3:
-        return <GoalVideoTab {...tabProps} />;
-      case 4:
-        return <InteractMethodTab {...tabProps} />;
-      case 5:
-        return <FAQTab {...tabProps} />;
-      case 6:
-        return <PaymentTab {...tabProps} />;
-      case 7:
-        return <PromotionTab {...tabProps} />;
-      default:
-        return <BasicsTab {...tabProps} selectedTabIndex={0} />;
-    }
+
+
+    const ComponentClass = TABS_COMPONENTS[selectedTabIndex]?.component || BasicsTab;
+    
+    return React.createElement(ComponentClass, {
+      key: selectedTabIndex,
+      ...tabProps,
+    });
+    
   }
 
   if (!campaignData) {
@@ -523,7 +576,7 @@ function CreateCampaignPage() {
   return (
     <Slide
       direction="left"
-      timeout={1000}
+      timeout={1369}
       in={true}
       mountOnEnter
       unmountOnExit
@@ -574,8 +627,9 @@ function CreateCampaignPage() {
           </Container>
 
           <CampaignCreationTabs
+            TABS={TABS_COMPONENTS}
             selectedTabIndex={selectedTabIndex}
-            setSelectedTabIndex={setSelectedTabIndex}
+            setSelectedTabIndex={changeSelectedTabIndex}
           />
           <Stack
             direction="column"
@@ -598,7 +652,7 @@ function CreateCampaignPage() {
               <Span>Last saved {moment(lastSavedAt).fromNow()}</Span>
             )}{" "}
           </Span>
-          <IconButton onClick={() => navigate(`/u/`)}>
+          <IconButton onClick={() => navigate(`/u/`+user.name)}>
             <Close sx={{ color: "text.secondary" }} />
           </IconButton>
         </Box>

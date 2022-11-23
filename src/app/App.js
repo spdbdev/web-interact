@@ -21,7 +21,9 @@ import { loadStripe } from '@stripe/stripe-js/pure';
 import { Elements } from '@stripe/react-stripe-js';
 import { clearStorage } from "./utils/storage";
 import { DISCORD_LOCALSTORAGE_KEYS } from "./services/discord";
+import {campaignServices} from "./services/campaign";
 const stripePromise = loadStripe('pk_test_51LJU6pIRYjPm2gCpQ07Vg68jRq7XfRVpVLSygsbAR4r42iZCN3hWueDFUxeOXxHBiUg3tUp9ciZE4mfQjsFpIxEN00g6y5PWRS');
+
 
 clearStorage(
     // Clear everything except...
@@ -43,6 +45,7 @@ const store = configureStore();
 
 
 function App() {
+    campaignServices.hasOverlappingCampaign().then();
     return (
         <Elements stripe={stripePromise}>
         <QueryClientProvider client={queryClient}>

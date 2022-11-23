@@ -6,7 +6,7 @@ import "./UserProfilePage.css";
 import FollowerList from "./FollowerList";
 import { Link } from "react-router-dom";
 import PasswordChecklist from "react-password-checklist";
-import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
+import { auth, db, storage as Storage, logout } from "@jumbo/services/auth/firebase/firebase";
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import {
   query,
@@ -36,7 +36,7 @@ import {
   updateEmail,
 } from "firebase/auth";
 
-import Storage from "./firebasestorage";
+
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { Country, State, City } from "country-state-city";
@@ -149,7 +149,7 @@ function Settings() {
   });
 
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCostomerId, setUserCostomerId] = useState(null);
+  const [userCustomerID, setuserCustomerID] = useState(null);
   const [defaultPaymentMethod, setDefaultPaymentMethod] = useState([]);
 
   const [useForReload, setuseForReload] = useState(1);
@@ -343,7 +343,7 @@ function Settings() {
 
       const data = colledoc.docs[0].data();
       setName(data.name);
-      setUserCostomerId(data.customerId);
+      setuserCustomerID(data.customerId);
       setUserId(colledoc.docs[0].id);
       console.log(colledoc.docs[0].id);
       setEmail(data.email);
@@ -358,7 +358,7 @@ function Settings() {
         });
     } catch (err) {
       console.error(err);
-      alert("An error occured while fetching user data");
+      alert("An error occurred while fetching user data");
     }
   };
 
@@ -448,14 +448,14 @@ function Settings() {
               setPaymentMethods(resp.data.paymentmethod.data);
               Swal.fire(
                 "Success!",
-                "Added New Payment Method Successfully.",
+                "Added new payment method successfully.",
                 "success"
               );
             } else {
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "An error occured",
+                text: "An error occurred",
               });
             }
           })
@@ -467,7 +467,7 @@ function Settings() {
               Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "An error occured",
+              text: "An error occurred",
             });
           });
       }
@@ -477,7 +477,7 @@ function Settings() {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "An error occured",
+          text: "An error occurred",
         });
       }
       console.log(resp);
@@ -490,7 +490,7 @@ function Settings() {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "An error occured",
+        text: "An error occurred",
       });
     });
     
@@ -606,7 +606,7 @@ function Settings() {
                 </div>
                 <div className="btnContainer">
                   <InteractFlashyButton
-                    onClick={() => editpaymentmenthod(userCostomerId)}
+                    onClick={() => editpaymentmenthod(userCustomerID)}
                   >
                     Submit
                   </InteractFlashyButton>

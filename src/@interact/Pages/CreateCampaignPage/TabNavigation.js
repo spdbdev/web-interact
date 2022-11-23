@@ -9,6 +9,7 @@ export function TabNavigation({
   setSelectedTabIndex,
   disableNext,
   customErrorMessage,
+  MAX_TABS
 }) {
   const navigate = useNavigate();
   const Swal = useSwalWrapper();
@@ -20,16 +21,14 @@ export function TabNavigation({
         icon: "error",
         text:
           customErrorMessage ||
-          "All form fields are required before moving to the next campaign creation step.",
+          "All form fields are required",
       });
       return;
     }
 
-    if (selectedTabIndex !== 7) {
-      setSelectedTabIndex(selectedTabIndex + 1);
-    } else {
-      navigate(`/a/campaign-creation-summary/${campaignId}`);
-    }
+    
+    setSelectedTabIndex(selectedTabIndex + 1);
+    
   }
 
   function handleBackButtonClick() {

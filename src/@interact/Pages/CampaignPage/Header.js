@@ -10,11 +10,11 @@ import {
   Stack,
 } from "@mui/material";
 import moment from "moment";
-import { getDateFromTimestamp } from "@interact/Components/utils";
+import { getDateFromTimestamp } from "app/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { light } from "@mui/material/styles/createPalette";
-
+import {localizationServices} from "app/services/localization"
 export default function Header({ campaignData }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
 
@@ -53,7 +53,7 @@ export default function Header({ campaignData }) {
             Campaign ends at{" "}
             {getDateFromTimestamp({
               timestamp: campaignData?.endDateTime?.seconds,
-              format: " h:mm a [EST on] dddd, MMMM Do YYYY",
+              format: ` h:mm a [${localizationServices.getDeviceTimezone()} on] dddd, MMMM Do YYYY`,
             })}
           </Span>
         </Typography>
@@ -65,7 +65,16 @@ export default function Header({ campaignData }) {
           // p={0}
           // sx={{ color: "secondary.contrastText" }}
         >
-          Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
+          {(()=> {
+            // Return ENDS if the campaign hasn't ended, else Ended
+            if (moment().isBefore(moment.unix(campaignData?.endDateTime?.seconds))) {
+              return "Ends"
+            }
+            else {
+              return "Ended"
+            }
+          })()}
+{" "}{moment.unix(campaignData?.endDate?.seconds).toNow()}
       </InteractFlashyButton>
 
       {/* <Box

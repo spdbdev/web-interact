@@ -135,18 +135,16 @@
 }
 
 .profile-desc--wrapper{
-  margin-top: 10; 
-  color: white;
-  margin-bottom: 10px;
-  display:flex;
-  align-items: center;
+  position: relative;
 }
 
 svg.profile-desc--edit{
   display: none;
-  width:0.8em;
-  height:0.8em;
-  margin-left:1rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right:0;
+  color: #ffffff;
   cursor: pointer;
 }
 

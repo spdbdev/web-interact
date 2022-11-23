@@ -31,7 +31,7 @@ import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaig
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { auth, db } from "@jumbo/services/auth/firebase/firebase";
 import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
-import { sortBids } from "@interact/Components/utils";
+import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory } from "../../../firebase";
 import React from "react";
@@ -54,6 +54,7 @@ function CampaignPage(userData) {
   const [hasUserClaimedFreeEntry, setHasUserClaimedFreeEntry] = useState(false);
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
+  const [isCampaignScheduled, setIsCampaignScheduled] = useState(false);
 
   let routeParams = useParams();
   const [campaignId, setCampaignId] = useState(routeParams.campaignId);
@@ -85,10 +86,6 @@ function CampaignPage(userData) {
     }
   }, [user, campaignId]);
   
-  const {setActiveLayout} = useJumboApp();
-  React.useEffect(() => {
-    setActiveLayout(LAYOUT_NAMES.VERTICAL_DEFAULT);
-  }, []);
 
   const checkAuthentication = () => {
     if (!user) {
@@ -122,8 +119,10 @@ function CampaignPage(userData) {
         saveToRecentCampaignHistory(campaignId, user);
         //Check Campaign End Time
         let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
+        let campaignStartDate = new Date(_campaignData.startDate.seconds *1000);
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
+        if (campaignStartDate - now > 0) setIsCampaignScheduled(true);
         if (Object.entries(_campaignData).length > 0)
           getChanceMultiplier(_campaignData);
       }
@@ -172,15 +171,7 @@ function CampaignPage(userData) {
   };
 
   const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(
-      doc(
-        db,
-        "contributionAndGiveawayLossHistory",
-        creator_id,
-        "users",
-        user_id
-      )
-    );
+    const campaignHistoryUsers = await getDoc(doc(db, "users", creator_id, "GiveawayLossHistory", user_id));
     if (doc.exists) {
       const { numOfLoss } = campaignHistoryUsers.data();
       return parseInt(numOfLoss);
@@ -190,10 +181,7 @@ function CampaignPage(userData) {
 
   const getChanceMultiplier = async (_campaignData) => {
     if (!user?.uid) return;
-    let lostHistory = await getUserLostHistory(
-      _campaignData.person.id,
-      user.uid
-    );
+    let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;
@@ -267,44 +255,29 @@ function CampaignPage(userData) {
     }
   };
 
-  const bid = async (
-    amount,
-    auto = false,
-    desiredRanking = null,
-    maxBidPrice = null,
-    minBidPrice = null
-  ) => {
-    if (!checkAuthentication()) return;
-    var userSnap = await getDocs(
-      query(collection(db, "users"), where("uid", "==", user.uid))
-    );
-    let user_data = userSnap.docs[0];
-    await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
-      person: {
-        username: user_data.data().name,
-        id: user_data.id,
-        photoURL: user.photoURL,
-      },
-      desiredRanking,
-      minBidPrice,
-      maxBidPrice,
-      price: amount,
-      auto: auto,
-      email: user.email,
-      time: serverTimestamp(),
-    });
-    const snapshot = await getCountFromServer(
-      collection(db, "campaigns", campaignId, "bids")
-    );
-    const counter = snapshot.data().count;
-    //console.log("bids count: ", counter);
+	const saveBid = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
+		if (!checkAuthentication()) return;
+		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
+		let user_data = userSnap.docs[0];
+		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
+			person: {
+				username: user_data.data().name,
+				id: user_data.id,
+				photoURL: user.photoURL,
+			},
+			desiredRanking,
+			maxBidPrice,
+			minBidPrice,
+			price: amount,
+			auto: auto,
+			email: user.email,
+			time: serverTimestamp(),
+		});
 
-    setDoc(
-      doc(db, "campaigns", campaignId),
-      { numAuctionBids: counter },
-      { merge: true }
-    );
-  };
+		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
+		const counter = snapshot.data().count;
+		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
+	};
 
   function renderUserCampaignStatus() {
     if (
@@ -411,6 +384,7 @@ function CampaignPage(userData) {
             <Giveaway
               campaignId={campaignId}
               isCampaignEnded={isCampaignEnded}
+              isCampaignScheduled={isCampaignScheduled}
               campaignData={campaignData}
               hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
               hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
@@ -436,7 +410,8 @@ function CampaignPage(userData) {
             <Leaderboard campaignData={campaignData} bids={bids} />
             <Auction
               isCampaignEnded={isCampaignEnded}
-              bidAction={bid}
+              isCampaignScheduled={isCampaignScheduled}
+              bidAction={saveBid}
               campaignData={campaignData}
               bids={bids}
               hasUserEnteredAuction={hasUserEnteredAuction}

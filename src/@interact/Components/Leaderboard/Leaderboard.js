@@ -23,7 +23,7 @@ import InfoTooltip from "../InfoTooltip";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import JumboCardFeatured from "@jumbo/components/JumboCardFeatured";
 import JumboDemoCard from "@jumbo/components/JumboDemoCard";
-import { formatDate, formatMoney } from "../utils";
+import { formatDate, formatMoney } from "app/utils";
 import Div from "@jumbo/shared/Div";
 
 const columns = [
@@ -58,13 +58,12 @@ export default function Leaderboard({ campaignData, bids }) {
       return {
         id: i + 1,
         username: x.person.username,
-        bidPrice: x.auto
+        bidPrice: x.price,
+        /* bidPrice: x.auto
           ? i == bids.length - 1
             ? minBid
-            : formatMoney(
-                Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5)
-              )
-          : formatMoney(x.price),
+            : formatMoney(Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5))
+          : formatMoney(x.price), */
         bidTime: new Date(x.time?.seconds * 1000).toString(),
       };
     });
@@ -98,13 +97,13 @@ export default function Leaderboard({ campaignData, bids }) {
     >
       <Box style={{ height: "100%" }}>
         <Stack direction="row" alignItems="center">
-          <Typography variant="h4" sx={{ mr: 1, mb: 0 }}>
-            Leaderboard
+          <Typography variant="h4" sx={{ mb: 0 }}>
+            Leaderboard &nbsp;
           </Typography>
           <InfoTooltip
-            title="If you’re on the leaderboard at the end of the campaign, you will receive 
-            a premium interaction, occurring before all other interactions (before winners from 
-            the giveaway); otherwise, if you are overthrown from the leaderboard by the end 
+            title="If you’re on the leaderboard at the end of the campaign, that means you are a top bidder who will win 
+            a premium interaction that occurs before winners from 
+            the giveaway; otherwise, if you are overthrown from the leaderboard by the end 
             of the campaign, you are not charged"
           />
         </Stack>

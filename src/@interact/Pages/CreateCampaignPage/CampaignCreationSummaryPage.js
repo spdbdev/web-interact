@@ -4,7 +4,7 @@ import Loading from "@interact/Components/Loading/Loading";
 import {
   getDateFromTimestamp,
   getYoutubeIDFromURL,
-} from "@interact/Components/utils";
+} from "app/utils";
 import { db } from "@jumbo/services/auth/firebase/firebase";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { ExpandLess } from "@mui/icons-material";
@@ -24,6 +24,7 @@ import FAQAccordian from "./FAQAccordian";
 import { httpsCallable } from "firebase/functions";
 import { functions, publishCampaign } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
+import { campaignServices } from "app/services/campaign";
 
 export function CampaignSummaryItem({ label, value }) {
   return (
@@ -91,6 +92,18 @@ export default function CampaignCreationSummaryPage() {
   ];
 
   async function submitCampaign() {
+    let overlappingCampaignDate = await campaignServices.hasOverlappingCampaign({
+      userId: user.id,
+      newCampaignStartDate: campaignData.startDateTime
+    });
+
+    if (overlappingCampaignDate ) {
+      Swal.fire({
+        icon: "error",
+        text: "You already have a campaign whose interactions end on " + overlappingCampaignDate + ". Please choose a different start date.",
+      });
+      return;
+    }
     const docRef = doc(db, "campaigns", campaignId); //this needs to be passed in programatically
     const Toast = Swal.mixin({
       toast: true,
@@ -149,7 +162,7 @@ export default function CampaignCreationSummaryPage() {
     return (
       <Slide
         direction="left"
-        timeout={1000}
+        timeout={1369}
         in={true}
         mountOnEnter
         unmountOnExit
@@ -172,8 +185,7 @@ export default function CampaignCreationSummaryPage() {
                 alignItems: "center",
                 color: "text.hint",
               }}
-              onClick={() => navigate("/a/create-campaign")}
-            >
+              onClick={()=> navigate('/d/' + campaignId)}>
               <ExpandLess />
               <Typography sx={{ my: 0, py: 0 }}>Go back and edit</Typography>
             </ButtonBase>

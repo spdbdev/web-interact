@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 import { Avatar, Box, Chip, Link, Stack, Typography } from "@mui/material";
 import ChipWithIconAvatar from "app/pages/components/mui/Chips/ChipWithIconAvatar";
-import { formatMoney } from "../utils";
+import { formatMoney } from "app/utils";
 import "./CampaignSnippet.css";
 import { useEffect, useRef } from "react";
 import UserCampaignStatus from "./UserCampaignStatus";

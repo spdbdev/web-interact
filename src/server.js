@@ -70,7 +70,7 @@ app.post("/get_account",async (req, res) => {
 });
 
 // CREATE STRIPE ACCOUNT
-app.get("/onboard-user", async (req, res) => {
+app.get("/a/linkbank", async (req, res) => {
   try {
     const account = await stripe.accounts.create({
       type: 'express',
@@ -84,7 +84,7 @@ app.get("/onboard-user", async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: account.id,
-      refresh_url: `${origin}/onboard-user/refresh`,
+      refresh_url: `${origin}/a/linkbank/refresh`,
       return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountID,
     });
     res.redirect(303, accountLink.url);
@@ -94,7 +94,7 @@ app.get("/onboard-user", async (req, res) => {
     });
   }
 });
-app.get("/onboard-user/refresh", async (req, res) => {
+app.get("/a/linkbank/refresh", async (req, res) => {
   if (!req.accountID) {
     res.redirect("/");
     return;
@@ -107,7 +107,7 @@ app.get("/onboard-user/refresh", async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: accountID,
-      refresh_url: `${origin}/onboard-user/refresh`,
+      refresh_url: `${origin}/a/linkbank/refresh`,
       return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+accountID,
     });
 
@@ -118,19 +118,19 @@ app.get("/onboard-user/refresh", async (req, res) => {
     });
   }
 });
-app.get("/onboard-user/success", async (req, res) => {
+app.get("/a/linkbank/success", async (req, res) => {
   try {
     if(req.accountID){
       // res.status(200).json(JSON.stringify(req));
       // res.status(200).json(JSON.stringify(res));  
     }
-    console.log('response from /onboard-user/success');
+    console.log('response from /a/linkbank/success');
     console.log(res);
-    console.log('request from /onboard-user/success');
+    console.log('request from /a/linkbank/success');
     console.log(req.accountID);
     
   } catch (err) {
-    console.log('error from /onboard-user/success');
+    console.log('error from /a/linkbank/success');
     console.log(err);
     res.status(500).send({
       error: err.message,

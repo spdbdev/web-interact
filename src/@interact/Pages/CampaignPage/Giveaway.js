@@ -20,7 +20,7 @@ import ConfirmVIPPopup from "./ConfirmVIPPopup";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./CampaignPage.css";
-import { formatMoney } from "@interact/Components/utils";
+import { formatMoney } from "app/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
@@ -41,6 +41,7 @@ const style = {
 export default function Giveaway({
 	campaignId,
 	isCampaignEnded,
+	isCampaignScheduled,
 	campaignData,
 	hasUserClaimedFreeEntry,
 	hasUserPurchasedVIPEntry,
@@ -70,7 +71,7 @@ export default function Giveaway({
 	const [loading, setLoading] = useState(false);
 
 	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [userCostomerId, setUserCostomerId] = useState(null);
+	const [userCustomerId, setUserCustomerId] = useState(null);
 
 	const navigate = useNavigate();
 	const Swal = useSwalWrapper();
@@ -83,7 +84,7 @@ export default function Giveaway({
 			setName(data.name);
 			isClientEmail(data.email);
 
-			setUserCostomerId(data.customerId);
+			setuserCustomerID(data.customerId);
 			data.id = colledoc.docs[0].id;
 			setCurrentUser(data);
 		} catch (err) {
@@ -125,7 +126,7 @@ export default function Giveaway({
 		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
 		{
 			setDoc(
-				doc(db, "contributionAndGiveawayLossHistory", campaignData.person.id, 'users', user.uid), 
+				doc(db, "users", campaignData.person.id, 'Contributions', user.uid), 
 				{contributionTotal: increment(data.price)}, 
 				{ merge: true }
 			);
@@ -221,7 +222,7 @@ export default function Giveaway({
 				toggleModal();
 				}); */
 
-				getRequest(`/customer/method/${userCostomerId}`)
+				getRequest(`/customer/method/${userCustomerID}`)
 				.then((resp) => {
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
@@ -310,8 +311,8 @@ export default function Giveaway({
 		})
 		.then((resp) => {
 			const pmid = resp.paymentMethod.id;
-			if (pmid && userCostomerId) {
-				getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+			if (pmid && userCustomerId) {
+				getRequest(`/method/attach/${userCustomerId}/${pmid}`)
 				.then((resp) => {
 					setOpen(false);
 					if (resp.data.added) {
@@ -324,7 +325,7 @@ export default function Giveaway({
 						Swal.fire({
 							icon: "error",
 							title: "Oops...",
-							text: "An error occured",
+							text: "An error occurred",
 						});
 					}
 				})
@@ -335,7 +336,7 @@ export default function Giveaway({
 					Swal.fire({
 						icon: "error",
 						title: "Oops...",
-						text: "An error occured",
+						text: "An error occurred",
 					});
 				});
 			}
@@ -345,7 +346,7 @@ export default function Giveaway({
 				Swal.fire({
 					icon: "error",
 					title: "Oops...",
-					text: "An error occured",
+					text: "An error occurred",
 				});
 			}
 			console.log(resp);
@@ -357,7 +358,7 @@ export default function Giveaway({
 			Swal.fire({
 				icon: "error",
 				title: "Oops...",
-				text: "An error occured",
+				text: "An error occurred",
 			});
 		});
 	}
@@ -378,7 +379,7 @@ export default function Giveaway({
 			allprimarymethod={paymentMethods}
 			onaddclick={handleOpen}
 			price={vipEntryPrice}
-			userCostomerId={userCostomerId}
+			userCustomerId={userCustomerId}
 			selectPaymentMethod={selectedPaymentMethod}
 			setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
@@ -452,15 +453,15 @@ export default function Giveaway({
 
 			<Box id="VIPGiveawaySection">
 				<Typography variant="h5" color="text.secondary" mt={1}>
-				VIP entry {" "}
+				VIP entry &nbsp;
           		<InfoTooltip title="Get a 25x increased chance of winning" />
 				</Typography>
 
 				<span>
 				Chance multiplier: {vipChanceMultiplier}x
 				</span>
-				<Stack direction="row" spacing={1} alignItems="center">
-				<span>Chance of winning: {winningChances.vip}%</span>
+				<Stack direction="row" alignItems="center">
+				<span>Chance of winning: {winningChances.vip}%</span>&nbsp;&nbsp;
 				<InfoTooltip
 					title="Only 1 entry is allowed per user. Each time you lose, the next giveaway with the same creator 
 					will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to 100x 
@@ -482,10 +483,7 @@ export default function Giveaway({
 					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
 
-				{/* <InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded}>
-					Buy VIP entry
-				</InteractButton> */}
-				<InteractButton onClick={buyGiveawayAlert}>
+				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled}>
 					Buy VIP entry
 				</InteractButton>
 				</Box>
@@ -519,7 +517,7 @@ export default function Giveaway({
 				</Stack>
 
 				<InteractButton onClick={freeGiveawayAlert}
-					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded} >
+					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled} >
 					Get a free entry
 				</InteractButton>
 			</Box>

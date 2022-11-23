@@ -20,7 +20,7 @@ import InteractionIcon from "../../../Images/interaction-icon.png";
 import {
   addTrailingZerosToDollarValue,
   getDateFromTimestamp,
-} from "@interact/Components/utils";
+} from "app/utils";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { TabNavigation } from "../TabNavigation";
 import { FormatUnderlined } from "@mui/icons-material";
