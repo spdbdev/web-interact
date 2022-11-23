@@ -62,7 +62,6 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 	const [desiredRank, setDesiredRank] = useState(1);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
   	const [minRankBidAmount, setMinRankBidAmount] = useState(0);
-	const [maxBidAmount, setMaxBidAmount] = useState(0); // not sure about it's usage
 	// manual bid
 	const [bidAmount, setBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
@@ -92,12 +91,10 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 			if (thirtyPer > 5) minIncrement = thirtyPer;
 			minIncrement = Math.round(minIncrement * 2) / 2;
 
-			setMaxBidAmount(priceAtDesiredRank + minIncrement); // not sure about it's usage
 			setAutoBidAmount(priceAtDesiredRank + minIncrement);
 			setMinRankBidAmount(priceAtDesiredRank + 0.5);
 		}
 		else {
-			setMaxBidAmount(parseFloat(minBidAmount) + 5); // not sure about it's usage
 			setAutoBidAmount(parseFloat(minBidAmount) + 5);
 			setMinRankBidAmount(parseFloat(minBidAmount) + 0.5);
 		}
@@ -146,7 +143,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 	})
 
 	const handleBidAmount = function(e){
-		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(maxBidAmount)){
+		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(autoBidAmount)){
 			setBidAmount(e.target.value);
 		}
 	}
@@ -180,9 +177,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
         }
   	}
 
-	const handleBidClick = async (amount, auto = false, desiredRank = null, maxBidPrice = null, minBidPrice = null) => {
+	const handleBidClick = async (amount, auto = false, desiredRank = null, maxBidPrice = null) => {
 		followCampaign();
-		bidAction(amount, auto, desiredRank, maxBidPrice, minBidPrice);
+		bidAction(amount, auto, desiredRank, maxBidPrice);
 	}
 
 
@@ -415,7 +412,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
         belowtext={autobid}
         undertitle={`The bid will place you ${desiredRank} on the leaderboard (if others do not bid higher)`}
         onchangeclick={handleOpen}
-        price={maxBidAmount}
+        price={autoBidAmount}
         userCustomerID={userCustomerID}
         bidAction={bidAction}
         bidActionstatus={true}
@@ -602,8 +599,12 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 					onChange={(e) =>  onAutoBidAmountChange(e)}
 				/>
           	</FormControl>
-
-			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(autoBidAmount, true, desiredRank, maxBidAmount)}>
+			
+			{/* 
+				minRankBidAmount => it should be the current bid amount (price)
+				autoBidAmount => it will be the maxBidPrice
+			*/}
+			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(minRankBidAmount, true, desiredRank, autoBidAmount)}>
 				Place auto-bid
 			</InteractButton>
         </Stack>
@@ -624,10 +625,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 			<Stack direction="column" spacing={0}>
 				<Typography mb={1.69}>
 					<Span sx={{ color: "primary.main", fontWeight: 600}}>
-					&nbsp;&nbsp;&nbsp;${minBidAmount
-					&& `${ formatMoney(
-						minBidAmount
-					)}`}
+					&nbsp;&nbsp;&nbsp;${minBidAmount && `${ formatMoney(minBidAmount)}`}
 					</Span>{" "}
 					minimum bid
 				</Typography>
@@ -646,7 +644,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 				</FormControl>
 			</Stack>
 
-          	<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(bidAmount, false, null, null, minBidAmount)}>
+          	<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(bidAmount)}>
           		Place bid
           	</InteractButton>
         </Stack>

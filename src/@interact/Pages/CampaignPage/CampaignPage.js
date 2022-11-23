@@ -255,7 +255,7 @@ function CampaignPage(userData) {
     }
   };
 
-	const saveBid = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
+	const saveBid = async (amount, auto, desiredRanking, maxBidPrice) => {
 		if (!checkAuthentication()) return;
 		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
 		let user_data = userSnap.docs[0];
@@ -267,7 +267,6 @@ function CampaignPage(userData) {
 			},
 			desiredRanking,
 			maxBidPrice,
-			minBidPrice,
 			price: amount,
 			auto: auto,
 			email: user.email,
