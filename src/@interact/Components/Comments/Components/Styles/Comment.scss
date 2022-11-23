@@ -5,7 +5,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-
   .comment {
     display: flex;
     flex-direction: column;
@@ -13,7 +12,7 @@
     padding: 15px;
     border-radius: 10px;
     gap: 15px;
-    animation: come-in 1s ease-in;
+    animation: come-in 0.5s ease-in-out;
     &--body {
       display: flex;
       flex-direction: column;
@@ -150,7 +149,7 @@
       width: 100%;
       
       .comment{
-        animation: come-in 1.5s ease-in-out;
+        animation: come-in 0.69s ease-in-out;
       }
     }
   }
@@ -158,7 +157,7 @@
   .add-comment {
     width: 100%;
     margin-top: 5px;
-    animation-duration: 0.5s;
+    animation: come-in 0.69s ease-in-out;
   }
 
   @include media-md() {

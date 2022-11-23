@@ -124,10 +124,10 @@ const Sidebar = () => {
       if (result.value) {
         if (user && targetUser) {
           followUser(user, targetUser, false);
-          Swal.fire("Success!", "You have unfollowed.", "success");
+          //Swal.fire("Success!", "You have unfollowed.", "success");
         }
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire("Cancelled", "You are still following that user", "success");
+        //Swal.fire("Cancelled", "You are still following that user", "success");
       }
     });
   };
@@ -158,7 +158,7 @@ const Sidebar = () => {
       children: followingList,
     },
     {
-      label: "Recent Campaigns",
+      label: "Recent campaigns",
       type: "section",
       children: recentCampaignList,
     },

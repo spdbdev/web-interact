@@ -101,7 +101,7 @@ const Header = () => {
           elevation={25}
           onClick={() => setDropdownSearchVisibility(!dropdownSearchVisibility)}
           style={{
-            boxShadow: '2px 2px 6px -1px grey',
+            boxShadow: '2px 2px 9.69px -1px #D3D3D3',
           }}
         >
           <SearchIcon fontSize={"small"} />
