@@ -65,14 +65,14 @@ export default function Auction({
   bids,
   campaignData,
   bidAction,
-}) {
+}){
   const [bidAmount, setBidAmount] = useState(0);
   const [autoBidAmount, setAutoBidAmount] = useState(0);
   const [minBidAmount, setMinBidAmount] = useState(0);
   const [maxBidAmount, setMaxBidAmount] = useState(0);
   const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
   const [minRankBidAmount, setMinRankBidAmount] = useState(0);
-  const [desiredRanking, setDesiredRanking] = useState(1);
+  const [desiredRank, setDesiredRank] = useState(1);
   const [manualRanking, setManualRanking] = useState(1);
 
   const [user, error] = useAuthState(auth);
@@ -166,38 +166,14 @@ export default function Auction({
 		}
 	}
 
-  const handleMaxBidAmount = function (value) {
-    if (bids.length > 0) {
-      let sortedBids = bids;
-      let bidAtDesiredRanking = sortedBids[parseInt(value) - 1];
-      let thirtyPer = (bidAtDesiredRanking?.price / 100) * 30;
-      let maxIncrement = 5;
-      if (thirtyPer > 5) {
-        maxIncrement = thirtyPer;
-      }
-      maxIncrement = Math.round(maxIncrement * 2) / 2;
-
-      setMaxBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
-      setAutoBidAmount(parseFloat(bidAtDesiredRanking?.price) + maxIncrement);
-      if (!bidAtDesiredRanking) {
-        setMaxBidAmount(0.0);
-        setAutoBidAmount(0.0);
-      }
-    }
-
-    if (parseInt(value) > bids.length) {
-      setMaxBidAmount(0.0);
-    }
-  };
-
-  const handleDesiredRanking = function (e) {
+  const handleDesiredRank = function (e) {
     // prevent values less than 0 or higher than 20.
     console.log("Num interactions", campaignData?.numAuctionInteractions);
     e.target.value < 1
       ? (e.target.value = 1)
       : e.target.value > parseInt(campaignData?.numAuctionInteractions)
       ? (e.target.value = campaignData?.numAuctionInteractions)
-      : setDesiredRanking(e.target.value);
+      : setDesiredRank(e.target.value);
     handleMaxBidAmount(e.target.value);
 	const handleDesiredRank = function(e){
 		// prevent values less than 0 or higher than 20.
@@ -235,11 +211,11 @@ export default function Auction({
   };
 
   useEffect(() => {
-    handleMaxBidAmount(desiredRanking);
+    handleMaxBidAmount(desiredRank);
   }, []);
 
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCostomerId, setUserCostomerId] = useState(null);
+  const [userCustomerId, setUserCustomerId] = useState(null);
 
   const handleBackPopup = () => {
     setOpen(false);
@@ -265,8 +241,8 @@ export default function Auction({
     .then((resp) => {
       console.log(resp.paymentMethod);
       const pmid = resp?.paymentMethod?.id;
-      if (pmid && userCostomerId) {
-        getRequest(`/method/attach/${userCostomerId}/${pmid}`)
+      if (pmid && userCustomerId) {
+        getRequest(`/method/attach/${userCustomerId}/${pmid}`)
           .then((resp) => {
             setOpen(false);
             if (resp.data.added) {
@@ -283,7 +259,7 @@ export default function Auction({
               Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "An error occured",
+                text: "An error occurred",
               });
             }
           })
@@ -294,7 +270,7 @@ export default function Auction({
             Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "An error occured",
+              text: "An error occurred",
             });
           });
       }
@@ -304,7 +280,7 @@ export default function Auction({
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "An error occured",
+          text: "An error occurred",
         });
       }
       console.log(resp);
@@ -316,7 +292,7 @@ export default function Auction({
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "An error occured",
+        text: "An error occurred",
       });
     });
   };
@@ -327,7 +303,7 @@ export default function Auction({
       const colledoc = await getDocs(q);
       const data = colledoc.docs[0].data();
       data.id = colledoc.docs[0].id;
-      setuserCustomerID(data.customerId);
+      setUserCustomerID(data.customerId);
       setCurrentUser(data);
     } catch (err) {
       console.error(err);
@@ -413,27 +389,7 @@ export default function Auction({
       </MenuItem>
     );
   }
-  const followCampaign = async () => {
-    const targetUser = await fetchUserByName(campaignData?.person?.username);
-    if (user === undefined) {
-      console.log("You need to sign in to follow");
-      navigate("/a/signin");
-      return;
-    }
-    if (!targetUser?.followers?.includes(user?.id)) {
-      followUser(user, targetUser);
-    }
-  };
-  const handleBidClick = async (
-    amount,
-    auto = false,
-    desiredRanking = null,
-    maxBidPrice = null,
-    minBidPrice = null
-  ) => {
-    followCampaign();
-    bidAction(amount, auto, desiredRanking, maxBidPrice, minBidPrice);
-  };
+
   return (
     <>
       <ConfirmAuctionPopup
@@ -441,11 +397,11 @@ export default function Auction({
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
-        desiredRanking={desiredRanking}
+        desiredRank={desiredRank}
         onaddclick={handleOpen}
         price={maxBidAmount}
-        userCostomerId={userCostomerId}
-        bidAction={() => bidAction(autoBidAmount,true,desiredRanking,maxBidAmount)}
+        userCustomerId={userCustomerId}
+        bidAction={() => bidAction(autoBidAmount,true,desiredRank,maxBidAmount)}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
         autobid={true}
@@ -456,10 +412,10 @@ export default function Auction({
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
         allprimarymethod={paymentMethods}
-        desiredRanking={manualRanking}
+        desiredRank={manualRanking}
         onaddclick={handleOpen}
         price={bidAmount}
-        userCostomerId={userCostomerId}
+        userCustomerId={userCustomerId}
         bidAction={() => bidAction(bidAmount,false,null,null,minBidAmount)}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
@@ -616,8 +572,8 @@ export default function Auction({
 
 
 
-        <Divider sx={{ my: 1.69 }}>or</Divider>
-        <Stack id="normalBidSection" direction="column" >
+      <Divider sx={{ my: 1.69 }}>or</Divider>
+      <Stack id="normalBidSection" direction="column" >
 			<Typography variant="h5" color="text.secondary" mb={1.21}>
 				Manual bid&nbsp;&nbsp;
 				<InfoTooltip
@@ -665,7 +621,7 @@ export default function Auction({
             Place bid
           </InteractButton>
           {/* </form> */}
-        </Stack>
+      </Stack>
     </JumboCardQuick>
     </>
   );
