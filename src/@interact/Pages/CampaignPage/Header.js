@@ -14,7 +14,7 @@ import { getDateFromTimestamp } from "app/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { light } from "@mui/material/styles/createPalette";
-
+import {localizationServices} from "app/services/localization"
 export default function Header({ campaignData }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
 
@@ -53,7 +53,7 @@ export default function Header({ campaignData }) {
             Campaign ends at{" "}
             {getDateFromTimestamp({
               timestamp: campaignData?.endDateTime?.seconds,
-              format: " h:mm a [EST on] dddd, MMMM Do YYYY",
+              format: ` h:mm a [${localizationServices.getDeviceTimezone()} on] dddd, MMMM Do YYYY`,
             })}
           </Span>
         </Typography>
