@@ -92,13 +92,13 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
       schedule,
       timezone:timeZone
     });
-
     postRequest("/user/register", formData).then(async (resp) => {
         setDoc(doc(db, "users", user.uid), {customerId: resp.data.customer.id}, {merge:true});
       })
       .catch((err) => {
         console.log(err);
       });
+      return true;
   } catch (err) {
     console.error(err);
     Swal.fire("Error!", err.message, "error");

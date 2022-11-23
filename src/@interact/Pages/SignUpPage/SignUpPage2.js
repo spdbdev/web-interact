@@ -5,7 +5,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useEffect, useState, useRef } from "react";
 import Swal from 'sweetalert2';
 import ScheduleSelector from 'react-schedule-selector'
-import TimezoneSelect from 'react-timezone-select'
+import { useSelector } from "react-redux";
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -36,6 +36,9 @@ import { getUserCountryName } from "app/utils";
 import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
 import {useJumboApp} from "@jumbo/hooks";
 import { TabContext, TabPanel } from "@mui/lab";
+import { Formik } from "formik";
+import moment from "moment";
+import { async } from "@firebase/util";
 
 const StyledTab = styled((props) => <Tab {...props} />)(
   ({ theme }) => ({
@@ -54,30 +57,24 @@ const StyledTab = styled((props) => <Tab {...props} />)(
 
 // newer SignUpPage with birthday.
 function SignUpPage2() {
-  const [birdthday, setBirthday] = React.useState(null);
-  const [birthdayError, setBirthdayError] = useState(false);
-  const [birthdayErrorMessage, setBirthdayErrorMessage] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordAgain, setPasswordAgain] = useState("");
-  const [isPassValid,setIsPassValid] = useState(false);
+  const [name,setName] = useState("");
+  const [legalName,setLegalName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [birthday,setBirthday] = useState("");
   const [country,setCountry] = useState("");
-  const [name, setName] = useState("");
-  const [legalName, setLegalName] = useState("");
-  const [nameError,setNameError] = useState("");
+  const [usernameError,setUserNameError] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const [imageUrl,setImageUrl] = useState(null);
   const [image,setImage] = useState(null);
   const [selectedTabIndex,setSelectedTabIndex] = useState(0);
-  const [stepTwoVisited,setStepTwoVisited] = useState(false);
+  const [isValid,setIsValid] = useState(false);
   const [schedule, setSchedule] = useState([])
-  const [timeZone, setTimeZone] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   
-  const [legalNameError,setLegalNameError] = useState("");
-  const [emailError,setEmailError] = useState("");
-
+  const DEVICE_TIMEZONE = useSelector((state) => state.localization.deviceTimezone);
+  
 
   const fileRef = useRef();
 
@@ -86,67 +83,85 @@ function SignUpPage2() {
     fileRef.current.click();
   }
 
-  const handleChange = (newSchedule) => {
+  //Form Data
+
+  const initialValues = {
+    email:'',
+    username:'',
+    legalName:'',
+    birthday:moment().subtract('years',13),
+    password:'',
+    passwordAgain:''
+  };
+
+  const onFormSubmit = async (values,{setSubmitting})=>{
+    const isDuplicate = await checkDuplicate(values.username);
+    console.log(isDuplicate)
+    if(isDuplicate){
+      setUserNameError("Name already in use");
+      return;
+    }
+    setName(values.username);
+    setLegalName(values.legalName);
+    setPassword(values.password);
+    setEmail(values.email);
+    setBirthday(values.birthday);
+    setSubmitting(false);
+    nextStep();
+  };
+
+  const validator = (values)=>{
+    const errors = {};
+    //email
+    if (!emailValid(values.email)){
+      errors.email = "Invalid email";
+    }else if(!values.email){
+      errors.email = "Email is required";
+    }
+    //birthday
+    const crrDate = new Date();
+    const dobDate = new Date(values.birthday);
+    if((crrDate.getFullYear() - dobDate.getFullYear()) < 13){
+      errors.birthday = "Age limit is 13 years";
+    }
+    //username
+    if(values.username.length > 15){
+      errors.username = "Cannot be longer than 15 characters.";
+    }else if(/\s/.test(values.username)){
+      errors.username = "Whitespaces are not allowed";
+    }else if(JSON.stringify(values.username).includes('\\')){
+      errors.username = "Cannot contain '\\'"
+    }else if(JSON.stringify(values.username).match("undefined")){
+      errors.username = "Username cannot be 'undefined'";
+    }else if(values.username.length < 3){
+      errors.username = "Invalid username"
+    }
+    if(/^[A-Za-z\s]+$/.test(values.legalName)){
+      console.log("is valid name");
+    }else{
+      errors.legalName = "Invalid name";
+    }
+    setUserNameError('');
+    return errors;
+  }
+
+  const handleChangeSchedule = (newSchedule) => {
     setSchedule(newSchedule)
   }
 
-  const emailValid = (_email = email) => {
-    return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
+  const emailValid = (_email = 'abcd@gmail.com') => {
+    return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(_email);
   }
 
   const checkDuplicate = async (name) => {
     const doc = await getUserByName(name);
+    console.log(doc);
     if(doc === null) return false;
     else return true;
   }
-  
-
-  const validate = async function(){
-    let isValid = true;
-    if(name.length > 15){
-      setNameError("Cannot be longer than 15 characters.");
-      isValid = false;
-    }else if(/\s/.test(name)){
-      setNameError("Whitespaces are not allowed");
-      isValid = false;
-    }else if(JSON.stringify(name).includes('\\')){
-      setNameError("Cannot contain '\\'")
-      isValid = false;
-    }else if(JSON.stringify(name).match("undefined")){
-      setNameError("Username cannot be 'undefined'")
-      isValid = false;
-    }else if(await checkDuplicate(name) === true){
-      setNameError("Name already in use");
-      isValid = false;
-    }else{
-      setNameError("");
-    }
-
-
-    if (!emailValid) {
-      setEmailError("Invalid email");
-      isValid = false;
-    }
-    else{
-      setEmailError("");
-    }
-
-    if(/^[A-Za-z\s]+$/.test(legalName)){
-      setLegalNameError("");
-    }else if (JSON.stringify(legalName).match("")){
-      setLegalNameError("");
-    }else{
-      setLegalNameError("Invalid name");
-      isValid = false;
-    }
-    return isValid;
-
-    
-  }
 
   const nextStep = () => {
-    if (!validate() || birthdayError) return;
-    if (!isPassValid) {
+    if (!isValid) {
       Swal.fire(
         "Incorrect!",
         "Password is not valid",
@@ -155,22 +170,15 @@ function SignUpPage2() {
       return;
     }
     setSelectedTabIndex(selectedTabIndex+1);
-    setStepTwoVisited(true);
   }
   const prevStep = () => {
     setSelectedTabIndex(selectedTabIndex-1);
   }
 
-  const register = () => {
-    if (!timeZone) {
-      Swal.fire(
-        "Required!",
-        "TimeZone is required",
-        "error"
-        );
-      return;
-    }
-    if(registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country, schedule, timeZone)){
+  const register =async () => {
+    const resp = await registerWithEmailAndPassword(name, legalName, email, password, imageUrl, country, schedule, DEVICE_TIMEZONE);
+    console.log("resp",resp)
+    if(resp){
       let redirectUrl = new URLSearchParams(location.search).get('redirect');
       if(redirectUrl){
         return navigate(redirectUrl);
@@ -225,23 +233,6 @@ function SignUpPage2() {
     }
   };
 
-  const checkBirthdayValidation = function(value){
-    const crrDate = new Date();
-    const dobDate = new Date(value);
-    if((crrDate.getFullYear() - dobDate.getFullYear()) < 13){
-      setBirthdayError(true);
-      setBirthdayErrorMessage('You must be over the age of 13');
-    }else{
-      setBirthdayError(false);
-      setBirthdayErrorMessage(null);
-    }
-  }
-
-  const handleBirthdayChange = function(value){
-    checkBirthdayValidation(value);
-    setBirthday(value);
-  }
-
   const setRandomImage = function(){
     setImage(profile_images[Math.floor(Math.random() * profile_images.length)]);
     setImageUrl(profile_images[Math.floor(Math.random() * profile_images.length)]);
@@ -290,166 +281,163 @@ function SignUpPage2() {
       </Tabs>
       </Container>
       <TabPanel value={0} index={0} style={{padding:'0'}}>
-      <div className="CredentialBox">
-        <img
-          src={process.env.PUBLIC_URL + "/logo.png"}
-          alt="logo"
-          style={{ height: 120, padding: 20 }}
-        />
-        <div className="profile_pic" style={{position: "relative",margin:"1rem"}}>
-          <img
-            src={image}
-            alt="profile image"
-            style={{height: 100, padding: 10, borderRadius:"50%"}}
-          />
-          <input type="file" accept="image/*" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
-          <EditIcon onClick={(e)=>handleFileClick(e)} className="profile_pic--icon"/>
-        </div>
-        <div style={{ paddingTop: 0 }}>
-          Already have an account? <Link to="/a/signin">Log in</Link>
-        </div>
-        <br></br>
-        {/* need to set google sign in in the firebase console, rn its only email/password*/}
-        <Button className="SignUpWithGoogle" onClick={signInWithGoogle}>
-          <img src={gl_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
-          <div>Sign up with Google</div>
-        </Button>
-        {/* <br /> */}
-        <Button
-          className="SignUpWithGoogle"
-          style={{
-            backgroundColor: "#1778F2",
-            color: "white",
-            display: "flex",
-          }}
-        >
-          <img src={fb_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
-          <div>Sign up with Facebook</div>
-        </Button>
-        <br />
-        or
-        <br />
-        
-        <div className="TextInputWrapper">
-          <TextField
-            id="outlined-basic"
-            label="Email"
-            variant="outlined"
-            value={email}
-            onChange={(e) => {
-              const emailInput = e.target.value;
-              if (!emailValid(emailInput)){
-                setEmailError("Invalid email");
-              }
-              else{
-                setEmailError("");
-              }
-              setEmail(emailInput);
-            }}
-            error={Boolean(emailError)}
-            helperText={emailError}
-          />
-        </div>
-
-        <div className="TextInputWrapper">
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Date of birth"
-              value={birdthday}
-              onChange={(newValue) => {
-                handleBirthdayChange(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} error={birthdayError} helperText={birthdayErrorMessage} />}
+        <Formik 
+          initialValues={initialValues}
+          onSubmit={onFormSubmit}
+          validate={validator}>
+        {({values,errors,isSubmitting,handleSubmit,handleChange,setFieldValue})=>(
+          <form className="CredentialBox" onSubmit={handleSubmit}>
+            <img
+              src={process.env.PUBLIC_URL + "/logo.png"}
+              alt="logo"
+              style={{ height: 120, padding: 20 }}
             />
-          </LocalizationProvider>
-        </div>
-        <div className="TextInputWrapper">
-          <FormControl>
-          <InputLabel id="country-label">Country</InputLabel>
-          <Select
-            labelId="country-label"
-            id="country-select"
-            value={country}
-            label="Country"
-            onChange={(e)=>setCountry(e.target.value)}
-          >
-            {Country.getAllCountries().map((country)=>{
-              return <MenuItem value={country.name}>{country.name}</MenuItem>
-            })}
-          </Select>
-          </FormControl>
-        </div>
-        
-        <div style={{width:"80%", align: "center", padding:"10px"}}>
-          <Alert severity="warning">
-            <Typography fontSize= {"13.21px"}>Username can't be changed in the future
-            </Typography>
-            </Alert>
-        </div>
-        <div className="TextInputWrapper">
-          <TextField
-            error={nameError.length > 0}
-            id="outlined-basic"
-            label="Username"
-            variant="outlined"
-            value={name}
-            helperText={nameError}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        
-        <div className="TextInputWrapper">
-          <TextField
-            error={legalNameError.length > 0}
-            id="outlined-basic"
-            label="Name"
-            variant="outlined"
-            value={legalName}
-            helperText={legalNameError}
-            onChange={(e) => setLegalName(e.target.value)}
-          />
-        </div>
+            <div className="profile_pic" style={{position: "relative",margin:"1rem"}}>
+              <img
+                src={image}
+                alt="profile image"
+                style={{height: 100, padding: 10, borderRadius:"50%"}}
+              />
+              <input type="file" accept="image/*" onChange={(e)=>handleChangeImage(e)} ref={fileRef}/>
+              <EditIcon onClick={(e)=>handleFileClick(e)} className="profile_pic--icon"/>
+            </div>
+            <div style={{ paddingTop: 0 }}>
+              Already have an account? <Link to="/a/signin">Log in</Link>
+            </div>
+            <br></br>
+            {/* need to set google sign in in the firebase console, rn its only email/password*/}
+            <Button className="SignUpWithGoogle" onClick={signInWithGoogle}>
+              <img src={gl_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
+              <div>Sign up with Google</div>
+            </Button>
+            {/* <br /> */}
+            <Button
+              className="SignUpWithGoogle"
+              style={{
+                backgroundColor: "#1778F2",
+                color: "white",
+                display: "flex",
+              }}
+            >
+              <img src={fb_logo} style={{ height: "100%", paddingRight: 10 }} />{" "}
+              <div>Sign up with Facebook</div>
+            </Button>
+            <br />
+            or
+            <br />
+            <div className="TextInputWrapper">
+              <TextField
+                id="outlined-basic"
+                label="Email"
+                name="email"
+                variant="outlined"
+                value={values.email}
+                onChange={handleChange}
+                error={errors.email}
+                helperText={errors.email}
+              />
+            </div>
 
-        <div className="TextInputWrapper">
-          <TextField
-            id="outlined-basic"
-            label="Create a password"
-            variant="outlined"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="TextInputWrapper">
-          <TextField
-            id="outlined-basic"
-            label="Retype your password"
-            variant="outlined"
-            type="password"
-            value={passwordAgain}
-            onChange={(e) => setPasswordAgain(e.target.value)}
-          />
-        </div>
-        <PasswordChecklist
-          rules={["minLength", "number", "match"]}
-          minLength={6}
-          value={password}
-          valueAgain={passwordAgain}
-          onChange={(isValid) => {
-            setIsPassValid(isValid);
-          }}
-        />
+            <div className="TextInputWrapper">
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="Date of birth"
+                  value={values.birthday}
+                  maxDate={moment().subtract('years',13)}
+                  onChange={(value)=>setFieldValue('birthday',value,true)}
+                  renderInput={(params) => <TextField {...params} name="birthday" error={errors.birthday} helperText={errors.birthday} />}
+                />
+              </LocalizationProvider>
+            </div>
+            <div className="TextInputWrapper">
+              <FormControl>
+              <InputLabel id="country-label">Country</InputLabel>
+              <Select
+                labelId="country-label"
+                id="country-select"
+                value={country}
+                label="Country"
+                onChange={(e)=>setCountry(e.target.value)}
+              >
+                {Country.getAllCountries().map((country)=>{
+                  return <MenuItem value={country.name}>{country.name}</MenuItem>
+                })}
+              </Select>
+              </FormControl>
+            </div>
+            
+            <div style={{width:"80%", align: "center", padding:"10px"}}>
+              <Alert severity="warning">
+                <Typography fontSize= {"13.21px"}>Username can't be changed in the future
+                </Typography>
+                </Alert>
+            </div>
+            <div className="TextInputWrapper">
+              <TextField
+                error={errors.username || usernameError}
+                id="outlined-basic"
+                name="username"
+                label="Username"
+                variant="outlined"
+                value={values.username}
+                helperText={errors.username || usernameError}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="TextInputWrapper">
+              <TextField
+                error={errors.legalName}
+                id="outlined-basic"
+                name="legalName"
+                label="Name"
+                variant="outlined"
+                value={values.legalName}
+                helperText={errors.legalName}
+                onChange={handleChange}
+              />
+            </div>
 
-        {/* <FormControlLabel control={<Checkbox />} label={"I agree to all " + <a href='https://eforms.com/release/media/'>terms and services</a>} /> */}
-        
-        <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
-          <InteractFlashyButton
-          onClick={nextStep}>Next →</InteractFlashyButton>
-        </div>
-        <div style={{ paddingTop: 20, paddingBottom: 16.21}}>
-          Already have an account? <Link to="/a/signin">Log in</Link>
-        </div>
-      </div>
+            <div className="TextInputWrapper">
+              <TextField
+                id="outlined-basic"
+                label="Create a password"
+                variant="outlined"
+                type="password"
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="TextInputWrapper">
+              <TextField
+                id="outlined-basic"
+                label="Retype your password"
+                variant="outlined"
+                name="passwordAgain"
+                type="password"
+                value={values.passwordAgain}
+                onChange={handleChange}
+              />
+            </div>
+            <PasswordChecklist
+              rules={["minLength", "number", "match"]}
+              minLength={6}
+              value={values.password}
+              valueAgain={values.passwordAgain}
+              onChange={(isValid)=>setIsValid(isValid)}
+            />
+
+            {/* <FormControlLabel control={<Checkbox />} label={"I agree to all " + <a href='https://eforms.com/release/media/'>terms and services</a>} /> */}
+            
+            <div className="ButtonsWrapper" style={{margin:10, paddingTop:13.69}}>
+              <InteractFlashyButton type="submit" disabled={isSubmitting}>Next →</InteractFlashyButton>
+            </div>
+            <div style={{ paddingTop: 20, paddingBottom: 16.21}}>
+              Already have an account? <Link to="/a/signin">Log in</Link>
+            </div>
+        </form>)}
+        </Formik>
       </TabPanel>
       <TabPanel value={1} index={1} style={{padding:'0'}}>
         <div className="CredentialBox">
@@ -470,7 +458,7 @@ function SignUpPage2() {
                         rowGap='1px'
                         columnGap='1px'
                         hourlyChunks={4}
-                        onChange={handleChange} 
+                        onChange={handleChangeSchedule} 
                         unselectedColor='#ddd' 
                         renderDateLabel={
                             (date)=>{return <div>{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()]}</div>}
@@ -492,14 +480,6 @@ function SignUpPage2() {
                         // }}
                         selectedColor='#782fee'
                     />
-
-            <div style={{width:'100%',marginTop:'2rem'}}>
-              Time zone:
-              <TimezoneSelect 
-                  value={timeZone}
-                  onChange={(e)=>setTimeZone(e.value)}
-              />
-            </div>
         <div
           style={{
             display: "flex",
