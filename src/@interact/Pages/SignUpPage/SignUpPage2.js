@@ -330,6 +330,7 @@ function SignUpPage2() {
                 id="outlined-basic"
                 label="Email"
                 name="email"
+                type="email"
                 variant="outlined"
                 value={values.email}
                 onChange={handleChange}
@@ -445,9 +446,11 @@ function SignUpPage2() {
             <InteractFlashyButton
             onClick={prevStep}>← Go back</InteractFlashyButton>
           </div>
-                    <Typography fontSize={23.21} align="center" width={332.69} fontWeight={'500'}>Choose your{" "}</Typography>
-                    <Typography color='#782fee' align="center" fontSize={23.21}  width={332.69} fontWeight={'500'}>general availability</Typography>
-                    <Typography fontSize={23.21} align="center"  width={332.69} fontWeight={'500'} mb={1.2121}>{" "}from Monday—Sunday.</Typography>
+                    <Typography width={332.69} align="center" mb={1.2121}>
+                      <Typography variant="span" fontSize={23.21} fontWeight={'500'}>Choose your{" "}</Typography>
+                      <Typography variant="span" color='#782fee' fontSize={23.21} fontWeight={'500'}>general availability</Typography>
+                      <Typography variant="span" fontSize={23.21} fontWeight={'500'}>{" "}from Monday—Sunday.</Typography>
+                    </Typography>
                       <Typography align="center" width={332.69} fontWeight={'400'} mb={3.69}>After you win an interaction, 
                       you will be matched with that creator's weekly released schedule according to the availability you set here (editable on your profile).</Typography>
                     <ScheduleSelector
