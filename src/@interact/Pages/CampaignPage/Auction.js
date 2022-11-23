@@ -54,7 +54,7 @@ const manualbid = [
 
 const belowAutobidTitle = "The bid will place you Xth on the leaderboard (if others do not bid higher)";
 
-export default function Auction({isCampaignEnded, bids, campaignData, bidAction}) {
+export default function Auction({isCampaignEnded, isCampaignScheduled, bids, campaignData, bidAction}) {
 	
 	const navigate = useNavigate();
 	const [bidAmount, setBidAmount] = useState(0);
@@ -605,7 +605,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           />
           </FormControl>
 
-          <InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(autoBidAmount,true,desiredRank,maxBidAmount)}>
+          <InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(autoBidAmount,true,desiredRank,maxBidAmount)}>
           Place auto-bid
           </InteractButton>
         </Stack>
@@ -645,7 +645,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
         </Stack>
 
           {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
-          <InteractButton disabled={isCampaignEnded} onClick={() => handleBidClick(bidAmount,false,null,null,minBidAmount)}>
+          <InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(bidAmount,false,null,null,minBidAmount)}>
           Place bid
           </InteractButton>
         </Stack>
