@@ -303,7 +303,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
                   Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: "An error occured",
+                    text: "An error occurred",
                   });
                 }
               })
