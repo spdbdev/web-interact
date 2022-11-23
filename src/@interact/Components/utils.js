@@ -68,3 +68,28 @@ export function getUserCountryName(){
     })
     return location?.name;
 }
+
+export const commentPostedTime = (timeInMileSec) => {
+  const sec = (timeInMileSec / 1000).toFixed(0);
+  const min = (timeInMileSec / (1000 * 60)).toFixed(0);
+  const hrs = (timeInMileSec / (1000 * 60 * 60)).toFixed(0);
+  const days = (timeInMileSec / (1000 * 60 * 60 * 24)).toFixed(0);
+  const weeks = (timeInMileSec / (1000 * 60 * 60 * 24 * 7)).toFixed(0);
+  const months = (timeInMileSec / (1000 * 60 * 60 * 24 * 31)).toFixed(0);
+  const years = (timeInMileSec / (1000 * 60 * 60 * 24 * 12)).toFixed(0);
+  if (sec < 60) {
+    return "Just now";
+  } else if (min < 60) {
+    return min + " mins ago";
+  } else if (hrs < 24) {
+    return hrs + " hrs ago";
+  } else if (days < 7) {
+    return days + " days ago";
+  } else if (weeks < 4) {
+    return weeks + " weeks ago";
+  } else if (months < 12) {
+    return months + " months ago";
+  } else {
+    return years + " years ago";
+  }
+};

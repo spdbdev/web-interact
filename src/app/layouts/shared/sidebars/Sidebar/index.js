@@ -5,6 +5,7 @@ import { DrawerHeader } from "@jumbo/components/JumboLayout/style";
 import JumboScrollbar from "@jumbo/components/JumboScrollbar";
 import { useJumboLayoutSidebar, useJumboSidebarTheme } from "@jumbo/hooks";
 import { SIDEBAR_STYLES, SIDEBAR_VIEWS } from "@jumbo/utils/constants/layout";
+import Logo from "../../../../shared/Logo";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Zoom from "@mui/material/Zoom";
 import Div from "@jumbo/shared/Div";
@@ -152,12 +153,12 @@ const Sidebar = () => {
     },
 
     {
-      label: "FOLLOWING",
+      label: "Following",
       type: "section",
       children: followingList,
     },
     {
-      label: "RECENT CAMPAIGNS",
+      label: "Recent Campaigns",
       type: "section",
       children: recentCampaignList,
     },
@@ -198,6 +199,11 @@ const Sidebar = () => {
 
 const SidebarHeader = () => {
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
+  const isMiniAndClosed = React.useMemo(() => {
+    return sidebarOptions?.view === SIDEBAR_VIEWS.MINI && !sidebarOptions?.open;
+  }, [sidebarOptions.view, sidebarOptions.open]);
+
+  const { sidebarTheme } = useJumboSidebarTheme();
   useEffect(() => {
     setSidebarOptions({ open: true });
   }, []);
@@ -206,6 +212,7 @@ const SidebarHeader = () => {
     <React.Fragment>
       {sidebarOptions?.style !== SIDEBAR_STYLES.CLIPPED_UNDER_HEADER && (
         <DrawerHeader>
+          <Logo mini={isMiniAndClosed} mode={sidebarTheme.type} />
           {
             <Zoom in={sidebarOptions?.open}>
               <IconButton

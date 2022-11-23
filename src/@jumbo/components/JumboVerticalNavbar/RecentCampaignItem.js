@@ -82,7 +82,7 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                     }}
                 />
             </div>
-            <div style={{overflow:'hidden',height:'30px'}}>
+            <div style={{overflow:'hidden',height:'40px'}}>
                 <CustomMarquee
                     text={label}
                 >

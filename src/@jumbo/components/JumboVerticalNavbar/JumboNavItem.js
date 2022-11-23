@@ -121,7 +121,7 @@ const JumboNavItem = ({item, isNested, translate}) => {
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                            }
+                            },
                         }}
                     />
                 }

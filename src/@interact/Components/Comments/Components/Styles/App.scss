@@ -1,0 +1,23 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+.App {
+  display: flex;
+  flex-direction: column;
+  font-family: Jost,Arial;
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  background-color: $very-light-gray;
+  
+  @include media-md() {
+    gap: 20px;
+  }
+}
+
+textarea {
+  color: #3D3649;
+}

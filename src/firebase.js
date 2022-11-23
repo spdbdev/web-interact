@@ -27,7 +27,8 @@ import {
   getDoc,
   addDoc,
   updateDoc,
-  limit
+  limit,
+  deleteDoc
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { DUMMY_CAMPAIGN } from "./config";
@@ -316,6 +317,62 @@ export const fetchRecentCampaigns = async (idlist) => {
     returnData.push({...data, id});
   }
   return returnData;
+}
+
+/*
+Function to add Comments of Campaign
+*/
+export const addCommentsToDB = async (comment, campaignId) => {
+  await addDoc(collection(db, "campaigns", campaignId, "comments"), comment);
+}
+
+/*
+Function to add Reply of Comment
+Reply is array in Comment Object
+*/
+export const addRepliesToDB = async (replies, campaignId,commentId ) => {
+  await updateDoc(doc(db, "campaigns", campaignId, "comments", commentId), {replies:replies});
+}
+
+/*
+Function to edit comment
+type = comment, reply
+*/
+export const editCommentDB = async (content, id, type, parentComment, campaignId) => {
+  if(type === "comment") {  
+    await updateDoc(doc(db, "campaigns", campaignId, "comments", id), {content:content});
+  }else if(type === "reply"){
+    const docSnap = await getDoc(doc(db, "campaigns", campaignId, "comments", parentComment));
+    if (docSnap.exists()) {
+      let comment = docSnap.data();
+      comment.replies.forEach((data) => {
+        if (data.id === id) {
+          data.content = content;
+        }
+      });
+      await updateDoc(doc(db, "campaigns", campaignId, "comments", parentComment), {replies:comment.replies});
+    } else {
+      console.log("fail");
+    }
+  }
+}
+/*
+Function to delete Comment
+type = comment, reply
+*/
+export const commentDeleteDB = async (id, type, campaignId, parentComment) => {
+  if (type === "comment") {
+    await deleteDoc(doc(db, "campaigns", campaignId, "comments", id));
+  } else if (type === "reply") {
+    const docSnap = await getDoc(doc(db, "campaigns", campaignId, "comments", parentComment));
+    if (docSnap.exists()) {
+      let comment = docSnap.data();
+      let updatedReplies = comment.replies.filter((data) => data.id !== id);
+      await updateDoc(doc(db, "campaigns", campaignId, "comments", parentComment), {replies:updatedReplies});
+    } else {
+      console.log("fail");
+    }
+  }
 }
 
 export {

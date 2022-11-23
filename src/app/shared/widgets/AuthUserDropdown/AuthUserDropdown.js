@@ -60,7 +60,10 @@ const AuthUserDropdown = () => {
           <Avatar
             src={completeUser.photoURL}
             sizes={"small"}
-            sx={{ boxShadow: 25, cursor: "pointer" }}
+            style={{
+              boxShadow: '2px 2px 6px -1px grey',
+              cursor: "pointer"
+            }}
           />
         }
       >

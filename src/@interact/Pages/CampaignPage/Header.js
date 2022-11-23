@@ -14,7 +14,6 @@ import moment from "moment";
 import { getDateFromTimestamp } from "@interact/Components/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { light } from "@mui/material/styles/createPalette";
 
 export default function Header({ campaignData }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
@@ -49,11 +48,9 @@ export default function Header({ campaignData }) {
             :
             <></>
         }
-        <a href={`/u/${campaignData?.person?.username}`} style={{ color: "#782fee", fontWeight: 600 }}>
+        <a href={`/u/${campaignData?.person?.username}`} style={{ color: "#782fee" }}>
           {campaignData?.person?.username}
         </a>
-        
-        
       </Typography>
       <Divider />
       <Stack direction="column">
@@ -81,24 +78,9 @@ export default function Header({ campaignData }) {
       </Stack>
       <br></br>
       <InteractFlashyButton
-          // variant="h4"
-          // m={0}
-          // p={0}
-          // sx={{ color: "secondary.contrastText" }}
         >
           Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
       </InteractFlashyButton>
-
-      {/* <Box
-        sx={{
-          background: "linear-gradient(173.73deg, #782FEE, #DD00FF 117.43%)",
-          borderRadius: 2,
-          px: 2,
-          mb: 4,
-        }}
-      >
-       
-      </Box> */}
     </div>
   );
 }

@@ -32,7 +32,8 @@ const JumboNavSection = ({item, translate}) => {
                         fontSize: '80%',
                         fontWeight: '400',
                         lineHeight: 'normal',
-                        textTransform: 'uppercase',
+                        textTransform: 'capitalize',
+                        fontSize:'0.875rem',
                         bgcolor: 'transparent',
                         p: theme => theme.spacing(3.75, 3.75, 1.875)
                     }}

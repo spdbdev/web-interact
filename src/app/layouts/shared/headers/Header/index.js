@@ -25,7 +25,7 @@ import InteractLogo from "@interact/Components/TopBar/tempLogo.png";
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { sidebarOptions, setSidebarOptions } = useJumboLayoutSidebar();
-  const [dropdownSearchVisibility, setDropdownSearchVisibility] = React.useState(true);
+  const [dropdownSearchVisibility, setDropdownSearchVisibility] = React.useState(false);
   const { headerTheme } = useJumboHeaderTheme();
   const [isHovering, setIsHovering] = useState(false);
 
@@ -100,14 +100,16 @@ const Header = () => {
         <JumboIconButton
           elevation={25}
           onClick={() => setDropdownSearchVisibility(!dropdownSearchVisibility)}
+          style={{
+            boxShadow: '2px 2px 6px -1px grey',
+          }}
         >
           <SearchIcon fontSize={"small"} />
         </JumboIconButton>
-
         {isLoggedIn &&
         <>
         <NotificationsDropdown />
-        <AuthUserDropdown />
+        <AuthUserDropdown/>
         </>}
         {!isLoggedIn &&
         <Link to="/a/signin" style={{textDecoration: 'none'}}>

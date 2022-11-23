@@ -4,19 +4,16 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { db } from "@jumbo/services/auth/firebase/firebase";
-// import TableComponent from "../TableComponent/TableComponent";
-// import Faq from "../Faq/Faq";
-// import Comments from "../Comments/Comments";
 import Supporters from "../Supporters/Supporters";
 import { getDocs, collection } from "firebase/firestore";
-import Comments from "../Comments/Comments";
+import CommentApp from "../Comments/CommentApp";
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  
 
   return (
     <div
@@ -46,6 +43,7 @@ function CampaignInfo({
   const [value, setValue] = React.useState(0);
   const [supporters, setSupporters] = React.useState([]);
   const [winners, setWinners] = React.useState([]);
+  const { user } = useCurrentUser();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -120,7 +118,7 @@ function CampaignInfo({
           size="50"
         >
           <StyledTab label="Campaign info" color="inherit" />
-          <StyledTab label="Comments" />
+          <StyledTab label={`Comments (${comments.length})`} />
           {isCampaignEnded && <Tab label="Winners" />}
           <StyledTab label="Supporters" />
         </Tabs>
@@ -129,7 +127,7 @@ function CampaignInfo({
         {campaignData?.info?.description}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Comments comments={comments} campaignId={campaignId} />
+        <CommentApp comments={comments} campaignId={campaignId} user={user} isCampaignCreator={campaignData?.person?.id === user?.id ? true : false}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Supporters supporters={supporters} campaignId={campaignId} />

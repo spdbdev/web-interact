@@ -33,7 +33,9 @@ const NotificationsDropdown = () => {
             <JumboDdPopover
                 triggerButton={
                     <ThemeProvider theme={headerTheme}>
-                        <JumboIconButton badge={{variant: "dot"}} elevation={25}>
+                        <JumboIconButton badge={{variant: "dot"}} elevation={25} style={{
+                            boxShadow: '2px 2px 6px -1px grey',
+                        }}>
                             <NotificationImportantOutlinedIcon sx={{fontSize: '1.25rem'}}/>
                         </JumboIconButton>
                     </ThemeProvider>

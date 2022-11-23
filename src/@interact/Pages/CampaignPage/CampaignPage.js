@@ -138,11 +138,13 @@ function CampaignPage(userData) {
     );
 
     const commentsListener = onSnapshot(
-      query(collection(db, "campaigns", campaignId, "comments")),
+      query(collection(db, "campaigns", campaignId, "comments"), orderBy("createdAt")),
       (querySnapshot) => {
         let commentsList = [];
         querySnapshot.forEach((doc) => {
-          commentsList.push(doc.data());
+          let data = doc.data();
+          let id   = doc.id;
+          commentsList.push({...data, id});
         });
         setComments(commentsList);
       }

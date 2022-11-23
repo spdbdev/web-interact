@@ -134,6 +134,7 @@ const SearchGlobal = ({ sx }) => {
                         width: isonmobile ? '130px' : '280px',
                         maxHeight:'40px',
                         padding:'0', 
+                        boxShadow: '2px 2px 6px -1px grey',
                       },
                       "& .MuiAutocomplete-inputRoot input": {
                         marginLeft: '15px',

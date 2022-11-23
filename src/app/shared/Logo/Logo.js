@@ -7,12 +7,12 @@ import {ASSET_IMAGES} from "../../utils/constants/paths";
 const Logo = ({mini, mode, sx}) => {
     return (
         <Div sx={{display: "inline-flex", ...sx}}>
-            <Link href={'/dashboards/misc'}>
+            <Link href={'/'}>
                 {
                     !mini ?
-                        <img src={ mode === "light" ? `${ASSET_IMAGES}/logo.png` : `${ASSET_IMAGES}/logo-white.png`} alt="Jumbo React" />
+                        <img width="110" height="30" src={ mode === "light" ? `${ASSET_IMAGES}/blankLogoFiller.png` : `${ASSET_IMAGES}/blankLogoFiller.png`} alt="logo" />
                         :
-                        <img src={mode === "light" ? `${ASSET_IMAGES}/logo-short.png` : `${ASSET_IMAGES}/logo-short-white.png`} alt="Jumbo React" />
+                        <img width="40" height="30" src={mode === "light" ? `${ASSET_IMAGES}/blankLogoFiller.png` : `${ASSET_IMAGES}/blankLogoFiller.png`} alt="logo" />
                 }
             </Link>
         </Div>
