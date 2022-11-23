@@ -647,15 +647,15 @@ export default function Giveaway({
 
 			<Box id="VIPGiveawaySection">
 				<Typography variant="h5" color="text.secondary" mt={1}>
-				VIP entry {" "}
+				VIP entry &nbsp;
           		<InfoTooltip title="Get a 25x increased chance of winning" />
 				</Typography>
 
 				<span>
 				Chance multiplier: {vipChanceMultiplier}x
 				</span>
-				<Stack direction="row" spacing={1} alignItems="center">
-				<span>Chance of winning: {winningChances.vip}%</span>
+				<Stack direction="row" alignItems="center">
+				<span>Chance of winning: {winningChances.vip}%</span>&nbsp;&nbsp;
 				<InfoTooltip
 					title="Only 1 entry is allowed per user. Each time you lose, the next giveaway with the same creator 
 					will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to 100x 

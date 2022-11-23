@@ -529,16 +529,17 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
         className="auctionCard"
         >
         <Stack direction="column">
-          <Typography mt={1.21} maxWidth={326.9}>
+          <Typography mt={1.21} maxWidth={316.9}>
             The top{" "}
             <Span sx={{ color: "primary.main", fontWeight: 600 }}>{campaignData?.numAuctionInteractions}</Span>{" "}
-            bidders win interactions & pay
-            at the end of the campaign ({getDateFromTimestamp({
-              timestamp: campaignData?.endDateTime?.seconds,
-              format: "h:mm a [EST on] MMM Do",
-            })})
-            <Span sx={{color: "text.hint"}}>;
-            if you are no longer on the leaderboard, you won't be charged</Span>
+            bidders win an interaction & pay
+            at the end of the campaign;{" "}
+            <Span sx={{color: "text.hint"}}>if you don't win (not on the leaderboard), you won't be charged</Span>&nbsp;&nbsp;
+            <InfoTooltip
+            title="If you're no longer on the leaderboard, you won't be charged. If you are on the leaderboard at the end of the campaign, a top bidder, you will win 
+            a premium interaction that occurrs before winners from 
+            the giveaway."
+            />
           </Typography>
           <Typography >
             Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x{" "}
@@ -554,11 +555,11 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
 
         </Stack>
         <br></br>
-        <Stack id="autoBidSection" direction="column" spacing={2}>
-          <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-          <Typography variant="h6" color="text.secondary" mb={0}>
+        <Stack id="autoBidSection" direction="column" >
+          <Stack direction="row" alignItems="center" mb={1.21}>
+          <Typography variant="h5" color="text.secondary" mb={0}>
             Auto-bid
-          </Typography>
+          </Typography>&nbsp;&nbsp;
           <InfoTooltip
             title="We'll automatically bid the lowest amount to stay at your 
             desired rank on the leaderboard until your max bid is reached; if others 
@@ -566,7 +567,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           />
           </Stack>
 
-          <FormControl sx={{ my: 1 }}>
+          <FormControl sx={{ my: 1.21 }}>
           <InputLabel htmlFor="desired-ranking">Desired rank</InputLabel>
           <Select
             id="desired-rank"
@@ -580,7 +581,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           </Select>
           </FormControl>
         
-          <Typography>
+          <Typography >
             <Span sx={{ color: "primary.main", fontWeight: 600}}>
               &nbsp;&nbsp;&nbsp;${minRankBidAmount
               && `${ formatMoney(
@@ -590,7 +591,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
             minimum bid for {desiredRank}{nth(desiredRank)} place
           </Typography>
 
-          <FormControl sx={{ my: 1 }}>
+          <FormControl sx={{ mb:1.69, mt:1.869 }}>
           <InputLabel htmlFor="max-bid-amount">Max bid amount</InputLabel>
           <OutlinedInput
             id="max-bid-amount"
@@ -608,10 +609,10 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           Place auto-bid
           </InteractButton>
         </Stack>
-        <Divider sx={{ my: 2 }}>or</Divider>
-        <Stack id="normalBidSection" direction="column" spacing={2}>
-          <Typography variant="h6" color="text.secondary" mb={0}>
-          Manual bid {" "}<InfoTooltip
+        <Divider sx={{ my: 1.69 }}>or</Divider>
+        <Stack id="normalBidSection" direction="column" >
+          <Typography variant="h5" color="text.secondary" mb={1.21}>
+          Manual bid&nbsp;&nbsp;<InfoTooltip
             title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking"
             />
           </Typography>
@@ -619,7 +620,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
           {/* <div>Original Price: <span class='Highlight'>{'$'}20</span></div> */}
 
         <Stack direction="column" spacing={0}>
-          <Typography mb={1.21}>
+          <Typography mb={1.69}>
             <Span sx={{ color: "primary.main", fontWeight: 600}}>
               &nbsp;&nbsp;&nbsp;${minBidAmount
               && `${ formatMoney(
@@ -628,7 +629,7 @@ export default function Auction({isCampaignEnded, bids, campaignData, bidAction}
             </Span>{" "}
             minimum bid
           </Typography>
-          <FormControl sx={{ my: 1 }}>
+          <FormControl sx={{ mt: 0.2169, mb:1.69 }}>
           <InputLabel htmlFor="enter-bid-price">Enter bid price</InputLabel>
           <OutlinedInput
             id="enter-bid-price"
