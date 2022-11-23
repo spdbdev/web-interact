@@ -255,44 +255,29 @@ function CampaignPage(userData) {
     }
   };
 
-  const bid = async (
-    amount,
-    auto = false,
-    desiredRanking = null,
-    maxBidPrice = null,
-    minBidPrice = null
-  ) => {
-    if (!checkAuthentication()) return;
-    var userSnap = await getDocs(
-      query(collection(db, "users"), where("uid", "==", user.uid))
-    );
-    let user_data = userSnap.docs[0];
-    await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
-      person: {
-        username: user_data.data().name,
-        id: user_data.id,
-        photoURL: user.photoURL,
-      },
-      desiredRanking,
-      minBidPrice,
-      maxBidPrice,
-      price: amount,
-      auto: auto,
-      email: user.email,
-      time: serverTimestamp(),
-    });
-    const snapshot = await getCountFromServer(
-      collection(db, "campaigns", campaignId, "bids")
-    );
-    const counter = snapshot.data().count;
-    //console.log("bids count: ", counter);
+	const saveBid = async (amount, auto = false, desiredRanking = null, maxBidPrice = null, minBidPrice = null) => {
+		if (!checkAuthentication()) return;
+		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
+		let user_data = userSnap.docs[0];
+		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
+			person: {
+				username: user_data.data().name,
+				id: user_data.id,
+				photoURL: user.photoURL,
+			},
+			desiredRanking,
+			maxBidPrice,
+			minBidPrice,
+			price: amount,
+			auto: auto,
+			email: user.email,
+			time: serverTimestamp(),
+		});
 
-    setDoc(
-      doc(db, "campaigns", campaignId),
-      { numAuctionBids: counter },
-      { merge: true }
-    );
-  };
+		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
+		const counter = snapshot.data().count;
+		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
+	};
 
   function renderUserCampaignStatus() {
     if (
@@ -426,7 +411,7 @@ function CampaignPage(userData) {
             <Auction
               isCampaignEnded={isCampaignEnded}
               isCampaignScheduled={isCampaignScheduled}
-              bidAction={bid}
+              bidAction={saveBid}
               campaignData={campaignData}
               bids={bids}
               hasUserEnteredAuction={hasUserEnteredAuction}
