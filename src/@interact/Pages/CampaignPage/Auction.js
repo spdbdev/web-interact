@@ -108,7 +108,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 			// if priceAtDesiredRank is less than or equal to previous bid then abort
 			if(priceAtDesiredRank <= parseFloat(previousBidData.price)){
-				Swal.fire({icon: "error", title: "Oops...", text: "Your new bid must be higher than your previous bid!"});
+				Swal.fire({icon: "error", title: "Oops...", text: "New bids must be higher than previous bids!"});
 				return;
 			}
 			else setDesiredRank(value);
