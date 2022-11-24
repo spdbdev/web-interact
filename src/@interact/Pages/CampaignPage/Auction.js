@@ -6,76 +6,88 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { formatMoney, getDateFromTimestamp } from "app/utils";
-import {query, collection, getDocs, where, setDoc, addDoc, getDoc, updateDoc, doc} from "firebase/firestore";
+import {
+  useStripe,
+  useElements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+} from "@stripe/react-stripe-js";
+import { formatMoney } from "app/utils";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+} from "firebase/firestore";
 import "./CampaignPage.css";
-import {Button, Divider, OutlinedInput, InputAdornment, useScrollTrigger, Tooltip, InputLabel, FormControl, 
-  Container, Typography, Box, Stack, Select, MenuItem} from "@mui/material";
+import {
+  Divider,
+  OutlinedInput,
+  InputAdornment,
+  InputLabel,
+  FormControl,
+  Typography,
+  Box,
+  Stack,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  IconButton
+} from "@mui/material";
+import WestIcon from '@mui/icons-material/West';
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
-import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
-import supported_transfer_countries from "./countrylist";
-import ConfirmPopup from "./ConfirmPopup";
-import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from '@mui/material/IconButton';
-import { fetchUserByName, followUser } from '../../../firebase';
-import useCurrentUser from "@interact/Hooks/use-current-user";
+import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
+import { fetchUserByName, followUser } from "../../../firebase";
+import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
+
+import "@interact/Components/Stripe/Stripe.css";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  // width: 700,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  padding: 0,
+  width: 400,
+  borderRadius: 15
 };
 
-const autobid = [
-  `You will only be charged if you're a winning bidder on the
-  leaderboard at the end of the campaign`,
-  `When you confirm your bid, you consent to an automatic charge via
-  this payment method at the end of the campaign & you will
-  automatically follow the creator of this campaign & consent to
-  receiving email updates from the campaigns`,
-  `New bids replace old bids, since each user is limited to 1
-  interaction`,
-];
+export default function Auction({
+  isCampaignEnded,
+  isCampaignScheduled,
+  bids,
+  campaignData,
+  bidAction,
+}){
+  const [bidAmount, setBidAmount] = useState(0);
+  const [autoBidAmount, setAutoBidAmount] = useState(0);
+  const [minBidAmount, setMinBidAmount] = useState(0);
+  const [maxBidAmount, setMaxBidAmount] = useState(0);
+  const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
+  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
+  const [desiredRank, setDesiredRank] = useState(1);
+  const [manualRanking, setManualRanking] = useState(1);
 
-const manualbid = [
-  `You will only be charged if you're a winning bidder on the leaderboard at the end of the campaign`,
-  `By pressing 'Confirm', you will automatically follow the creator of this campaign & consent to receiving email updates from the campaigns`,
-  `New bids replace old bids, since each user is limited to 1 interaction`,
-];
-
-const belowAutobidTitle = "The bid will place you Xth on the leaderboard (if others do not bid higher)";
-
-export default function Auction({isCampaignEnded, isCampaignScheduled, bids, campaignData, bidAction}) {
-	
-	const navigate = useNavigate();
-
-	// auto bid
-	const [desiredRank, setDesiredRank] = useState(1);
-	const [autoBidAmount, setAutoBidAmount] = useState(0);
-  	const [minRankBidAmount, setMinRankBidAmount] = useState(0);
-	// manual bid
-	const [bidAmount, setBidAmount] = useState(0);
-	const [minBidAmount, setMinBidAmount] = useState(0);
-	
-  	const { user } = useCurrentUser();
-	const [currentUser, setCurrentUser] = useState(null);
-	const stripe = useStripe();
-	const [open, setOpen] = useState(false);
-	const elements = useElements();
-	const card = useRef();
-	const [openPopup, setOpenPopup] = useState(false);
-	const [openPopup1, setOpenPopup1] = useState(false);
-	const [selectPopUp, setselectPopUp] = useState(1);
-
+  const [user, error] = useAuthState(auth);
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+  const stripe = useStripe();
+  const [open, setOpen] = useState(false);
+  const elements = useElements();
+  const [openPopup, setOpenPopup] = useState(false);
+  const [openPopup1, setOpenPopup1] = useState(false);
+  const [selectPopUp, setselectPopUp] = useState(1);
+  const paymentRef = useRef();
+  const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+  const [loading, setLoading] = useState(false);
 
 	const handleMaxBidAmount = function(value)
 	{
@@ -128,22 +140,21 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 		}
 	}, [campaignData, bids]);
 
-	useEffect(()=>{
-		document.getElementById("auctionCard").onmousemove = e => {
-		for(const card of document.getElementsByClassName("auctionCard")) {
-			const rect = card.getBoundingClientRect(),
-		
-				x = e.clientX - rect.left,
-				y = e.clientY - rect.top;
-		
-			card.style.setProperty("--mouse-x", `${x}px`);
-			card.style.setProperty("--mouse-y", `${y}px`);
-		};
-		}
-	})
+  useEffect(() => {
+    document.getElementById("auctionCard").onmousemove = (e) => {
+      for (const card of document.getElementsByClassName("auctionCard")) {
+        const rect = card.getBoundingClientRect(),
+          x = e.clientX - rect.left,
+          y = e.clientY - rect.top;
+
+        card.style.setProperty("--mouse-x", `${x}px`);
+        card.style.setProperty("--mouse-y", `${y}px`);
+      }
+    };
+  });
 
 	const handleBidAmount = function(e){
-		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(autoBidAmount)){
+		if(parseFloat(e.target.value) >= parseFloat(minBidAmount)){
 			setBidAmount(e.target.value);
 		}
 	}
@@ -154,15 +165,15 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 		}
 	}
 
-	const handleDesiredRank = function(e){
-		// prevent values less than 0 or higher than 20.
-		console.log("Num interactions",campaignData?.numAuctionInteractions)
-		e.target.value < 1
-		? (e.target.value = 1)
-		: e.target.value > parseInt(campaignData?.numAuctionInteractions)
-		? (e.target.value = campaignData?.numAuctionInteractions)
-		: setDesiredRank(e.target.value);
-		handleMaxBidAmount(e.target.value);
+  const handleDesiredRank = function (e) {
+    // prevent values less than 0 or higher than 20.
+    console.log("Num interactions", campaignData?.numAuctionInteractions);
+    e.target.value < 1
+      ? (e.target.value = 1)
+      : e.target.value > parseInt(campaignData?.numAuctionInteractions)
+      ? (e.target.value = campaignData?.numAuctionInteractions)
+      : setDesiredRank(e.target.value);
+    handleMaxBidAmount(e.target.value);
 	}
 
 	const followCampaign = async () => {
@@ -188,134 +199,92 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handlePupUpClose = () => {
-    setOpen(false);
-  };
-  const [cardInfo, setCardInfo] = useState({
-    name: "",
-    expiry: "",
-    number: "",
-    country: "",
-    address: {
-      line: "",
-      postalCode: "",
-    },
-  });
-  const [updateCardInfo, setUpdateCardInfo] = useState({
-    pid: "",
-    name: "",
-    country: "",
-    state: "",
-    city: "",
-    postalCode: "",
-  });
-  const [locations, setLocations] = useState({
-    countries: "",
-    states: "",
-    cities: "",
-  });
-  const [selectedLocation, setSelectedLocation] = useState({
-    country: {},
-    city: {},
-    state: {},
-  });
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCustomerID, setuserCustomerID] = useState(null);
-  function handleChangeAddressLine(e) {
-    const { value } = e.target;
-    setCardInfo((prev) => {
-      return { ...prev, address: { ...prev.address, line: value } };
-    });
-  }
-  function handleChangeName(e) {
-    const { value } = e.target;
-    setCardInfo((prev) => {
-      return { ...prev, name: value };
-    });
-  }
-  function parseForSelect(arr) {
-    return arr.map((item) => ({
-      label: item.name,
-      value: item.isoCode ? item.isoCode : item.name,
-    }));
-  }
-  function handleSelectCountry(country) {
-    setSelectedLocation((prev) => {
-      return { ...prev, country };
-    });
-    setCardInfo({
-      ...cardInfo,
-      country: country.value,
-    });
-  }
-  function handleSelectState(state) {
-    const cities = City.getCitiesOfState(
-      selectedLocation.country.value,
-      state.value
-    );
-    setSelectedLocation((prev) => {
-      return { ...prev, state };
-    });
 
-    setLocations((prev) => ({ ...prev, cities: parseForSelect(cities) }));
+  useEffect(() => {
+    handleMaxBidAmount(desiredRank);
+  }, []);
+
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [userCustomerId, setUserCustomerId] = useState(null);
+
+  const handleBackPopup = () => {
+    setOpen(false);
+    if (selectPopUp === 1) {
+      setOpenPopup(true);
+    } else {
+      setOpenPopup1(true);
+    }
   }
-  function handleSelectCity(city) {
-    setSelectedLocation((prev) => {
-      return { ...prev, city };
-    });
+  const handleOpen = () => {
+    setOpen(true);
   }
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const address = cardInfo.address;
-    const billingDetails = {
-      name: cardInfo.name,
-      address: {
-        country: cardInfo.country,
-        state: address.state,
-        city: address.city,
-        line1: address.line,
-      },
-    };
 
-    try {
-      stripe
-        .createPaymentMethod({
-          type: "card",
-          billing_details: billingDetails,
-          card: elements.getElement(CardElement),
-        })
-        .then((resp) => {
-          const pmid = resp.paymentMethod.id;
-          if (pmid && userCustomerID) {
-            getRequest(`/method/attach/${userCustomerID}/${pmid}`)
-              .then((resp) => {
-                setOpen(false);
-                if (resp.data.added) {
-                  setPaymentMethods(resp.data.paymentmethod.data);
-                  if (selectPopUp === 1) {
-                    setOpenPopup(true);
-                  } else {
-                    setOpenPopup1(true);
-                  }
-                } else {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "An error occurred",
-                  });
-                }
-              })
-              .catch((err) => {
-                /*Handle Error */
+    setLoading(true);
+    stripe
+    .createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardNumberElement),
+    })
+    .then((resp) => {
+      console.log(resp.paymentMethod);
+      const pmid = resp?.paymentMethod?.id;
+      if (pmid && userCustomerId) {
+        getRequest(`/method/attach/${userCustomerId}/${pmid}`)
+          .then((resp) => {
+            setOpen(false);
+            if (resp.data.added) {
+              setPaymentMethods(resp.data.paymentmethod.data);
+              setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+              setLoading(false);
+              if (selectPopUp === 1) {
+                setOpenPopup(true);
+              } else {
+                setOpenPopup1(true);
+              }
+            } else {
+              setLoading(false);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "An error occurred",
               });
-          }
-          console.log(resp);
+            }
+          })
+          .catch((err) => {
+            /*Handle Error */
+            setOpen(false);
+            setLoading(false);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "An error occurred",
+            });
+          });
+      }
+      else { //response error
+        setOpen(false);
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "An error occurred",
         });
-    } catch (err) {
+      }
+      console.log(resp);
+    })
+    .catch((err) => {
       /* Handle Error*/
-    }
+      setOpen(false);
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "An error occurred",
+      });
+    });
   };
 
   const fetchUserName = async () => {
@@ -324,27 +293,24 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
       const colledoc = await getDocs(q);
       const data = colledoc.docs[0].data();
       data.id = colledoc.docs[0].id;
-      setuserCustomerID(data.customerId);
+      setUserCustomerId(data.customerId);
       setCurrentUser(data);
     } catch (err) {
       console.error(err);
     }
   };
-  const resturnOption = () => {
-    const options = supported_transfer_countries.map((item, index) => {
-      return { value: item.code, label: item.country };
-    });
-    return options;
-  };
-  const verificationOfBid = () => {
-    if (!user) return navigate("/");
+
+  const verificationOfAutoBid = () => {
+    if (!user) return navigate("/a/signup");
     if (desiredRank > 0) {
-      getRequest(`/customer/method/${userCustomerID}`)
+      getRequest(`/customer/method/${userCustomerId}`)
         .then((resp) => {
           const mdata = resp.data.paymentmethod.data;
           console.log(resp.data.paymentmethod.data);
           if (mdata.length > 0) {
             setPaymentMethods(resp.data.paymentmethod.data);
+            setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+            // setOpen(true);
             setOpenPopup(true);
           } else {
             setOpen(true);
@@ -363,14 +329,20 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 
     // bidAction(bidAmount);
   };
-  const verificationOfBid1 = () => {
-    if (!user) return navigate("/");
-    getRequest(`/customer/method/${userCustomerID}`)
+  const verificationOfBid = () => {
+    console.log("manualbid");
+    console.log(bids);
+
+    console.log(manualRanking);
+    if (!user) return navigate("/a/signup");
+    getRequest(`/customer/method/${userCustomerId}`)
       .then((resp) => {
         const mdata = resp.data.paymentmethod.data;
         console.log(resp.data.paymentmethod.data);
         if (mdata.length > 0) {
           setPaymentMethods(resp.data.paymentmethod.data);
+          setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+          // setOpen(true);
           setOpenPopup1(true);
         } else {
           setOpen(true);
@@ -392,119 +364,93 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
   };
 
   useEffect(() => {
-    fetchUserName();    
+    fetchUserName();
   }, [user]);
 
-	function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
-	const options = [];
-	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
-		options.push(<MenuItem value={i} key={i}>{i}{nth(i)}</MenuItem>);
-	}
+  function nth(n) {
+    return ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";
+  }
+  const options = [];
+  for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
+    options.push(
+      <MenuItem value={i} key={i}>
+        {i}
+        {nth(i)}
+      </MenuItem>
+    );
+  }
 
-	return (
+  return (
     <>
-      <ConfirmPopup
-        openstate={openPopup} 
+      <ConfirmAuctionPopup
+        openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
-        title={"Confirm auto-bid"}
-        belowtext={autobid}
-        undertitle={`The bid will place you ${desiredRank} on the leaderboard (if others do not bid higher)`}
-        onchangeclick={handleOpen}
-        price={autoBidAmount}
-        userCustomerID={userCustomerID}
-        bidAction={bidAction}
-        bidActionstatus={true}
+        desiredRank={desiredRank}
+        onaddclick={handleOpen}
+        price={maxBidAmount}
+        userCustomerId={userCustomerId}
+        bidAction={() => bidAction(autoBidAmount,true,desiredRank,maxBidAmount)}
+        selectPaymentMethod={selectPaymentMethod}
+        setSelectedPaymentMethod={setSelectPaymentMethod}
+        autobid={true}
       />
 
-      <ConfirmPopup
+      <ConfirmAuctionPopup
         openstate={openPopup1}
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
         allprimarymethod={paymentMethods}
-        title={"Confirm manual bid"}
-        belowtext={manualbid}
-        undertitle={``}
-        onchangeclick={handleOpen}
+        desiredRank={manualRanking}
+        onaddclick={handleOpen}
         price={bidAmount}
-        userCustomerID={userCustomerID}
-        bidAction={bidAction}
-        bidActionstatus={true}
+        userCustomerId={userCustomerId}
+        bidAction={() => bidAction(bidAmount,false,null,null,minBidAmount)}
+        selectPaymentMethod={selectPaymentMethod}
+        setSelectedPaymentMethod={setSelectPaymentMethod}
+        autobid={false}
       />
-      
+
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        >
+      >
         <Box sx={style}>
           <div className="wrapper">
             <div className="innerWrapper">
-              <IconButton
-                onClick={handleClose}
-                style={{ float: "right", cursor: "pointer",marginTop:"-8px" }}
-                color="primary"
-                aria-label="upload picture"
-                component="label"
-              >
-                <CancelIcon />
-              </IconButton>
-
-              <div className="title">Add Payment Method</div>
-              <div className="row">
-                <label>Cardholder Name</label>
-                <input
-                  onChange={handleChangeName}
-                  type="text"
-                  name="name"
-                  placeholder="Enter card holder name"
-                />
+              <IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
+              <div className="paymentRequestDiv">
+                <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
               </div>
-              <div className="rowPaymentInput">
-                <CardElement ref={card} />
-              </div>
-
-              <div className="rowSelect">
-                <label>Country</label>
-                <Select
-                  options={resturnOption()}
-                  onChange={handleSelectCountry}
-                />
-              </div>
-
-              <div className="addressWrapper">
-                <div className="row">
-                  <label>Address</label>
-                  <input
-                    onChange={handleChangeAddressLine}
-                    type="text"
-                    name="address"
-                    placeholder="Enter Full Address"
-                  />
+              <div className="payment-divider" />
+              <div className="stripe-card-wrapper">
+                <div className="number_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Card number</label>
+                    <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
                 </div>
-                <div className="checkbox-div card-body-text">
-                  <input
-                    type="checkbox"
-                    disabled="disabled"
-                    id="subscribe"
-                    name="subscribe"
-                    checked
-                  />
-                  Save Card
+                <div className="expiry_input">
+                    <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+                    <CardExpiryElement className={"expiry_input"} />
                 </div>
-
-                <InteractFlashyButton onClick={handleSubmit}>
-                  Submit
-                </InteractFlashyButton>
+                <div className="cvc_input">
+                    <label htmlFor="#" className="stripe-card_field_label">CVC</label>
+                    <CardCvcElement className={"cvc_input"} />
+                </div>
               </div>
+              <FormControlLabel style={{marginTop: '10px'}}
+                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+              />
+              <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
             </div>
           </div>
         </Box>
       </Modal>
-    
-    <JumboCardQuick
+
+      <JumboCardQuick
         title={"Auction"}
         id="auctionCard"
         sx={{ ml: 2, display: "flex", flexDirection: "column", minWidth: 400 }}
@@ -517,7 +463,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
           justifyContent: "space-between",
         }}
         className="auctionCard"
-        >
+      >
         <Stack direction="column">
 
           <Typography mt={1.21} maxWidth={316.9}>
@@ -599,20 +545,25 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 					onChange={(e) =>  onAutoBidAmountChange(e)}
 				/>
           	</FormControl>
-			
-			{/* 
-				minRankBidAmount => it should be the current bid amount (price)
-				autoBidAmount => it will be the maxBidPrice
-			*/}
-			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(minRankBidAmount, true, desiredRank, autoBidAmount)}>
+
+          {/*
+			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => bidAction(autoBidAmount, true, desiredRank, maxBidAmount)}>
 				Place auto-bid
 			</InteractButton>
+          */}
+
+          <InteractButton disabled={isCampaignEnded||isCampaignScheduled}
+            
+            onClick={() => verificationOfAutoBid()}
+          >
+            Place auto-bid
+          </InteractButton>
         </Stack>
 
 
 
-        <Divider sx={{ my: 1.69 }}>or</Divider>
-        <Stack id="normalBidSection" direction="column" >
+      <Divider sx={{ my: 1.69 }}>or</Divider>
+      <Stack id="normalBidSection" direction="column" >
 			<Typography variant="h5" color="text.secondary" mb={1.21}>
 				Manual bid&nbsp;&nbsp;
 				<InfoTooltip
@@ -644,11 +595,21 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 				</FormControl>
 			</Stack>
 
-          	<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(bidAmount)}>
-          		Place bid
-          	</InteractButton>
-        </Stack>
+          {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
+          {/*
+          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
+          Place bid
+          </InteractButton>
+          */}
+          <InteractButton
+            disabled={isCampaignEnded||isCampaignScheduled}
+            onClick={() => verificationOfBid()}
+          >
+            Place bid
+          </InteractButton>
+          {/* </form> */}
+      </Stack>
     </JumboCardQuick>
     </>
-	);
-}
+    );
+  }

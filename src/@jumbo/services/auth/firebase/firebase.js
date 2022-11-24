@@ -19,12 +19,37 @@ const firebaseConfig = {
   measurementId: "G-LBQPPM4GPT",
 };
 
+const FinalSwal = Swal.mixin({
+  customClass: {
+      popup: 'custom_swal_popup',
+  }
+});
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
+
+const getErrorMessage = (message) => {
+
+  let errMessage;
+  switch (message) {
+    case "Firebase: Error (auth/invalid-email).":
+      errMessage = "Invalid Email!";
+      break;
+    case "Firebase: Error (auth/wrong-password).":
+      errMessage = "Wrong Password!";
+    case "Firebase: Error (internal-error).":
+      errMessage = "You don't have access to this page unless you have clicked the link from the email!";
+    default:
+      errMessage = message;
+      break;
+  }
+
+  return errMessage;
+};
 
 const signInWithGoogle = async () => {
   try {
@@ -42,7 +67,7 @@ const signInWithGoogle = async () => {
     }
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
   }
 };
 
@@ -65,7 +90,7 @@ const loginWithEmailAndPassword = async (email, password) => {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
   }
 };
 
@@ -101,7 +126,7 @@ const registerWithEmailAndPassword = async (name,legalName, email, password, ima
       return true;
   } catch (err) {
     console.error(err);
-    Swal.fire("Error!", err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
     return false;
   }
 };
@@ -132,7 +157,7 @@ const verifyResetCode = async (code) => {
     await verifyPasswordResetCode(auth,code);
     return true;
   }catch(err){
-    Swal.fire("Error!",err.message, "error");
+    FinalSwal.fire(getErrorMessage(err.message), "", "error");
     return false;
   }
 }

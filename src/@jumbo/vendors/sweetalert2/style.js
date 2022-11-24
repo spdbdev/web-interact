@@ -42,31 +42,30 @@ const useStyles = makeStyles(theme => ({
     },
     confirmButton: {
         border: 0,
-        margin: '.3125em',
+        margin: '.521125em',
         cursor: 'pointer',
-        color: '#808080',
+        color: theme.palette.common.white,
         boxSizing: 'border-box',
         fontSize: '0.875rem',
         lineHeight: 1.75,
         padding: theme.spacing(.75, 2),
-        borderRadius: "1.69px 8.9px",
+        borderRadius: "8.69px 2.69px",
         fontFamily: 'inherit',
-        backgroundColor:
-            "#cccccc",
-        borderColor: "primary.main",
+        background: "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)",
+        //borderColor: "primary.main",
         fontWeight: 600,
         px: 4,
         py: 1,
 
         '&:hover': {
             background:
-              "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
-            color: "white",
+              "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+            //color: "white",
         }
           
     },
     cancelButton: {
-        border: 0,
+        borderRadius: "2.69px 7.9px",
         margin: '.3125em',
         cursor: 'pointer',
         color: theme.palette.common.white,
@@ -74,7 +73,7 @@ const useStyles = makeStyles(theme => ({
         fontSize: '0.875rem',
         lineHeight: 1.75,
         padding: theme.spacing(.75, 2),
-        borderRadius: 4,
+        border: 0,
         fontFamily: 'inherit',
         backgroundColor: theme.palette.grey[600],
 

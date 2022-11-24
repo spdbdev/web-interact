@@ -1,4 +1,5 @@
-import { Button } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 
 
 export default function InteractFlashyButton({
@@ -6,18 +7,18 @@ export default function InteractFlashyButton({
   children,
   disabled = false,
   radius,
-  aos
+  aos,
+  ...rest
 }) {
   return (
-    <Button
+    <LoadingButton
       sx={{
         ":hover": {
           background:
             "linear-gradient(180deg, #782FEE -37.69%, #DD00FF 109.93%)", // theme.palette.primary.main
           color: "white",
         },
-        background:
-          "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
+        background: "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
         borderColor: "primary.main",
         fontWeight: 600,
         textTransform: "none",
@@ -31,9 +32,10 @@ export default function InteractFlashyButton({
       onClick={onClick}
       type="submit"
       disabled={disabled}
+      {...rest}
       data-aos={aos}
     >
       {children}
-    </Button>
+    </LoadingButton>
   );
 }

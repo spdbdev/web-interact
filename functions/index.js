@@ -590,7 +590,7 @@ exports.getCurrencyConversionRate = functions.https.onRequest(
       } catch (e) {
         response.send({
           status: "error",
-          data: "An error occurred. Please try again later",
+          data: "An error occurred; please try again later",
         });
       }
     });
