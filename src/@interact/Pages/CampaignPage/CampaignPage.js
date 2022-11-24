@@ -57,7 +57,7 @@ function CampaignPage(userData) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (routeParams.campaignId && isCampaignId) {
+    if (routeParams.campaignId && isCampaignId()) {
       setCampaignId(routeParams.campaignId);
     }else{
       setCampaignId("test12345");
