@@ -226,6 +226,7 @@ function UserProfilePage() {
 
   const getTargetUser = async () => {
     let defaultUser = await fetchUserByName(params.username);
+    console.log("defaultUser", defaultUser);
     setTargetUser(defaultUser);
     const userListener = onSnapshot(
       query(doc(db, "users", defaultUser.id)),
@@ -233,11 +234,9 @@ function UserProfilePage() {
         let userData = querySnapshot.data();
         const id = querySnapshot.id;
         setTargetUser({ ...userData, id });
-        if (user?.name != params.username) {
-          setImage(userData?.photoURL ? userData?.photoURL : "https://iili.io/HH6JxB1.md.jpg");
-          if (userData?.description?.length > 0)
-            setDescription(userData.description);
-        }
+        setImage(userData?.photoURL ? userData?.photoURL : "https://iili.io/HH6JxB1.md.jpg");
+        if (userData?.description?.length > 0)
+          setDescription(userData.description);
       }
     );
   };
@@ -289,17 +288,6 @@ function UserProfilePage() {
       navigate(user.name ? `/u/${user.name}` : "/");
     }
   }, [user]);
-
-  useEffect(() => {
-    if (params.username) getTargetUser();
-  }, [params]);
-
-    useEffect(() => {
-		if (!user) return;
-		if (!params.username) {
-			navigate(user.name ? `/u/${user.name}` : "/")
-		}
-    }, [user]);
 
 	useEffect(() => {
 		if(params.username) getTargetUser();
