@@ -43,6 +43,7 @@ const queryClient = new QueryClient({
 
 const store = configureStore();
 
+
 function App() {
     campaignServices.hasOverlappingCampaign().then();
     return (

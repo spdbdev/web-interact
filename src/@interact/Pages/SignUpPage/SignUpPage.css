@@ -48,6 +48,10 @@
     width:100%;
 }
 
+.ChangePasswordDiv {
+    width: 220px;
+}
+
 .SignUpWithGoogle{
     height:40px;
     width:65%;

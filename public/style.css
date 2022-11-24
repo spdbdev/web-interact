@@ -80,3 +80,8 @@
     margin-left: 0%;
   }
 }
+
+.custom_swal_popup {
+  border-radius: 20px !important;
+  padding-bottom: 35px !important;
+}

@@ -59,8 +59,6 @@
     text-align: left;
 }
 
-.Socials {}
-
 .BottomSection {
     display: flex;
     flex-direction: row;
@@ -252,11 +250,7 @@ body.active-modal {
 .BiddingStats {
     text-align:left;
 }
-
-.Socials{
     
-}
-
 .BottomSection {
     display:flex;
     flex-direction: row;
@@ -350,4 +344,29 @@ body.active-modal {
     transparent 40%
   );
   z-index: 1;
+}
+
+.stripe-card-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.stripe-card-wrapper>div .StripeElement {
+    margin: 0px !important;
+}
+
+.stripe-card-wrapper .number_input {
+    grid-row: 1;
+    grid-column: 1 / span 2;
+}
+
+.stripe-card-wrapper .expiry_input {
+    grid-row: 2;
+    grid-column: 1 / span 1;
+}
+
+.stripe-card-wrapper .cvc_input {
+    grid-row: 2;
+    grid-column: 2 / span 1;
 }
