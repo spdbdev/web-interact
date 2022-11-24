@@ -78,8 +78,8 @@ export function FollowButton({ user, targetUser }) {
 
 	function onFollowButtonClicked() {
 		if(user === undefined) {
-			console.log("You need to sign in to follow other users");
-			navigate("/a/signin");
+			console.log("You need to sign up to follow");
+			navigate("/a/signup");
 			return;
 		}
 		//Call function for follow/unfollow
@@ -110,7 +110,7 @@ export function GoalDisplay({ campaignData, bids })
 	campaignGoalTotal += campaignAuctionsTotal;
 
 	return (
-		<Box id="goalDisplay" sx={{ width: 400 }}>
+		<Box id="goalDisplay" sx={{ width: 400 , mt: 1.769}}>
 
 			<LinearProgress variant="determinate" value={(campaignGoalTotal / goalValue) * 100} sx={{ color: "primary.main" }} />
 		
@@ -127,7 +127,7 @@ export function GoalDisplay({ campaignData, bids })
 						{" "}
 						${formatMoney(goalValue)}
 						</Span>
-						<InfoTooltip title="Interactions will still occur even if the goal is not reached, the goal is non-binding." />
+						<InfoTooltip title="Interactions will still occur even if the goal is not reached (the goal is non-binding)" />
 					</Typography>
 				</Box>
 			</Box>
