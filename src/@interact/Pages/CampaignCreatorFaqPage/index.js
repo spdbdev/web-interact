@@ -213,19 +213,19 @@ const CampaignCreatorFaqPage = () => {
       expand: false
     },
     {
-      question: 'How does the auction & leaderboard work?',
+      question: 'How do the auction & leaderboard work?',
       answer: (
         <>
           <p>Fans place a bid to be on the leaderboard. If the fan is still on the leaderboard when the campaign ends, they’ll win
-            an interaction. If a fan places in the top 3 on the leaderboard, their interaction will be longer in duration
+            an interaction & pay (you only pay if you win). If a fan places in the top 3 on the leaderboard, their interaction will be longer in duration
             compared to a normal interaction.</p>
-          <p>For a fan, they place a bid to be on the leaderboard or auto-bid:</p>
+          <p>They can place a normal bid or make it easier for themselves, so they don't have to bid as many times, with our auto-bid function:</p>
           <ul>
             <li>
-              We'll automatically bid the lowest amount to stay at your desired rank on the leaderboard until your max bid is reached.
-              If others bid more & your max bid amount is exceeded, your rank will be lowered (we will automatically bid your max bid
-              price if it is exceeded and still try to get you the highest rank possible); you might still be on the leaderboard or you
-              might not be, meaning meaning no interaction (you'll be sent an email to increase your max bid).
+            "We'll automatically bid the lowest amount to stay at your 
+					  desired rank on the leaderboard until your max bid is reached. If another bidder also 
+            wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+					  bid higher than your max bid, your rank could be lowered."
             </li>
           </ul>
         </>

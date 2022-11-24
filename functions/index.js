@@ -246,7 +246,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 	async function process_giveaway_list(campaign_id, numGiveawayInteractions, creator_id)
 	{
-		functions.logger.info("Collecting winners from GiveAway", {structuredData: true});
+		functions.logger.info("Collecting winners from giveAway", {structuredData: true});
 
 		var fans = []; // all users in giveAway
 		var pool = []; // all users with multiplier entries
