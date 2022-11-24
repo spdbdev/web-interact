@@ -276,6 +276,7 @@ export default function CampaignCreationSummaryPage() {
             >
               Submit ✓
             </InteractFlashyButton>
+            <Typography ml={0.269} mt={0.69} color= "text.hint">It takes a few seconds</Typography>
           </Box>
         </Box>
       </Slide>

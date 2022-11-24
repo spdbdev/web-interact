@@ -340,7 +340,8 @@ function CampaignPage(userData) {
           spacing={2.669}
           sx={{
             position: "relative",
-            py: 3,
+            pt: 3,
+            pb: 3.2169
           }}
         >
           <Box
@@ -388,6 +389,7 @@ function CampaignPage(userData) {
         {num_auction > 0 ? (
           <Stack
             direction="row"
+            mt={1.2969}
             spacing={1.4921}
             style={{
               padding: "20px 0",
