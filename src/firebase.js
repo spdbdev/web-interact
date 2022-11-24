@@ -375,6 +375,23 @@ export const commentDeleteDB = async (id, type, campaignId, parentComment) => {
   }
 }
 
+/*
+Function to validate Campaign Id
+Returns true is campaignid is valid
+*/
+export const isCampaignId = async (campaignId) => {
+  try {
+    const docSnap = await getDoc(doc(db, "campaigns", campaignId));
+    if (docSnap.exists()) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
 export {
   auth,
   db,

@@ -1,13 +1,10 @@
-import TopBar from "@interact/Components/TopBar/TopBar";
 import "./CampaignPage.css";
 import CampaignInfo from "@interact/Components/CampaignInfo/CampaignInfo";
 import Leaderboard from "@interact/Components/Leaderboard/Leaderboard";
 import Giveaway from "./Giveaway";
 import Auction from "./Auction";
 import Faq from "@interact/Components/Faq/Faq";
-
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
 import Header from "./Header";
 import Stats from "./Stats";
 import { useEffect, useState } from "react";
@@ -29,14 +26,12 @@ import {
 import { Box, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
-import { auth, db } from "@jumbo/services/auth/firebase/firebase";
-import { useJumboLayoutSidebar, useJumboTheme } from "@jumbo/hooks";
+import { db } from "@jumbo/services/auth/firebase/firebase";
+import { useJumboTheme } from "@jumbo/hooks";
 import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
-import { saveToRecentCampaignHistory } from "../../../firebase";
+import { saveToRecentCampaignHistory, isCampaignId } from "../../../firebase";
 import React from "react";
-import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
-import {useJumboApp} from "@jumbo/hooks";
 
 function CampaignPage(userData) {
   const { user } = useCurrentUser();
@@ -46,7 +41,6 @@ function CampaignPage(userData) {
   const [bids, setBids] = useState([]);
   const [giveaways, setGiveaways] = useState([]);
   const [comments, setComments] = useState([]);
-  const [supporters, setSupporters] = useState([]);
   const [winningChances, setWiningChances] = useState({ vip: 100, free: 100 });
   const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] =
     useState(false);
@@ -55,37 +49,28 @@ function CampaignPage(userData) {
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
   const [isCampaignScheduled, setIsCampaignScheduled] = useState(false);
-
   let routeParams = useParams();
   const [campaignId, setCampaignId] = useState(routeParams.campaignId);
-
   const num_giveaway = 10;
   const num_auction = 10;
   const { theme } = useJumboTheme();
   const navigate = useNavigate();
 
-
-  if (!campaignId) setCampaignId("test12345");
-
-  /* let user = {
-		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
-		photoURL: "https://sm.ign.com/ign_tr/cover/j/john-wick-/john-wick-chapter-4_178x.jpg",
-		name: "biby",
-		email: "bibyliss@gmail.com",
-		customerId: "cus_MlMuNeDDsNVt2Z",
-	}; */
+  useEffect(() => {
+    if (routeParams.campaignId && isCampaignId) {
+      setCampaignId(routeParams.campaignId);
+    }else{
+      setCampaignId("test12345");
+    }
+  },[routeParams])
 
   useEffect(() => {
-    //if (loading) return;
-    //if (!user) return navigate("/"); // this page should be browsable without login
     if (campaignId === null) checkCampaignID();
     else {
-      //console.log('campaignId >>>>>', campaignId);
       getCampaignData();
       checkPurchasedEntry();
     }
   }, [user, campaignId]);
-  
 
   const checkAuthentication = () => {
     if (!user) {
@@ -436,7 +421,6 @@ function CampaignPage(userData) {
               bids={bids}
               comments={comments}
               campaignId={campaignId}
-              // supporters={supporters}
             />
           </Box>
           <Box sx={{ flex: 1, mt: 5, mb: 7 }}>

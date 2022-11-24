@@ -67,7 +67,7 @@ const Header = () => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <img src={InteractLogo} width={120} />
+        <img src={InteractLogo} width={120} style={{marginTop:'4.5px'}}/>
       </Link>
 
       <Stack
