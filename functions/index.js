@@ -144,7 +144,8 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 						const winnersdata = document.data();
 					
 						db.collection("users").doc(campaign.person.id).collection("Contributions").doc(doc.person.id).set({
-							contributionTotal: FieldValue.increment(winnersdata.price)
+							contributionTotal: FieldValue.increment(winnersdata.price),
+							interactionTotal: FieldValue.increment(1)
 						}, { merge: true });
 
 						const paymentintent = await stripe.paymentIntents.create({
