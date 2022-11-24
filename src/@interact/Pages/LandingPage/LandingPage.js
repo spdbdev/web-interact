@@ -706,8 +706,8 @@ useEffect(() => {
         </Box>
 
         <Stack width={"100%"}>
-          <Grid container spacing={5.621}>
-            <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
+          <Grid container spacing={4.469}>
+            <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"} >
               <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%', textAlign: "center" }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/heart-book.svg'} alt='' />
@@ -982,7 +982,7 @@ useEffect(() => {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ mt: '12px' }} data-aos="fade-right">
+                  <Box sx={{ mt: '12px' }} data-aos="fade-down">
                     <Typography
                       fontSize={"17px"}
                       color={"#70677E"}

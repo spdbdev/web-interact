@@ -39,7 +39,7 @@ const Footer = () => {
           }}
         >
           <Link href="/a/faq" underline="hover" sx={{ mt: 1.625 }}>FAQ</Link>
-          <Link href="/a/campaign-creator-faq" underline="hover" sx={{ mt: { xs: 1.625, sm: 0 } }}>Campaign creator FAQ</Link>
+          <Link href="/a/creator-faq" underline="hover" sx={{ mt: { xs: 1.625, sm: 0 } }}>Creator FAQ</Link>
         </Stack>
         <Stack
           direction="column"
