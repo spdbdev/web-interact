@@ -350,7 +350,7 @@ function CampaignPage(userData) {
         <Stack
           direction="row"
           justifyContent="space-between"
-          spacing={4}
+          spacing={2.669}
           sx={{
             position: "relative",
             py: 3,
@@ -360,10 +360,10 @@ function CampaignPage(userData) {
             sx={{
               display: "flex",
               flex: 1,
-              mr: 1,
+              mr: 0,
               borderRadius: 3,
               overflow: "hidden",
-              paddingBottom: "36.821%",
+              paddingBottom: "36.921%",
               position: "relative",
             }}
           >
@@ -401,7 +401,7 @@ function CampaignPage(userData) {
         {num_auction > 0 ? (
           <Stack
             direction="row"
-            spacing={4}
+            spacing={1.4921}
             style={{
               padding: "20px 0",
             }}

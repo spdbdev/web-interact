@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Divider, Typography, Box, Input, Stack } from "@mui/material";
+import { Divider, Typography, Box, Input, Stack, FormControlLabel, Checkbox, IconButton } from "@mui/material";
+import WestIcon from '@mui/icons-material/West';
 import InfoTooltip from "../../Components/InfoTooltip";
 import InteractButton from "../../Components/Button/InteractButton";
 import JumboCardQuick from "@jumbo/components/JumboCardQuick";
@@ -7,7 +8,7 @@ import Span from "@jumbo/shared/Span";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Select from "react-select";
 import {query, setDoc, serverTimestamp, getCountFromServer, increment, collection, getDoc, getDocs, where, addDoc, updateDoc, doc} from "firebase/firestore";
 import Modal from "@mui/material/Modal";
@@ -15,34 +16,27 @@ import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButt
 import { Country, State, City } from "country-state-city";
 import { getRequest, postRequest } from "../../../utils/api";
 import supported_transfer_countries from "./countrylist";
-import ConfirmPopup from "./ConfirmPopup";
-import CancelIcon from "@mui/icons-material/Cancel";
-import IconButton from "@mui/material/IconButton";
+import ConfirmVIPPopup from "./ConfirmVIPPopup";
 
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import "./CampaignPage.css";
 import { formatMoney } from "app/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
-
-
+import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
 
 const style = {
 	position: "absolute",
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
-	// width: 700,
 	bgcolor: "background.paper",
 	boxShadow: 24,
 	p: 4,
+	padding: 0,
+	width: 400,
+	borderRadius: 15
 };
-const autobid = ["By pressing 'Confirm', you will automatically follow the creator of this campaign & consent to receiving email updates from the campaigns",];
-const hoverText = "Only 1 entry is allowed per user. Each time you lose, the next giveaway with the same creator will have DOUBLE the chances of winning, stacking twice, 4x loss multiplier (meaning up to a total 100x chance with a VIP entry)";
-
-
-
-
 
 export default function Giveaway({
 	campaignId,
@@ -58,8 +52,6 @@ export default function Giveaway({
 	winningChances,
 }) {
 	const stripe = useStripe();
-	const [stripeError, setStripeError] = useState("");
-	const [stripe_customer_id_new, set_Stripe_customer_id_new] = useState(false);
 
 	const elements = useElements();
 	const [priceToPay,setPriceToPay] = useState(0);
@@ -69,25 +61,20 @@ export default function Giveaway({
 	const [name, setName] = useState("");
 	const [loggedInUserData, setLoggedInUserData] = useState("");
 
-	const [isSubscribed, setIsSubscribed] = useState(false);
-	const [customerSet, isCustomerSet] = useState(false);
-	const [isActive, setIsActive] = useState(true);
-	const [cardBrand, setCardBrand] = useState(true);
-	const [last4, setLast4] = useState(true);
 	const [useSaveCard, setUseSaveCard] = useState(false);
 
 	const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const [open, setOpen] = useState(false);
-	const card = useRef();
 	const [openPopup, setOpenPopup] = useState(false);
 	const [selectedPaymentMethod,setSelectedPaymentMethod] = useState(null);
+	const [loading, setLoading] = useState(false);
 
+	const [paymentMethods, setPaymentMethods] = useState([]);
+	const [userCustomerId, setUserCustomerId] = useState(null);
 
 	const navigate = useNavigate();
 	const Swal = useSwalWrapper();
-	var logged_user_stripe_customer_id = false;
-
 
 	const fetchUserName = async () => {
 		try {
@@ -97,7 +84,7 @@ export default function Giveaway({
 			setName(data.name);
 			isClientEmail(data.email);
 
-			setuserCustomerID(data.customerId);
+			setUserCustomerId(data.customerId);
 			data.id = colledoc.docs[0].id;
 			setCurrentUser(data);
 		} catch (err) {
@@ -109,13 +96,9 @@ export default function Giveaway({
         if (user?.uid){
 			fetchUserName();
 			getDataGiveaway();
-        	get_stripe_customer_id();
 		}
 
-		if(logged_user_stripe_customer_id){
-			payment_method();
-		}
-    }, [user, logged_user_stripe_customer_id]);
+    }, [user]);
     localStorage.setItem('name', name);
 
     const getDataGiveaway = async () => {
@@ -126,54 +109,6 @@ export default function Giveaway({
             setLoggedInUserData(data);            
         }
     }
-
-    const get_stripe_customer_id = async () => {
-        const docRef = doc(db, "campaigns", campaignId, 'stripeCustomers', user.uid);
-        const docSnap = await getDoc(docRef);
-        //console.log(docSnap);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            set_Stripe_customer_id_new(data);
-        } else {
-            logged_user_stripe_customer_id = false;
-        }  
-    }
-    logged_user_stripe_customer_id = stripe_customer_id_new.customer_id;
-    
-	const payment_method = () => {
-		if (logged_user_stripe_customer_id) {
-			postRequest("/get_payment_methods", {stripe_customer_id: logged_user_stripe_customer_id})
-			.then(function (response) {
-				var data = response.data;
-				if (data.status) {
-					isCustomerSet(true);
-					var brand = data.brand;
-					var last4 = data.last4;
-					setCardBrand(brand);
-					setLast4(last4);
-					setUseSaveCard(true);
-					//console.log("getting data" +logged_user_stripe_customer_id )
-				} else {
-					isCustomerSet(false);
-					//setUseSaveCard(false);
-					console.log("not getting data")
-				}
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-		} else {
-			isCustomerSet(false);
-		}
-	}
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setStripeError('');
-        }, 2000);
-
-        return () => clearInterval(interval);
-    }, [stripeError]);
 
     var vipEntryPrice = campaignData.giveawayVIPEntryCost ?? 0;
     var freeEntryPrice = "0";
@@ -199,39 +134,6 @@ export default function Giveaway({
 			setDoc(doc(db, "campaigns", campaignId), {campaignVIPtotal: increment(data.price)}, { merge: true });
 		}
     }
-
-    const saveDataInStripeCustomer = (stripe_customer_data) => {
-        // console.log(stripe_customer_data);
-        setDoc(doc(db, "campaigns", campaignId,'stripeCustomers',user?.uid), stripe_customer_data);
-        setDoc(doc(db, 'stripeCustomers',user?.uid), stripe_customer_data);
-    }
-
-
-    const handleClickToggle = event => {
-        // 👇️ toggle isActive state on click
-        event.preventDefault();
-        setUseSaveCard(current_a => !current_a);
-        setIsActive(current_b => !current_b);
-    };
-     
-
-    useEffect(() => {
-        //console.log('use save card value : ' + useSaveCard)
-
-    }, [useSaveCard])
-
-    const handleCheckBox = event => {
-        if (event.target.checked) {
-            //console.log('✅ Checkbox is checked');
-        } else {
-            //console.log('⛔️ Checkbox is NOT checked');
-        }
-        setIsSubscribed(current => !current);
-    };
-
-    const CARD_ELEMENT_OPTIONS = {
-        hidePostalCode: true,
-    };
 
     const collectFreeEntryPayment = async () => {
     	var data = {
@@ -320,12 +222,13 @@ export default function Giveaway({
 				toggleModal();
 				}); */
 
-				getRequest(`/customer/method/${userCustomerID}`)
+				getRequest(`/customer/method/${userCustomerId}`)
 				.then((resp) => {
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
 					if (mdata.length > 0) {
 					setPaymentMethods(resp.data.paymentmethod.data);
+					setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
 					setOpenPopup(true);
 					} else {
 					setOpen(true);
@@ -389,83 +292,11 @@ export default function Giveaway({
 		}
 	})
 
+	const handleBackPopup = () => {
+    setOpen(false);
+    setOpenPopup(true);
+  }
 
-
-
-
-	const [cardInfo, setCardInfo] = useState({
-		name: "",
-		expiry: "",
-		number: "",
-		address: {
-			line: "",
-			postalCode: "",
-		},
-	});
-	const [updateCardInfo, setUpdateCardInfo] = useState({
-		pid: "",
-		name: "",
-		country: "",
-		state: "",
-		city: "",
-		postalCode: "",
-	});
-	const [locations, setLocations] = useState({
-		countries: "",
-		states: "",
-		cities: "",
-	});
-	const [selectedLocation, setSelectedLocation] = useState({
-		country: {},
-		city: {},
-		state: {},
-	});
-	const [paymentMethods, setPaymentMethods] = useState([]);
-	const [userCustomerID, setuserCustomerID] = useState(null);
-
-	function handleChangeAddressLine(e) {
-		const { value } = e.target;
-		setCardInfo((prev) => {
-			return { ...prev, address: { ...prev.address, line: value } };
-		});
-	}
-	function handleChangeName(e) {
-		const { value } = e.target;
-		setCardInfo((prev) => {
-			return { ...prev, name: value };
-		});
-	}
-	function parseForSelect(arr) {
-		return arr.map((item) => ({
-			label: item.name,
-			value: item.isoCode ? item.isoCode : item.name,
-		}));
-	}
-	function handleSelectCountry(country) {
-		setSelectedLocation((prev) => {
-			return { ...prev, country };
-		});
-		setCardInfo({
-			...cardInfo,
-			country: country.value,
-		});
-	}
-	function handleSelectState(state) {
-		const cities = City.getCitiesOfState(
-			selectedLocation.country.value,
-			state.value
-		);
-		setSelectedLocation((prev) => {
-			return { ...prev, state };
-		});
-
-		setLocations((prev) => ({ ...prev, cities: parseForSelect(cities) }));
-	}
-	function handleSelectCity(city) {
-		setSelectedLocation((prev) => {
-			return { ...prev, city };
-		});
-	}
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const closefunction = () => {
@@ -473,148 +304,122 @@ export default function Giveaway({
 	};
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		const address = cardInfo.address;
-		const billingDetails = {
-			name: cardInfo.name,
-			address: {
-				country: cardInfo.country,
-				state: address.state,
-				city: address.city,
-				line1: address.line,
-			},
-		};
 
-		try {
 		stripe.createPaymentMethod({
-				type: "card",
-				billing_details: billingDetails,
-				card: elements.getElement(CardElement),
-			})
-			.then((resp) => {
-				const pmid = resp.paymentMethod.id;
-				if (pmid && userCustomerID) {
-					getRequest(`/method/attach/${userCustomerID}/${pmid}`)
-					.then((resp) => {
-						setOpen(false);
-						if (resp.data.added) {
-							setPaymentMethods(resp.data.paymentmethod.data);
-						} else {
+			type: "card",
+			card: elements.getElement(CardNumberElement),
+		})
+		.then((resp) => {
+			const pmid = resp.paymentMethod.id;
+			if (pmid && userCustomerId) {
+				getRequest(`/method/attach/${userCustomerId}/${pmid}`)
+				.then((resp) => {
+					setOpen(false);
+					if (resp.data.added) {
+						setPaymentMethods(resp.data.paymentmethod.data);
+						setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
+						setLoading(false);
+						setOpenPopup(true);
+					} else {
+						setLoading(false);
 						Swal.fire({
 							icon: "error",
 							title: "Oops...",
 							text: "An error occurred",
 						});
-						}
-					})
-					.catch((err) => {
-						/*Handle Error */
+					}
+				})
+				.catch((err) => {
+					/*Handle Error */
+					setOpen(false);
+					setLoading(false);
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "An error occurred",
 					});
-				}
-				console.log(resp);
-			});
-		} catch (err) {
+				});
+			}
+			else {
+				setOpen(false);
+				setLoading(false);
+				Swal.fire({
+					icon: "error",
+					title: "Oops...",
+					text: "An error occurred",
+				});
+			}
+			console.log(resp);
+		})
+		.catch((err) => {
 		/* Handle Error*/
-		}
-	};
+			setOpen(false);
+			setLoading(false);
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "An error occurred",
+			});
+		});
+	}
+
 	const resturnOption = () => {
 		const options = supported_transfer_countries.map((item, index) => {
 			return { value: item.code, label: item.country };
 		});
 		return options;
 	};
-
-
-
-
  
 	return (
 		<>
-		<ConfirmPopup
+		<ConfirmVIPPopup
 			openstate={openPopup}
 			settheOpenPopup={setOpenPopup}
 			closefunction={closefunction}
 			allprimarymethod={paymentMethods}
-			setSelectedPaymentMethod={setSelectedPaymentMethod}
-			title={"Confirm VIP entry"}
-			belowtext={autobid}
-			undertitle={``}
-			onchangeclick={handleOpen}
+			onaddclick={handleOpen}
 			price={vipEntryPrice}
-			userCustomerID={userCustomerID}
-			hovertext={hoverText}
-			hovereffect={true}
-			buyvip={true}
-			
+			userCustomerId={userCustomerId}
+			selectPaymentMethod={selectedPaymentMethod}
+			setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
 		<Modal
-			open={open}
-			onClose={handleClose}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
-			>
-			<Box sx={style}>
-			<div className="wrapper">
-				<div className="innerWrapper">
-				<IconButton
-					onClick={handleClose}
-					style={{ float: "right", cursor: "pointer", marginTop: "-8px" }}
-					color="primary"
-					aria-label="upload picture"
-					component="label"
-				>
-					<CancelIcon />
-				</IconButton>
-				<div className="title">Add Payment Method</div>
-				<div className="row">
-					<label>Cardholder Name</label>
-					<input
-					onChange={handleChangeName}
-					type="text"
-					name="name"
-					placeholder="Enter card holder name"
-					/>
-				</div>
-				<div className="rowPaymentInput">
-					<CardElement ref={card} />
-				</div>
-
-				<div className="rowSelect">
-					<label>Country</label>
-					<Select
-					options={resturnOption()}
-					onChange={handleSelectCountry}
-					/>
-				</div>
-
-				<div className="addressWrapper">
-					<div className="row">
-					<label>Address</label>
-					<input
-						onChange={handleChangeAddressLine}
-						type="text"
-						name="address"
-						placeholder="Enter Full Address"
-					/>
-					</div>
-					<div className="checkbox-div card-body-text">
-					<input
-						type="checkbox"
-						disabled="disabled"
-						id="subscribe"
-						name="subscribe"
-						checked
-					/>
-					Save Card
-					</div>
-
-					<InteractFlashyButton onClick={handleSubmit}>
-					Submit
-					</InteractFlashyButton>
-				</div>
-				</div>
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <div className="wrapper">
+          <div className="innerWrapper">
+			<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
+			<div className="paymentRequestDiv">
+            	<PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
 			</div>
-			</Box>
-		</Modal>
+            <div className="payment-divider" />
+            <div className="stripe-card-wrapper">
+              <div className="number_input">
+                  <label htmlFor="#" className="stripe-card_field_label">Card number</label>
+                  <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
+              </div>
+              <div className="expiry_input">
+                  <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+                  <CardExpiryElement className={"expiry_input"} />
+              </div>
+              <div className="cvc_input">
+                  <label htmlFor="#" className="stripe-card_field_label">CVC</label>
+                  <CardCvcElement className={"cvc_input"} />
+              </div>
+            </div>
+			<FormControlLabel style={{marginTop: '10px'}}
+                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+            />
+            <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
+          </div>
+        </div>
+      </Box>
+    </Modal>
 
 		<JumboCardQuick
 			title={"Giveaway"}
