@@ -52,7 +52,7 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
     event.preventDefault();
     try {
       const formData = new FormData();
-      window.location.href = _BASE_URL+'/a/linkbank'; 
+      window.location.href = _BASE_URL+'/onboard-user'; 
     } catch (err) {
       console.log(err);
     }
