@@ -70,7 +70,7 @@ app.post("/get_account",async (req, res) => {
 });
 
 // CREATE STRIPE ACCOUNT
-app.get("/a/linkbank", async (req, res) => {
+app.get("/onboard-user", async (req, res) => {
   try {
     const account = await stripe.accounts.create({
       type: 'express',
@@ -84,7 +84,7 @@ app.get("/a/linkbank", async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: account.id,
-      refresh_url: `${origin}/a/linkbank/refresh`,
+      refresh_url: `${origin}/onboard-user/refresh`,
       return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
     });
     res.redirect(303, accountLink.url);
@@ -94,7 +94,7 @@ app.get("/a/linkbank", async (req, res) => {
     });
   }
 });
-app.get("/a/linkbank/refresh", async (req, res) => {
+app.get("/onboard-user/refresh", async (req, res) => {
   if (!req.accountId) {
     res.redirect("/");
     return;
@@ -107,7 +107,7 @@ app.get("/a/linkbank/refresh", async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: accountId,
-      refresh_url: `${origin}/a/linkbank/refresh`,
+      refresh_url: `${origin}/onboard-user/refresh`,
       return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+accountId,
     });
 
@@ -118,19 +118,19 @@ app.get("/a/linkbank/refresh", async (req, res) => {
     });
   }
 });
-app.get("/a/linkbank/success", async (req, res) => {
+app.get("/onboard-user/success", async (req, res) => {
   try {
     if(req.accountId){
       // res.status(200).json(JSON.stringify(req));
       // res.status(200).json(JSON.stringify(res));  
     }
-    console.log('response from /a/linkbank/success');
+    console.log('response from /onboard-user/success');
     console.log(res);
-    console.log('request from /a/linkbank/success');
+    console.log('request from /onboard-user/success');
     console.log(req.accountId);
     
   } catch (err) {
-    console.log('error from /a/linkbank/success');
+    console.log('error from /onboard-user/success');
     console.log(err);
     res.status(500).send({
       error: err.message,
