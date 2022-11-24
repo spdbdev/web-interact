@@ -669,7 +669,7 @@ useEffect(() => {
                           lineHeight: '115%'
                         }}
                       >
-                        {" "}ban&nbsp;hooligans
+                        {" "}ban&nbsp;users
                       </Typography>
                       <Typography
                         variant="body1"

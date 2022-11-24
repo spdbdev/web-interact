@@ -102,15 +102,13 @@ const FaqPage = () => {
       expand: false
     },
     {
-      question: 'How does the auction & leaderboard work?',
+      question: 'How do the auction & leaderboard work?',
       answer: (
         <>
-          <p>💜 Place a bid to be on the leaderboard or auto-bid. We'll automatically bid the lowest
-            amount to stay at your desired rank on the leaderboard until your max bid is reached.
-            If others bid more & your max bid amount is exceeded, your rank will be lowered (we will
-            automatically bid your max bid price if it is exceeded and still try to get you the highest
-            rank possible); you might still be on the leaderboard or you might not be, meaning meaning
-            no interaction (you'll be sent an email to increase your max bid).</p>
+          <p>💜 Place a bid to be on the leaderboard or auto-bid. WWe'll automatically bid the lowest amount to stay at your 
+					  desired rank on the leaderboard until your max bid is reached. If another bidder also 
+            wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+					  bid higher than your max bid, your rank could be lowered.</p>
             <p>💜 If you are still on the leaderboard when the campaign ends, you will acquire an
               interaction & your previously selected payment method will be charged. If you place in
               the top 3 on the leaderboard, your interaction will be 2x or more in duration compared

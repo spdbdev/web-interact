@@ -144,7 +144,8 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 						const winnersdata = document.data();
 					
 						db.collection("users").doc(campaign.person.id).collection("Contributions").doc(doc.person.id).set({
-							contributionTotal: FieldValue.increment(winnersdata.price)
+							contributionTotal: FieldValue.increment(winnersdata.price),
+							interactionTotal: FieldValue.increment(1)
 						}, { merge: true });
 
 						const paymentintent = await stripe.paymentIntents.create({
@@ -246,7 +247,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 
 	async function process_giveaway_list(campaign_id, numGiveawayInteractions, creator_id)
 	{
-		functions.logger.info("Collecting winners from GiveAway", {structuredData: true});
+		functions.logger.info("Collecting winners from giveAway", {structuredData: true});
 
 		var fans = []; // all users in giveAway
 		var pool = []; // all users with multiplier entries
