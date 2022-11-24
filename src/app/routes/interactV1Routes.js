@@ -100,7 +100,7 @@ const interactV1Routes = [
   },
   {
     path: "/c/",
-    element:<Page component ={CampaignPage} layout="vertical-default"/>,
+    element:<Page component ={CampaignPage} layout="vertical-default"/>,//comment this out when read to go live, this should just be error 404
   },
 
   {
