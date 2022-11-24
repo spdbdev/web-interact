@@ -413,6 +413,7 @@ function CampaignPage(userData) {
               bidAction={saveBid}
               campaignData={campaignData}
               bids={bids}
+			  userAuctionPosition={userAuctionPosition}
               hasUserEnteredAuction={hasUserEnteredAuction}
               setHasUserEnteredAuction={setHasUserEnteredAuction}
             />
