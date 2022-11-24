@@ -61,7 +61,7 @@ const AuthUserDropdown = () => {
             src={completeUser.photoURL}
             sizes={"small"}
             style={{
-              boxShadow: '2px 2px 6px -1px grey',
+              boxShadow: '2px 2px 9.69px -1px #D3D3D3',
               cursor: "pointer"
             }}
           />

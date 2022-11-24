@@ -31,7 +31,7 @@ const CommentHeader = ({
       <img
         className="profile-pic"
         align="center"
-        src={commentData?.photoURL ? commentData?.photoURL :  "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png"}
+        src={commentData?.photoURL ? commentData?.photoURL :  "https://iili.io/HH6JxB1.md.jpg"}
         alt="No Item"
         onClick={()=>navigate(`/u/${commentData.username}`)}
       />
