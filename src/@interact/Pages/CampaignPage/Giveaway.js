@@ -193,7 +193,7 @@ export default function Giveaway({
 			icon: "warning",
 			html: (
 				<div>
-				<p>300+100+20 = ?</p>
+				<p>9+10+21 = ?</p>
 				<Input id="answer" type={"number"} />
 				</div>
 			),
@@ -203,13 +203,13 @@ export default function Giveaway({
 			reverseButtons: true,
 			preConfirm: () => {
 				const answer = Swal.getPopup().querySelector("#answer").value;
-				if (answer != 420) {
-					Swal.showValidationMessage(`Please try again.`);
+				if (answer != 40) {
+					Swal.showValidationMessage(`Please try again`);
 				}
 				return { answer: answer };
 			},
 		}).then((result) => {
-			if (result.value.answer == 420) {
+			if (result.value.answer == 40) {
 				// setHasUserEnteredGiveaway(true); can't set these to true until we get a confirmation from stripe.
 				//setHasUserPurchasedVIPEntry(true);
 				/* Swal.fire(
