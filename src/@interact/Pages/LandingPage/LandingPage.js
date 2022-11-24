@@ -598,16 +598,16 @@ useEffect(() => {
                       scheduling.
                     </Typography>
                     <Box sx={{ mt: 1 }} className='landing-subtitle'>
-                    <Typography
-                      variant="body1"
-                      component='span'
-                        className="landing-gradient-text"
-                      sx={{
-                        fontSize: '18px',
-                        fontWeight: 600,
-                        lineHeight: '115%'
-                      }}
-                    >
+                      <Typography
+                        variant="body1"
+                        component='span'
+                          className="landing-gradient-text"
+                        sx={{
+                          fontSize: '18px',
+                          fontWeight: 600,
+                          lineHeight: '115%'
+                        }}
+                      >
                         After the campaign, choose your 
                         availability every week (we'll automatically match fans).
                       </Typography>
@@ -622,19 +622,19 @@ useEffect(() => {
                         }}
                       >
                         {" "}Seamlessly mesh with your schedule
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      component='span'
-                      className="landing-gradient-text"
-                      sx={{
-                          fontSize: '18px',
-                          fontWeight: 600,
-                          lineHeight: '115%'
-                      }}
-                    >
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        component='span'
+                        className="landing-gradient-text"
+                        sx={{
+                            fontSize: '18px',
+                            fontWeight: 600,
+                            lineHeight: '115%'
+                        }}
+                      >
                         {" "}with 2-way calendar sync (Google, Apple, iCloud). +You can
-                    </Typography>
+                      </Typography>
                       <Typography
                         variant="body1"
                         component='span'
@@ -694,6 +694,7 @@ useEffect(() => {
             </Grid>
           </Grid>
         </Stack>
+
         <Box sx={{ width: '76.9%' }}>
           <VideoContainer mt={12} mb={10}>
             <iframe
@@ -705,76 +706,51 @@ useEffect(() => {
         </Box>
 
         <Stack width={"100%"}>
-          <Grid container spacing={5.621}>
-            <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
-              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
+          <Grid container spacing={4.469}>
+            <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"} >
+              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%', textAlign: "center" }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/heart-book.svg'} alt='' />
-          </Box>
+                </Box>
                 <Typography
                   sx={{
                     fontSize: "21px",
                     fontWeight: 600,
                     color: "#4D4657",
-                    textAlign: "center",
                     lineHeight: '110%',
                     minHeight: '65px'
                   }}
+                  component="label"
                 >
-                  You’re a key part of their weekly / daily
-            </Typography>
-            <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#782FEE",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-            >
-                  {" "}routine
-            </Typography>
-            <Typography
-              sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-              }}
-            >
+                  You’re a 
+                  <Typography
+                    sx={{
+                      fontSize: "21px",
+                      fontWeight: 600,
+                      color: "#782FEE",
+                      lineHeight: '110%',
+                    }}
+                    component="span"
+                  >
+                    {" "}key part of{" "}
+                  </Typography>
+                  their weekly/daily
+                  <Typography
+                    sx={{
+                      fontSize: "21px",
+                      fontWeight: 600,
+                      color: "#782FEE",
+                      lineHeight: '110%',
+                    }}
+                    component="span"
+                  >
+                    {" "}routine
+                  </Typography>
                   .
-            </Typography>
-            <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-            >
-                  Show some love to these fans who have
-            </Typography>
-            <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-            >
-                  {" "}grown with you not only as a creator, but as a person
-            </Typography>
+                </Typography>
                 <Typography
                   sx={{
                     mt: 0,
-                    mb: 1,
                     fontSize: "15px",
                     fontWeight: 400,
                     textAlign: "center",
@@ -782,6 +758,20 @@ useEffect(() => {
                     lineHeight: "120%"
                   }}
                 >
+                  Show some love to these fans who have
+                  <Typography
+                    sx={{
+                      mt: 0,
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      textAlign: "center",
+                      color: '#782FEE',
+                      lineHeight: "120%"
+                    }}
+                    component="span"
+                  >
+                    {" "}grown with you not only as a creator, but as a person
+                  </Typography>
                   . Meanwhile, you’re getting fresh content with new people to spice things up.
                 </Typography>
               </GradientRoundedBox>
@@ -791,7 +781,7 @@ useEffect(() => {
               <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/pig.svg'} alt='' />
-          </Box>
+                </Box>
                 <Typography
                   sx={{
                     fontSize: "21px",
@@ -801,31 +791,21 @@ useEffect(() => {
                     lineHeight: '110%',
                     minHeight: '65px'
                   }}
+                  component="label"
                 >
                   Auction: the
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#782FEE",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  {" "}top bidders{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
+                  <Typography
+                    sx={{
+                      fontSize: "21px",
+                      fontWeight: 600,
+                      color: "#782FEE",
+                      textAlign: "center",
+                      lineHeight: '110%',
+                    }}
+                    component="span"
+                  >
+                    {" "}top bidders{" "}
+                  </Typography>
                   on the leaderboard win.
                 </Typography>
                 <Typography
@@ -839,61 +819,39 @@ useEffect(() => {
                   }}
                 >
                   at the end of the campaign. If you choose to offer 20 interactions, the top 20 bidders win. Thus,
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}more affluent fans{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
+                  <Typography
+                    sx={{
+                      mt: 0,
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      textAlign: "center",
+                      color: '#782FEE',
+                      lineHeight: "120%"
+                    }}
+                    component="span"
+                  >
+                    {" "}more affluent fans{" "}
+                  </Typography>
                   can bid for a
+                  <Typography
+                    sx={{
+                      mt: 0,
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      textAlign: "center",
+                      color: '#782FEE',
+                      lineHeight: "120%"
+                    }}
+                    component="span"
+                  >
+                    {" "}guaranteed interaction.
+                  </Typography>
                 </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}guaranteed interaction{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    mb: 1,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                  .
-                </Typography>
-        </GradientRoundedBox>
+              </GradientRoundedBox>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4} data-aos={"flip-left"}>
-              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%' }}>
+              <GradientRoundedBox sx={{ alignItems: "center", p: 4.5, height: '100%', pb: 8 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '175px', '& > img': { maxWidth: '80px' } }}>
                   <img src={'images/pages/landing/calendar.svg'} alt='' />
                 </Box>
@@ -906,31 +864,21 @@ useEffect(() => {
                     lineHeight: '110%',
                     minHeight: '65px'
                   }}
+                  component="label"
                 >
                   Giveaway: fans can enter for
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#782FEE",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
-                  {" "}free / a few $
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "21px",
-                    fontWeight: 600,
-                    color: "#4D4657",
-                    textAlign: "center",
-                    lineHeight: '110%',
-                    minHeight: '65px'
-                  }}
-                >
+                  <Typography
+                    sx={{
+                      fontSize: "21px",
+                      fontWeight: 600,
+                      color: "#782FEE",
+                      textAlign: "center",
+                      lineHeight: '110%',
+                    }}
+                    component="span"
+                  >
+                    {" "}free/a few $
+                  </Typography>
                   .
                 </Typography>
                 <Typography
@@ -942,65 +890,42 @@ useEffect(() => {
                     color: '#70677E',
                     lineHeight: "120%"
                   }}
+                  component="label"
                 >
                   All fans can get a chance to interact: they can enter the giveaway for free, or
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}spare some pocket change{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
-                   for a
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#782FEE',
-                    lineHeight: "120%"
-                  }}
-                >
-                  {" "}VIP entry{" "}
-                </Typography>
-                <Typography
-                  sx={{
-                    mt: 0,
-                    mb: 1,
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    color: '#70677E',
-                    lineHeight: "120%"
-                  }}
-                >
+                  <Typography
+                    sx={{
+                      mt: 0,
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      textAlign: "center",
+                      color: '#782FEE',
+                      lineHeight: "120%"
+                    }}
+                    component="span"
+                  >
+                    {" "}spare some pocket change{" "}
+                  </Typography>
+                  for a
+                  <Typography
+                    sx={{
+                      mt: 0,
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      textAlign: "center",
+                      color: '#782FEE',
+                      lineHeight: "120%"
+                    }}
+                    component="span"
+                  >
+                    {" "}VIP entry{" "}
+                  </Typography>
                   (a couple dollars for a 25x increased chance).
                 </Typography>
               </GradientRoundedBox>
             </Grid>
-
           </Grid>
         </Stack>
-
-
 
         <Stack sx={{ mb: 10, mt:10 }}>
           <CampaignButtonGroup
@@ -1057,7 +982,7 @@ useEffect(() => {
                     </Typography>
                   </Box>
 
-                  <Box sx={{ mt: '12px' }} data-aos="fade-right">
+                  <Box sx={{ mt: '12px' }} data-aos="fade-down">
                     <Typography
                       fontSize={"17px"}
                       color={"#70677E"}
