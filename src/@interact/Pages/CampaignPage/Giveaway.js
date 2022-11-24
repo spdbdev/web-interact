@@ -502,7 +502,7 @@ export default function Giveaway({
 						Swal.fire({
 							icon: "error",
 							title: "Oops...",
-							text: "An error occured",
+							text: "An error occurred",
 						});
 						}
 					})

@@ -57,16 +57,17 @@ const belowAutobidTitle = "The bid will place you Xth on the leaderboard (if oth
 export default function Auction({isCampaignEnded, isCampaignScheduled, bids, campaignData, bidAction}) {
 	
 	const navigate = useNavigate();
-	const [bidAmount, setBidAmount] = useState(0);
-	const [autoBidAmount, setAutoBidAmount] = useState(0);
-	const [minBidAmount, setMinBidAmount] = useState(0);
-  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
-	const [maxBidAmount, setMaxBidAmount] = useState(0);
-	const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
+
+	// auto bid
 	const [desiredRank, setDesiredRank] = useState(1);
+	const [autoBidAmount, setAutoBidAmount] = useState(0);
+  	const [minRankBidAmount, setMinRankBidAmount] = useState(0);
+	// manual bid
+	const [bidAmount, setBidAmount] = useState(0);
+	const [minBidAmount, setMinBidAmount] = useState(0);
 	
-  const { user } = useCurrentUser();
-	const [currentUser,setCurrentUser] = useState(null);
+  	const { user } = useCurrentUser();
+	const [currentUser, setCurrentUser] = useState(null);
 	const stripe = useStripe();
 	const [open, setOpen] = useState(false);
 	const elements = useElements();
@@ -76,38 +77,54 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 	const [selectPopUp, setselectPopUp] = useState(1);
 
 
-	useEffect(() => {
-    let sortedBids = bids;
-		let thirtyPer = (sortedBids[1]?.price/100) * 30;
-		let maxIncrement = 5;
-		if(thirtyPer > 5){
-			maxIncrement = thirtyPer;
+	const handleMaxBidAmount = function(value)
+	{
+		let desired_rank = parseInt(value);
+		if (bids.length > 0 && bids.length >= desired_rank) 
+		{	
+			let bidAtDesiredRank = bids[desired_rank - 1];
+			let priceAtDesiredRank = parseFloat(bidAtDesiredRank?.price) ?? 0;
+
+			let thirtyPer = (priceAtDesiredRank / 100) * 30;
+
+			let minIncrement = 5;
+			if (thirtyPer > 5) minIncrement = thirtyPer;
+			minIncrement = Math.round(minIncrement * 2) / 2;
+
+			setAutoBidAmount(priceAtDesiredRank + minIncrement);
+			setMinRankBidAmount(priceAtDesiredRank + 0.5);
 		}
-		maxIncrement = Math.round(maxIncrement*2)/2;
-    setMinBidAmount(campaignData.auctionMinBid);
-    setMinRankBidAmount(campaignData.auctionMinBid);
-		setBidAmount(parseFloat(campaignData.auctionMinBid)+maxIncrement);
-    setAutoBidAmount(parseFloat(campaignData.auctionMinBid) + maxIncrement);
-		if (Object.entries(campaignData).length > 0 && bids.length > 0) {
-      let firstPrice = bids[1].price;
-      setMinRankBidAmount(parseFloat(firstPrice));
-			setAutoBidAmount(parseFloat(firstPrice) + maxIncrement);
+		else {
+			setAutoBidAmount(parseFloat(minBidAmount) + 5);
+			setMinRankBidAmount(parseFloat(minBidAmount) + 0.5);
+		}
+	}
 
-			if (campaignData.numAuctionInteractions) {
-				setNumAuctionInteractions(campaignData.numAuctionInteractions);
-			}
+	useEffect(() => {
+		if (Object.entries(campaignData).length > 0) 
+		{
+			let thirtyPer = 0;
+			if(bids.length > 0) thirtyPer = (bids[0]?.price/100) * 30;
 
+			let minIncrement = 5;
+			if(thirtyPer > 5) minIncrement = thirtyPer;
+			minIncrement = Math.round(minIncrement * 2) / 2;
+
+			// manual bidding
+			let min_bid_amount = campaignData.auctionMinBid;
+			let bid_amount = parseFloat(campaignData.auctionMinBid) + minIncrement;
 			if (bids.length >= campaignData.numAuctionInteractions) 
 			{
-				let lastPrice = bids[campaignData.numAuctionInteractions - 1].price;
-				if (lastPrice >= campaignData.auctionMinBid) {
-					setMinBidAmount(parseFloat(lastPrice) + 0.5);
-					setBidAmount(parseFloat(lastPrice) + 0.5);
-				} else {
-					setMinBidAmount(campaignData.auctionMinBid);
-					setBidAmount(campaignData.auctionMinBid);
+				let lastBidPrice = bids[campaignData.numAuctionInteractions - 1].price;
+				if (lastBidPrice >= campaignData.auctionMinBid) {
+					min_bid_amount = parseFloat(lastBidPrice) + 0.5;
+					bid_amount = parseFloat(lastBidPrice) + 0.5;
 				}
 			}
+			setMinBidAmount(parseFloat(min_bid_amount));
+			setBidAmount(parseFloat(bid_amount));
+
+			handleMaxBidAmount(desiredRank);
 		}
 	}, [campaignData, bids]);
 
@@ -126,7 +143,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 	})
 
 	const handleBidAmount = function(e){
-		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(maxBidAmount)){
+		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(autoBidAmount)){
 			setBidAmount(e.target.value);
 		}
 	}
@@ -134,33 +151,6 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 	const onAutoBidAmountChange = function(e){
 		if((parseFloat(e.target.value) >= (parseFloat(minBidAmount))) && (parseFloat(e.target.value) >=parseFloat(minRankBidAmount))){
 			setAutoBidAmount(e.target.value);
-		}
-	}
-
-	const handleMaxBidAmount = function(value){
-		if(bids.length > 0)
-		{
-			let sortedBids = bids;
-			let bidAtDesiredRank = sortedBids[parseFloat(value) - 1];
-			let thirtyPer = (bidAtDesiredRank?.price/100) * 30;
-			let maxIncrement = 5;
-			if(thirtyPer > 5){
-				maxIncrement = thirtyPer;
-			}
-			maxIncrement = Math.round(maxIncrement*2)/2;
-
-			setMaxBidAmount(parseFloat(bidAtDesiredRank?.price) + maxIncrement);
-			setAutoBidAmount(parseFloat(bidAtDesiredRank?.price) + maxIncrement);
-      setMinRankBidAmount(parseFloat(bidAtDesiredRank?.price)+0.5);
-			if(!bidAtDesiredRank){
-				setMaxBidAmount(parseFloat(minBidAmount)+5);
-				setAutoBidAmount(parseFloat(minBidAmount)+5);
-			}
-		}
-
-		if(parseInt(value) > bids.length){
-			setMaxBidAmount(parseFloat(minBidAmount)+10);
-      // this should never get triggered since desired rank can't be larger than bids.length
 		}
 	}
 
@@ -175,10 +165,22 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 		handleMaxBidAmount(e.target.value);
 	}
 
+	const followCampaign = async () => {
+    	const targetUser = await fetchUserByName(campaignData?.person?.username);
+		if(user === undefined) {
+            console.log("You need to sign in to follow user");
+            navigate("/a/signin");
+            return;
+        }
+        if(!targetUser?.followers?.includes(user?.id)) {
+            followUser(user, targetUser);
+        }
+  	}
 
-	useEffect(()=>{
-		handleMaxBidAmount(desiredRank);
-	},[])
+	const handleBidClick = async (amount, auto = false, desiredRank = null, maxBidPrice = null) => {
+		followCampaign();
+		bidAction(amount, auto, desiredRank, maxBidPrice);
+	}
 
 
 
@@ -301,7 +303,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
                   Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: "An error occured",
+                    text: "An error occurred",
                   });
                 }
               })
@@ -398,21 +400,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
 	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
 		options.push(<MenuItem value={i} key={i}>{i}{nth(i)}</MenuItem>);
 	}
-	const followCampaign = async () => {
-    const targetUser = await fetchUserByName(campaignData?.person?.username);
-		if(user === undefined) {
-            console.log("You need to sign in to follow user");
-            navigate("/a/signin");
-            return;
-        }
-        if(!targetUser?.followers?.includes(user?.id)) {
-            followUser(user, targetUser);
-        }
-  }
-	const handleBidClick = async (amount, auto = false, desiredRank = null, maxBidPrice = null, minBidPrice = null) => {
-		followCampaign();
-		bidAction(amount, auto, desiredRank, maxBidPrice, minBidPrice);
-	}
+
 	return (
     <>
       <ConfirmPopup
@@ -424,7 +412,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
         belowtext={autobid}
         undertitle={`The bid will place you ${desiredRank} on the leaderboard (if others do not bid higher)`}
         onchangeclick={handleOpen}
-        price={maxBidAmount}
+        price={autoBidAmount}
         userCustomerID={userCustomerID}
         bidAction={bidAction}
         bidActionstatus={true}
@@ -516,7 +504,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
         </Box>
       </Modal>
     
-      <JumboCardQuick
+    <JumboCardQuick
         title={"Auction"}
         id="auctionCard"
         sx={{ ml: 2, display: "flex", flexDirection: "column", minWidth: 400 }}
@@ -531,6 +519,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
         className="auctionCard"
         >
         <Stack direction="column">
+
           <Typography mt={1.21} maxWidth={316.9}>
             The top{" "}
             <Span sx={{ color: "primary.main", fontWeight: 600 }}>{campaignData?.numAuctionInteractions}</Span>{" "}
@@ -543,6 +532,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
             the giveaway."
             />
           </Typography>
+
           <Typography >
             Top <Span sx={{ color: "primary.main", fontWeight: 600 }}>3</Span> x{" "}
             {campaignData?.interactionTopDurationTime} min interactions
@@ -556,102 +546,109 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, cam
           </Typography>
 
         </Stack>
+		
+
+
         <br></br>
         <Stack id="autoBidSection" direction="column" >
-          <Stack direction="row" alignItems="center" mb={1.21}>
-          <Typography variant="h5" color="text.secondary" mb={0}>
-            Auto-bid
-          </Typography>&nbsp;&nbsp;
-          <InfoTooltip
-            title="We'll automatically bid the lowest amount to stay at your 
-            desired rank on the leaderboard until your max bid is reached; if others 
-            bid more & your max bid amount is exceeded, your rank will be lowered"
-          />
-          </Stack>
+          	<Stack direction="row" alignItems="center" mb={1.21}>
+				<Typography variant="h5" color="text.secondary" mb={0}>
+						Auto-bid
+				</Typography>&nbsp;&nbsp;
+				<InfoTooltip
+					title="We'll automatically bid the lowest amount to stay at your 
+					desired rank on the leaderboard until your max bid is reached; if others 
+					bid more & your max bid amount is exceeded, your rank will be lowered"
+				/>
+          	</Stack>
 
-          <FormControl sx={{ my: 1.21 }}>
-          <InputLabel htmlFor="desired-ranking">Desired rank</InputLabel>
-          <Select
-            id="desired-rank"
-            type="number"
-            style={{ height: 50 }}
-            value={desiredRank}
-            label="Desired rank"
-            onChange={(e) => handleDesiredRank(e)}
-          >
-            {options}
-          </Select>
-          </FormControl>
+          	<FormControl sx={{ my: 1.21 }}>
+          		<InputLabel htmlFor="desired-ranking">Desired rank</InputLabel>
+				<Select
+					id="desired-rank"
+					type="number"
+					style={{ height: 50 }}
+					value={desiredRank}
+					label="Desired rank"
+					onChange={(e) => handleDesiredRank(e)}
+					>
+					{options}
+				</Select>
+          	</FormControl>
         
-          <Typography >
-            <Span sx={{ color: "primary.main", fontWeight: 600}}>
-              &nbsp;&nbsp;&nbsp;${minRankBidAmount
-              && `${ formatMoney(
-                minRankBidAmount
-              )}`}
-            </Span>{" "}
-            minimum bid for {desiredRank}{nth(desiredRank)} place
-          </Typography>
+			<Typography >
+				<Span sx={{ color: "primary.main", fontWeight: 600}}>
+					&nbsp;&nbsp;&nbsp;${minRankBidAmount
+					&& `${ formatMoney(
+						minRankBidAmount
+					)}`}
+				</Span>{" "}
+				minimum bid for {desiredRank}{nth(desiredRank)} place
+			</Typography>
 
-          <FormControl sx={{ mb:1.69, mt:1.869 }}>
-          <InputLabel htmlFor="max-bid-amount">Max bid amount</InputLabel>
-          <OutlinedInput
-            id="max-bid-amount"
-            type="number"
-            inputProps={{ step: ".50" }}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            style={{ height: 50 }}
-            value={formatMoney(autoBidAmount)}
-            label="Max bid amount"
-            onChange={(e) =>  onAutoBidAmountChange(e)}
-          />
-          </FormControl>
-
-          <InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(autoBidAmount,true,desiredRank,maxBidAmount)}>
-          Place auto-bid
-          </InteractButton>
+          	<FormControl sx={{ mb:1.69, mt:1.869 }}>
+          		<InputLabel htmlFor="max-bid-amount">Max bid amount</InputLabel>
+				<OutlinedInput
+					id="max-bid-amount"
+					type="number"
+					inputProps={{ step: ".50" }}
+					startAdornment={<InputAdornment position="start">$</InputAdornment>}
+					style={{ height: 50 }}
+					value={formatMoney(autoBidAmount)}
+					label="Max bid amount"
+					onChange={(e) =>  onAutoBidAmountChange(e)}
+				/>
+          	</FormControl>
+			
+			{/* 
+				minRankBidAmount => it should be the current bid amount (price)
+				autoBidAmount => it will be the maxBidPrice
+			*/}
+			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(minRankBidAmount, true, desiredRank, autoBidAmount)}>
+				Place auto-bid
+			</InteractButton>
         </Stack>
+
+
+
         <Divider sx={{ my: 1.69 }}>or</Divider>
         <Stack id="normalBidSection" direction="column" >
-          <Typography variant="h5" color="text.secondary" mb={1.21}>
-          Manual bid&nbsp;&nbsp;<InfoTooltip
-            title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking"
-            />
-          </Typography>
+			<Typography variant="h5" color="text.secondary" mb={1.21}>
+				Manual bid&nbsp;&nbsp;
+				<InfoTooltip
+					title="If multiple parties bid the same price, the one who placed a bid the earliest will have the highest ranking"
+				/>
+			</Typography>
 
-          {/* <div>Original Price: <span class='Highlight'>{'$'}20</span></div> */}
+          	{/* <div>Original Price: <span class='Highlight'>{'$'}20</span></div> */}
 
-        <Stack direction="column" spacing={0}>
-          <Typography mb={1.69}>
-            <Span sx={{ color: "primary.main", fontWeight: 600}}>
-              &nbsp;&nbsp;&nbsp;${minBidAmount
-              && `${ formatMoney(
-                minBidAmount
-              )}`}
-            </Span>{" "}
-            minimum bid
-          </Typography>
-          <FormControl sx={{ mt: 0.2169, mb:1.69 }}>
-          <InputLabel htmlFor="enter-bid-price">Enter bid price</InputLabel>
-          <OutlinedInput
-            id="enter-bid-price"
-            type="number"
-            inputProps={{ step: ".50" }}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            style={{ height: 50 }}
-            value={formatMoney(bidAmount)}
-            label="Enter bid price"
-            onChange={(e) => handleBidAmount(e)}
-          />
-          </FormControl>
+			<Stack direction="column" spacing={0}>
+				<Typography mb={1.69}>
+					<Span sx={{ color: "primary.main", fontWeight: 600}}>
+					&nbsp;&nbsp;&nbsp;${minBidAmount && `${ formatMoney(minBidAmount)}`}
+					</Span>{" "}
+					minimum bid
+				</Typography>
+				<FormControl sx={{ mt: 0.2169, mb:1.69 }}>
+					<InputLabel htmlFor="enter-bid-price">Enter bid price</InputLabel>
+					<OutlinedInput
+						id="enter-bid-price"
+						type="number"
+						inputProps={{ step: ".50" }}
+						startAdornment={<InputAdornment position="start">$</InputAdornment>}
+						style={{ height: 50 }}
+						value={formatMoney(bidAmount)}
+						label="Enter bid price"
+						onChange={(e) => handleBidAmount(e)}
+					/>
+				</FormControl>
+			</Stack>
+
+          	<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(bidAmount)}>
+          		Place bid
+          	</InteractButton>
         </Stack>
-
-          {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
-          <InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(bidAmount,false,null,null,minBidAmount)}>
-          Place bid
-          </InteractButton>
-        </Stack>
-      </JumboCardQuick>
+    </JumboCardQuick>
     </>
 	);
 }

@@ -251,7 +251,7 @@ export default function GoalVideoTab({
             }}
           />
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Suggestion: name the video by the goal or the title of this campaign
+            Name the video the same title as the title / goal of this campaign
           </Typography>
         </Stack>
       </CreateCampaignItemWrapper>

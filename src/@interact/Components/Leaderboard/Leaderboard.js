@@ -58,13 +58,12 @@ export default function Leaderboard({ campaignData, bids }) {
       return {
         id: i + 1,
         username: x.person.username,
-        bidPrice: x.auto
+        bidPrice: x.price,
+        /* bidPrice: x.auto
           ? i == bids.length - 1
             ? minBid
-            : formatMoney(
-                Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5)
-              )
-          : formatMoney(x.price),
+            : formatMoney(Math.min(x.price, parseFloat(bids[i + 1].price) + 0.5))
+          : formatMoney(x.price), */
         bidTime: new Date(x.time?.seconds * 1000).toString(),
       };
     });

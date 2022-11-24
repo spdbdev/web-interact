@@ -80,7 +80,16 @@ export default function Header({ campaignData }) {
       <br></br>
       <InteractFlashyButton
         >
-          Ends {moment.unix(campaignData?.endDate?.seconds).toNow()}
+          {(()=> {
+            // Return ENDS if the campaign hasn't ended, else Ended
+            if (moment().isBefore(moment.unix(campaignData?.endDateTime?.seconds))) {
+              return "Ends"
+            }
+            else {
+              return "Ended"
+            }
+          })()}
+{" "}{moment.unix(campaignData?.endDate?.seconds).toNow()}
       </InteractFlashyButton>
     </div>
   );
