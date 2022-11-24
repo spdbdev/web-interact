@@ -75,16 +75,15 @@ function CampaignPage(userData) {
 		customerId: "cus_MlMuNeDDsNVt2Z",
 	}; */
 
-  useEffect(() => {
+  useEffect(async () => {
     //if (loading) return;
     //if (!user) return navigate("/"); // this page should be browsable without login
-    if (campaignId === null) checkCampaignID();
-    else {
+    console.log("Campaign id",campaignId)
+      let id = await checkCampaignID();
       //console.log('campaignId >>>>>', campaignId);
-      getCampaignData();
+      getCampaignData(id);
       checkPurchasedEntry();
-    }
-  }, [user, campaignId]);
+  }, [user]);
   
 
   const checkAuthentication = () => {
@@ -105,18 +104,24 @@ function CampaignPage(userData) {
       );
       const customURLQuerySnapshot = await getDocs(customURLQ);
       var docSnapshots = customURLQuerySnapshot.docs[0];
-      if (docSnapshots) setCampaignId(docSnapshots.id);
-    } else setCampaignId(campaignId);
+      if (docSnapshots.exists()) setCampaignId(docSnapshots.id);
+      return docSnapshots.id;
+    } else {
+      setCampaignId(campaignId)
+      return campaignId;
+    };
   };
 
-  const getCampaignData = async () => {
+  const getCampaignData = async (_id = null) => {
     //campaigns change listener
+    let id_for_campaign = _id ? _id : campaignId;
     const campaignsListener = onSnapshot(
-      query(doc(db, "campaigns", campaignId)),
+      query(doc(db, "campaigns", id_for_campaign)),
       (querySnapshot) => {
         let _campaignData = querySnapshot.data();
+        console.log("Campaign Data",_campaignData)
         setCampaignData(_campaignData);
-        saveToRecentCampaignHistory(campaignId, user);
+        saveToRecentCampaignHistory(id_for_campaign, user);
         //Check Campaign End Time
         let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
         let campaignStartDate = new Date(_campaignData.startDate.seconds *1000);
@@ -327,6 +332,8 @@ function CampaignPage(userData) {
       return null;
     }
   }
+
+  if(!campaignData) return <div>Loading...</div>;
 
   return (
     <JumboContentLayout
