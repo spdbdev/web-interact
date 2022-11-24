@@ -70,7 +70,7 @@ app.post("/a/get-account",async (req, res) => {
 app.get("/a/register-account", async (req, res) => {
   try {
     const account = await stripe.accounts.create({
-      type: 'express',
+      type: 'standard',
     });
 
     // Store the Id of the new Express connected account.
