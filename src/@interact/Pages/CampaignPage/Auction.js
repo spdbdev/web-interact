@@ -104,8 +104,8 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 			if (thirtyPer > 5) minIncrement = thirtyPer;
 			minIncrement = Math.round(minIncrement * 2) / 2;
 
-			// if priceAtDesiredRank is less than previous bid then abort
-			if(priceAtDesiredRank < parseFloat(previousBidData.price)){
+			// if priceAtDesiredRank is less than or equal to previous bid then abort
+			if(priceAtDesiredRank <= parseFloat(previousBidData.price)){
 				Swal.fire({icon: "error", title: "Oops...", text: "Your new bid must be higher than your previous bid!"});
 				return;
 			}
