@@ -39,7 +39,7 @@ import {
 import WestIcon from '@mui/icons-material/West';
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import Swal from "sweetalert2";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { getRequest, postRequest } from "../../../utils/api";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
@@ -69,7 +69,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	// auto bid
 	const [desiredRank, setDesiredRank] = useState(1);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
-  	const [minRankBidAmount, setMinRankBidAmount] = useState(0);
+  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
 	// manual bid
 	const [bidAmount, setBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
@@ -77,7 +77,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 	const [previousBidData, setPreviousBidData] = useState({price:0});
 	
-  	const { user } = useCurrentUser();
+  const Swal = useSwalWrapper();
+  
+  const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const stripe = useStripe();
 	const [open, setOpen] = useState(false);
@@ -345,9 +347,13 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
   };
   const verificationOfBid = () => {
     console.log("manualbid");
-    console.log(bids);
-
-    console.log(manualRanking);
+    for (let i = 0; i < bids.length; i++) {
+      if (bidAmount > Number(bids[i].price)) {
+        console.log(i+1, Number(bids[i].price));
+        setManualRanking(i + 1);
+        break;
+      }
+    }
     if (!user) return navigate("/a/signup");
     getRequest(`/customer/method/${userCustomerId}`)
       .then((resp) => {
@@ -401,7 +407,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
-        desiredRank={desiredRank}
+        desiredRanking={desiredRank}
         onaddclick={handleOpen}
         price={minRankBidAmount}
         userCustomerId={userCustomerId}
@@ -416,7 +422,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
         allprimarymethod={paymentMethods}
-        desiredRank={manualRanking}
+        desiredRanking={manualRanking}
         onaddclick={handleOpen}
         price={bidAmount}
         userCustomerId={userCustomerId}
