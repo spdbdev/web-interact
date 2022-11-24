@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
         fontSize: '0.875rem',
         lineHeight: 1.75,
         padding: theme.spacing(.75, 2),
-        borderRadius: "8.69px 2.69px",
+        borderRadius: "7.69px 3.2169px",
         fontFamily: 'inherit',
         background: "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)",
         //borderColor: "primary.main",
@@ -59,13 +59,13 @@ const useStyles = makeStyles(theme => ({
 
         '&:hover': {
             background:
-              "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+              "linear-gradient(90deg, #8747f0 -8.69%, #e433ff 109.93%)", // theme.palette.primary.main
             //color: "white",
         }
           
     },
     cancelButton: {
-        borderRadius: "2.69px 7.9px",
+        borderRadius: "3.2169px 7.69px",
         margin: '.3125em',
         cursor: 'pointer',
         color: theme.palette.common.white,
@@ -75,10 +75,10 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(.75, 2),
         border: 0,
         fontFamily: 'inherit',
-        backgroundColor: theme.palette.grey[600],
+        backgroundColor: theme.palette.grey[500],
 
         '&:hover, &:focus, &:active': {
-            backgroundColor: theme.palette.grey[700],
+            backgroundColor: theme.palette.grey[400],
         }
     },
     footer: {

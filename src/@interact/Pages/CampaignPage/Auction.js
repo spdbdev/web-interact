@@ -171,14 +171,14 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	});
 
 	const handleBidAmount = function(e){
-		if(	parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(autoBidAmount) ){
+		if(	parseFloat(e.target.value) >= parseFloat(minBidAmount)){
 			if(parseFloat(e.target.value) < (parseFloat(previousBidData.price) + 0.5)) setBidAmount(parseFloat(previousBidData.price) + 0.5);
 			else setBidAmount(e.target.value);
 		}
 	}
 
 	const onAutoBidAmountChange = function(e){
-		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) >= parseFloat(minRankBidAmount)){
+		if((parseFloat(e.target.value) >= parseFloat(minBidAmount)) && (parseFloat(e.target.value) >= parseFloat(minRankBidAmount))){
 			if(parseFloat(e.target.value) < (parseFloat(previousBidData.price) + 0.5)) setAutoBidAmount(parseFloat(previousBidData.price) + 0.5);
 			else setAutoBidAmount(e.target.value);
 		}

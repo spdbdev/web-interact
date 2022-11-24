@@ -199,7 +199,7 @@ export default function Giveaway({
 			),
 			showCancelButton: true,
 			confirmButtonText: "Confirm",
-			cancelButtonText: "Wait, cancel!",
+			cancelButtonText: "Cancel",
 			reverseButtons: true,
 			preConfirm: () => {
 				const answer = Swal.getPopup().querySelector("#answer").value;
