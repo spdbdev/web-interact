@@ -37,10 +37,10 @@ const getErrorMessage = (message) => {
   let errMessage;
   switch (message) {
     case "Firebase: Error (auth/invalid-email).":
-      errMessage = "Invalid Email!";
+      errMessage = "Invalid email/username!";
       break;
     case "Firebase: Error (auth/wrong-password).":
-      errMessage = "Wrong Password!";
+      errMessage = "Wrong password!";
     case "Firebase: Error (internal-error).":
       errMessage = "You don't have access to this page unless you have clicked the link from the email!";
     default:
