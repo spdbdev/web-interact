@@ -366,7 +366,7 @@ function UserProfilePage() {
           >
             {targetUser?.name}
           </div>
-          <Box class="profile-desc--wrapper">
+          <Box className="profile-desc--wrapper">
             <Typography
               sx={{
                 mt: 1.69,

@@ -2,7 +2,7 @@ import "./UserProfilePage.css";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReactModal from "react-modal";
-import InteractButton from "@interact/Components/Button/InteractButton";
+import CloseIcon from '@mui/icons-material/Close';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { FollowButton } from "../CampaignPage/Stats";
 import { fetchUsersByIds } from "../../../firebase";
@@ -32,9 +32,8 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
         }}
       >
         <div style={{ fontSize: 20 }}>Followers</div>
-        <div onClick={() => setOpen(false)} style={{ cursor: "pointer" }}>
-          X
-        </div>
+        <CloseIcon onClick={() => setOpen(false)} style={{ cursor: "pointer" }}>
+        </CloseIcon>
       </div>
       <div style={{ overflowY: "scroll", height: "calc(100% - 30px)" }}>
         {followerlist.map((x, i) => (

@@ -5,7 +5,6 @@ import { DrawerHeader } from "@jumbo/components/JumboLayout/style";
 import JumboScrollbar from "@jumbo/components/JumboScrollbar";
 import { useJumboLayoutSidebar, useJumboSidebarTheme } from "@jumbo/hooks";
 import { SIDEBAR_STYLES, SIDEBAR_VIEWS } from "@jumbo/utils/constants/layout";
-import Logo from "../../../../shared/Logo";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Zoom from "@mui/material/Zoom";
 import Div from "@jumbo/shared/Div";
@@ -31,85 +30,80 @@ const Sidebar = () => {
   const [recentCampaignList, setRecentCampaignList] = useState([]);
 
   const getFollowingList = async () => {
-    if(user?.following) {
-      try {
-        const returnedValue = await fetchUsersByIds(user?.following);
-        let followingItemGroup = [];
-        for (let i = 0; i < returnedValue.length; i++) {
-          let data = {
-            uri: "/u/" + returnedValue[i].name,
-            label: returnedValue[i].name,
-            type: "nav-item",
-            icon: (
-              <RemoveCircleOutlineIcon
-                onClick={() => handleUserItemClick(returnedValue[i])}
-                sx={{ fontSize: 20 }}
-              />
-            ),
-            photoURL: returnedValue[i]?.photoURL
-              ? returnedValue[i]?.photoURL
-              : defaultPhotoURL,
-          };
-          followingItemGroup.push(data);
-        }
-        setFollowingList(followingItemGroup);
-      } catch (e) {
-        setFollowingList([]);
+    try {
+      const returnedValue = await fetchUsersByIds(user?.following);
+      let followingItemGroup = [];
+      for (let i = 0; i < returnedValue.length; i++) {
+        let data = {
+          uri: "/u/" + returnedValue[i].name,
+          label: returnedValue[i].name,
+          type: "nav-item",
+          icon: (
+            <RemoveCircleOutlineIcon
+              onClick={() => handleUserItemClick(returnedValue[i])}
+              sx={{ fontSize: 20 }}
+            />
+          ),
+          photoURL: returnedValue[i]?.photoURL
+            ? returnedValue[i]?.photoURL
+            : defaultPhotoURL,
+        };
+        followingItemGroup.push(data);
       }
-    }else {
+      setFollowingList(followingItemGroup);
+    } catch (e) {
       setFollowingList([]);
     }
-    
   }
 
   const getRecentCampaignList = async () => {
-    if(user?.recentCampaignData) {
-      try {
-        const returnedValue = await fetchRecentCampaigns(
-          user?.recentCampaignData
-        );
-        let recentCampaignItemGroup = [];
-        for (let i = 0; i < returnedValue.length; i++) {
-          let data = {
-            campaignUri: returnedValue[i]?.id
-              ? "/c/" + returnedValue[i]?.id
-              : "/c/",
-            label: returnedValue[i]?.header?.title
-              ? returnedValue[i]?.header?.title
-              : "No title",
-            creator_label: returnedValue[i].endDate ? getDateFromTimestamp({
-                timestamp: returnedValue[i].endDate?.seconds,
-                format: "MMM Do"
-              }) : "No enddate",
-            creator_name: returnedValue[i]?.person?.username
-              ? returnedValue[i]?.person?.username
-              : "No name",
-            creator_Uri: returnedValue[i]?.person?.username
-              ? "/u/" + returnedValue[i]?.person?.username
-              : "/u",
-            type: "recent-campaign-item",
-            photoURL: returnedValue[i]?.person?.photoUrl
-              ? returnedValue[i]?.person?.photoUrl
-              : defaultPhotoURL,
-          };
-          recentCampaignItemGroup.push(data);
-        }
-        setRecentCampaignList(recentCampaignItemGroup);
-      } catch (e) {
-        setRecentCampaignList([]);
+    try {
+      const returnedValue = await fetchRecentCampaigns(
+        user?.recentCampaignData
+      );
+      let recentCampaignItemGroup = [];
+      for (let i = 0; i < returnedValue.length; i++) {
+        let data = {
+          campaignUri: returnedValue[i]?.id
+            ? "/c/" + returnedValue[i]?.id
+            : "/c/",
+          label: returnedValue[i]?.header?.title
+            ? returnedValue[i]?.header?.title
+            : "No title",
+          creator_label: returnedValue[i].endDate ? getDateFromTimestamp({
+              timestamp: returnedValue[i].endDate?.seconds,
+              format: "MMM Do"
+            }) : "No enddate",
+          creator_name: returnedValue[i]?.person?.username
+            ? returnedValue[i]?.person?.username
+            : "No name",
+          creator_Uri: returnedValue[i]?.person?.username
+            ? "/u/" + returnedValue[i]?.person?.username
+            : "/u",
+          type: "recent-campaign-item",
+          photoURL: returnedValue[i]?.person?.photoUrl
+            ? returnedValue[i]?.person?.photoUrl
+            : defaultPhotoURL,
+        };
+        recentCampaignItemGroup.push(data);
       }
-    }else {
+      setRecentCampaignList(recentCampaignItemGroup);
+    } catch (e) {
       setRecentCampaignList([]);
     }
-    
   }
-  useEffect(() => {
-    getFollowingList();
-  }, [user?.following]);
 
   useEffect(() => {
-    getRecentCampaignList();
-  }, [user?.recentCampaignData]);
+    if(user && user.following) {
+      getFollowingList();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if(user && user.recentCampaignData) {
+      getRecentCampaignList();
+    }
+  }, [user]);
 
   const handleUserItemClick = (targetUser) => {
     Swal.fire({
@@ -158,7 +152,7 @@ const Sidebar = () => {
       children: followingList,
     },
     {
-      label: "Recent Campaigns",
+      label: "Recent campaigns",
       type: "section",
       children: recentCampaignList,
     },
@@ -212,7 +206,7 @@ const SidebarHeader = () => {
     <React.Fragment>
       {sidebarOptions?.style !== SIDEBAR_STYLES.CLIPPED_UNDER_HEADER && (
         <DrawerHeader>
-          <Logo mini={isMiniAndClosed} mode={sidebarTheme.type} />
+          <img width="110" height="30" src="/images/blankLogoFiller.png" alt="logo" />
           {
             <Zoom in={sidebarOptions?.open}>
               <IconButton

@@ -136,6 +136,9 @@ const SearchGlobal = ({ sx }) => {
                         padding:'0', 
                         boxShadow: '2px 2px 6px -1px grey',
                       },
+                      "& .MuiAutocomplete-inputRoot fieldset": {
+                        borderColor: "lightgray"
+                      },
                       "& .MuiAutocomplete-inputRoot input": {
                         marginLeft: '15px',
                       },

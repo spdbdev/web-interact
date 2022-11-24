@@ -58,9 +58,7 @@
   width: fit-content;
   white-space: nowrap;
   font-weight: 800;
-  background: -webkit-linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #782FEE;
 }
 
 .profile_image {

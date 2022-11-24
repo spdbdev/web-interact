@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { commentPostedTime, getDateFromTimestamp } from "@interact/Components/utils";
 import CommentBtn from "./CommentBtn";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Typography  } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
 const CommentHeader = ({
   commentData,
   replying,
@@ -16,7 +15,7 @@ const CommentHeader = ({
   const createdAt = commentData.createdAt.seconds * 1000;
   let today = new Date();
   const [time, setTime] = useState(commentPostedTime(today.getTime() - createdAt));
-  const date = useState(getDateFromTimestamp({timestamp: commentData.createdAt.seconds,format:"MMMM D YYYY HH:mm A zz"}));
+  const date = getDateFromTimestamp({timestamp: commentData.createdAt.seconds,format:"MMMM D YYYY HH:mm A zz"}).toString();
   const navigate = useNavigate();
 
   useEffect(() => {

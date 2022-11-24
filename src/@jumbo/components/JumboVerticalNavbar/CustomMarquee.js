@@ -28,13 +28,13 @@ const CustomMarquee = ({ text }) => {
         setTimeout(() => {
           window.marquuStatus = true
           runAnimation(size)
-        }, 2000)
+        }, 3690)
       } else if (marginLeft > 0) {
         clearInterval(interval)
         setTimeout(() => {
           window.marquuStatus = false
           runAnimation(size)
-        }, 2000)
+        }, 3690)
       }
     }, 70)
   }

@@ -63,29 +63,27 @@ const CommentBtn = ({
         }}
       >
       </MoreVertIcon>
-      <Menu
-        id="comment_threedot_menu"
-        aria-labelledby="comment_threedot_button"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left"
-        }}
-      >
-        {
-          isCommentCreator || isCampaignCreator ? 
-            <MenuItem key={`${commentData.id}Edit`} onClick={showEditComment}>Edit</MenuItem> : []
-        }
-        {
-          isCommentCreator || isCampaignCreator ? 
-          <MenuItem key={`${commentData.id}Delete`} onClick={handleDeleteAction}>Delete</MenuItem> : []
-        }
-        {
-          isCampaignCreator ? <MenuItem key={`${commentData.id}Ban`} onClick={handleBanAction}>Ban</MenuItem> : []
-        }
-      </Menu>
+      {
+        isCommentCreator || isCampaignCreator ? 
+        <Menu
+          id="comment_threedot_menu"
+          aria-labelledby="comment_threedot_button"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+        >
+          <MenuItem key={`${commentData.id}Edit`} onClick={showEditComment}>Edit</MenuItem>
+          <MenuItem key={`${commentData.id}Delete`} onClick={handleDeleteAction}>Delete</MenuItem>
+          {
+            isCampaignCreator ? <MenuItem key={`${commentData.id}Ban`} onClick={handleBanAction}>Ban</MenuItem> : []
+          }
+        </Menu> : <></>
+      }
+      
     </div>
   );
 };

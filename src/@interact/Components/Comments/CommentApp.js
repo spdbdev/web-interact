@@ -44,7 +44,7 @@ const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
   return (
     <main className="App">
       <AddComment buttonValue={"Post"} addComments={addComments} user={user} isCampaignCreator={isCampaignCreator}/>
-      {comments.map((comment) => (
+      {comments && comments.map((comment) => (
         <Comment
           key={comment.id}
           commentData={comment}
@@ -53,7 +53,7 @@ const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
           commentDelete={commentDelete}
           user={user}
           isCampaignCreator={isCampaignCreator}
-          isCommentCreator={comment?.userid === user.id ? true : false}
+          isCommentCreator={comment?.userid === user?.id ? true : false}
         />
       ))}
     </main>

@@ -80,16 +80,16 @@ export const commentPostedTime = (timeInMileSec) => {
   if (sec < 60) {
     return "Just now";
   } else if (min < 60) {
-    return min + " mins ago";
+    return min + (min < 2 ? " min " : " mins ") + "ago";
   } else if (hrs < 24) {
-    return hrs + " hrs ago";
+    return hrs + (hrs < 2 ? " hr " : " hrs " ) + "ago";
   } else if (days < 7) {
-    return days + " days ago";
+    return days + (days < 2 ? " day " : " days ") + "ago";
   } else if (weeks < 4) {
-    return weeks + " weeks ago";
+    return weeks + (weeks < 2 ? " week " : " weeks ") + "ago";
   } else if (months < 12) {
-    return months + " months ago";
+    return months + (months < 2 ? " month " : " months ") + "ago";
   } else {
-    return years + " years ago";
+    return years + (years < 2 ? " year " : " years ") + "ago";
   }
 };

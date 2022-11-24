@@ -25,7 +25,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -44,6 +44,7 @@ function CampaignInfo({
   const [supporters, setSupporters] = React.useState([]);
   const [winners, setWinners] = React.useState([]);
   const { user } = useCurrentUser();
+  const [commentCount, setCommentCount] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -58,6 +59,8 @@ function CampaignInfo({
     });
     setSupporters(items);
   }
+
+  
 
   const getWinners = async function () {
     const giveawayWinners = await getDocs(
@@ -102,6 +105,19 @@ function CampaignInfo({
   };
 
   React.useEffect(() => {
+    if(comments && comments?.length > 0) {
+      let count = comments.length;
+      for(let i = 0; i < comments.length; i++) {
+        if(comments[i].replies.length > 0){
+          count += comments[i].replies.length;
+        }
+      }
+      setCommentCount(count);
+    }else {
+      setCommentCount(0);
+    }
+  },[comments]);
+  React.useEffect(() => {
     getSupporters();
     if (isCampaignEnded) getWinners();
   }, [bids, giveaways]);
@@ -118,9 +134,9 @@ function CampaignInfo({
           size="50"
         >
           <StyledTab label="Campaign info" color="inherit" />
-          <StyledTab label={`Comments (${comments.length})`} />
-          {isCampaignEnded && <Tab label="Winners" />}
-          <StyledTab label="Supporters" />
+          <StyledTab label={`Comments (${commentCount})`} />
+          {isCampaignEnded && <Tab label={`Winners (${winners.length})`} />}
+          <StyledTab label={`Supporters (${supporters.length})`}/>
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
