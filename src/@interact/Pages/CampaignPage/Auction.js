@@ -517,8 +517,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 				</Typography>&nbsp;&nbsp;
 				<InfoTooltip
 					title="We'll automatically bid the lowest amount to stay at your 
-					desired rank on the leaderboard until your max bid is reached; if others 
-					bid more & your max bid amount is exceeded, your rank will be lowered"
+					desired rank on the leaderboard until your max bid is reached. If another bidder also 
+          wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+					bid higher than your max bid, your rank could be lowered."
 				/>
           	</Stack>
 

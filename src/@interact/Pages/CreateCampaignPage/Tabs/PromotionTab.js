@@ -48,14 +48,14 @@ export default function PromotionTab({
   useEffect(() => {
     if (data.customURL === URL) {
       setErrors(false);
-      setCustomURLDescription("3 to 30 characters. Letters, numbers, and dashes only.");
+      setCustomURLDescription("3 to 30 characters; letters, numbers, and dashes only");
       setFormValidationConditions(true);
       return
     }
     checkCustomURLAgainstOtherCampaigns(URL)
       .then((campaign) => {
         if (campaign) {
-          setCustomURLDescription("URL is already taken. Have another go!");
+          setCustomURLDescription("URL is already taken; have another go!");
           setErrors(true);
         } else {
           setErrors(false);
