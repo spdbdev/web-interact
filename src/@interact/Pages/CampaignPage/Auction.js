@@ -41,6 +41,7 @@ import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import Swal from "sweetalert2";
 import { getRequest, postRequest } from "../../../utils/api";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
 import { fetchUserByName, followUser } from "../../../firebase";
 import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
