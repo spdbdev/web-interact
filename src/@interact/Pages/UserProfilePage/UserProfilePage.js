@@ -61,15 +61,12 @@ function CropProfilePicture({
   });
 
   const handleSubmit = async (event) => {
-    //console.log("handleSubmit >>>", imgageObj, imageRef, completedCrop);
-
     if (imageRef && completedCrop.width && completedCrop.height) {
       const croppedImageUrl = await getCroppedImg(
         imageRef,
         completedCrop,
         "newFile.jpeg"
       );
-      //console.log("croppedImageUrl >>>", croppedImageUrl);
       if (!croppedImageUrl) return;
 
       const storageRef = ref(
@@ -87,7 +84,6 @@ function CropProfilePicture({
         (err) => console.log(err),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            console.log("getDownloadURL >>>", url);
             setOpen(false);
             updatePhotoURL(url);
             setImage(url);
@@ -208,7 +204,6 @@ function UserProfilePage() {
   const fileRef = useRef();
   const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
 
-  console.log("isCreator >>>", user, params.username, isCreator);
   const [cropModalOpen, setCropModalOpen] = React.useState(false);
   const [croppingImg, setCroppingImg] = React.useState({});
 
@@ -239,7 +234,7 @@ function UserProfilePage() {
         const id = querySnapshot.id;
         setTargetUser({ ...userData, id });
         if (user?.name != params.username) {
-          setImage(userData.photoURL);
+          setImage(userData?.photoURL ? userData?.photoURL : "https://iili.io/HH6JxB1.md.jpg");
           if (userData?.description?.length > 0)
             setDescription(userData.description);
         }

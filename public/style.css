@@ -52,12 +52,17 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 13px;
+  margin-top: 2.5px;
 }
 
 .marquee-text {
   width: fit-content;
   white-space: nowrap;
-  font-weight: 800;
+  font-weight: 700;
+  color: black
+}
+
+.marquee-text:hover {
   color: #782FEE;
 }
 
