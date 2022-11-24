@@ -13,6 +13,7 @@ import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { isValidHttpUrl } from "app/utils/www";
 import { checkCustomURLAgainstOtherCampaigns } from "../../../../firebase";
+import { INVALID_CUSTOM_URLS } from "config";
 
 export default function PromotionTab({
   data,
@@ -47,14 +48,14 @@ export default function PromotionTab({
   useEffect(() => {
     if (data.customURL === URL) {
       setErrors(false);
-      setCustomURLDescription("3 to 30 characters. Letters, numbers, and dashes only.");
+      setCustomURLDescription("3 to 30 characters; letters, numbers, and dashes only");
       setFormValidationConditions(true);
       return
     }
     checkCustomURLAgainstOtherCampaigns(URL)
       .then((campaign) => {
         if (campaign) {
-          setCustomURLDescription("URL is already taken. Have another go!");
+          setCustomURLDescription("URL is already taken; have another go!");
           setErrors(true);
         } else {
           setErrors(false);
@@ -72,8 +73,9 @@ export default function PromotionTab({
     const nextValue = e.target.value;
     if (
       nextValue.match(/^[\w-]+$/) &&
-      nextValue.length > 3 &&
-      nextValue.length <= 30
+      nextValue.length >= 3 &&
+      nextValue.length <= 30 &&
+      !INVALID_CUSTOM_URLS.includes(nextValue)
     ) {
       // here we would also check if the URL already exists in the DB.
       if (shouldSaveURL) {
@@ -87,6 +89,9 @@ export default function PromotionTab({
           customURL: nextValue,
         });
       }
+    } else {
+      setErrors(true);
+      setCustomURLDescription("3 to 30 characters. Letters, numbers, and dashes only.");
     }
     setURL(nextValue);
   }

@@ -39,8 +39,9 @@ import {
 import WestIcon from '@mui/icons-material/West';
 import Modal from "@mui/material/Modal";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import Swal from "sweetalert2";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { getRequest, postRequest } from "../../../utils/api";
+import useCurrentUser from "@interact/Hooks/use-current-user";
 import ConfirmAuctionPopup from "./ConfirmAuctionPopup";
 import { fetchUserByName, followUser } from "../../../firebase";
 import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
@@ -60,34 +61,36 @@ const style = {
   borderRadius: 15
 };
 
-export default function Auction({
-  isCampaignEnded,
-  isCampaignScheduled,
-  bids,
-  campaignData,
-  bidAction,
-}){
-  const [bidAmount, setBidAmount] = useState(0);
-  const [autoBidAmount, setAutoBidAmount] = useState(0);
-  const [minBidAmount, setMinBidAmount] = useState(0);
-  const [maxBidAmount, setMaxBidAmount] = useState(0);
-  const [numAuctionInteractions, setNumAuctionInteractions] = useState(0);
-  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
-  const [desiredRank, setDesiredRank] = useState(1);
-  const [manualRanking, setManualRanking] = useState(1);
 
-  const [user, error] = useAuthState(auth);
-  const [currentUser, setCurrentUser] = useState(null);
-  const navigate = useNavigate();
-  const stripe = useStripe();
-  const [open, setOpen] = useState(false);
-  const elements = useElements();
-  const [openPopup, setOpenPopup] = useState(false);
-  const [openPopup1, setOpenPopup1] = useState(false);
-  const [selectPopUp, setselectPopUp] = useState(1);
-  const paymentRef = useRef();
-  const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function Auction({isCampaignEnded, isCampaignScheduled, bids, userAuctionPosition, campaignData, bidAction}) {
+	
+	const navigate = useNavigate();
+
+	// auto bid
+	const [desiredRank, setDesiredRank] = useState(1);
+	const [autoBidAmount, setAutoBidAmount] = useState(0);
+  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
+	// manual bid
+	const [bidAmount, setBidAmount] = useState(0);
+	const [minBidAmount, setMinBidAmount] = useState(0);
+	const [manualRanking, setManualRanking] = useState(1);
+
+	const [previousBidData, setPreviousBidData] = useState({price:0});
+	
+  const Swal = useSwalWrapper();
+  
+  const { user } = useCurrentUser();
+	const [currentUser, setCurrentUser] = useState(null);
+	const stripe = useStripe();
+	const [open, setOpen] = useState(false);
+	const elements = useElements();
+	const [openPopup, setOpenPopup] = useState(false);
+	const [openPopup1, setOpenPopup1] = useState(false);
+	const [selectPopUp, setselectPopUp] = useState(1);
+
+	const paymentRef = useRef();
+	const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const handleMaxBidAmount = function(value)
 	{
@@ -102,6 +105,13 @@ export default function Auction({
 			let minIncrement = 5;
 			if (thirtyPer > 5) minIncrement = thirtyPer;
 			minIncrement = Math.round(minIncrement * 2) / 2;
+
+			// if priceAtDesiredRank is less than or equal to previous bid then abort
+			if(priceAtDesiredRank <= parseFloat(previousBidData.price)){
+				Swal.fire({icon: "error", title: "Oops...", text: "Your new bid must be higher than your previous bid!"});
+				return;
+			}
+			else setDesiredRank(value);
 
 			setAutoBidAmount(priceAtDesiredRank + minIncrement);
 			setMinRankBidAmount(priceAtDesiredRank + 0.5);
@@ -138,42 +148,48 @@ export default function Auction({
 
 			handleMaxBidAmount(desiredRank);
 		}
+
+		// get previous bid
+		if(bids.length > 0 && userAuctionPosition > 0)
+		{
+			console.log(bids[userAuctionPosition - 1]);
+			setPreviousBidData(bids[userAuctionPosition - 1]);
+		}
 	}, [campaignData, bids]);
 
-  useEffect(() => {
-    document.getElementById("auctionCard").onmousemove = (e) => {
-      for (const card of document.getElementsByClassName("auctionCard")) {
-        const rect = card.getBoundingClientRect(),
-          x = e.clientX - rect.left,
-          y = e.clientY - rect.top;
+	useEffect(() => {
+		document.getElementById("auctionCard").onmousemove = (e) => {
+		for (const card of document.getElementsByClassName("auctionCard")) {
+			const rect = card.getBoundingClientRect(),
+			x = e.clientX - rect.left,
+			y = e.clientY - rect.top;
 
-        card.style.setProperty("--mouse-x", `${x}px`);
-        card.style.setProperty("--mouse-y", `${y}px`);
-      }
-    };
-  });
+			card.style.setProperty("--mouse-x", `${x}px`);
+			card.style.setProperty("--mouse-y", `${y}px`);
+		}
+		};
+	});
 
 	const handleBidAmount = function(e){
-		if(parseFloat(e.target.value) >= parseFloat(minBidAmount)){
-			setBidAmount(e.target.value);
+		if(	parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(autoBidAmount) ){
+			if(parseFloat(e.target.value) < (parseFloat(previousBidData.price) + 0.5)) setBidAmount(parseFloat(previousBidData.price) + 0.5);
+			else setBidAmount(e.target.value);
 		}
 	}
 
 	const onAutoBidAmountChange = function(e){
-		if((parseFloat(e.target.value) >= (parseFloat(minBidAmount))) && (parseFloat(e.target.value) >=parseFloat(minRankBidAmount))){
-			setAutoBidAmount(e.target.value);
+		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) >= parseFloat(minRankBidAmount)){
+			if(parseFloat(e.target.value) < (parseFloat(previousBidData.price) + 0.5)) setAutoBidAmount(parseFloat(previousBidData.price) + 0.5);
+			else setAutoBidAmount(e.target.value);
 		}
 	}
 
-  const handleDesiredRank = function (e) {
-    // prevent values less than 0 or higher than 20.
-    console.log("Num interactions", campaignData?.numAuctionInteractions);
-    e.target.value < 1
-      ? (e.target.value = 1)
-      : e.target.value > parseInt(campaignData?.numAuctionInteractions)
-      ? (e.target.value = campaignData?.numAuctionInteractions)
-      : setDesiredRank(e.target.value);
-    handleMaxBidAmount(e.target.value);
+	const handleDesiredRank = function(e){
+		// prevent values less than 0 or higher than allowed interactions 20.
+		if(e.target.value < 1) e.target.value = 1;
+		else if(e.target.value > parseInt(campaignData?.numAuctionInteractions)) e.target.value = campaignData?.numAuctionInteractions;
+	
+		handleMaxBidAmount(e.target.value);
 	}
 
 	const followCampaign = async () => {
@@ -232,7 +248,7 @@ export default function Auction({
       console.log(resp.paymentMethod);
       const pmid = resp?.paymentMethod?.id;
       if (pmid && userCustomerId) {
-        getRequest(`/method/attach/${userCustomerId}/${pmid}`)
+        getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
           .then((resp) => {
             setOpen(false);
             if (resp.data.added) {
@@ -303,7 +319,7 @@ export default function Auction({
   const verificationOfAutoBid = () => {
     if (!user) return navigate("/a/signup");
     if (desiredRank > 0) {
-      getRequest(`/customer/method/${userCustomerId}`)
+      getRequest(`/a/customer/method/${userCustomerId}`)
         .then((resp) => {
           const mdata = resp.data.paymentmethod.data;
           console.log(resp.data.paymentmethod.data);
@@ -331,11 +347,15 @@ export default function Auction({
   };
   const verificationOfBid = () => {
     console.log("manualbid");
-    console.log(bids);
-
-    console.log(manualRanking);
+    for (let i = 0; i < bids.length; i++) {
+      if (bidAmount > Number(bids[i].price)) {
+        console.log(i+1, Number(bids[i].price));
+        setManualRanking(i + 1);
+        break;
+      }
+    }
     if (!user) return navigate("/a/signup");
-    getRequest(`/customer/method/${userCustomerId}`)
+    getRequest(`/a/customer/method/${userCustomerId}`)
       .then((resp) => {
         const mdata = resp.data.paymentmethod.data;
         console.log(resp.data.paymentmethod.data);
@@ -387,11 +407,11 @@ export default function Auction({
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
         allprimarymethod={paymentMethods}
-        desiredRank={desiredRank}
+        desiredRanking={desiredRank}
         onaddclick={handleOpen}
-        price={maxBidAmount}
+        price={minRankBidAmount}
         userCustomerId={userCustomerId}
-        bidAction={() => bidAction(autoBidAmount,true,desiredRank,maxBidAmount)}
+        bidAction={() => bidAction(minRankBidAmount, true, desiredRank, autoBidAmount)}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
         autobid={true}
@@ -402,7 +422,7 @@ export default function Auction({
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
         allprimarymethod={paymentMethods}
-        desiredRank={manualRanking}
+        desiredRanking={manualRanking}
         onaddclick={handleOpen}
         price={bidAmount}
         userCustomerId={userCustomerId}
@@ -423,7 +443,7 @@ export default function Auction({
             <div className="innerWrapper">
               <IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
               <div className="paymentRequestDiv">
-                <PaymentRequestForm price={maxBidAmount} handleSubmit={handleClose}/>
+                <PaymentRequestForm price={minRankBidAmount} handleSubmit={handleClose}/>
               </div>
               <div className="payment-divider" />
               <div className="stripe-card-wrapper">
@@ -503,8 +523,9 @@ export default function Auction({
 				</Typography>&nbsp;&nbsp;
 				<InfoTooltip
 					title="We'll automatically bid the lowest amount to stay at your 
-					desired rank on the leaderboard until your max bid is reached; if others 
-					bid more & your max bid amount is exceeded, your rank will be lowered"
+					desired rank on the leaderboard until your max bid is reached. If another bidder also 
+          wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+					bid higher than your max bid, your rank could be lowered."
 				/>
           	</Stack>
 
@@ -547,7 +568,9 @@ export default function Auction({
           	</FormControl>
 
           {/*
-			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => bidAction(autoBidAmount, true, desiredRank, maxBidAmount)}>
+		  	minRankBidAmount => it should be the current bid amount (price)
+			autoBidAmount => it will be the maxBidPrice
+			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(minRankBidAmount, true, desiredRank, autoBidAmount)}>
 				Place auto-bid
 			</InteractButton>
           */}
@@ -595,9 +618,8 @@ export default function Auction({
 				</FormControl>
 			</Stack>
 
-          {/* <form action="http://localhost:4242/create-auction-session" method="POST">  */}
           {/*
-          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount,false,null,null,minBidAmount)}>
+          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount)}>
           Place bid
           </InteractButton>
           */}

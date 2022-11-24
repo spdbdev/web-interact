@@ -222,7 +222,7 @@ export default function Giveaway({
 				toggleModal();
 				}); */
 
-				getRequest(`/customer/method/${userCustomerId}`)
+				getRequest(`/a/customer/method/${userCustomerId}`)
 				.then((resp) => {
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
@@ -312,7 +312,7 @@ export default function Giveaway({
 		.then((resp) => {
 			const pmid = resp.paymentMethod.id;
 			if (pmid && userCustomerId) {
-				getRequest(`/method/attach/${userCustomerId}/${pmid}`)
+				getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
 				.then((resp) => {
 					setOpen(false);
 					if (resp.data.added) {

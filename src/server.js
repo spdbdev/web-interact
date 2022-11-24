@@ -17,9 +17,9 @@ app.use(cors());
 
 app.use(express.static("public"));
 
-const YOUR_DOMAIN = "http://localhost:3000";
+const YOUR_DOMAIN = "http://localhost:3000"; // for test
 
-app.post("/user/register", async (req, res) => {
+app.post("/a/register-customer", async (req, res) => {
   const { email, name } = req.body;
   // console.log(email);
   /*  Add this user in your database and store stripe's customer id against the user   */
@@ -36,15 +36,12 @@ app.post("/user/register", async (req, res) => {
   }
 });
 
-app.get("/method/attach/:cid/:pm", async (req, res) => {
+app.get("/a/method/attach/:cid/:pm", async (req, res) => {
   const { cid, pm } = req.params;
 
   console.log(cid, pm)
   try {
     console.log(req.params);
-    const paymentMethod = await stripe.paymentMethods.attach(pm, {
-      customer: cid,
-    });
 
     const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
       type: "card",
@@ -60,7 +57,7 @@ app.get("/method/attach/:cid/:pm", async (req, res) => {
 
 
 //GET STRIPE ACCOUNT DETAILS
-app.post("/get_account",async (req, res) => {
+app.post("/a/get-account",async (req, res) => {
   const account = await stripe.accounts.retrieve(
     req.accountId
   );
@@ -70,7 +67,7 @@ app.post("/get_account",async (req, res) => {
 });
 
 // CREATE STRIPE ACCOUNT
-app.get("/onboard-user", async (req, res) => {
+app.get("/a/register-account", async (req, res) => {
   try {
     const account = await stripe.accounts.create({
       type: 'express',
@@ -84,7 +81,7 @@ app.get("/onboard-user", async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: account.id,
-      refresh_url: `${origin}/onboard-user/refresh`,
+      refresh_url: `${origin}/a/register-account/refresh`,
       return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
     });
     res.redirect(303, accountLink.url);
@@ -94,7 +91,7 @@ app.get("/onboard-user", async (req, res) => {
     });
   }
 });
-app.get("/onboard-user/refresh", async (req, res) => {
+app.get("/a/register-account/refresh", async (req, res) => {
   if (!req.accountId) {
     res.redirect("/");
     return;
@@ -107,7 +104,7 @@ app.get("/onboard-user/refresh", async (req, res) => {
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: accountId,
-      refresh_url: `${origin}/onboard-user/refresh`,
+      refresh_url: `${origin}/a/register-account/refresh`,
       return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+accountId,
     });
 
@@ -118,19 +115,19 @@ app.get("/onboard-user/refresh", async (req, res) => {
     });
   }
 });
-app.get("/onboard-user/success", async (req, res) => {
+app.get("/a/register-account/success", async (req, res) => {
   try {
     if(req.accountId){
       // res.status(200).json(JSON.stringify(req));
       // res.status(200).json(JSON.stringify(res));  
     }
-    console.log('response from /onboard-user/success');
+    console.log('response from /a/register-account/success');
     console.log(res);
-    console.log('request from /onboard-user/success');
+    console.log('request from /a/register-account/success');
     console.log(req.accountId);
     
   } catch (err) {
-    console.log('error from /onboard-user/success');
+    console.log('error from /a/register-account/success');
     console.log(err);
     res.status(500).send({
       error: err.message,
@@ -140,7 +137,7 @@ app.get("/onboard-user/success", async (req, res) => {
 
 
 // all payments method
-app.get("/customer/method/:cid", async (req, res) => {
+app.get("/a/customer/method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
     const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
@@ -153,7 +150,7 @@ app.get("/customer/method/:cid", async (req, res) => {
   }
 });
 
-app.post("/set_default_customer_payment_method", async (req, res) => {
+app.post("/a/set_default_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerId } = req.body;
     console.log("default payment methid id",paymid, customerId)
@@ -174,7 +171,7 @@ app.post("/set_default_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-app.get("/gd_customer_payment_method/:cid", async (req, res) => {
+app.get("/a/gd_customer_payment_method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
     const customer = await stripe.customers.retrieve(
@@ -201,7 +198,8 @@ app.get("/gd_customer_payment_method/:cid", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-app.get("/gd_payment_method/:pid", async (req, res) => {
+
+app.get("/a/gd_payment_method/:pid", async (req, res) => {
   try {
    
     const { pid } = req.params;
@@ -218,7 +216,8 @@ app.get("/gd_payment_method/:pid", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-app.post("/delete_customer_payment_method", async (req, res) => {
+
+app.post("/a/delete_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerid } = req.body;
     console.log("deleted iids",paymid, customerid)
@@ -232,7 +231,7 @@ app.post("/delete_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-app.post("/update_customer_payment_method", async (req, res) => {
+app.post("/a/update_customer_payment_method", async (req, res) => {
   try {
     const { paymid, customerid, data,name, city, state, postal} = req.body;
     console.log(data)
@@ -256,7 +255,7 @@ app.post("/update_customer_payment_method", async (req, res) => {
     res.status(400).json({ message: "An error occured" });
   }
 });
-app.post("/make_payment_on_stripe", async (req, res) => {
+app.post("/a/make_payment_on_stripe", async (req, res) => {
   const {price,paymentmethodid,customerId} = req.body
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -281,7 +280,7 @@ app.post("/make_payment_on_stripe", async (req, res) => {
 });
 
 
-app.post("/make_instant_payment_on_stripe", async (req, res) => {
+app.post("/a/make_instant_payment_on_stripe", async (req, res) => {
   const {price,paymentmethodid,customerId} = req.body
   try {
     const paymentintent = await stripe.paymentIntents.create({
@@ -305,11 +304,26 @@ app.post("/make_instant_payment_on_stripe", async (req, res) => {
 });
 
 
+/*
 
-
-
-
-
+app.post("/Auction_Bid_Payment_Capture_Process", async (req, res) => {
+  const intent = await stripe.paymentIntents.capture(
+    // "pi_3LrjVgCrYT0SvCI20pjw71mO"
+    req.paymentId
+  );
+  if (intent.id != null) {
+    data = {
+      success: true,
+      pi_id: intent.id,
+    };
+  } else {
+    data = {
+      success: false,
+    };
+  }
+  console.log(intent);
+  return res.json(data);
+});
 
 
 app.get("/allusers", async (req, res) => {
@@ -438,25 +452,6 @@ app.post("/Auction_Bid_Payment_Authorise_Process", async (req, res) => {
       msg: "invalid package",
     };
   }
-  return res.json(data);
-});
-
-app.post("/Auction_Bid_Payment_Capture_Process", async (req, res) => {
-  const intent = await stripe.paymentIntents.capture(
-    // "pi_3LrjVgCrYT0SvCI20pjw71mO"
-    req.paymentId
-  );
-  if (intent.id != null) {
-    data = {
-      success: true,
-      pi_id: intent.id,
-    };
-  } else {
-    data = {
-      success: false,
-    };
-  }
-  console.log(intent);
   return res.json(data);
 });
 
@@ -757,5 +752,9 @@ app.post("/get_payment_methods", async (req, res) => {
   };
   return res.json(data);
 });
+
+*/
+
+
 
 app.listen(4242, () => console.log("Running on port 4242"));

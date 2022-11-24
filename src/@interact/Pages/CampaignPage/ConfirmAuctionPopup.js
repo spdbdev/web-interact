@@ -84,7 +84,7 @@ export default function ConfirmAuctionPopup({
       paymentResponse(price);
       return;
     }
-    postRequest("/make_instant_payment_on_stripe", formData)
+    postRequest("/a/make_instant_payment_on_stripe", formData)
       .then(async (resp) => {
         paymentResponse(price,resp);
       })

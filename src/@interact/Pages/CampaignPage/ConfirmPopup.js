@@ -86,9 +86,9 @@ export default function ConfirmPopup({
 			return;
 		}
 		if (buyvip) {
-			url = "/make_instant_payment_on_stripe";
+			url = "/a/make_instant_payment_on_stripe";
 		} else {
-			url = "/make_payment_on_stripe";
+			url = "/a/make_payment_on_stripe";
 		}
 		postRequest(url, formData)
 			.then(async (resp) => {
