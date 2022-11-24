@@ -11,7 +11,6 @@ import UserProfilePage from "@interact/Pages/UserProfilePage/UserProfilePage";
 import Settings from "@interact/Pages/UserProfilePage/Settings";
 import CreateCampaignPage from "@interact/Pages/CreateCampaignPage/CreateCampaignPage";
 import CampaignPage from "@interact/Pages/CampaignPage/CampaignPage";
-import CaptureAuction from "@interact/Pages/CampaignPage/CaptureAuction";
 import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInteractPage";
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
 import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage/CampaignCreationConfirmationPage";

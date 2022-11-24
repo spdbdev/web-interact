@@ -248,7 +248,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
       console.log(resp.paymentMethod);
       const pmid = resp?.paymentMethod?.id;
       if (pmid && userCustomerId) {
-        getRequest(`/method/attach/${userCustomerId}/${pmid}`)
+        getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
           .then((resp) => {
             setOpen(false);
             if (resp.data.added) {
@@ -319,7 +319,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
   const verificationOfAutoBid = () => {
     if (!user) return navigate("/a/signup");
     if (desiredRank > 0) {
-      getRequest(`/customer/method/${userCustomerId}`)
+      getRequest(`/a/customer/method/${userCustomerId}`)
         .then((resp) => {
           const mdata = resp.data.paymentmethod.data;
           console.log(resp.data.paymentmethod.data);
@@ -355,7 +355,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
       }
     }
     if (!user) return navigate("/a/signup");
-    getRequest(`/customer/method/${userCustomerId}`)
+    getRequest(`/a/customer/method/${userCustomerId}`)
       .then((resp) => {
         const mdata = resp.data.paymentmethod.data;
         console.log(resp.data.paymentmethod.data);

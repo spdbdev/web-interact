@@ -70,7 +70,7 @@ export const INVALID_CUSTOM_URLS = [
 'defaultpayment',
 'setpayment',
 'set-payment',
-'onboard-user',
+'a/register-account',
 'terms-conditions',
 'termsconditions',
 'stripe',

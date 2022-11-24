@@ -41,7 +41,7 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
     // if(accountId){
     //   const formData = new FormData();
     //   formData.append("accountId", accountId);
-    //   let account_details = postRequest('/get_account',formData);
+    //   let account_details = postRequest('/a/get-account',formData);
     //   console.log('linked account_details');
     //   console.log(account_details);  
     // }
@@ -52,7 +52,7 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
     event.preventDefault();
     try {
       const formData = new FormData();
-      window.location.href = _BASE_URL+'/onboard-user'; 
+      window.location.href = _BASE_URL+'/a/register-account'; 
     } catch (err) {
       console.log(err);
     }

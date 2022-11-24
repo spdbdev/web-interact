@@ -323,7 +323,7 @@ function Settings() {
     const q = query(collection(db, "users"), where("uid", "==", user?.uid));
     const colledoc = await getDocs(q);
     const data = colledoc.docs[0].data();
-    getRequest(`/gd_customer_payment_method/${data.customerId}`)
+    getRequest(`/a/gd_customer_payment_method/${data.customerId}`)
       .then((resp) => {
         if (resp.data.status) {
           console.log(resp.data.paymentMethod);
@@ -348,7 +348,7 @@ function Settings() {
       console.log(colledoc.docs[0].id);
       setEmail(data.email);
 
-      getRequest(`/customer/method/${data.customerId}`)
+      getRequest(`/a/customer/method/${data.customerId}`)
         .then((resp) => {
           console.log(resp.data.paymentmethod.data);
           setPaymentMethods(resp.data.paymentmethod.data);
@@ -369,7 +369,7 @@ function Settings() {
     console.log(paymentid, customerid);
     console.log(paymentid, customerid);
 
-    postRequest("/delete_customer_payment_method", formData)
+    postRequest("/a/delete_customer_payment_method", formData)
       .then(async (resp) => {
         setPaymentMethods(resp.data.paymentmethod.data);
       })
@@ -403,7 +403,7 @@ function Settings() {
     formData.append("postal", updateCardInfo.postalCode);
     formData.append("customerid", customerid);
 
-    postRequest("/update_customer_payment_method", formData)
+    postRequest("/a/update_customer_payment_method", formData)
       .then(async (resp) => {
         setOpenModal(false);
         setPaymentMethods(resp.data.paymentmethod.data);
@@ -419,7 +419,7 @@ function Settings() {
     formData.append("customerId", customerid);
     console.log(paymentid, customerid);
 
-    postRequest("/set_default_customer_payment_method", formData)
+    postRequest("/a/set_default_customer_payment_method", formData)
       .then(async (resp) => {
         console.log(resp.data.paymentmethod.data);
         setPaymentMethods(resp.data.paymentmethod.data);
@@ -440,7 +440,7 @@ function Settings() {
     .then((resp) => {
       const pmid = resp?.paymentMethod?.id;
       if (pmid && userCustomerId) {
-        getRequest(`/method/attach/${userCustomerId}/${pmid}`)
+        getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
           .then((resp) => {
             setOpen(false);
             setSubmitLoading(false);
