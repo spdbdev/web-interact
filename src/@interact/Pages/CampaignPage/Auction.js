@@ -74,23 +74,29 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	const [bidAmount, setBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
 	const [manualRanking, setManualRanking] = useState(1);
-
+	// used in both auto bid and manual bid
 	const [previousBidData, setPreviousBidData] = useState({price:0});
 	
+
+	// required for payment flow
 	const Swal = useSwalWrapper();
-  
-	const { user } = useCurrentUser();
-	const [currentUser, setCurrentUser] = useState(null);
 	const stripe = useStripe();
-	const [open, setOpen] = useState(false);
 	const elements = useElements();
+	const { user } = useCurrentUser();
+
+	const [open, setOpen] = useState(false);	
 	const [openPopup, setOpenPopup] = useState(false);
 	const [openPopup1, setOpenPopup1] = useState(false);
 	const [selectPopUp, setselectPopUp] = useState(1);
 
-	const paymentRef = useRef();
-	const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+	const [currentUser, setCurrentUser] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [paymentMethods, setPaymentMethods] = useState([]);
+  	const [userCustomerId, setUserCustomerId] = useState(null);
+	const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+
+	// END - required for payment flow
+	
 
 	const handleMaxBidAmount = function(value)
 	{
@@ -210,121 +216,99 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 
 
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCustomerId, setUserCustomerId] = useState(null);
-
-  const handleBackPopup = () => {
-    setOpen(false);
-    if (selectPopUp === 1) {
-      setOpenPopup(true);
-    } else {
-      setOpenPopup1(true);
-    }
-  }
-  const handleOpen = () => {
-    setOpen(true);
-  }
-  const handleClose = () => setOpen(false);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    setLoading(true);
-    stripe
-    .createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardNumberElement),
-    })
-    .then((resp) => {
-      console.log(resp.paymentMethod);
-      const pmid = resp?.paymentMethod?.id;
-      if (pmid && userCustomerId) {
-        getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
-          .then((resp) => {
-            setOpen(false);
-            if (resp.data.added) {
-              setPaymentMethods(resp.data.paymentmethod.data);
-              setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
-              setLoading(false);
-              if (selectPopUp === 1) {
-                setOpenPopup(true);
-              } else {
-                setOpenPopup1(true);
-              }
-            } else {
-              setLoading(false);
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "An error occurred",
-              });
-            }
-          })
-          .catch((err) => {
-            /*Handle Error */
-            setOpen(false);
-            setLoading(false);
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "An error occurred",
-            });
-          });
-      }
-      else { //response error
-        setOpen(false);
-        setLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "An error occurred",
-        });
-      }
-      console.log(resp);
-    })
-    .catch((err) => {
-      /* Handle Error*/
-      setOpen(false);
-      setLoading(false);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "An error occurred",
-      });
-    });
-  };
-
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      const colledoc = await getDocs(q);
-      const data = colledoc.docs[0].data();
-      data.id = colledoc.docs[0].id;
-      setUserCustomerId(data.customerId);
-      setCurrentUser(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const closefunction = () => {
-    setselectPopUp(1);
-    setOpenPopup(false);
-  };
-  const closefunction1 = () => {
-    setselectPopUp(2);
-    setOpenPopup1(false);
-  };
-
-  useEffect(() => {
-    fetchUserName();
-  }, [user]);
+	// stripe payment flow
+	const handleOpen = () => setOpen(true);
+  	const handleClose = () => setOpen(false);
+	const closefunction = () => {
+		setselectPopUp(1);
+		setOpenPopup(false);
+	};
+	const closefunction1 = () => {
+		setselectPopUp(2);
+		setOpenPopup1(false);
+	};
+	const handleBackPopup = () => {
+		setOpen(false);
+		if (selectPopUp === 1) {
+			setOpenPopup(true);
+		} else {
+			setOpenPopup1(true);
+		}
+	}
 
 
+	const fetchUserName = async () => {
+		try {
+			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const colledoc = await getDocs(q);
+			const data = colledoc.docs[0].data();
+			data.id = colledoc.docs[0].id;
+			setUserCustomerId(data.customerId);
+			setCurrentUser(data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+	useEffect(() => {
+		fetchUserName();
+	}, [user]);
+
+	
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		setLoading(true);
+
+		stripe.createPaymentMethod({
+			type: "card",
+			card: elements.getElement(CardNumberElement),
+		}).then((resp) => {
+
+			console.log(resp.paymentMethod);
+			const pmid = resp?.paymentMethod?.id;
+			if (pmid && userCustomerId) 
+			{
+				getRequest(`/a/method/attach/${userCustomerId}/${pmid}`).then((resp) => {
+
+					setOpen(false);
+					if (resp.data.added) {
+						setPaymentMethods([resp.data.paymentmethod]);
+						setSelectPaymentMethod(resp.data.paymentmethod.id);
+						setLoading(false);
+						if (selectPopUp === 1) {
+							setOpenPopup(true);
+						} else {
+							setOpenPopup1(true);
+						}
+					} else {
+						setLoading(false);
+						Swal.fire({icon: "error", title: "Oops...", text: "An error occurred"});
+					}
+				})
+				.catch((err) => {
+					/*Handle Error */
+					setOpen(false);
+					setLoading(false);
+					Swal.fire({icon: "error", title: "Oops...", text: "An error occurred"});
+				});
+			}
+			else { //response error
+				setOpen(false);
+				setLoading(false);
+				Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "An error occurred",
+				});
+			}
+			console.log(resp);
+		})
+		.catch((err) => {
+			/* Handle Error*/
+			setOpen(false);
+			setLoading(false);
+			Swal.fire({icon: "error", title: "Oops...", text: "An error occurred"});
+		});
+	};
 
 	const verificationOfAutoBid = () => {
 		if (!user) return navigate("/a/signup");
@@ -398,6 +382,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 		// bidAction(bidAmount);
 	};
+	// END - stripe payment flow
+
+
 
 	function nth(n) {
 		return ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";

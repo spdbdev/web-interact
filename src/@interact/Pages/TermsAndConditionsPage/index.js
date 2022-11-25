@@ -91,6 +91,7 @@ const TermsAndConditionsPage = () => {
           We will ask the creator of the campaign & attempt to withdraw funds from his/her linked bank account to offer refunds
           if by the last week of the interaction window, fans that creators are not able to meet are refunded.
           This also means that if a fan or creator reschedules an interaction in the last week, the fan is refunded.
+          Your information—including email, name, birthday, username & payment amount—may be given to other users (creators) you follow & support. 
         </Typography>
         <Typography
           variant='h2'
@@ -107,6 +108,7 @@ const TermsAndConditionsPage = () => {
           The giveaway that is run by You or other users on this Website are based on skill (all winners had to have correctly
           answered a three-digit answer math question with multiple calculations needed). The giveaway also offers a
           “no purchase necessary” or “AMOE” entry option.
+          
         </Typography>
         <Typography
           variant='h2'

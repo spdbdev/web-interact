@@ -66,7 +66,7 @@ function CampaignPage(userData) {
 
   const [medal, setMedal] = useState(null);
 
-  if (!campaignId) setCampaignId("test12345");
+  if (!campaignId) navigate('/a/invalidcampaign');//update this to 
 
   /* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",

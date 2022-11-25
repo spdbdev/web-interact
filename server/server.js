@@ -36,30 +36,6 @@ app.post("/a/register-customer", async (req, res) => {
   }
 });
 
-app.get("/a/method/attach/:cid/:pm", async (req, res) => {
-  const { cid, pm } = req.params;
-
-  console.log(cid, pm)
-  try {
-    console.log(req.params);
-
-    const paymentMethod = await stripe.paymentMethods.attach(pm, {
-      customer: cid,
-    });
-
-    const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
-      type: "card",
-    });
-    res.status(200).json({ paymentmethod: paymentMethods, added:true });
-
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "An error occured", added:false });
-  }
-});
-
-
-
 //GET STRIPE ACCOUNT DETAILS
 app.post("/a/get-account",async (req, res) => {
   const account = await stripe.accounts.retrieve(
@@ -83,8 +59,6 @@ app.get("/a/register-account", async (req, res) => {
 
     console.log(req);
 
-    // http://localhost:3000/d/asdf_15
-
     console.log(req.headers.referer);
     console.log(req.query.pathname);
     const accountLink = await stripe.accountLinks.create({
@@ -92,8 +66,7 @@ app.get("/a/register-account", async (req, res) => {
       account: account.id,
       refresh_url: `${origin}/a/register-account?pathname=${req.query.pathname}`,
       return_url: `${req.headers.referer.slice(0, -1)}${req.query.pathname}?accountId=${account.id}`,
-      // refresh_url: `${origin}/a/register-account/refresh`,
-      // return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
+
     });
     res.redirect(303, accountLink.url);
   } catch (err) {
@@ -102,52 +75,30 @@ app.get("/a/register-account", async (req, res) => {
     });
   }
 });
-app.get("/a/register-account/refresh", async (req, res) => {
-  if (!req.accountId) {
-    res.redirect("/");
-    return;
-  }
-
-  try {
-    const { accountId } = req;
-    const origin = `${req.secure ? "https://" : "http://"}${req.headers.host}`;
-
-    const accountLink = await stripe.accountLinks.create({
-      type: "account_onboarding",
-      account: accountId,
-      refresh_url: `${origin}/a/register-account/refresh`,
-      return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+accountId,
-    });
-
-    res.redirect(303, accountLink.url);
-  } catch (err) {
-    res.status(500).send({
-      error: err.message,
-    });
-  }
-});
-app.get("/a/register-account/success", async (req, res) => {
-  try {
-    if(req.accountId){
-      // res.status(200).json(JSON.stringify(req));
-      // res.status(200).json(JSON.stringify(res));  
-    }
-    console.log('response from /a/register-account/success');
-    console.log(res);
-    console.log('request from /a/register-account/success');
-    console.log(req.accountId);
-    
-  } catch (err) {
-    console.log('error from /a/register-account/success');
-    console.log(err);
-    res.status(500).send({
-      error: err.message,
-    });
-  }
-});
-
 
 // all payments method
+app.get("/a/method/attach/:cid/:pm", async (req, res) => {
+  const { cid, pm } = req.params;
+
+  console.log(cid, pm)
+  try {
+    console.log(req.params);
+
+    const paymentMethod = await stripe.paymentMethods.attach(pm, {
+      customer: cid,
+    });
+
+    const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
+      type: "card",
+    });
+    res.status(200).json({ paymentmethod: paymentMethods, added:true });
+
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "An error occured", added:false });
+  }
+});
+
 app.get("/a/customer/method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
