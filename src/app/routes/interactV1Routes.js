@@ -15,6 +15,7 @@ import WhatIsInteractPage from "@interact/Pages/CreateCampaignPage/WhatIsInterac
 import CampaignCreationSummaryPage from "@interact/Pages/CreateCampaignPage/CampaignCreationSummaryPage";
 import CampaignCreationConfirmationPage from "@interact/Pages/CreateCampaignPage/CampaignCreationConfirmationPage";
 import Error404 from "app/pages/extra-pages/Error404";
+import CampaignNotFound from "app/pages/extra-pages/campaignNotFound";
 import { Navigate } from "react-router-dom";
 import Error500 from "app/pages/extra-pages/Error500";
 import UserDoesNotExist from "app/pages/extra-pages/UserDoesNotExist";
@@ -32,6 +33,10 @@ const interactV1Routes = [
   {
     path: "*",
     element: <Page component ={Error404} layout="vertical-default" />
+  },
+  {
+    path: "/a/invalidcampaign",
+    element: <Page component ={CampaignNotFound} layout="vertical-default" />
   },
   {
     path: "/a/404",
