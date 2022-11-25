@@ -227,11 +227,11 @@ export default function Giveaway({
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
 					if (mdata.length > 0) {
-					setPaymentMethods(resp.data.paymentmethod.data);
-					setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
-					setOpenPopup(true);
+						setPaymentMethods(resp.data.paymentmethod.data);
+						setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
+						setOpenPopup(true);
 					} else {
-					setOpen(true);
+						setOpen(true);
 					}
 				})
 				.catch((err) => {
@@ -312,6 +312,7 @@ export default function Giveaway({
 		.then((resp) => {
 			const pmid = resp.paymentMethod.id;
 			if (pmid && userCustomerId) {
+				console.log("here");
 				getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
 				.then((resp) => {
 					setOpen(false);
@@ -353,6 +354,7 @@ export default function Giveaway({
 		})
 		.catch((err) => {
 		/* Handle Error*/
+			console.log(err);
 			setOpen(false);
 			setLoading(false);
 			Swal.fire({
@@ -372,54 +374,54 @@ export default function Giveaway({
  
 	return (
 		<>
-		<ConfirmVIPPopup
-			openstate={openPopup}
-			settheOpenPopup={setOpenPopup}
-			closefunction={closefunction}
-			allprimarymethod={paymentMethods}
-			onaddclick={handleOpen}
-			price={vipEntryPrice}
-			userCustomerId={userCustomerId}
-			selectPaymentMethod={selectedPaymentMethod}
-			setSelectedPaymentMethod={setSelectedPaymentMethod}
+			<ConfirmVIPPopup
+				openstate={openPopup}
+				settheOpenPopup={setOpenPopup}
+				closefunction={closefunction}
+				allprimarymethod={paymentMethods}
+				onaddclick={handleOpen}
+				price={vipEntryPrice}
+				userCustomerId={userCustomerId}
+				selectPaymentMethod={selectedPaymentMethod}
+				setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
-		<Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        <div className="wrapper">
-          <div className="innerWrapper">
-			<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
-			<div className="paymentRequestDiv">
-            	<PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
-			</div>
-            <div className="payment-divider" />
-            <div className="stripe-card-wrapper">
-              <div className="number_input">
-                  <label htmlFor="#" className="stripe-card_field_label">Card number</label>
-                  <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
-              </div>
-              <div className="expiry_input">
-                  <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
-                  <CardExpiryElement className={"expiry_input"} />
-              </div>
-              <div className="cvc_input">
-                  <label htmlFor="#" className="stripe-card_field_label">CVC</label>
-                  <CardCvcElement className={"cvc_input"} />
-              </div>
-            </div>
-			<FormControlLabel style={{marginTop: '10px'}}
-                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
-                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
-            />
-            <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
-          </div>
-        </div>
-      </Box>
-    </Modal>
+			<Modal
+				open={open}
+				onClose={handleClose}
+				aria-labelledby="modal-modal-title"
+				aria-describedby="modal-modal-description"
+			>
+				<Box sx={style}>
+					<div className="wrapper">
+						<div className="innerWrapper">
+							<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
+							<div className="paymentRequestDiv">
+											<PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
+							</div>
+							<div className="payment-divider" />
+							<div className="stripe-card-wrapper">
+								<div className="number_input">
+										<label htmlFor="#" className="stripe-card_field_label">Card number</label>
+										<CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
+								</div>
+								<div className="expiry_input">
+										<label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+										<CardExpiryElement className={"expiry_input"} />
+								</div>
+								<div className="cvc_input">
+										<label htmlFor="#" className="stripe-card_field_label">CVC</label>
+										<CardCvcElement className={"cvc_input"} />
+								</div>
+							</div>
+							<FormControlLabel style={{marginTop: '10px'}}
+								control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+								label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+							/>
+							<InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
+						</div>
+					</div>
+				</Box>
+			</Modal>
 
 		<JumboCardQuick
 			title={"Giveaway"}
@@ -482,8 +484,12 @@ export default function Giveaway({
 				>
 					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
-
+{/* 
 				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled}>
+					Buy VIP entry
+				</InteractButton> */}
+
+				<InteractButton onClick={buyGiveawayAlert}>
 					Buy VIP entry
 				</InteractButton>
 				</Box>

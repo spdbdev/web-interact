@@ -348,6 +348,7 @@ function CampaignPage(userData) {
               userGiveawayWinChance={chances}
               auctionLeaderboardSpots={campaignData.numAuctionInteractions}
               showUserAvatar
+              user={user}
             />
           </Box>
         </Stack>
@@ -444,7 +445,7 @@ function CampaignPage(userData) {
               bidAction={saveBid}
               campaignData={campaignData}
               bids={bids}
-			  userAuctionPosition={userAuctionPosition}
+			        userAuctionPosition={userAuctionPosition}
               hasUserEnteredAuction={hasUserEnteredAuction}
               setHasUserEnteredAuction={setHasUserEnteredAuction}
             />

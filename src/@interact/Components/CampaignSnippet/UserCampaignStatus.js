@@ -11,13 +11,14 @@ export default function UserCampaignStatus({
   showUserAvatar,
   isCampaignFinished,
   hasUserWonGiveaway,
+  user
 }) {
   function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
   let ranking=userAuctionPosition
   return (
     <Stack direction="row" alignItems="center" spacing={1}>
       {showUserAvatar ? (
-        <Avatar alt="user_profile_pic" src={`${ASSET_AVATARS}/avatar7.jpg`} />
+        <Avatar alt="user_profile_pic" src={user?.photoURL} />
       ) : null}
       <Stack direction="column" spacing={0.5}>
         {userAuctionPosition ? (

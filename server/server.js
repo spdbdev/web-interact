@@ -43,6 +43,10 @@ app.get("/a/method/attach/:cid/:pm", async (req, res) => {
   try {
     console.log(req.params);
 
+    const paymentMethod = await stripe.paymentMethods.attach(pm, {
+      customer: cid,
+    });
+
     const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
       type: "card",
     });
