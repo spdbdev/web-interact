@@ -36,24 +36,6 @@ app.post("/a/register-customer", async (req, res) => {
   }
 });
 
-app.get("/a/method/attach/:cid/:pm", async (req, res) => {
-  const { cid, pm } = req.params;
-
-  console.log(cid, pm)
-  try {
-    console.log(req.params);
-
-    const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
-      type: "card",
-    });
-    res.status(200).json({ paymentmethod: paymentMethods, added:true });
-
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "An error occured", added:false });
-  }
-});
-
 
 
 //GET STRIPE ACCOUNT DETAILS
@@ -144,6 +126,24 @@ app.get("/a/register-account/success", async (req, res) => {
 
 
 // all payments method
+app.get("/a/method/attach/:cid/:pm", async (req, res) => {
+  const { cid, pm } = req.params;
+
+  console.log(cid, pm)
+  try {
+    console.log(req.params);
+
+    const paymentMethods = await stripe.paymentMethods.attach(pm, {
+      customer: cid,
+    });
+    res.status(200).json({ paymentmethod: paymentMethods, added:true });
+
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "An error occured", added:false });
+  }
+});
+
 app.get("/a/customer/method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;

@@ -270,9 +270,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 				getRequest(`/a/method/attach/${userCustomerId}/${pmid}`).then((resp) => {
 
 					setOpen(false);
-					if (resp.added) {
-						setPaymentMethods(resp.paymentmethod.data);
-						setSelectPaymentMethod(resp.paymentmethod.data[0].id);
+					if (resp.data.added) {
+						setPaymentMethods([resp.data.paymentmethod]);
+						setSelectPaymentMethod(resp.data.paymentmethod.id);
 						setLoading(false);
 						if (selectPopUp === 1) {
 							setOpenPopup(true);
