@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { FollowButton } from "../CampaignPage/Stats";
 import { fetchUsersByIds } from "../../../firebase";
-
+import { BanButton } from "../BanButton";
 export default function FollowerList({ open, setOpen, followers = [] }) {
   // console.log("profilefollowers",followers);
   const [followerlist, setFollowerList] = useState([]);
@@ -16,7 +16,6 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
     }else {
       setFollowerList([]);
     }
-    console.log("Followers",followerlist);
   }, [open])
   return (
     <ReactModal
@@ -82,8 +81,8 @@ function FollowerListItem(data) {
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <FollowButton user={user} targetUser={data.data}/>
-          <MoreVertIcon style={{ fontSize: 20 }} />
+          <FollowButton user={user} targetUser={data.data} sx={{width:'50%'}}/>
+          <BanButton user={user} targetUser={data.data} sx={{width:'50%', marginLeft:"10px", marginRight:'10px'}}/>
         </div>
       </div>
     </div>

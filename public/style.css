@@ -58,7 +58,7 @@
 .marquee-text {
   width: fit-content;
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 600;
   color: black
 }
 

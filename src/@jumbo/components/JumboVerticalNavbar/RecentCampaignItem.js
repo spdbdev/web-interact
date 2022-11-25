@@ -79,7 +79,7 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                         width: 62.2,
                         height: 35,
                         marginLeft: -10,
-                        borderRadius: 2,
+                        borderRadius: 10,
                     }}
                 />
             </div>

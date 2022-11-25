@@ -72,9 +72,9 @@ export default function Stats({ campaignData, bids }) {
 	);
 }
 
-export function FollowButton({ user, targetUser }) {
+export function FollowButton({ user, targetUser, sx }) {
 	const navigate = useNavigate();
-	let selectedState = user !== undefined && targetUser !== {} && targetUser?.followers?.includes(user?.id) ? true : false;
+	let selectedState = user !== undefined && targetUser !== {} && user?.following?.includes(targetUser?.id) ? true : false;
 
 	function onFollowButtonClicked() {
 		if(user === undefined) {
@@ -89,10 +89,10 @@ export function FollowButton({ user, targetUser }) {
 	}
 
 	return (
-		<InteractButton sx={{ width: 120 }} variant={selectedState ? "contained" : "outlined"}
+		<InteractButton sx={ sx ? sx : { width: 120 }} variant={selectedState ? "contained" : "outlined"}
 			disabled={user?.id === targetUser?.id ? true : false} onClick={() => onFollowButtonClicked()}>
 		<Span sx={{ color: selectedState ? "primary.contrastText" : "primary.main" }} >
-			{selectedState ? "Following ✓" : "Follow"}
+			{selectedState ? sx ? "✓" : "Following ✓" : "Follow"}
 		</Span>
 		</InteractButton>
 	);

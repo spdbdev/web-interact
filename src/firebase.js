@@ -395,7 +395,7 @@ export const commentDeleteDB = async (id, type, campaignId, parentComment) => {
 Function to ban user
 */
 export const banUserFromCampaign = async (banUserId, user) => {
-  const targetUser = fetchUser(banUserId);
+  const targetUser = await fetchUser(banUserId);
   console.log(targetUser);
   if(banUserId && user && targetUser) {
     let currentBanList = user?.banList ? user?.banList : [];
