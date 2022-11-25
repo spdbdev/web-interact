@@ -271,8 +271,10 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 					setOpen(false);
 					if (resp.data.added) {
-						setPaymentMethods([resp.data.paymentmethod]);
-						setSelectPaymentMethod(resp.data.paymentmethod.id);
+						
+						setPaymentMethods(resp.data.paymentmethod.data);
+						setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+
 						setLoading(false);
 						if (selectPopUp === 1) {
 							setOpenPopup(true);
