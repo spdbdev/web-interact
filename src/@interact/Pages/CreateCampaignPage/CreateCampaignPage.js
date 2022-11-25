@@ -370,7 +370,6 @@ function CreateCampaignPage() {
   const [FAQSideBarText, setFAQSideBarText] = useState("");
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [accountId, setAccountId] = useState(null);
 
   const [campaignData, setCampaignData] = useState();
   const [isSideBarCollapsed, setIsSideBarCollapsed] = useState(false);
@@ -438,36 +437,35 @@ function CreateCampaignPage() {
     }
   }, [sidebarOptions]);
 
-  const updateAccountId = async () => {
+  const updateAccountId = async (accountId) => {
     try {
-      if (auth?.currentUser?.uid) {
+      if (authUser.uid) {
         const q = query(
           collection(db, "users"),
-          where("uid", "==", auth?.currentUser?.uid)
+          where("uid", "==", authUser.uid)
         );
         const colledoc = await getDocs(q);
         const data = colledoc.docs[0].data();
+        console.log(colledoc.docs[0]);
         if (accountId) {
           const userUpdated = doc(db, "users", colledoc.docs[0].id);
           const res = await updateDoc(userUpdated, {
             accountId: accountId,
           });
-        } else {
-          setAccountId(data.accountId);
         }
       }
-      setSelectedTabIndex(5);
+      setSelectedTabIndex(6);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    setAccountId(searchParams.get("accountId"));
-    if (accountId) {
-      updateAccountId();
+    const accountId = searchParams.get("accountId");
+    if (accountId && authUser) {
+      updateAccountId(accountId);
     }
-  }, [accountId]);
+  }, [authUser]);
 
   useEffect(() => {
     // data is for checking when all autosave data has been autosaved

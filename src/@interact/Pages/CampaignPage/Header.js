@@ -15,7 +15,8 @@ import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { light } from "@mui/material/styles/createPalette";
 import {localizationServices} from "app/services/localization"
-export default function Header({ campaignData }) {
+import ImageTooltip from "@interact/Components/ImageTooltip";
+export default function Header({ campaignData, badgeUrl }) {
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
 
   return (
@@ -28,12 +29,20 @@ export default function Header({ campaignData }) {
       >
         {campaignData?.title}
       </Typography>
-      <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
-        Created by
-        <span style={{ color: "#782fee", fontWeight: 600 }}>
-          {campaignData?.creatorName}
-        </span>
-      </Typography>
+      <div style={{display: "flex", alignItems: "center", flexDirection: "row", gap: "30px", marginTop: "10px"}}>
+        <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
+          Created by
+          <span style={{ color: "#782fee", fontWeight: 600 }}>
+            {campaignData?.creatorName}
+          </span>
+        </Typography>
+        <ImageTooltip
+          title="Ranks correspond to the amount of money raised by the creator from all of their campaigns: Diamond $1M, Platinum $100K, Gold $10K, Silver $1K, 
+          Bronze $0. The higher the rank, the higher the benefits!"
+          imgStyle={{width: "45px", transform: 'translateY(-4px)', cursor: "help"}}
+          imgUrl={badgeUrl}
+        />
+      </div>
       <Divider />
       <Stack direction="column">
         <Typography py={0}>

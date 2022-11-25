@@ -64,6 +64,7 @@ function CampaignPage(userData) {
   const { theme } = useJumboTheme();
   const navigate = useNavigate();
 
+  const [medal, setMedal] = useState(null);
 
   if (!campaignId) setCampaignId("test12345");
 
@@ -84,8 +85,32 @@ function CampaignPage(userData) {
       getCampaignData();
       checkPurchasedEntry();
     }
+
+    getMedalStatus();
   }, [user, campaignId]);
   
+  const getMedalStatus = async() => {
+    const grossRevenue = user.grossRevenue;
+
+    // if (grossRevenue === undefined) {
+    //   setMedal(null);
+    // }
+    if (grossRevenue <= 1000) {
+      setMedal('/images/pages/profile/bronzeCreatorRank.png');
+    }
+    else if (grossRevenue <= 10000) {
+      setMedal('/images/pages/profile/silverCreatorRank.png');
+    }
+    else if (grossRevenue <= 100000) {
+      setMedal('/images/pages/profile/goldCreatorRank.png');
+    }
+    else if (grossRevenue <= 1000000) {
+      setMedal('/images/pages/profile/platinumCreatorRank.png');
+    }
+    else {
+      setMedal('/images/pages/profile/diamondCreatorRank.png');
+    }
+  };
 
   const checkAuthentication = () => {
     if (!user) {
@@ -345,7 +370,7 @@ function CampaignPage(userData) {
     >
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
-        <Header campaignData={campaignData} />
+        <Header campaignData={campaignData} badgeUrl={medal}/>
         <p>{localStorage.getItem("data")}</p>
         <Stack
           direction="row"

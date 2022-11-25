@@ -77,12 +77,19 @@ app.get("/a/register-account", async (req, res) => {
     req.accountId = account.id;
     const origin = `${req.secure ? "https://" : "http://"}${req.headers.host}`;
 
-    console.log(req.accountId);
+    console.log(req);
+
+    // http://localhost:3000/d/asdf_15
+
+    console.log(req.headers.referer);
+    console.log(req.query.pathname);
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: account.id,
-      refresh_url: `${origin}/a/register-account/refresh`,
-      return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
+      refresh_url: `${origin}/a/register-account?pathname=${req.query.pathname}`,
+      return_url: `${req.headers.referer.slice(0, -1)}${req.query.pathname}?accountId=${account.id}`,
+      // refresh_url: `${origin}/a/register-account/refresh`,
+      // return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
     });
     res.redirect(303, accountLink.url);
   } catch (err) {
