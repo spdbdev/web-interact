@@ -76,8 +76,9 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                     alt={'No Image'}
                     style={{
                         objectFit: "cover",
-                        width: 35,
+                        width: 62.2,
                         height: 35,
+                        marginLeft: -10,
                         borderRadius: 2,
                     }}
                 />

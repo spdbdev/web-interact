@@ -1,39 +1,47 @@
 import React, { useEffect } from 'react'
 
-var marqueeElement
+var marqueeTextElements = document.getElementsByClassName('marquee-text');
+window.marquuStatus = [];
 const CustomMarquee = ({ text }) => {
   useEffect(() => {
-    let diffSize =
-      document.getElementsByClassName('marquee-text')[0].clientWidth -
-      document.getElementsByClassName('marquee')[0].clientWidth
-    marqueeElement = document.getElementById('marquee')
-    if (diffSize > 0) {
-      window.marquuStatus = false
-      runAnimation(0 - diffSize)
+    marqueeTextElements = document.getElementsByClassName('marquee-text');
+    let marqueeElementList = document.getElementsByClassName('marquee');
+    if(marqueeTextElements.length === marqueeElementList.length) {
+      for(let i = 0; i < marqueeTextElements.length; i++) {
+        let diffSize =
+        document.getElementsByClassName('marquee-text')[i].clientWidth -
+        document.getElementsByClassName('marquee')[i].clientWidth;
+        if (diffSize > 0) {
+          window.marquuStatus.push(false);
+          console.log('i', i);
+          runAnimation(0 - diffSize, i)
+        }else{
+          window.marquuStatus.push(true);
+        }
+      }
     }
   }, [])
 
-  const runAnimation = (size) => {
-    let marginLeft = parseInt(marqueeElement.style.marginLeft.split('px')[0])
+  const runAnimation = (size, index) => {
+    let marginLeft = parseInt(marqueeTextElements[index].style.marginLeft.split('px')[0])
     var interval = setInterval(() => {
-      if (window.marquuStatus) {
+      if (window.marquuStatus[index]) {
         marginLeft += 2
       } else {
         marginLeft -= 2
       }
-
-      marqueeElement.style.marginLeft = marginLeft + 'px'
+      marqueeTextElements[index].style.marginLeft = marginLeft + 'px'
       if (size > marginLeft) {
         clearInterval(interval)
         setTimeout(() => {
-          window.marquuStatus = true
-          runAnimation(size)
+          window.marquuStatus[index] = true
+          runAnimation(size, index)
         }, 3690)
       } else if (marginLeft > 0) {
         clearInterval(interval)
         setTimeout(() => {
-          window.marquuStatus = false
-          runAnimation(size)
+          window.marquuStatus[index] = false
+          runAnimation(size, index)
         }, 3690)
       }
     }, 70)
@@ -41,7 +49,7 @@ const CustomMarquee = ({ text }) => {
 
   return (
     <div className="marquee">
-      <div className="marquee-text" id="marquee" style={{ marginLeft: 0 }}>
+      <div className="marquee-text" style={{ marginLeft: 0 }}>
         {text}
       </div>
     </div>

@@ -56,8 +56,9 @@ function CampaignPage(userData) {
   const { theme } = useJumboTheme();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (routeParams.campaignId && isCampaignId()) {
+  useEffect(async () => {
+    const isValidated = await isCampaignId(routeParams.campaignId)
+    if (routeParams.campaignId && isValidated) {
       setCampaignId(routeParams.campaignId);
     }else{
       setCampaignId("test12345");
@@ -67,12 +68,11 @@ function CampaignPage(userData) {
   useEffect(async () => {
     //if (loading) return;
     //if (!user) return navigate("/"); // this page should be browsable without login
-    console.log("Campaign id",campaignId)
       let id = await checkCampaignID();
       //console.log('campaignId >>>>>', campaignId);
       getCampaignData(id);
       checkPurchasedEntry();
-  }, [user]);
+  }, [user, campaignId]);
   
 
   const checkAuthentication = () => {
