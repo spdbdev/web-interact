@@ -346,7 +346,7 @@ function CampaignPage(userData) {
               statusType={statusType}
               userAuctionPosition={userAuctionPosition}
               userGiveawayWinChance={chances}
-              auctionLeaderboardSpots={31}
+              auctionLeaderboardSpots={campaignData.numAuctionInteractions}
               showUserAvatar
             />
           </Box>
