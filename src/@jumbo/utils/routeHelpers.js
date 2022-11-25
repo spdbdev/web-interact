@@ -1,4 +1,5 @@
 import React from "react";
+import {matchRoutes} from "react-router-dom";
 
 const addRouteObjectToTree = (routeTree, routes) => {
     const routeObject = routes[0];
@@ -79,4 +80,15 @@ export const buildRoutes = (routes) => {
     else {
         throw Error("routes must be an array of object with at least a key 'element'");
     }
+};
+
+export const matchRoutePaths = (routes, searchPath) => {
+
+    if(Array.isArray(routes) && routes.length > 0) {
+        const generatedRoutes = buildRoutes(routes);
+        const matchedRoutes = matchRoutes(generatedRoutes, searchPath);
+        return Array.isArray(matchedRoutes) && matchedRoutes.length > 0;
+    }
+
+    return false;
 };
