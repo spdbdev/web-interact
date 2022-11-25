@@ -39,31 +39,22 @@ export default function FAQAccordian({
       question: "How do I get an interaction?",
       answer: (
         <span>
-          2 options: auction or giveaway. A max of 2 interactions per user can 
+          2 options: auction or giveaway. A max of 2 interactions*** per user can 
           be acquired from every campaign, one from the auction & one from the 
-          giveaway; only 1 interaction is actually carried out, except the 
-          duration is longer than a normal interaction (duration would become 
-          the sum of the 2 interactions won, meaning if you place in the top 3 
-          in the auction & you win in the giveaway, you get a super duper long 
-          interaction). 
-          <br></br>💜 Auction: place a bid to be on the leaderboard or use
-          auto-bid (select a max bid and your preferred ranking); if you are
+          giveaway.
+          <br></br>💜 Auction: place a bid to be on the leaderboard; if you are
           still on the leaderboard when the campaign ends, you will acquire an
-          interaction. If you place in the top 3 on the leaderboard, your
+          interaction & pay (you only pay if you win). If you place in the top 3 on the leaderboard, your
           interaction will be longer in duration compared to a normal
-          interaction. Only 1 bid is live at a time, each new bid replaces your
-          previous one (meaning you can only acquire 1 interaction from the
-          auction). 
+          interaction.
           <br></br>💜 Giveaway: Anyone can join the giveaway with a free entry or
           support a creator with a few dollars for a VIP entry that increases
-          your chances of winning by 25x (but first, you have to correctly
-          answer a skill based math question). Users can upgrade from the free
-          to VIP entry (only 1 entry is allowed per user). Winners are drawn at
-          the end of the campaign. Each time a user loses, their next giveaway
-          with the same creator will have DOUBLE the chances of winning,
-          stacking twice (up to 4x chance or a total of 100x chance if it is a
-          VIP entry; this only resets on winning an interaction in the
-          giveaway).
+          your chances of winning by 25x.
+          <br></br>*** Only 1 interaction is actually carried out, except the 
+          duration is longer than a normal interaction (duration becomes
+          the sum of the 2 interactions won, meaning if you place in the top 3 
+          in the auction & you win in the giveaway, you get a super duper long & epic
+          interaction). 
         </span>
       ),
     },
@@ -88,16 +79,12 @@ export default function FAQAccordian({
       question: "How do the auction & leaderboard work?",
       answer: (
         <span>
-          💜 Place a bid to be on the leaderboard or auto-bid: We'll automatically
-          bid the lowest amount to stay at your desired rank on the leaderboard
-          until your max bid is reached. If others bid more & your max bid
-          amount is exceeded, your rank will be lowered (we will automatically
-          bid your max bid price if it is exceeded and still try to get you the
-          highest rank possible); you might still be on the leaderboard or you
-          might not be, meaning meaning no interaction (you'll be sent an email
-          to increase your max bid). 
+          💜 Place a bid to be on the leaderboard or, save time by placing an auto-bid: we'll automatically bid the lowest amount to stay at your 
+					  desired rank on the leaderboard until your max bid is reached. If another bidder also 
+            wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+					  bid higher than your max bid, your rank could be lowered.
           <br></br>💜 If you are still on the leaderboard when
-          the campaign ends, you will acquire an interaction. If you place in
+          the campaign ends, you will acquire an interaction & pay (you only pay if you win). If you place in
           the top 3 on the leaderboard, your interaction will be 2x or more in
           duration compared to a normal interaction. Only 1 bid is live at a
           time, each new bid replaces your previous one (meaning you can only

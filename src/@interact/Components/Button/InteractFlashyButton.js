@@ -18,7 +18,7 @@ export default function InteractFlashyButton({
             "linear-gradient(180deg, #782FEE -37.69%, #DD00FF 109.93%)", // theme.palette.primary.main
           color: "white",
         },
-        background: "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
+        background: "linear-gradient(90deg, #8747f0 -8.69%, #e433ff 109.93%)",
         borderColor: "primary.main",
         fontWeight: 600,
         textTransform: "none",

@@ -156,6 +156,17 @@ export async function fetchUserByName(name) {
   return { ...data, id }
 }
 
+const getContributions = async function(id){
+  let sum = 0;
+  const q = query(collection(db,"users",id,'Contributions'));
+  const querySnapshots = await getDocs(q);
+  for(let i = 0; i < querySnapshots.docs.length; i++){
+    const data = querySnapshots.docs[i].data();
+    sum += parseFloat(data.contributionTotal);
+  }
+  return sum;
+}
+
 export async function fetchUsersByIds(idlist = []) {
   let returnData = [];
   if(idlist === []){
@@ -165,9 +176,11 @@ export async function fetchUsersByIds(idlist = []) {
   const querySnapshot = await getDocs(q);
   for(let i = 0; i < querySnapshot.docs.length; i++) {
     const docSnapshots = querySnapshot.docs[i];
+    console.log(querySnapshot,'doc');
     const data = docSnapshots.data();
+    const contributions = await getContributions(data.uid);
     const id = docSnapshots.id;
-    returnData.push({...data, id});
+    returnData.push({...data, id,contributions});
   }
   return returnData;
 }

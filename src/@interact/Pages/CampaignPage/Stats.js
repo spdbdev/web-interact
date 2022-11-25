@@ -83,6 +83,7 @@ export function FollowButton({ user, targetUser }) {
 			return;
 		}
 		//Call function for follow/unfollow
+		console.log("calling follow User")
 		selectedState ? followUser(user, targetUser, false) : followUser(user, targetUser, true);
 		selectedState = !selectedState;
 	}

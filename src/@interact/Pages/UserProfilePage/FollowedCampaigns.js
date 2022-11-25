@@ -53,21 +53,21 @@ function FollowedCampaigns() {
 				}),
 				goal: doc.goal,
 				goalValue: doc.goalValue,
-				username: doc.person.username
+				username: doc.person?.username
 			};
 
 
 			current_campaigns.push(new_doc);
 
 			// check user in these collections if found then add this campaign into interaction_campaigns
-			if (
-				(await cus(document.id, "top3AuctionWinners")) === true ||
-				(await cus(document.id, "normalAuctionWinners")) === true ||
-				(await cus(document.id, "GiveawayWinners")) === true
-				) 
-			{
-				interaction_campaigns.push(new_doc);
-			}
+			// if (
+			// 	(await cus(document.id, "top3AuctionWinners")) === true ||
+			// 	(await cus(document.id, "normalAuctionWinners")) === true ||
+			// 	(await cus(document.id, "GiveawayWinners")) === true
+			// 	) 
+			// {
+			// 	interaction_campaigns.push(new_doc);
+			// }
 		}
 		}
 		setCurrentCampaigns(current_campaigns);
