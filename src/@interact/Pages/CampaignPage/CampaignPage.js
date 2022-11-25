@@ -57,21 +57,49 @@ function CampaignPage(userData) {
   const { theme } = useJumboTheme();
   const navigate = useNavigate();
 
+  const [medal, setMedal] = useState(null);
+
+  if (!campaignId) navigate('/a/invalidcampaign');//update this to 
+
   useEffect(async () => {
-    const isCampaignID = await isCampaignId(routeParams.campaignId);
-    if(isCampaignID) {
+    const isValidate = await isCampaignId(routeParams.campaignId);
+    if(isValidate) {
       setCampaignId(routeParams.campaignId);
     }else {
-      setCampaignId("test12345");
+      navigate('/a/invalidcampaign');
     }
   },[routeParams])
 
   useEffect(async () => {
+    console.log("Campaign id",campaignId)
     let id = await checkCampaignID();
     getCampaignData(id);
     checkPurchasedEntry();
-  }, [user, campaignId]);
+    getMedalStatus();
+  }, [user,campaignId]);
   
+  const getMedalStatus = async() => {
+    const grossRevenue = user.grossRevenue;
+
+    if (grossRevenue === undefined) {
+      setMedal(null);
+    }
+    else if (grossRevenue <= 1000) {
+      setMedal('/images/pages/profile/bronzeCreatorRank.png');
+    }
+    else if (grossRevenue <= 10000) {
+      setMedal('/images/pages/profile/silverCreatorRank.png');
+    }
+    else if (grossRevenue <= 100000) {
+      setMedal('/images/pages/profile/goldCreatorRank.png');
+    }
+    else if (grossRevenue <= 1000000) {
+      setMedal('/images/pages/profile/platinumCreatorRank.png');
+    }
+    else {
+      setMedal('/images/pages/profile/diamondCreatorRank.png');
+    }
+  };
 
   const checkAuthentication = () => {
     if (!user) {
@@ -315,7 +343,7 @@ function CampaignPage(userData) {
               statusType={statusType}
               userAuctionPosition={userAuctionPosition}
               userGiveawayWinChance={chances}
-              auctionLeaderboardSpots={31}
+              auctionLeaderboardSpots={campaignData.numAuctionInteractions}
               showUserAvatar
             />
           </Box>
@@ -345,7 +373,7 @@ function CampaignPage(userData) {
     >
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
-        <Header campaignData={campaignData} />
+        <Header campaignData={campaignData} badgeUrl={medal}/>
         <p>{localStorage.getItem("data")}</p>
         <Stack
           direction="row"

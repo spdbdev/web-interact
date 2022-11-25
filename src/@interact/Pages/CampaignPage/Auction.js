@@ -74,23 +74,29 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	const [bidAmount, setBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
 	const [manualRanking, setManualRanking] = useState(1);
-
+	// used in both auto bid and manual bid
 	const [previousBidData, setPreviousBidData] = useState({price:0});
 	
+
+	// required for payment flow
 	const Swal = useSwalWrapper();
-  
-	const { user } = useCurrentUser();
-	const [currentUser, setCurrentUser] = useState(null);
 	const stripe = useStripe();
-	const [open, setOpen] = useState(false);
 	const elements = useElements();
+	const { user } = useCurrentUser();
+
+	const [open, setOpen] = useState(false);	
 	const [openPopup, setOpenPopup] = useState(false);
 	const [openPopup1, setOpenPopup1] = useState(false);
 	const [selectPopUp, setselectPopUp] = useState(1);
 
-	const paymentRef = useRef();
-	const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+	const [currentUser, setCurrentUser] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [paymentMethods, setPaymentMethods] = useState([]);
+  	const [userCustomerId, setUserCustomerId] = useState(null);
+	const [selectPaymentMethod, setSelectPaymentMethod] = useState("");
+
+	// END - required for payment flow
+	
 
 	const handleMaxBidAmount = function(value)
 	{
@@ -105,13 +111,6 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 			let minIncrement = 5;
 			if (thirtyPer > 5) minIncrement = thirtyPer;
 			minIncrement = Math.round(minIncrement * 2) / 2;
-
-			// if priceAtDesiredRank is less than or equal to previous bid then abort
-			if(priceAtDesiredRank <= parseFloat(previousBidData.price)){
-				Swal.fire({icon: "error", title: "Oops...", text: "New bids must be higher than previous bids!"});
-				return;
-			}
-			else setDesiredRank(value);
 
 			setAutoBidAmount(priceAtDesiredRank + minIncrement);
 			setMinRankBidAmount(priceAtDesiredRank + 0.5);
@@ -148,14 +147,19 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 			handleMaxBidAmount(desiredRank);
 		}
+	}, [campaignData, bids]);
 
+	useEffect(() => {
 		// get previous bid
 		if(bids.length > 0 && userAuctionPosition > 0)
 		{
-			console.log(bids[userAuctionPosition - 1]);
-			setPreviousBidData(bids[userAuctionPosition - 1]);
+			const previous_bid = bids[userAuctionPosition - 1];
+			//console.log(bids[userAuctionPosition - 1]);
+			setPreviousBidData(previous_bid);
+			setMinBidAmount(parseFloat(previous_bid.price));
+			setBidAmount(parseFloat(previous_bid.price) + 0.5);
 		}
-	}, [campaignData, bids]);
+	}, [bids]);
 
 	useEffect(() => {
 		document.getElementById("auctionCard").onmousemove = (e) => {
@@ -189,6 +193,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 		if(e.target.value < 1) e.target.value = 1;
 		else if(e.target.value > parseInt(campaignData?.numAuctionInteractions)) e.target.value = campaignData?.numAuctionInteractions;
 	
+		setDesiredRank(e.target.value);
 		handleMaxBidAmount(e.target.value);
 	}
 
@@ -211,198 +216,192 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 
 
+	// stripe payment flow
+	const handleOpen = () => setOpen(true);
+  	const handleClose = () => setOpen(false);
+	const closefunction = () => {
+		setselectPopUp(1);
+		setOpenPopup(false);
+	};
+	const closefunction1 = () => {
+		setselectPopUp(2);
+		setOpenPopup1(false);
+	};
+	const handleBackPopup = () => {
+		setOpen(false);
+		if (selectPopUp === 1) {
+			setOpenPopup(true);
+		} else {
+			setOpenPopup1(true);
+		}
+	}
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  useEffect(() => {
-    handleMaxBidAmount(desiredRank);
-  }, []);
+	const fetchUserName = async () => {
+		try {
+			const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+			const colledoc = await getDocs(q);
+			const data = colledoc.docs[0].data();
+			data.id = colledoc.docs[0].id;
+			setUserCustomerId(data.customerId);
+			setCurrentUser(data);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+	useEffect(() => {
+		fetchUserName();
+	}, [user]);
 
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [userCustomerId, setUserCustomerId] = useState(null);
+	
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		setLoading(true);
 
-  const handleBackPopup = () => {
-    setOpen(false);
-    if (selectPopUp === 1) {
-      setOpenPopup(true);
-    } else {
-      setOpenPopup1(true);
-    }
-  }
-  const handleOpen = () => {
-    setOpen(true);
-  }
-  const handleClose = () => setOpen(false);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+		stripe.createPaymentMethod({
+			type: "card",
+			card: elements.getElement(CardNumberElement),
+		}).then((resp) => {
 
-    setLoading(true);
-    stripe
-    .createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardNumberElement),
-    })
-    .then((resp) => {
-      console.log(resp.paymentMethod);
-      const pmid = resp?.paymentMethod?.id;
-      if (pmid && userCustomerId) {
-        getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
-          .then((resp) => {
-            setOpen(false);
-            if (resp.data.added) {
-              setPaymentMethods(resp.data.paymentmethod.data);
-              setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
-              setLoading(false);
-              if (selectPopUp === 1) {
-                setOpenPopup(true);
-              } else {
-                setOpenPopup1(true);
-              }
-            } else {
-              setLoading(false);
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "An error occurred",
-              });
-            }
-          })
-          .catch((err) => {
-            /*Handle Error */
-            setOpen(false);
-            setLoading(false);
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "An error occurred",
-            });
-          });
-      }
-      else { //response error
-        setOpen(false);
-        setLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "An error occurred",
-        });
-      }
-      console.log(resp);
-    })
-    .catch((err) => {
-      /* Handle Error*/
-      setOpen(false);
-      setLoading(false);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "An error occurred",
-      });
-    });
-  };
+			console.log(resp.paymentMethod);
+			const pmid = resp?.paymentMethod?.id;
+			if (pmid && userCustomerId) 
+			{
+				getRequest(`/a/method/attach/${userCustomerId}/${pmid}`).then((resp) => {
 
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      const colledoc = await getDocs(q);
-      const data = colledoc.docs[0].data();
-      data.id = colledoc.docs[0].id;
-      setUserCustomerId(data.customerId);
-      setCurrentUser(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+					setOpen(false);
+					if (resp.data.added) {
+						setPaymentMethods([resp.data.paymentmethod]);
+						setSelectPaymentMethod(resp.data.paymentmethod.id);
+						setLoading(false);
+						if (selectPopUp === 1) {
+							setOpenPopup(true);
+						} else {
+							setOpenPopup1(true);
+						}
+					} else {
+						setLoading(false);
+						Swal.fire({icon: "error", title: "Oops...", text: "An error occurred"});
+					}
+				})
+				.catch((err) => {
+					/*Handle Error */
+					setOpen(false);
+					setLoading(false);
+					Swal.fire({icon: "error", title: "Oops...", text: "An error occurred"});
+				});
+			}
+			else { //response error
+				setOpen(false);
+				setLoading(false);
+				Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "An error occurred",
+				});
+			}
+			console.log(resp);
+		})
+		.catch((err) => {
+			/* Handle Error*/
+			setOpen(false);
+			setLoading(false);
+			Swal.fire({icon: "error", title: "Oops...", text: "An error occurred"});
+		});
+	};
 
-  const verificationOfAutoBid = () => {
-    if (!user) return navigate("/a/signup");
-    if (desiredRank > 0) {
-      getRequest(`/a/customer/method/${userCustomerId}`)
-        .then((resp) => {
-          const mdata = resp.data.paymentmethod.data;
-          console.log(resp.data.paymentmethod.data);
-          if (mdata.length > 0) {
-            setPaymentMethods(resp.data.paymentmethod.data);
-            setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
-            // setOpen(true);
-            setOpenPopup(true);
-          } else {
-            setOpen(true);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Please enter your desired rank",
-        text: "",
-      });
-    }
+	const verificationOfAutoBid = () => {
+		if (!user) return navigate("/a/signup");
 
-    // bidAction(bidAmount);
-  };
-  const verificationOfBid = () => {
-    console.log("manualbid");
-    for (let i = 0; i < bids.length; i++) {
-      if (bidAmount > Number(bids[i].price)) {
-        console.log(i+1, Number(bids[i].price));
-        setManualRanking(i + 1);
-        break;
-      }
-    }
-    if (!user) return navigate("/a/signup");
-    getRequest(`/a/customer/method/${userCustomerId}`)
-      .then((resp) => {
-        const mdata = resp.data.paymentmethod.data;
-        console.log(resp.data.paymentmethod.data);
-        if (mdata.length > 0) {
-          setPaymentMethods(resp.data.paymentmethod.data);
-          setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
-          // setOpen(true);
-          setOpenPopup1(true);
-        } else {
-          setOpen(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+		// if priceAtDesiredRank is less than or equal to previous bid then abort
+		if(minRankBidAmount <= parseFloat(previousBidData.price)){
+			Swal.fire({icon: "error", title: "Oops...", text: "New bids must be higher than previous bids!"});
+			return;
+		}
 
-    // bidAction(bidAmount);
-  };
-  const closefunction = () => {
-    setselectPopUp(1);
-    setOpenPopup(false);
-  };
-  const closefunction1 = () => {
-    setselectPopUp(2);
-    setOpenPopup1(false);
-  };
+		if (desiredRank > 0) {
+			getRequest(`/a/customer/method/${userCustomerId}`).then((resp) => 
+			{
+				const mdata = resp.data.paymentmethod.data;
+				console.log(resp.data.paymentmethod.data);
+				if (mdata.length > 0) {
+					setPaymentMethods(resp.data.paymentmethod.data);
+					setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+					// setOpen(true);
+					setOpenPopup(true);
+				} else {
+					setselectPopUp(1);
+					setOpen(true);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+		} 
+		else {
+			Swal.fire({icon: "error", title: "Please enter your desired rank", text: ""});
+		}
 
-  useEffect(() => {
-    fetchUserName();
-  }, [user]);
+		// bidAction(bidAmount);
+	};
 
-  function nth(n) {
-    return ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";
-  }
-  const options = [];
-  for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
-    options.push(
-      <MenuItem value={i} key={i}>
-        {i}
-        {nth(i)}
-      </MenuItem>
-    );
-  }
+	const verificationOfBid = () => {
+		if (!user) return navigate("/a/signup");
 
-  return (
+		if(bidAmount <= parseFloat(previousBidData.price)){
+			Swal.fire({icon: "error", title: "Oops...", text: "New bids must be higher than previous bids!"});
+			return;
+		}
+
+		console.log("manualbid");
+		for (let i = 0; i < bids.length; i++) {
+			if (bidAmount > Number(bids[i].price)) {
+				console.log(i+1, Number(bids[i].price));
+				setManualRanking(i + 1);
+				break;
+			}
+		}
+
+		getRequest(`/a/customer/method/${userCustomerId}`).then((resp) => 
+		{
+			const mdata = resp.data.paymentmethod.data;
+			console.log(resp.data.paymentmethod.data);
+			if (mdata.length > 0) {
+				setPaymentMethods(resp.data.paymentmethod.data);
+				setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+				// setOpen(true);
+				setOpenPopup1(true);
+			} else {
+				setselectPopUp(2);
+				setOpen(true);
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+
+		// bidAction(bidAmount);
+	};
+	// END - stripe payment flow
+
+
+
+	function nth(n) {
+		return ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";
+	}
+	const options = [];
+	for (let i = 1; i <= parseInt(campaignData?.numAuctionInteractions); i++) {
+		options.push(
+		<MenuItem value={i} key={i}>
+			{i}
+			{nth(i)}
+		</MenuItem>
+		);
+	}
+
+  	return (
     <>
-      <ConfirmAuctionPopup
+    <ConfirmAuctionPopup
         openstate={openPopup}
         settheOpenPopup={setOpenPopup}
         closefunction={closefunction}
@@ -415,9 +414,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
         autobid={true}
-      />
+    />
 
-      <ConfirmAuctionPopup
+    <ConfirmAuctionPopup
         openstate={openPopup1}
         settheOpenPopup={setOpenPopup1}
         closefunction={closefunction1}
@@ -426,18 +425,18 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
         onaddclick={handleOpen}
         price={bidAmount}
         userCustomerId={userCustomerId}
-        bidAction={() => bidAction(bidAmount, false, null, null, minBidAmount)}
+        bidAction={() => bidAction(bidAmount)}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
         autobid={false}
-      />
+    />
 
-      <Modal
+    <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-      >
+      	>
         <Box sx={style}>
           <div className="wrapper">
             <div className="innerWrapper">
@@ -468,9 +467,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
             </div>
           </div>
         </Box>
-      </Modal>
+    </Modal>
 
-      <JumboCardQuick
+    <JumboCardQuick
         title={"Auction"}
         id="auctionCard"
         sx={{ ml: 2, display: "flex", flexDirection: "column", minWidth: 400 }}
@@ -483,7 +482,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
           justifyContent: "space-between",
         }}
         className="auctionCard"
-      >
+      	>
         <Stack direction="column">
 
           <Typography mt={1.21} maxWidth={316.9}>
@@ -524,7 +523,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 				<InfoTooltip
 					title="We'll automatically bid the lowest amount to stay at your 
 					desired rank on the leaderboard until your max bid is reached. If another bidder also 
-          wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+          			wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+          			wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
+          			wants the same (or higher) rank, your rank could become higher than expected while still being within your max bid; or, if others 
 					bid higher than your max bid, your rank could be lowered."
 				/>
           	</Stack>
@@ -567,20 +568,16 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 				/>
           	</FormControl>
 
-          {/*
+          	{/*
 		  	minRankBidAmount => it should be the current bid amount (price)
 			autoBidAmount => it will be the maxBidPrice
 			<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => handleBidClick(minRankBidAmount, true, desiredRank, autoBidAmount)}>
 				Place auto-bid
-			</InteractButton>
-          */}
+			</InteractButton> */}
 
-          <InteractButton disabled={isCampaignEnded||isCampaignScheduled}
-            
-            onClick={() => verificationOfAutoBid()}
-          >
-            Place auto-bid
-          </InteractButton>
+          	<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => verificationOfAutoBid()}>
+            	Place auto-bid
+          	</InteractButton>
         </Stack>
 
 
@@ -618,20 +615,14 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 				</FormControl>
 			</Stack>
 
-          {/*
-          <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount)}>
-          Place bid
-          </InteractButton>
-          */}
-          <InteractButton
-            disabled={isCampaignEnded||isCampaignScheduled}
-            onClick={() => verificationOfBid()}
-          >
-            Place bid
-          </InteractButton>
-          {/* </form> */}
+			{/* <InteractButton disabled={isCampaignEnded} onClick={() => bidAction(bidAmount)}>
+					Place bid
+			</InteractButton> */}
+          	<InteractButton disabled={isCampaignEnded||isCampaignScheduled} onClick={() => verificationOfBid()} >
+            	Place bid
+          	</InteractButton>
       </Stack>
     </JumboCardQuick>
     </>
     );
-  }
+}

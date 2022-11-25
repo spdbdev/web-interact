@@ -14,7 +14,7 @@ import CreatorSchedules from "./CreatorSchedule";
 import Setting from "./Settings";
 import FollowerList from "./FollowerList";
 import { db, storage as Storage } from "@jumbo/services/auth/firebase/firebase";
-import { setDoc, doc, query, onSnapshot } from "firebase/firestore";
+import { setDoc, doc, query, onSnapshot, getDocs, where, collection } from "firebase/firestore";
 
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,6 +32,8 @@ import Modal from "@mui/material/Modal";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
+import { flexbox } from "@mui/system";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -203,6 +205,7 @@ function UserProfilePage() {
   const [targetUser, setTargetUser] = useState({});
   const fileRef = useRef();
   const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
+  const [medal, setMedal] = React.useState(null);
 
   const [cropModalOpen, setCropModalOpen] = React.useState(false);
   const [croppingImg, setCroppingImg] = React.useState({});
@@ -282,11 +285,36 @@ function UserProfilePage() {
     }
   };
 
+  const getMedalStatus = async() => {
+    const grossRevenue = user.grossRevenue;
+
+    if (grossRevenue === undefined) {
+      setMedal(null);
+    }
+    else if (grossRevenue <= 1000) {
+      setMedal('/images/pages/profile/bronzeCreatorRank.png');
+    }
+    else if (grossRevenue <= 10000) {
+      setMedal('/images/pages/profile/silverCreatorRank.png');
+    }
+    else if (grossRevenue <= 100000) {
+      setMedal('/images/pages/profile/goldCreatorRank.png');
+    }
+    else if (grossRevenue <= 1000000) {
+      setMedal('/images/pages/profile/platinumCreatorRank.png');
+    }
+    else {
+      setMedal('/images/pages/profile/diamondCreatorRank.png');
+    }
+  }
+
   useEffect(() => {
     if (!user) return;
     if (!params.username) {
       navigate(user.name ? `/u/${user.name}` : "/");
     }
+
+    getMedalStatus();
   }, [user]);
 
 	useEffect(() => {
@@ -338,16 +366,26 @@ function UserProfilePage() {
             {/* <input type="file" onChange={handleChangeImage} /> */}
             <img className="profilePic" alt="profile-pic" src={image} />
           </div>
-
-          <div
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              paddingTop: 10,
-            }}
-          >
-            {targetUser?.name}
+          <div style={{display: "flex", alignItems: "center", flexDirection: "row", position: "relative", marginTop: "10px"}}>
+            <div
+              style={{
+                color: "white",
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              {targetUser?.name}
+            </div>
+            <img
+              alt=""
+              style={{
+                width: "40px",
+                transform: "translateX(30px)",
+                position: "absolute",
+                right: "-30px"
+              }}
+              src={medal}
+            />
           </div>
           <Box className="profile-desc--wrapper">
             <Typography

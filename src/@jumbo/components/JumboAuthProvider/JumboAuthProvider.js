@@ -1,7 +1,7 @@
 import React from 'react';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {routesForAuthenticatedOnly, routesForNotAuthenticatedOnly} from "../../../app/routes";
-import useRoutePathMatch from "@jumbo/hooks/useRoutePathMatch";
+import {matchRoutePaths} from "@jumbo/utils";
 import {removeToken, storeToken} from "./authHelpers";
 import {config} from "../../../app/config/main";
 import {AuthContext} from "@jumbo/components/JumboAuthProvider/JumboAuthContext";
@@ -52,11 +52,10 @@ const authReducer = (state, action) => {
 };
 
 const JumboAuthProvider = ({children, ...restProps}) => {
+    const location = useLocation();
     const [authOptions, setAuthOptions] = React.useReducer(authReducer, restProps, init);
     const [logout, setLogout] = React.useState(false);
     const navigate = useNavigate();
-    const isAuthenticatedRouteOnly = useRoutePathMatch(routesForAuthenticatedOnly);
-    const isNotAuthenticatedRouteOnly = useRoutePathMatch(routesForNotAuthenticatedOnly);
 
     React.useEffect(() => {
         if (logout) {
@@ -104,6 +103,23 @@ const JumboAuthProvider = ({children, ...restProps}) => {
         setAuthOptions({type: "set-auth-data", payload: data});
     }, []);
 
+    React.useEffect(() => {
+        const isAuthOnlyRoute = matchRoutePaths(routesForAuthenticatedOnly, location.pathname);
+        const isNotAuthOnlyRoute = matchRoutePaths(routesForNotAuthenticatedOnly, location.pathname);
+        if (!authOptions.authToken) {
+            if (isAuthOnlyRoute) {
+                navigate(authOptions?.fallbackPath);
+            }
+        } else if (!authOptions.authUser) {
+            setAuthToken(authOptions.authToken);
+        } else if (isNotAuthOnlyRoute) {
+            if (!firstTimePageLoad)
+                navigate(config.authSetting.redirectNotAuthenticatedPath ?? "/");
+            else
+                firstTimePageLoad = false;
+        }
+    }, [authOptions.authUser]);
+
     const contextValue = React.useMemo(() => {
 
         return {
@@ -114,21 +130,6 @@ const JumboAuthProvider = ({children, ...restProps}) => {
             setAuthOptions,
         }
     }, [authOptions]);
-
-    React.useEffect(() => {
-        if (!authOptions.authToken) {
-            if (isAuthenticatedRouteOnly) {
-                navigate(authOptions?.fallbackPath);
-            }
-        } else if (!authOptions.authUser) {
-            setAuthToken(authOptions.authToken);
-        } else if (isNotAuthenticatedRouteOnly) {
-            if (!firstTimePageLoad)
-                navigate(config.authSetting.redirectNotAuthenticatedPath ?? "/");
-            else
-                firstTimePageLoad = false;
-        }
-    }, [authOptions.authUser]);
 
     return (
         <AuthContext.Provider value={contextValue}>

@@ -16,13 +16,24 @@ export function TabNavigation({
   const { campaignId } = useParams();
 
   function handleNextButtonClick() {
+
     if (disableNext) {
-      Swal.fire({
-        icon: "error",
-        text:
-          customErrorMessage ||
-          "All form fields are required",
-      });
+      if (selectedTabIndex === 6) {
+        Swal.fire({
+          icon: "error",
+          text:
+            customErrorMessage ||
+            "You must link a bank account first.",
+        });
+      }
+      else {
+        Swal.fire({
+          icon: "error",
+          text:
+            customErrorMessage ||
+            "All form fields are required.",
+        });
+      }
       return;
     }
 

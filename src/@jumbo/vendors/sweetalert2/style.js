@@ -11,6 +11,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 23,
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.background.paper,
+        paddingBottom: 30
     },
     title: {
         fontSize: '1.5rem',

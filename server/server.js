@@ -36,24 +36,6 @@ app.post("/a/register-customer", async (req, res) => {
   }
 });
 
-app.get("/a/method/attach/:cid/:pm", async (req, res) => {
-  const { cid, pm } = req.params;
-
-  console.log(cid, pm)
-  try {
-    console.log(req.params);
-
-    const paymentMethods = await stripe.customers.listPaymentMethods(cid, {
-      type: "card",
-    });
-    res.status(200).json({ paymentmethod: paymentMethods, added:true });
-
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "An error occured", added:false });
-  }
-});
-
 
 
 //GET STRIPE ACCOUNT DETAILS
@@ -77,12 +59,19 @@ app.get("/a/register-account", async (req, res) => {
     req.accountId = account.id;
     const origin = `${req.secure ? "https://" : "http://"}${req.headers.host}`;
 
-    console.log(req.accountId);
+    console.log(req);
+
+    // http://localhost:3000/d/asdf_15
+
+    console.log(req.headers.referer);
+    console.log(req.query.pathname);
     const accountLink = await stripe.accountLinks.create({
       type: "account_onboarding",
       account: account.id,
-      refresh_url: `${origin}/a/register-account/refresh`,
-      return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
+      refresh_url: `${origin}/a/register-account?pathname=${req.query.pathname}`,
+      return_url: `${req.headers.referer.slice(0, -1)}${req.query.pathname}?accountId=${account.id}`,
+      // refresh_url: `${origin}/a/register-account/refresh`,
+      // return_url: `${YOUR_DOMAIN}/interact/createCampaign?accountId=`+req.accountId,
     });
     res.redirect(303, accountLink.url);
   } catch (err) {
@@ -137,6 +126,24 @@ app.get("/a/register-account/success", async (req, res) => {
 
 
 // all payments method
+app.get("/a/method/attach/:cid/:pm", async (req, res) => {
+  const { cid, pm } = req.params;
+
+  console.log(cid, pm)
+  try {
+    console.log(req.params);
+
+    const paymentMethods = await stripe.paymentMethods.attach(pm, {
+      customer: cid,
+    });
+    res.status(200).json({ paymentmethod: paymentMethods, added:true });
+
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "An error occured", added:false });
+  }
+});
+
 app.get("/a/customer/method/:cid", async (req, res) => {
   try {
     const { cid } = req.params;

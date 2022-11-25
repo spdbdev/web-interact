@@ -11,16 +11,17 @@ import { useNavigate,useSearchParams } from 'react-router-dom'
 import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { doc, query, updateDoc, collection, getDocs, setDoc, where, addDoc } from "firebase/firestore";
 import { TabNavigation } from "../TabNavigation";
-
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
   const navigate = useNavigate();
   const stripe = useStripe();
   const [accountId, setAccountId] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [authUser] = useAuthState(auth);
 
   const getAccountId = async ()=>{
-    const q = query(collection(db, "users"), where("uid", "==", auth?.currentUser?.uid));
+    const q = query(collection(db, "users"), where("uid", "==", authUser?.uid));
     const colledoc = await getDocs(q);
     const data = colledoc.docs[0].data();
     
@@ -30,7 +31,7 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
 
   useEffect(() => {
     if (searchParams.has('accountId')) {
-      console.log(searchParams.get('URL accountId'));
+      console.log(searchParams.get('accountId'));
       setAccountId(searchParams.get('accountId'));
       searchParams.delete('accountId');
       setSearchParams(searchParams);
@@ -52,7 +53,7 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
     event.preventDefault();
     try {
       const formData = new FormData();
-      window.location.href = _BASE_URL+'/a/register-account'; 
+      window.location.href = _BASE_URL+'/a/register-account?pathname=' + window.location.pathname; 
     } catch (err) {
       console.log(err);
     }
@@ -71,8 +72,8 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
           <br /> Funds will be deposited automatically within 3
           business days after the campaign ends.
         </TitleAndDesc>
-        {accountId && <TitleAndDesc title={"Account Linked"}><h3>Your account has beedn linked to Stripe</h3></TitleAndDesc> }
-        {!accountId && <InteractButton onClick={handleLinkStripeClick}>
+        {accountId && <TitleAndDesc title={"Account Linked"}><h3>Your account has been linked to Stripe</h3></TitleAndDesc> }
+        {!accountId &&<InteractButton onClick={handleLinkStripeClick}>
           <Span
             sx={{
               fontWeight: 500,
@@ -86,10 +87,10 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
             <img alt="stripe logo" src={StripeLogo} width="60px" />
           </Span>
         </InteractButton>
-      }
+        }
       </CreateCampaignItemWrapper>
       <TabNavigation
-        disableNext={false} // Not yet wired up to stripe
+        disableNext={(accountId === null || accountId === undefined) ? true : false} // Not yet wired up to stripe
         selectedTabIndex={selectedTabIndex}
         setSelectedTabIndex={setSelectedTabIndex}
       />
