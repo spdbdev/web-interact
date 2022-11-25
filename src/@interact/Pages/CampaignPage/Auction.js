@@ -69,7 +69,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	// auto bid
 	const [desiredRank, setDesiredRank] = useState(1);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
-  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
+	const [minRankBidAmount, setMinRankBidAmount] = useState(0);
 	// manual bid
 	const [bidAmount, setBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
@@ -77,9 +77,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 	const [previousBidData, setPreviousBidData] = useState({price:0});
 	
-  const Swal = useSwalWrapper();
+	const Swal = useSwalWrapper();
   
-  const { user } = useCurrentUser();
+	const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const stripe = useStripe();
 	const [open, setOpen] = useState(false);
@@ -426,7 +426,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
         onaddclick={handleOpen}
         price={bidAmount}
         userCustomerId={userCustomerId}
-        bidAction={() => bidAction(bidAmount,false,null,null,minBidAmount)}
+        bidAction={() => bidAction(bidAmount, false, null, null, minBidAmount)}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
         autobid={false}
