@@ -166,11 +166,10 @@ const FAQText = {
       <br />
       <br />
       <Span sx={{ textDecoration: "underline", display: "block" }}>
-        How does the auction & leaderboard work?
+        How do the auction & leaderboard work?
       </Span>{" "}
-      Fans place a bid to be on the leaderboard. If the fan is still on the
-      leaderboard when the campaign ends, they'll win an interaction & their
-      previously selected payment method will be charged. If a fan places in the
+      Fans place a bid to be on the leaderboard (the top bidders). If the fan is still on the
+      leaderboard when the campaign ends, they'll win an interaction & pay from their pre-authorized saved credit card. If a fan places in the
       top 3 on the leaderboard, their interaction will be longer in duration
       compared to a normal interaction.
       <br />

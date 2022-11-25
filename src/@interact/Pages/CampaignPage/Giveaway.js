@@ -127,7 +127,7 @@ export default function Giveaway({
 		{
 			setDoc(
 				doc(db, "users", campaignData.person.id, 'Contributions', user.uid), 
-				{contributionTotal: increment(data.price)}, 
+				{contributionTotal: increment(data.price), interactionTotal: increment(1)}, 
 				{ merge: true }
 			);
 
@@ -199,7 +199,7 @@ export default function Giveaway({
 			),
 			showCancelButton: true,
 			confirmButtonText: "Confirm",
-			cancelButtonText: "Wait, cancel!",
+			cancelButtonText: "Cancel",
 			reverseButtons: true,
 			preConfirm: () => {
 				const answer = Swal.getPopup().querySelector("#answer").value;

@@ -69,7 +69,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	// auto bid
 	const [desiredRank, setDesiredRank] = useState(1);
 	const [autoBidAmount, setAutoBidAmount] = useState(0);
-  const [minRankBidAmount, setMinRankBidAmount] = useState(0);
+	const [minRankBidAmount, setMinRankBidAmount] = useState(0);
 	// manual bid
 	const [bidAmount, setBidAmount] = useState(0);
 	const [minBidAmount, setMinBidAmount] = useState(0);
@@ -77,9 +77,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 	const [previousBidData, setPreviousBidData] = useState({price:0});
 	
-  const Swal = useSwalWrapper();
+	const Swal = useSwalWrapper();
   
-  const { user } = useCurrentUser();
+	const { user } = useCurrentUser();
 	const [currentUser, setCurrentUser] = useState(null);
 	const stripe = useStripe();
 	const [open, setOpen] = useState(false);
@@ -108,7 +108,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 			// if priceAtDesiredRank is less than or equal to previous bid then abort
 			if(priceAtDesiredRank <= parseFloat(previousBidData.price)){
-				Swal.fire({icon: "error", title: "Oops...", text: "Your new bid must be higher than your previous bid!"});
+				Swal.fire({icon: "error", title: "Oops...", text: "New bids must be higher than previous bids!"});
 				return;
 			}
 			else setDesiredRank(value);
@@ -171,14 +171,14 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	});
 
 	const handleBidAmount = function(e){
-		if(	parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) <= parseFloat(autoBidAmount) ){
+		if(	parseFloat(e.target.value) >= parseFloat(minBidAmount)){
 			if(parseFloat(e.target.value) < (parseFloat(previousBidData.price) + 0.5)) setBidAmount(parseFloat(previousBidData.price) + 0.5);
 			else setBidAmount(e.target.value);
 		}
 	}
 
 	const onAutoBidAmountChange = function(e){
-		if(parseFloat(e.target.value) >= parseFloat(minBidAmount) && parseFloat(e.target.value) >= parseFloat(minRankBidAmount)){
+		if((parseFloat(e.target.value) >= parseFloat(minBidAmount)) && (parseFloat(e.target.value) >= parseFloat(minRankBidAmount))){
 			if(parseFloat(e.target.value) < (parseFloat(previousBidData.price) + 0.5)) setAutoBidAmount(parseFloat(previousBidData.price) + 0.5);
 			else setAutoBidAmount(e.target.value);
 		}
@@ -426,7 +426,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
         onaddclick={handleOpen}
         price={bidAmount}
         userCustomerId={userCustomerId}
-        bidAction={() => bidAction(bidAmount,false,null,null,minBidAmount)}
+        bidAction={() => bidAction(bidAmount, false, null, null, minBidAmount)}
         selectPaymentMethod={selectPaymentMethod}
         setSelectedPaymentMethod={setSelectPaymentMethod}
         autobid={false}

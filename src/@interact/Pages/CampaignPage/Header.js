@@ -29,19 +29,21 @@ export default function Header({ campaignData, badgeUrl }) {
       >
         {campaignData?.title}
       </Typography>
-      <div style={{display: "flex", alignItems: "center", flexDirection: "row", gap: "30px", marginTop: "10px"}}>
+      <div style={badgeUrl === null ? {marginTop: "10px"} : {display: "flex", alignItems: "center", flexDirection: "row", gap: "30px", marginTop: "10px"}}>
         <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
           Created by
           <span style={{ color: "#782fee", fontWeight: 600 }}>
             {campaignData?.creatorName}
           </span>
         </Typography>
+        {badgeUrl && 
         <ImageTooltip
           title="Ranks correspond to the amount of money raised by the creator from all of their campaigns: Diamond $1M, Platinum $100K, Gold $10K, Silver $1K, 
           Bronze $0. The higher the rank, the higher the benefits!"
           imgStyle={{width: "45px", transform: 'translateY(-4px)', cursor: "help"}}
           imgUrl={badgeUrl}
         />
+        }
       </div>
       <Divider />
       <Stack direction="column">

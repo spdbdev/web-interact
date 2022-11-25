@@ -16,6 +16,7 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
     }else {
       setFollowerList([]);
     }
+    console.log("Followers",followerlist);
   }, [open])
   return (
     <ReactModal
@@ -78,7 +79,7 @@ function FollowerListItem(data) {
         <div style={{ marginLeft: 20 }}>
           <div style={{ fontSize: 20 }}>{data?.data?.name}</div>
           <div style={{ fontSize: 12, color: "#777" }}>
-            Contributed $50 2 interactions total
+            {data?.data?.contributions ? `Contributed $${data.data.contributions} total` : ''}
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
