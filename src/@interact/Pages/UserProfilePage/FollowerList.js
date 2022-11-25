@@ -28,10 +28,10 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          borderBottom: "1px solid #000",
+          borderBottom: "3.69px dotted #982fee",
         }}
       >
-        <div style={{ fontSize: 20 }}>Followers</div>
+        <div style={{ fontSize: 23.69 }}>Followers</div>
         <CloseIcon onClick={() => setOpen(false)} style={{ cursor: "pointer" }}>
         </CloseIcon>
       </div>
@@ -46,15 +46,15 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
 
 function FollowerListItem(data) {
   const { user } = useCurrentUser();
-  const defaultPhotoURL = "https://cms-assets.tutsplus.com/uploads/users/810/profiles/19338/profileImage/profile-square-extra-small.png";
+  const defaultPhotoURL = "https://iili.io/HH6JxB1.md.jpg";
   return (
     <div
       style={{
         display: "flex",
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingTop: 6.9,
+        paddingBottom: 6.9,
         alignItems: "center",
-        borderBottom: "1px solid #aaa",
+        //borderBottom: "1px solid #aaa",
       }}
     >
       <img
