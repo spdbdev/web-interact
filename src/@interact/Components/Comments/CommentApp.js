@@ -42,7 +42,7 @@ const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
   };
 
   // ban user
-  const banUser = (banUserId, type, parentUserId, commentId) => {
+  const banUser = async (banUserId, type, parentUserId, commentId) => {
     banUserFromCampaign(banUserId, user);
     console.log("banUserId", banUserId, type, parentUserId, commentId);
   }

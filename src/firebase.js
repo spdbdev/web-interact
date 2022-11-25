@@ -395,10 +395,14 @@ export const commentDeleteDB = async (id, type, campaignId, parentComment) => {
 Function to ban user
 */
 export const banUserFromCampaign = async (banUserId, user) => {
-  if(banUserId && user) {
+  const targetUser = fetchUser(banUserId);
+  console.log(targetUser);
+  if(banUserId && user && targetUser) {
     let currentBanList = user?.banList ? user?.banList : [];
-    if(currentBanList?.includes(banUserId)) {
+    let currentBanedList  =  targetUser?.banedBy ? targetUser?.banedBy : [];
+    if(currentBanList?.includes(banUserId) && currentBanedList?.includes(user.id)) {
       currentBanList = currentBanList.filter(e => e !== banUserId);
+      currentBanedList = currentBanedList.filter(e => e !== user.id);
     }else {
       //Delete All Comments
       if(user?.campaigns.length > 0) {
@@ -427,11 +431,16 @@ export const banUserFromCampaign = async (banUserId, user) => {
         }
       }
       currentBanList.push(banUserId);
+      currentBanedList.push(user.id);
     }
     let updatedBanList = {
       banList : currentBanList
     }
-    // await updateDoc(doc(db, "users", user.id), updatedBanList);
+    let updatedBanedList = {
+      banedBy: currentBanedList
+    }
+    await updateDoc(doc(db, "users", user.id), updatedBanList);
+    await updateDoc(doc(db, "users", banUserId), updatedBanedList);
   } 
 }
 
@@ -451,6 +460,7 @@ export const isCampaignId = async (campaignId) => {
     return false;
   }
 }
+
 
 export {
   auth,

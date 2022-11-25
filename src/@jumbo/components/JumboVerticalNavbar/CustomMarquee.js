@@ -13,7 +13,6 @@ const CustomMarquee = ({ text }) => {
         document.getElementsByClassName('marquee')[i].clientWidth;
         if (diffSize > 0) {
           window.marquuStatus.push(false);
-          console.log('i', i);
           runAnimation(0 - diffSize, i)
         }else{
           window.marquuStatus.push(true);

@@ -121,7 +121,6 @@ const Comment = ({
           deleteComment={deleteComment}
           user={user}
           isCampaignCreator={isCampaignCreator}
-          isCommentCreator={isCommentCreator}
         />
       )}
     </div>

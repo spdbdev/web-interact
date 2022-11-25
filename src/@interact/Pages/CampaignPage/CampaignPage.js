@@ -32,6 +32,7 @@ import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory, isCampaignId } from "../../../firebase";
 import React from "react";
+import Swal from "sweetalert2";
 
 function CampaignPage(userData) {
   const { user } = useCurrentUser();
@@ -57,21 +58,18 @@ function CampaignPage(userData) {
   const navigate = useNavigate();
 
   useEffect(async () => {
-    const isValidated = await isCampaignId(routeParams.campaignId)
-    if (routeParams.campaignId && isValidated) {
+    const isCampaignID = await isCampaignId(routeParams.campaignId);
+    if(isCampaignID) {
       setCampaignId(routeParams.campaignId);
-    }else{
+    }else {
       setCampaignId("test12345");
     }
   },[routeParams])
 
   useEffect(async () => {
-    //if (loading) return;
-    //if (!user) return navigate("/"); // this page should be browsable without login
-      let id = await checkCampaignID();
-      //console.log('campaignId >>>>>', campaignId);
-      getCampaignData(id);
-      checkPurchasedEntry();
+    let id = await checkCampaignID();
+    getCampaignData(id);
+    checkPurchasedEntry();
   }, [user, campaignId]);
   
 
@@ -108,12 +106,16 @@ function CampaignPage(userData) {
       query(doc(db, "campaigns", id_for_campaign)),
       (querySnapshot) => {
         let _campaignData = querySnapshot.data();
-        console.log("Campaign Data",_campaignData)
+        console.log("Campaign Data",_campaignData);
         setCampaignData(_campaignData);
+        if(user?.banedBy?.includes(_campaignData?.person?.id)) {
+          Swal.fire("Banned!", "You're banned from this creator's campaigns", "error");
+          navigate('/u/');
+        }
         saveToRecentCampaignHistory(id_for_campaign, user);
         //Check Campaign End Time
-        let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
-        let campaignStartDate = new Date(_campaignData.startDate.seconds *1000);
+        let campaignEndDate = new Date(_campaignData?.endDate?.seconds * 1000);
+        let campaignStartDate = new Date(_campaignData?.startDate?.seconds *1000);
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
         if (campaignStartDate - now > 0) setIsCampaignScheduled(true);

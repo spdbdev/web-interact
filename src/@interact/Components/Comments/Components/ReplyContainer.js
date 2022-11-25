@@ -8,7 +8,6 @@ const ReplyContainer = ({
   setBan,
   user,
   isCampaignCreator,
-  isCommentCreator
 }) => {
   return (
     <div className="reply-container">
@@ -22,7 +21,7 @@ const ReplyContainer = ({
           setBan={setBan}
           user={user}
           isCampaignCreator={isCampaignCreator}
-          isCommentCreator={isCommentCreator}
+          isCommentCreator={user?.id === data?.userid ? true : false}
         />
       ))}
     </div>
