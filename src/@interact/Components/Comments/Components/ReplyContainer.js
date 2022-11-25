@@ -5,6 +5,7 @@ const ReplyContainer = ({
   addReply,
   editComment,
   deleteComment,
+  setBan,
   user,
   isCampaignCreator,
   isCommentCreator
@@ -18,6 +19,7 @@ const ReplyContainer = ({
           addNewReply={addReply}
           editComment={editComment}
           deleteComment={deleteComment}
+          setBan={setBan}
           user={user}
           isCampaignCreator={isCampaignCreator}
           isCommentCreator={isCommentCreator}

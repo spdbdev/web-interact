@@ -174,7 +174,7 @@ export async function fetchUsersByIds(idlist = []) {
 
 
 export const addCampaign = async (user) => {
-  console.log(user)
+  
   let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
   let newCampaignId = `${user.name}_${campaignCounter}`;
 
@@ -184,7 +184,10 @@ export const addCampaign = async (user) => {
       { campaigns: [...user.campaigns, { campaignId: newCampaignId, campaignStatus: "draft" }] }
       :
       { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] }
-  await setDoc(doc(db, "campaigns", newCampaignId), DUMMY_CAMPAIGN);
+  let campaignData = DUMMY_CAMPAIGN;
+  campaignData["person"] = {id:user.id,username:user.name};
+  console.log("campaigncreation",campaignData)
+  await setDoc(doc(db, "campaigns", newCampaignId), campaignData);
   await updateDoc(doc(db, "users", user.id), updatedUserData);
   return newCampaignId;
 }
@@ -373,6 +376,50 @@ export const commentDeleteDB = async (id, type, campaignId, parentComment) => {
       console.log("fail");
     }
   }
+}
+
+/*
+Function to ban user
+*/
+export const banUserFromCampaign = async (banUserId, user) => {
+  if(banUserId && user) {
+    let currentBanList = user?.banList ? user?.banList : [];
+    if(currentBanList?.includes(banUserId)) {
+      currentBanList = currentBanList.filter(e => e !== banUserId);
+    }else {
+      //Delete All Comments
+      if(user?.campaigns.length > 0) {
+        for(let i = 0; i < user?.campaigns.length; i++) {
+          if(user?.campaigns[i]?.campaignStatus === "scheduled" && user?.campaigns[i]?.campaignId) {
+            const campaignQuery = query(collection(db, "campaigns", user?.campaigns[i]?.campaignId, "comments"))
+            const campaignQuerySnapshot = await getDocs(campaignQuery);
+            for(let j = 0; j < campaignQuerySnapshot.docs.length; j++) {
+              const docCampaignSnapshots = campaignQuerySnapshot.docs[j];
+              const data = docCampaignSnapshots.data();
+              const id = docCampaignSnapshots.id;
+              const commetData = { ...data, id };
+              console.log("campaignData", commetData);
+              if(commetData) {
+                if(commetData.userid === banUserId) {
+                  //Delete
+                  await deleteDoc(doc(db, "campaigns", user?.campaigns[i]?.campaignId, "comments", commetData.id));
+                }
+                if(commetData.replies.length > 0) {
+                  let updatedReplies = commetData.replies.filter((data) => data.userid !== banUserId);
+                  await updateDoc(doc(db, "campaigns", user?.campaigns[i]?.campaignId, "comments", commetData.id), {replies:updatedReplies});
+                }
+              }
+            }
+          }
+        }
+      }
+      currentBanList.push(banUserId);
+    }
+    let updatedBanList = {
+      banList : currentBanList
+    }
+    // await updateDoc(doc(db, "users", user.id), updatedBanList);
+  } 
 }
 
 /*

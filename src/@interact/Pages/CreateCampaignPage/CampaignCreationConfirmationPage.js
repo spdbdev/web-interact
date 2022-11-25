@@ -47,7 +47,7 @@ export default function CampaignCreationConfirmationPage() {
       getImage({
         title: fetchedData?.title,
         categories: fetchedData?.categories,
-        creatorName: fetchedData?.creatorName,
+        creatorName: fetchedData?.person?.username,
         description: fetchedData?.description,
         thumbnailUrl: fetchedData?.campaignVideoThumbnailLink,
         startDate: getDateFromTimestamp({

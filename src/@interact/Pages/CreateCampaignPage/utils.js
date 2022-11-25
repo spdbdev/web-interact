@@ -5,6 +5,7 @@ const { addDoc, collection } = require("firebase/firestore");
 export async function initCampaignDoc(user) {
   var docRef = {};
   try {
+    console.log("utils");
     docRef = await addDoc(collection(db, "campaigns"), {
       FAQAnswers: { 0: "", 1: "" },
       auctionMinBid: 1.5,
@@ -13,7 +14,6 @@ export async function initCampaignDoc(user) {
       campaignVideoLink: "",
       campaignVideoThumbnailLink: "",
       categories: ["Gaming"],
-      creatorName: "creator",
       creatorWeeklyAvailability: 5,
       currency: "CAD",
       currencyExchangeRate: 1,
@@ -35,7 +35,6 @@ export async function initCampaignDoc(user) {
       lastCompletedTabIndex: -1,
       numAuctionInteractions: 0,
       numGiveawayInteractions: 0,
-      person: { id: "PNUa4JcusGMYowApbfPLflxAtap2", username: "TestUser" },
       savedCustomURL: null,
       shouldReserveURL: false,
       socials: {

@@ -3,10 +3,12 @@ import { commentPostedTime, getDateFromTimestamp } from "@interact/Components/ut
 import CommentBtn from "./CommentBtn";
 import { Tooltip, Typography  } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { fetchUser } from "../../../../../firebase";
 const CommentHeader = ({
   commentData,
   replying,
   setReplying,
+  setBan,
   setDeleting,
   setEditing,
   isCampaignCreator,
@@ -17,6 +19,13 @@ const CommentHeader = ({
   const [time, setTime] = useState(commentPostedTime(today.getTime() - createdAt));
   const date = getDateFromTimestamp({timestamp: commentData.createdAt.seconds,format:"MMMM D YYYY HH:mm A zz"}).toString();
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({});
+  useEffect(async ()  =>{
+    if(commentData?.userid){
+      let userData = await fetchUser(commentData.userid);
+      setUserData(userData);
+    }
+  },[commentData])
 
   useEffect(() => {
     const timeout = setInterval(() => {
@@ -31,21 +40,22 @@ const CommentHeader = ({
       <img
         className="profile-pic"
         align="center"
-        src={commentData?.photoURL ? commentData?.photoURL :  "https://iili.io/HH6JxB1.md.jpg"}
+        src={userData?.photoURL ? userData?.photoURL :  commentData.photoURL}
         alt="No Item"
         onClick={()=>navigate(`/u/${commentData.username}`)}
       />
       <div>
         <a className="username" href={`/u/${commentData.username}`}>{commentData.username}</a>
-        {commentData.isCampaignCreator ? <div className="creator-tag">Creator</div> : ""}
         <Tooltip title={date} disableInteractive arrow>
           <div className="comment-posted-time">{`${time}`}</div>
         </Tooltip>
       </div>
+      {commentData.isCampaignCreator ? <div className="creator-tag">Creator</div> : ""}
       <CommentBtn
         commentData={commentData}
         replying={replying}
         setReplying={setReplying}
+        setBan={setBan}
         setDeleting={setDeleting}
         setEditing={setEditing}
         isCampaignCreator={isCampaignCreator}

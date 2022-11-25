@@ -1,7 +1,7 @@
 import "./Components/Styles/App.scss";
 import Comment from "./Components/Comment";
 import AddComment from "./Components/AddComment";
-import { addCommentsToDB, addRepliesToDB,editCommentDB, commentDeleteDB } from "../../../firebase";
+import { addCommentsToDB, addRepliesToDB,editCommentDB, commentDeleteDB, banUserFromCampaign } from "../../../firebase";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 
 const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
@@ -23,7 +23,7 @@ const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
   };
 
   // delete comment
-  let commentDelete =  (id, type, parentComment) => {
+  const commentDelete =  (id, type, parentComment) => {
     Swal.fire({
 			title: "Delete this comment?",
 			showCancelButton: true,
@@ -41,6 +41,12 @@ const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
 		})
   };
 
+  // ban user
+  const banUser = (banUserId, type, parentUserId, commentId) => {
+    banUserFromCampaign(banUserId, user);
+    console.log("banUserId", banUserId, type, parentUserId, commentId);
+  }
+
   return (
     <main className="App">
       <AddComment buttonValue={"Post"} addComments={addComments} user={user} isCampaignCreator={isCampaignCreator}/>
@@ -51,6 +57,7 @@ const CommentApp = ({comments, campaignId, user, isCampaignCreator}) => {
           updateReplies={updateReplies}
           editComment={editComment}
           commentDelete={commentDelete}
+          banUser={banUser}
           user={user}
           isCampaignCreator={isCampaignCreator}
           isCommentCreator={comment?.userid === user?.id ? true : false}

@@ -78,7 +78,7 @@ const RecentCampaignItem = ({item, isNested, translate}) => {
                         objectFit: "cover",
                         width: 35,
                         height: 35,
-                        borderRadius: 1000,
+                        borderRadius: 2,
                     }}
                 />
             </div>

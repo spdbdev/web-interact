@@ -81,8 +81,8 @@ const Sidebar = () => {
             ? "/u/" + returnedValue[i]?.person?.username
             : "/u",
           type: "recent-campaign-item",
-          photoURL: returnedValue[i]?.person?.photoUrl
-            ? returnedValue[i]?.person?.photoUrl
+          photoURL: returnedValue[i]?.campaignVideoThumbnailLink
+            ? returnedValue[i]?.campaignVideoThumbnailLink
             : defaultPhotoURL,
         };
         recentCampaignItemGroup.push(data);

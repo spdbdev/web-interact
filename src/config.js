@@ -7,7 +7,6 @@ export const DUMMY_CAMPAIGN = {
   campaignVideoThumbnailLink:
     "http://i3.ytimg.com/vi/n0UXA7oLc-s/hqdefault.jpg",
   categories: ["Humor", "Films, shows & anime", "Sports"],
-  creatorName: "creator",
   creatorWeeklyAvailability: 8,
   currency: "USD",
   currencyExchangeRate: 1,
@@ -31,7 +30,6 @@ export const DUMMY_CAMPAIGN = {
   lastCompletedTabIndex: -1,
   numAuctionInteractions: 28,
   numGiveawayInteractions: 13,
-  person: { id: "PNUa4JcusGMYowApbfPLflxAtap2", username: "TestUser" },
   savedCustomURL: "campaign-1",
   shouldReserveURL: false,
   socials: {

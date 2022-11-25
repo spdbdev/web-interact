@@ -1,5 +1,5 @@
 import "./CampaignPage.css";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 import {
   Button,
   Divider,
@@ -14,9 +14,17 @@ import moment from "moment";
 import { getDateFromTimestamp } from "app/utils";
 import Span from "@jumbo/shared/Span";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { light } from "@mui/material/styles/createPalette";
 import {localizationServices} from "app/services/localization"
+import { fetchUser } from "../../../firebase";
+
 export default function Header({ campaignData }) {
+  const [campaignUser, setCampaignUser] = useState({});
+  useEffect(async ()  =>{
+    if(campaignData?.person?.id){
+      let userData = await fetchUser(campaignData.person.id);
+      setCampaignUser(userData);
+    }
+  },[campaignData])
   const numInteractions = Number(campaignData.numAuctionInteractions ?? 0) + Number(campaignData.numGiveawayInteractions ?? 0);
   return (
     <div className="Description">
@@ -30,25 +38,20 @@ export default function Header({ campaignData }) {
       </Typography>
       <Typography sx={{ color: "text.secondary", fontSize: 18 }}>
         Created by
-        {
-          campaignData?.person?.photoUrl ?
-            <img
-                src={campaignData?.person?.photoUrl}
-                alt={'No Image'}
-                align="center"
-                className="profile_image"
-                style={{
-                    objectFit: "cover",
-                    width: 35,
-                    height: 35,
-                    borderRadius: 1000,
-                    marginLeft: "5px",
-                }}
-            >
-            </img>
-            :
-            <></>
-        }
+        <img
+          src={campaignUser?.photoURL ? campaignUser?.photoURL : "https://iili.io/HH6JxB1.md.jpg"}
+          alt={'No Image'}
+          align="center"
+          className="profile_image"
+          style={{
+              objectFit: "cover",
+              width: 35,
+              height: 35,
+              borderRadius: 1000,
+              marginLeft: "5px",
+          }}
+        >
+        </img>
         <a href={`/u/${campaignData?.person?.username}`} style={{ color: "#782fee" }}>
           {campaignData?.person?.username}
         </a>

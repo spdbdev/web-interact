@@ -10,6 +10,7 @@ const Comment = ({
   updateReplies,
   editComment,
   commentDelete,
+  banUser,
   user,
   isCampaignCreator,
   isCommentCreator
@@ -37,10 +38,13 @@ const Comment = ({
     const finalType = type !== undefined ? type : "comment";
     const finalId = id !== undefined ? id : commentData.id;
     commentDelete(finalId, finalType, commentData.id);
-    
-    
   };
-
+  
+  const handleBanUser = (id, type) => {
+    const finalType = type !== undefined ? type : "comment";
+    const finalId = id !== undefined ? id : commentData.userid;
+    banUser(finalId,finalType, commentData.userid, commentData.id);
+  }
   return (
     <div
       className={`comment-container ${
@@ -53,6 +57,7 @@ const Comment = ({
             commentData={commentData}
             replying={replying}
             setReplying={setReplying}
+            setBan={handleBanUser}
             setDeleting={deleteComment}
             setEditing={setEditing}
             isCampaignCreator={isCampaignCreator}
@@ -111,6 +116,7 @@ const Comment = ({
           key={commentData.replies.id}
           commentData={commentData.replies}
           addReply={addReply}
+          setBan={handleBanUser}
           editComment={updateComment}
           deleteComment={deleteComment}
           user={user}

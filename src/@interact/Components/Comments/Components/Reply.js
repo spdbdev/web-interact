@@ -11,6 +11,7 @@ const Reply = ({
   addNewReply,
   editComment,
   deleteComment,
+  setBan,
   user,
   isCampaignCreator,
   isCommentCreator
@@ -55,6 +56,11 @@ const Reply = ({
     deleteComment(commentData.id, "reply");
   };
 
+  // ban comment
+  const banUser = () => {
+    setBan(commentData.userid, "reply");
+  }
+
   return (
     <div
       className={`comment-container ${
@@ -66,6 +72,7 @@ const Reply = ({
           <CommentHeader
             commentData={commentData}
             setReplying={setReplying}
+            setBan={banUser}
             setDeleting={deleteReply}
             setEditing={setEditing}
             isCampaignCreator={isCampaignCreator}
