@@ -15,14 +15,15 @@ export default function InteractFlashyButton({
       sx={{
         ":hover": {
           background:
-            "linear-gradient(180deg, #782FEE -37.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+            "linear-gradient(149.69deg, #ff4500 -8.69%, #e433ff 109.93%)", // theme.palette.primary.main
           color: "white",
+          borderColor: "#e433ff"
         },
         background: "linear-gradient(90deg, #8747f0 -8.69%, #e433ff 109.93%)",
         borderColor: "primary.main",
-        fontWeight: 600,
+        fontWeight: 500,
         textTransform: "none",
-        borderRadius: radius ?? "3px 11px",
+        borderRadius: radius ?? "3px 12.69px",
         borderWidth: 1,
         px: 4,
         py: 1,

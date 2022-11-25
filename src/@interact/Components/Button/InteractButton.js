@@ -13,6 +13,10 @@ export default function InteractButton({
       variant={variant}
       onClick={onClick}
       sx={{
+        ":hover": {
+          
+          borderColor: "#b100f6",
+        },
         color: "primary.main",
         borderColor: "primary.main",
         textTransform: "none",

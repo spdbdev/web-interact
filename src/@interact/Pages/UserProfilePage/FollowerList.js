@@ -31,7 +31,7 @@ export default function FollowerList({ open, setOpen, followers = [] }) {
           borderBottom: "3.69px dotted #982fee",
         }}
       >
-        <div style={{ fontSize: 23.69 }}>Followers</div>
+        <div style={{ fontSize: 23.69, color: "#982fee"}}>Followers</div>
         <CloseIcon onClick={() => setOpen(false)} style={{ cursor: "pointer" }}>
         </CloseIcon>
       </div>

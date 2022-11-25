@@ -117,8 +117,9 @@ const Header = () => {
             sx={{
               ":hover": {
                  background:
-                  "linear-gradient(180deg, #782FEE -8.69%, #DD00FF 109.93%)", // theme.palette.primary.main
+                 "linear-gradient(149.69deg, #ff4500 -8.69%, #e433ff 109.93%)", // theme.palette.primary.main
                    color: "white",
+                   borderColor: "#e433ff"
                 },
                 background:
                 "linear-gradient(90deg, #782FEE -8.69%, #DD00FF 109.93%)",
