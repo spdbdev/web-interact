@@ -484,14 +484,14 @@ export default function Giveaway({
 				>
 					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
-{/* 
+
 				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled}>
 					Buy VIP entry
-				</InteractButton> */}
-
-				<InteractButton onClick={buyGiveawayAlert}>
-					Buy VIP entry
 				</InteractButton>
+
+				{/* <InteractButton onClick={buyGiveawayAlert}>
+					Buy VIP entry
+				</InteractButton> */}
 				</Box>
 			</Box>
 
