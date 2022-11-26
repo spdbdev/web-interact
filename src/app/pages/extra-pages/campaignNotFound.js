@@ -25,7 +25,7 @@ const CampaignNotFound = () => {
                 <br></br><br></br>
                 (┬┬﹏┬┬)<br></br>
                 <br></br>Try searching for the creator's username or campaign name!&nbsp;&nbsp;
-                <InfoTooltip title="(search bar at the top right)" />
+                <InfoTooltip title="(the search button is at the top right)" />
                 <br></br>
 
             </Typography>

@@ -74,7 +74,7 @@ export default function ConfirmVIPPopup({
     }
   };
 
-  const confirmFuncion = () => {
+  const confirmFunction = () => {
     setLoading(true);
     console.log(paymentId, userCustomerId);
     const formData = new FormData();
@@ -156,7 +156,7 @@ export default function ConfirmVIPPopup({
               <></>
             )}
           </DialogContentText>
-          <InteractFlashyButton onClick={confirmFuncion} loading={loading}>
+          <InteractFlashyButton onClick={confirmFunction} loading={loading}>
             Confirm
           </InteractFlashyButton>
           <Typography variant="subtitle1" style={{fontWeight: '500', fontSize: '13px', lineHeight: '1.5', marginTop: '30px', color: '#b1b1b1'}} >
