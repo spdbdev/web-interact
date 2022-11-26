@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useEffect, useState, useRef } from "react";
 import Swal from 'sweetalert2';
-import ScheduleSelector from 'react-schedule-selector'
+import ScheduleSelector from 'react-schedule-selector';
 import { useSelector } from "react-redux";
 
 import EditIcon from "@mui/icons-material/Edit";

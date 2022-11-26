@@ -257,7 +257,7 @@ function Settings() {
       .then(() => {
         Swal.fire(
           "Success!",
-          "Password Successfully Updated",
+          "Password successfully updated",
           "success"
         );
       })
@@ -274,7 +274,7 @@ function Settings() {
       console.log(err);
       Swal.fire(
         "Error!",
-        "Old Password Not Matched",
+        "Current passsword is incorrect",
         "error"
       );
     });
@@ -294,7 +294,7 @@ function Settings() {
       .then((response) => {
         Swal.fire(
           "Success!",
-          "Email Successfully Updated",
+          "Email successfully updated",
           "success"
         );
       })
@@ -302,7 +302,7 @@ function Settings() {
         console.log(error);
         Swal.fire(
           "Error!",
-          "An Error Occurred.",
+          "An error occurred.",
           "error"
         );
       });
@@ -311,7 +311,7 @@ function Settings() {
       console.log(err);
       Swal.fire(
         "Error!",
-        (err.message == duplicateMsg || err.message == recentLoginRequiredMsg) ? "That email is already in use." : "Oops, An Error Occurred.",
+        (err.message == duplicateMsg || err.message == recentLoginRequiredMsg) ? "That email is already in use" : "Oops, an error occurred.",
         "error"
       );
     });
@@ -654,7 +654,7 @@ function Settings() {
 
       
       <br />
-      <Link to="/campaign" style={{ textDecoration: "none" }}>
+      <Link to="/" style={{ textDecoration: "none" }}>
         <InteractFlashyButton>Manage Discord account</InteractFlashyButton>
       </Link>
       <br />
@@ -670,8 +670,8 @@ function Settings() {
           centered
           >
             <StyledTab label="Manage payment methods" {...a11yProps(0)} />
-            <StyledTab label="Change Password" {...a11yProps(1)} />
-            <StyledTab label="Change Email" {...a11yProps(2)}/>
+            <StyledTab label="Change password" {...a11yProps(1)} />
+            <StyledTab label="Change email" {...a11yProps(2)}/>
           </Tabs>
         </Box>
         <br />
@@ -973,7 +973,7 @@ function Settings() {
             <div className="TextInputWrapper ChangePasswordDiv">
               <TextField
                 id="outlined-basic"
-                label="Old Password"
+                label="Current password"
                 variant="outlined"
                 type="password"
                 value={oldpassword}
@@ -1017,7 +1017,7 @@ function Settings() {
             </div>
           </div>
         </TabPanel>
-        <TabPanel sx={{ width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center'}} value={tab} index={2}>
+        <TabPanel sx={{ width: "200%", display: 'flex', flexDirection: 'column', alignItems: 'center'}} value={tab} index={2}>
           <div>
             <div className="TextInputWrapper ChangeEmailDiv">
               <TextField
@@ -1031,7 +1031,7 @@ function Settings() {
 
             <div className="ButtonsWrapper" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <InteractFlashyButton onClick={updateemailofloginuser}>
-                Change Email
+                Change email
               </InteractFlashyButton>
             </div>
           </div>

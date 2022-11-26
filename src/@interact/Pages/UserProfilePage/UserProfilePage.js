@@ -33,6 +33,7 @@ import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
 import { flexbox } from "@mui/system";
+import JumboCardQuick from "@jumbo/components/JumboCardQuick";
 
 const style = {
   position: "absolute",
@@ -134,14 +135,16 @@ function CropProfilePicture({
 
   return (
     <Modal
+      align="center"
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
-        <div className="wrapper">
-          <div className="innerWrapper">
+      <JumboCardQuick 
+        id="cropPhoto"
+        sx={{padding: 6.2169, my: 14.1469, maxWidth: 690, maxHeight: 690 }}>
+
             <ReactCrop
               crop={crop}
               onChange={(c) => setCrop(c)}
@@ -151,18 +154,17 @@ function CropProfilePicture({
                 src={imgageObj.url}
                 onLoad={(e) => setImageRef(e.currentTarget)}
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
-                alt="nothing"
+                alt=""
               />
             </ReactCrop>
 
-            <div className="btnContainer">
+            <Box mt={4.69} mb={-1.69} align="center" >
               <InteractFlashyButton onClick={handleSubmit}>
                 Save
               </InteractFlashyButton>
-            </div>
-          </div>
-        </div>
-      </Box>
+            </Box>
+
+      </JumboCardQuick>
     </Modal>
   );
 }
@@ -250,14 +252,10 @@ function UserProfilePage() {
 
   const handleEditDescription = async function (e) {
     const { value: text } = await Swal.fire({
-      title: "Description",
+      title: "Bio",
       input: "textarea",
       inputValue: description,
-      inputPlaceholder: "Enter your description...",
       confirmButtonText: "Update",
-      inputAttributes: {
-        "aria-label": "Enter your description here.",
-      },
       showCancelButton: true,
     });
     if (text) updateDescription(text);
