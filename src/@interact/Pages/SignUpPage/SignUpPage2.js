@@ -3,7 +3,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import React, { useEffect, useState, useRef } from "react";
-import Swal from 'sweetalert2';
+// import  from 'sweetalert2';
 import ScheduleSelector from 'react-schedule-selector'
 import { useSelector } from "react-redux";
 
@@ -38,7 +38,7 @@ import {useJumboApp} from "@jumbo/hooks";
 import { TabContext, TabPanel } from "@mui/lab";
 import { Formik } from "formik";
 import moment from "moment";
-import { async } from "@firebase/util";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 
 const StyledTab = styled((props) => <Tab {...props} />)(
   ({ theme }) => ({
@@ -72,6 +72,7 @@ function SignUpPage2() {
   const [schedule, setSchedule] = useState([])
   const navigate = useNavigate();
   const location = useLocation();
+  const Swal = useSwalWrapper();
   
   const DEVICE_TIMEZONE = useSelector((state) => state.localization.deviceTimezone);
   
