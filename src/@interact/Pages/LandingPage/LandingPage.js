@@ -1154,7 +1154,7 @@ useEffect(() => {
 
         <Stack sx={{ pt: 0, mb: 9 }}>
           <CampaignButtonGroup
-            title='o(*￣▽￣*)ブ&nbsp; Create a draft'
+            title='○(＊￣︶￣＊)ブ&nbsp; Create a draft'
             goToPage={() => navigate('/a/what-is-interact')}
           />
         </Stack>
