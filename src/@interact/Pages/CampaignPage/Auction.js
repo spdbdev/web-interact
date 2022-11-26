@@ -200,7 +200,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	const followCampaign = async () => {
     	const targetUser = await fetchUserByName(campaignData?.person?.username);
 		if(user === undefined) {
-            console.log("You need to sign in to follow user");
+            console.log("You need to sign in to follow");
             navigate("/a/signin");
             return;
         }
@@ -461,9 +461,9 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
               </div>
               <FormControlLabel style={{marginTop: '10px'}}
                 control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
-                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+                label={<Typography style={{fontSize: '14px'}}>Save payment info (if you win, payment is automatically collected )</Typography>}
               />
-              <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
+              <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Next</InteractFlashyButton>
             </div>
           </div>
         </Box>

@@ -113,10 +113,7 @@ export default function ConfirmVIPPopup({
             </Typography>
             <IconButton onClick={closefunction} style={{ padding: 0 }}> <Close /> </IconButton>
           </Stack>
-          
-          <Typography variant="subtitle1" gutterBottom style={{fontWeight: '500', fontSize: '13px', color: 'black'}} >
-            You have an <span style={{color: '#782FEE'}}>X%</span> chance of winning with your VIP entry (100x chance multiplier: 25x VIP entry $ 4x loss multiplier)
-          </Typography>
+
         </DialogTitle>
         <DialogContent>
           <DialogContentText

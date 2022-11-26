@@ -72,7 +72,7 @@ export default function ConfirmAuctionPopup({
     }
   };
 
-  const confirmFuncion = () => {
+  const confirmFunction = () => {
     setLoading(true);
     console.log(paymentId, userCustomerId);
     const formData = new FormData();
@@ -94,8 +94,10 @@ export default function ConfirmAuctionPopup({
         setLoading(false);
       });
   };
+  function nth(n){return["st","nd","rd"][((n+90)%100-10)%10-1]||"th"}
 
   return (
+    
     <div>
       <Dialog PaperProps={{ style: { borderRadius: 20, padding: 15 } }}
         open={openstate}
@@ -113,7 +115,7 @@ export default function ConfirmAuctionPopup({
           </Stack>
           
           <Typography variant="subtitle1" gutterBottom style={{fontWeight: '500', fontSize: '13px', color: 'black'}} >
-            This bid will place you at <span style={{color: '#782FEE'}}>{desiredRanking}th</span> place on the leaderboard (if no one else bids)
+            This bid will place you at <span style={{color: '#782FEE'}}>{desiredRanking}${nth(desiredRanking)}</span> place on the leaderboard (if no one else bids)
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -157,7 +159,7 @@ export default function ConfirmAuctionPopup({
               <></>
             )}
           </DialogContentText>
-          <InteractFlashyButton onClick={confirmFuncion} loading={loading}>
+          <InteractFlashyButton onClick={confirmFunction} loading={loading}>
             Confirm
           </InteractFlashyButton>
           <Typography variant="subtitle1" style={{fontWeight: '500', fontSize: '13px', lineHeight: '1.5', marginBottom: '17px', marginTop: '30px', color: 'black'}} >
@@ -165,7 +167,7 @@ export default function ConfirmAuctionPopup({
             <span style={{color: '#b1b1b1'}}>When you confirm your bid, you consent to an automatic charge via this payment method at the end of the campaign.</span>
           </Typography>
           <Typography variant="subtitle1" style={{fontWeight: '500', fontSize: '13px', color: '#b1b1b1'}} >
-            New bids replace old bids, since each user is limited to 1 interaction in the acution.
+            New bids replace old bids, since each user is limited to 1 interaction in the auction.
           </Typography>
         </DialogContent>
       </Dialog>

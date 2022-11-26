@@ -43,6 +43,10 @@ const getErrorMessage = (message) => {
       errMessage = "Wrong password!";
     case "Firebase: Error (internal-error).":
       errMessage = "You don't have access to this page unless you have clicked the link from the email!";
+    case "Firebase: Error (auth/user-not-found).":
+      errMessage = "This account does not exist; there might be a typo";
+    case "Firebase: Error (auth/too-many-requests).":
+      errMessage = "Access to this account has been temporarily disabled... too many failed attempts to login; please press 'Forgot password'";
     default:
       errMessage = message;
       break;
@@ -67,7 +71,7 @@ const signInWithGoogle = async () => {
     }
   } catch (err) {
     console.error(err);
-    FinalSwal.fire(getErrorMessage(err.message), "", "error");
+    FinalSwal.fire("Hmmmmmmm...", getErrorMessage(err.message), "error");
   }
 };
 

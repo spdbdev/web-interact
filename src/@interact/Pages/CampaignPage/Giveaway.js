@@ -24,6 +24,7 @@ import { formatMoney } from "app/utils";
 import { fetchUserByName, followUser } from '../../../firebase';
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import PaymentRequestForm from "@interact/Components/Stripe/PaymentRequestForm";
+import { QuestionMark } from "@mui/icons-material";
 
 const style = {
 	position: "absolute",
@@ -176,7 +177,7 @@ export default function Giveaway({
 		console.log("user", user);
 		console.log("targetuser", targetUser);
 		if(user === undefined) {
-            console.log("You need to sign in to follow user");
+            console.log("You need to sign in to follow");
             navigate("/a/signin");
             return;
         }
@@ -251,15 +252,6 @@ export default function Giveaway({
 	const freeGiveawayAlert = () => {
 		if(!checkAuthentication()) return;
 		followCampaign();
-		Swal.fire({
-			title: "Claim free entry?",
-			text: "Would you like to claim this free giveaway entry?",
-			showCancelButton: true,
-			confirmButtonText: "Yes, Claim!",
-			cancelButtonText: "Cancel",
-			reverseButtons: true,
-		}).then((result) => {
-			if (result.value) {
 				setPriceToPay(freeEntryPrice);
 				setEntryType('free');
 				if(!collectFreeEntryPayment()){
@@ -268,15 +260,10 @@ export default function Giveaway({
 				setHasUserClaimedFreeEntry(true);
 				Swal.fire(
 					"Claimed!",
-					"You've claimed a free entry for this giveaway. Good luck!",
+					"Upgrade to a VIP entry for a 25x increased chance of winning!",
 					"success"
 				);
-			} else if (result.dismiss === Swal.DismissReason.cancel) {
-				/* Read more about handling dismissals below */
-				// close alert
-			}
-		});
-	};
+			} 
 
 	useEffect(()=>{
 		document.getElementById("giveawayCard").onmousemove = e => {
@@ -295,7 +282,7 @@ export default function Giveaway({
 	const handleBackPopup = () => {
     setOpen(false);
     setOpenPopup(true);
-  }
+  	}
 
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
@@ -383,43 +370,39 @@ export default function Giveaway({
 			selectPaymentMethod={selectedPaymentMethod}
 			setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
-		<Modal
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style}>
-        <div className="wrapper">
-          <div className="innerWrapper">
-			<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
-			<div className="paymentRequestDiv">
-            	<PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
-			</div>
-            <div className="payment-divider" />
-            <div className="stripe-card-wrapper">
-              <div className="number_input">
-                  <label htmlFor="#" className="stripe-card_field_label">Card number</label>
-                  <CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
-              </div>
-              <div className="expiry_input">
-                  <label htmlFor="#" className="stripe-card_field_label">Expiration</label>
-                  <CardExpiryElement className={"expiry_input"} />
-              </div>
-              <div className="cvc_input">
-                  <label htmlFor="#" className="stripe-card_field_label">CVC</label>
-                  <CardCvcElement className={"cvc_input"} />
-              </div>
-            </div>
-			<FormControlLabel style={{marginTop: '10px'}}
-                control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
-                label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
-            />
-            <InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
-          </div>
-        </div>
-      </Box>
-    </Modal>
+			<Modal
+				open={open}
+				onClose={handleClose}
+				aria-labelledby="modal-modal-title"
+				aria-describedby="modal-modal-description"
+			>
+				<Box sx={style}>
+					<div className="wrapper">
+						<div className="innerWrapper">
+							<IconButton onClick={handleBackPopup} style={{ padding: 0, marginBottom: '15px' }}> <WestIcon /> </IconButton>
+							<div className="paymentRequestDiv">
+											<PaymentRequestForm price={vipEntryPrice} handleSubmit={handleClose}/>
+							</div>
+							<div className="payment-divider" />
+							<div className="stripe-card-wrapper">
+								<div className="number_input">
+										<label htmlFor="#" className="stripe-card_field_label">Card number</label>
+										<CardNumberElement className={"number_input"}  options={{ showIcon: true }} />
+								</div>
+								<div className="expiry_input">
+										<label htmlFor="#" className="stripe-card_field_label">Expiration</label>
+										<CardExpiryElement className={"expiry_input"} />
+								</div>
+								<div className="cvc_input">
+										<label htmlFor="#" className="stripe-card_field_label">CVC</label>
+										<CardCvcElement className={"cvc_input"} />
+								</div>
+							</div>
+							<InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Next</InteractFlashyButton>
+						</div>
+					</div>
+				</Box>
+			</Modal>
 
 		<JumboCardQuick
 			title={"Giveaway"}
