@@ -189,6 +189,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	}
 
 	const handleDesiredRank = function(e){
+		e.preventDefault();
 		// prevent values less than 0 or higher than allowed interactions 20.
 		if(e.target.value < 1) e.target.value = 1;
 		else if(e.target.value > parseInt(campaignData?.numAuctionInteractions)) e.target.value = campaignData?.numAuctionInteractions;
@@ -541,6 +542,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 					value={desiredRank}
 					label="Desired rank"
 					onChange={(e) => handleDesiredRank(e)}
+					MenuProps={{ disableScrollLock: true }}
 					>
 					{options}
 				</Select>

@@ -172,7 +172,8 @@ function CampaignPage(userData) {
           (element) => element.email === user.email
         );
         setUserAuctionPosition(++position);
-        setHasUserEnteredAuction(true);
+        if (position > 0)
+          setHasUserEnteredAuction(true);
       }
     );
 

@@ -22,7 +22,7 @@ import { FollowButton } from "../CampaignPage/Stats";
 import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
-import Swal from "sweetalert2";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import Typography from "@mui/material/Typography";
 import { LAYOUT_NAMES } from "../../../app/layouts/layouts";
@@ -210,6 +210,7 @@ function UserProfilePage() {
   const fileRef = useRef();
   const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
   const [medal, setMedal] = React.useState(null);
+  const Swal = useSwalWrapper();
 
   console.log("isCreator >>>", user, params.username, isCreator);
   const [cropModalOpen, setCropModalOpen] = React.useState(false);
