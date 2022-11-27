@@ -148,7 +148,7 @@ function CampaignPage(userData) {
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
         if (campaignStartDate - now > 0) setIsCampaignScheduled(true);
-        if (user.uid==_campaignData?.person.id) setIsCurrentUserCreator(true);
+        if (user.uid==_campaignData?.creatorId) setIsCurrentUserCreator(true);
         if (Object.entries(_campaignData).length > 0)
           getChanceMultiplier(_campaignData);
       }
@@ -209,7 +209,7 @@ function CampaignPage(userData) {
 
   const getChanceMultiplier = async (_campaignData) => {
     if (!user?.uid) return;
-    let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
+    let lostHistory = await getUserLostHistory(_campaignData.creatorId, user.uid);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;
@@ -247,7 +247,7 @@ function CampaignPage(userData) {
         if (doc.price > 0) noOfEntries = 25;
 
         let previousLoss = await getUserLostHistory(
-          _campaignData.person.id,
+          _campaignData.creatorId,
           document.id
         );
         if (previousLoss === 1) noOfEntries = noOfEntries * 2;

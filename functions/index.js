@@ -79,7 +79,7 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 
 	async function update_user(campaign) 
 	{
-		const userQuery = db.collection("users").where("uid", "==", campaign.person.id);
+		const userQuery = db.collection("users").where("uid", "==", campaign.creatorId);
 		userQuery.get().then( async (querySnapshot) => {
 			if (!querySnapshot.empty) 
 			{
@@ -143,7 +143,7 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 						doc.id = document.id;
 						const winnersdata = document.data();
 					
-						db.collection("users").doc(campaign.person.id).collection("Contributions").doc(doc.person.id).set({
+						db.collection("users").doc(campaign.creatorId).collection("Contributions").doc(doc.creatorId).set({
 							contributionTotal: FieldValue.increment(winnersdata.price),
 							interactionTotal: FieldValue.increment(1)
 						}, { merge: true });
@@ -190,7 +190,7 @@ exports.determineWinners = functions.https.onRequest((request, response) =>
 		functions.logger.info("campaign data:", data, {structuredData: true});
 
 		process_auction_list(campaign_id, Number(data.numAuctionInteractions));
-		process_giveaway_list(campaign_id, Number(data.numGiveawayInteractions), data.person.id);
+		process_giveaway_list(campaign_id, Number(data.numGiveawayInteractions), data.creatorId);
 	});
 
 	function process_auction_list(campaign_id, numAuctionInteractions)

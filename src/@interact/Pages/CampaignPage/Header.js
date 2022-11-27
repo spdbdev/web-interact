@@ -21,7 +21,7 @@ export default function Header({ campaignData }) {
   const [campaignUser, setCampaignUser] = useState({});
   useEffect(async ()  =>{
     if(campaignData?.person?.id){
-      let userData = await fetchUser(campaignData.person.id);
+      let userData = await fetchUser(campaignData.creatorId);
       setCampaignUser(userData);
     }
   },[campaignData])

@@ -15,7 +15,7 @@ export default function CampaignSnippet(props) {
   const [campaignUser, setCampaignUser] = useState({});
   useEffect(async ()  =>{
     if(info.person?.id){
-      let userData = await fetchUser(info.person.id);
+      let userData = await fetchUser(info.creatorId);
       setCampaignUser(userData);
     }
   },[info])

@@ -163,7 +163,7 @@ const Sidebar = () => {
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: "url('/images/navbar-background.svg')",
+        background: "url('https://firebasestorage.googleapis.com/v0/b/interact2002.appspot.com/o/backgroundSidebar.svg?alt=media&token=86bc8637-d4dc-48d1-b2eb-d960cbbe3eb0')",
         height: '100%'
       }}
     >
