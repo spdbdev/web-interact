@@ -14,10 +14,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment, { duration } from "moment";
 import { SchedulingSlider } from "../Sliders";
 import Span from "@jumbo/shared/Span";
-import {
-  formatMomentDate,
-  getDateFromTimestamp,
-} from "app/utils";
+import { formatMomentDate, getDateFromTimestamp } from "app/utils";
 import { TabNavigation } from "../TabNavigation";
 import { useFormValidation } from "@interact/Hooks/use-form-validation";
 import { Timestamp } from "firebase/firestore";
@@ -33,7 +30,6 @@ export default function SchedulingTab({
     moment.unix(data?.startDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //    moment.unix(data?.startDateTime)
 
-
   const [endDateTime, setEndDateTime] = useState(
     moment.unix(data?.endDateTime?.seconds) || moment() // convert existing timestamp value to moment if it exists, if not, create new moment
   ); //moment.unix(data?.endDateTime)
@@ -44,8 +40,9 @@ export default function SchedulingTab({
     data?.interactionWindow
   );
 
-
-  const DEVICE_TIMEZONE = useSelector((state) => state.localization.deviceTimezone);
+  const DEVICE_TIMEZONE = useSelector(
+    (state) => state.localization.deviceTimezone
+  );
 
   const [errors, setErrors] = useState(false);
 
@@ -241,11 +238,12 @@ export default function SchedulingTab({
     <>
       <CreateCampaignItemWrapper>
         <TitleAndDesc title="Campaign duration">
-          All times on the campaign are in {DEVICE_TIMEZONE} (your timezone). Set how
-          long the campaign will be active. Enter a start date & time, then
-          duration in days OR the end date & time. <br />
+          All times on the campaign are in {DEVICE_TIMEZONE} (your timezone).
+          Set how long the campaign will be active. Enter a start date & time,
+          then duration in days OR the end date & time. <br />
           <br />
-          Changing the duration will recalculate the end date, and vice-versa. <br />
+          Changing the duration will recalculate the end date, and vice-versa.{" "}
+          <br />
           <br />
           (You can customize your timezone in the scheduling process, when
           setting your available timeslots weekly; so can fans)
@@ -270,7 +268,12 @@ export default function SchedulingTab({
               minDateTime={moment()} // min date is current date/time
               minutesStep={15}
             />
-            <Stack direction="row" alignItems="center" spacing={0} width={146.9}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0}
+              width={146.9}
+            >
               <NumDurationInput
                 value={campaignDurationDays}
                 setValue={setCampaignDurationDays}
@@ -281,8 +284,9 @@ export default function SchedulingTab({
                 endDateTime={endDateTime}
                 interactionWindowDuration={interactionWindowDuration}
               />
-              <Typography display="block" sx={{ fontSize: 16 }}>days </Typography>
-              
+              <Typography display="block" sx={{ fontSize: 16 }}>
+                days{" "}
+              </Typography>
             </Stack>
             <FormControl>
               <DateTimePicker
