@@ -43,6 +43,7 @@ export default function Giveaway({
 	campaignId,
 	isCampaignEnded,
 	isCampaignScheduled,
+	isCurrentUserCreator,
 	campaignData,
 	hasUserClaimedFreeEntry,
 	hasUserPurchasedVIPEntry,
@@ -367,6 +368,7 @@ export default function Giveaway({
 			onaddclick={handleOpen}
 			price={vipEntryPrice}
 			userCustomerId={userCustomerId}
+			setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
 			selectPaymentMethod={selectedPaymentMethod}
 			setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
@@ -466,7 +468,7 @@ export default function Giveaway({
 					<span className="Highlight">${formatMoney(vipEntryPrice)}</span>
 				</Box>
 
-				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled}>
+				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled || isCurrentUserCreator}>
 					Buy VIP entry
 				</InteractButton>
 				</Box>
@@ -500,7 +502,7 @@ export default function Giveaway({
 				</Stack>
 
 				<InteractButton onClick={freeGiveawayAlert}
-					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled} >
+					disabled={hasUserClaimedFreeEntry || hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled || isCurrentUserCreator} >
 					Get a free entry
 				</InteractButton>
 			</Box>

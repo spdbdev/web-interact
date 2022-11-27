@@ -42,7 +42,7 @@ function CampaignPage(userData) {
   const [bids, setBids] = useState([]);
   const [giveaways, setGiveaways] = useState([]);
   const [comments, setComments] = useState([]);
-  const [winningChances, setWiningChances] = useState({ vip: 100, free: 100 });
+  const [winningChances, setWinningChances] = useState({ vip: 100, free: 100 });
   const [hasUserPurchasedVIPEntry, setHasUserPurchasedVIPEntry] =
     useState(false);
   const [hasUserEnteredAuction, setHasUserEnteredAuction] = useState(false);
@@ -50,6 +50,7 @@ function CampaignPage(userData) {
   const [userAuctionPosition, setUserAuctionPosition] = useState(0);
   const [isCampaignEnded, setIsCampaignEnded] = useState(false);
   const [isCampaignScheduled, setIsCampaignScheduled] = useState(false);
+  const [isCurrentUserCreator, setIsCurrentUserCreator] = useState(false);
   let routeParams = useParams();
   const [campaignId, setCampaignId] = useState(routeParams.campaignId);
   const num_giveaway = 10;
@@ -136,7 +137,7 @@ function CampaignPage(userData) {
         let _campaignData = querySnapshot.data();
         console.log("Campaign Data",_campaignData);
         setCampaignData(_campaignData);
-        if(user?.banedBy?.includes(_campaignData?.person?.id)) {
+        if(user?.bannedBy?.includes(_campaignData?.person?.id)) {
           Swal.fire("Banned!", "You're banned from this creator's campaigns", "error");
           navigate('/u/');
         }
@@ -147,6 +148,7 @@ function CampaignPage(userData) {
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
         if (campaignStartDate - now > 0) setIsCampaignScheduled(true);
+        if (user.uid==_campaignData?.person.id) setIsCurrentUserCreator(true);
         if (Object.entries(_campaignData).length > 0)
           getChanceMultiplier(_campaignData);
       }
@@ -234,7 +236,7 @@ function CampaignPage(userData) {
       collection(db, "campaigns", campaignId, "Giveaway")
     );
     //console.log("doc snap", docSnap);
-
+    if (vipMultiplier>1||freeMultiplier>1) setWinningChances({ vip: 100, free: 100 });//makes sure when campaign is empty, it doesn't show over 100% chance of winning
     if (!docSnap.empty) {
       let TotalPoolEntries = 0;
       for (let document of docSnap.docs) {
@@ -257,8 +259,10 @@ function CampaignPage(userData) {
       if (TotalPoolEntries !== 0) {
         let vipChances = Math.round((vipMultiplier / TotalPoolEntries) * 100);
         let freeChances = Math.round((freeMultiplier / TotalPoolEntries) * 100);
-
-        setWiningChances({ vip: vipChances, free: freeChances });
+        
+        setWinningChances({ vip: vipChances, free: freeChances });
+        if (vipChances>100) setWinningChances({ vip: 100, free: freeChances });
+        if (freeChances>100) setWinningChances({ vip: vipChances, free: 100 });
       }
     }
   };
@@ -413,6 +417,7 @@ function CampaignPage(userData) {
               campaignId={campaignId}
               isCampaignEnded={isCampaignEnded}
               isCampaignScheduled={isCampaignScheduled}
+              isCurrentUserCreator={isCurrentUserCreator}
               campaignData={campaignData}
               hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
               hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
@@ -440,6 +445,7 @@ function CampaignPage(userData) {
             <Auction
               isCampaignEnded={isCampaignEnded}
               isCampaignScheduled={isCampaignScheduled}
+              isCurrentUserCreator={isCurrentUserCreator}
               bidAction={saveBid}
               campaignData={campaignData}
               bids={bids}

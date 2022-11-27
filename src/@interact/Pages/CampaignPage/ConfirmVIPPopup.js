@@ -25,6 +25,7 @@ export default function ConfirmVIPPopup({
   bidAction,
   bidActionstatus,
   selectPaymentMethod,
+  setHasUserPurchasedVIPEntry,
   setSelectedPaymentMethod,
 }) {
   const [paymentId, setpaymentId] = useState();
@@ -62,6 +63,7 @@ export default function ConfirmVIPPopup({
         "Your payment has been made. Thanks",
         "success"
       );
+      setHasUserPurchasedVIPEntry(true);
       if (bidActionstatus) {
         bidAction(price);
       }

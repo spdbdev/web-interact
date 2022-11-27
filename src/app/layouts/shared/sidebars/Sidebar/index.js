@@ -70,16 +70,16 @@ const Sidebar = () => {
           label: returnedValue[i]?.title
             ? returnedValue[i]?.title
             : "No title",
-          creator_label: returnedValue[i].endDateTime ? getDateFromTimestamp({
+          creator_label: returnedValue[i].endDateTime ? "Ends on " + getDateFromTimestamp({
               timestamp: returnedValue[i].endDateTime?.seconds,
               format: "MMM Do"
             }) : "No end date",
-          creator_name: returnedValue[i]?.creatorName
+          /*creator_name: returnedValue[i]?.creatorName
             ? returnedValue[i]?.creatorName
             : "No username",
           creator_Uri: returnedValue[i]?.creatorName
             ? "/u/" + returnedValue[i]?.creatorName
-            : "/u",
+            : "/u",*/
           type: "recent-campaign-item",
           photoURL: returnedValue[i]?.campaignVideoThumbnailLink
             ? returnedValue[i]?.campaignVideoThumbnailLink

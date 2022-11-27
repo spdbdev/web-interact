@@ -399,10 +399,10 @@ export const banUserFromCampaign = async (banUserId, user) => {
   console.log(targetUser);
   if(banUserId && user && targetUser) {
     let currentBanList = user?.banList ? user?.banList : [];
-    let currentBanedList  =  targetUser?.banedBy ? targetUser?.banedBy : [];
-    if(currentBanList?.includes(banUserId) && currentBanedList?.includes(user.id)) {
+    let currentBannedList  =  targetUser?.bannedBy ? targetUser?.bannedBy : [];
+    if(currentBanList?.includes(banUserId) && currentBannedList?.includes(user.id)) {
       currentBanList = currentBanList.filter(e => e !== banUserId);
-      currentBanedList = currentBanedList.filter(e => e !== user.id);
+      currentBannedList = currentBannedList.filter(e => e !== user.id);
     }else {
       //Delete All Comments
       if(user?.campaigns.length > 0) {
@@ -431,16 +431,16 @@ export const banUserFromCampaign = async (banUserId, user) => {
         }
       }
       currentBanList.push(banUserId);
-      currentBanedList.push(user.id);
+      currentBannedList.push(user.id);
     }
     let updatedBanList = {
       banList : currentBanList
     }
-    let updatedBanedList = {
-      banedBy: currentBanedList
+    let updatedBannedList = {
+      bannedBy: currentBannedList
     }
     await updateDoc(doc(db, "users", user.id), updatedBanList);
-    await updateDoc(doc(db, "users", banUserId), updatedBanedList);
+    await updateDoc(doc(db, "users", banUserId), updatedBannedList);
   } 
 }
 
