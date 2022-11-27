@@ -51,10 +51,10 @@ export default function CampaignCreationConfirmationPage() {
         description: fetchedData?.description,
         thumbnailUrl: fetchedData?.campaignVideoThumbnailLink,
         startDate: getDateFromTimestamp({
-          timestamp: fetchedData?.startDateTime.seconds,
+          timestamp: fetchedData?.startDateTime?.seconds,
         }),
         endDate: getDateFromTimestamp({
-          timestamp: fetchedData?.endDateTime.seconds,
+          timestamp: fetchedData?.endDateTime?.seconds,
         }),
         goal: fetchedData?.goal,
         goalValue: fetchedData?.goalValue,
@@ -125,7 +125,7 @@ export default function CampaignCreationConfirmationPage() {
             <Typography variant="h5" sx={{ pb: 4 }}>
               Your campaign will start on{" "}
               {getDateFromTimestamp({
-                timestamp: campaignData?.startDateTime.seconds,
+                timestamp: campaignData?.startDateTime?.seconds,
                 format: "MMM Do, YYYY [at] h:mm a",
               })}
             </Typography>

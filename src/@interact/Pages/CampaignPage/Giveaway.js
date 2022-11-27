@@ -126,7 +126,7 @@ export default function Giveaway({
 		if(data.price > 0 && data.status === 'succeeded' && data.stripe_customer_id != null)
 		{
 			setDoc(
-				doc(db, "users", campaignData.person.id, 'Contributions', user.uid), 
+				doc(db, "users", campaignData.creatorId, 'Contributions', user.uid), 
 				{contributionTotal: increment(data.price), interactionTotal: increment(1)}, 
 				{ merge: true }
 			);
@@ -172,7 +172,7 @@ export default function Giveaway({
 		return true;
 	}
 	const followCampaign = async () => {
-        const targetUser = await fetchUserByName(campaignData?.person?.username);
+        const targetUser = await fetchUserByName(campaignData?.creatorName);
 		console.log("user", user);
 		console.log("targetuser", targetUser);
 		if(user === undefined) {

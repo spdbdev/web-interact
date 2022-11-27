@@ -11,7 +11,12 @@ import UserCampaignStatus from "./UserCampaignStatus";
 export default function CampaignSnippet(props) {
   
   const {info} = props;
-  
+
+  // useEffect(() => {
+    // let bidsSnap = await getDocs(query(collection(db, "campaigns", campaignId, "bids")));
+    // let bids_data = bidsSnap.docs[0];
+  // }, [info.id]);
+    
   return (
     <JumboCardQuick noWrapper sx={{ maxWidth: 280, m: 2 }}>
       <Box sx={{ position: "relative" }}>

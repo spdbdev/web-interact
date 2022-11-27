@@ -186,7 +186,7 @@ export async function fetchUsersByIds(idlist = []) {
 
 
 export const addCampaign = async (user) => {
-  console.log(user)
+  console.log("addCampaign", user);
   let campaignCounter = (user && user.campaigns && user.campaigns.length + 1) ?? 1
   let newCampaignId = `${user.name}_${campaignCounter}`;
 
@@ -195,7 +195,11 @@ export const addCampaign = async (user) => {
       ?
       { campaigns: [...user.campaigns, { campaignId: newCampaignId, campaignStatus: "draft" }] }
       :
-      { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] }
+      { campaigns: [{ campaignId: newCampaignId, campaignStatus: "draft" }] };
+
+  let temp_campaign = DUMMY_CAMPAIGN;
+  temp_campaign.creatorName = user.name;
+  temp_campaign.creatorId = user.id;
   await setDoc(doc(db, "campaigns", newCampaignId), DUMMY_CAMPAIGN);
   await updateDoc(doc(db, "users", user.id), updatedUserData);
   return newCampaignId;

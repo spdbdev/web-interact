@@ -69,11 +69,11 @@ const Sidebar = () => {
             ? returnedValue[i]?.header?.title
             : "No title",
           creator_label: "Created by",
-          creator_name: returnedValue[i]?.person?.username
-            ? returnedValue[i]?.person?.username
+          creator_name: returnedValue[i]?.creatorName
+            ? returnedValue[i]?.creatorName
             : "No name",
-          creator_Uri: returnedValue[i]?.person?.username
-            ? "/u/" + returnedValue[i]?.person?.username
+          creator_Uri: returnedValue[i]?.creatorName
+            ? "/u/" + returnedValue[i]?.creatorName
             : "/u",
           type: "recent-campaign-item",
           photoURL: returnedValue[i]?.person?.photoUrl

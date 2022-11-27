@@ -199,7 +199,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	}
 
 	const followCampaign = async () => {
-    	const targetUser = await fetchUserByName(campaignData?.person?.username);
+    	const targetUser = await fetchUserByName(campaignData?.creatorName);
 		if(user === undefined) {
             console.log("You need to sign in to follow user");
             navigate("/a/signin");

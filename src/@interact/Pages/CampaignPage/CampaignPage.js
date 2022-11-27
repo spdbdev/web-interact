@@ -211,7 +211,7 @@ function CampaignPage(userData) {
 
   const getChanceMultiplier = async (_campaignData) => {
     if (!user?.uid) return;
-    let lostHistory = await getUserLostHistory(_campaignData.person.id, user.uid);
+    let lostHistory = await getUserLostHistory(_campaignData.creatorId, user.uid);
     lostHistory = parseInt(lostHistory);
 
     let freeMultiplier = 1;
@@ -249,7 +249,7 @@ function CampaignPage(userData) {
         if (doc.price > 0) noOfEntries = 25;
 
         let previousLoss = await getUserLostHistory(
-          _campaignData.person.id,
+          _campaignData.creatorId,
           document.id
         );
         if (previousLoss === 1) noOfEntries = noOfEntries * 2;
