@@ -55,15 +55,15 @@ const SearchGlobal = ({ sx }) => {
             const strFrontCodeCampaign = searchTermCampaign.slice(0, strlengthCampaign-1);
             const strEndCodeCampaign = searchTermCampaign.slice(strlengthCampaign-1, searchTermCampaign.length);
             const endCodeCampaign = strFrontCodeCampaign + String.fromCharCode(strEndCodeCampaign.charCodeAt(0) + 1);
-            const qCampaign = query(collection(db, "campaigns"), orderBy('header.title'), where("header.title", ">=", searchTermCampaign), where("header.title", "<", endCodeCampaign));
+            const qCampaign = query(collection(db, "campaigns"), orderBy('title'), where("title", ">=", searchTermCampaign), where("title", "<", endCodeCampaign));
             const docCampaign = await getDocs(qCampaign);
             docCampaign.docs.map((campaign) => {
               let campaign_data = campaign.data();
               let obj = {
-                title: campaign_data.header.title ? campaign_data.header.title : "No title",
-                description: campaign_data.header.tagline1,
-                endDate: campaign_data.endDate ? getDateFromTimestamp({
-                  timestamp: campaign_data.endDate?.seconds
+                title: campaign_data.title ? campaign_data.title : "No title",
+                endDate: campaign_data.endDateTime ? getDateFromTimestamp({
+                  timestamp: campaign_data.endDateTime?.seconds,
+                  format: "MMM Do"
                 }) : "No end date",
                 goal:campaign_data.goal ? campaign_data.goal : "No goal",
                 goalValue:campaign_data.goalValue ? campaign_data.goalValue : "No goal value",

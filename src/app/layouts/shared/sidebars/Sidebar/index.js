@@ -67,18 +67,18 @@ const Sidebar = () => {
           campaignUri: returnedValue[i]?.id
             ? "/c/" + returnedValue[i]?.id
             : "/c/",
-          label: returnedValue[i]?.header?.title
-            ? returnedValue[i]?.header?.title
+          label: returnedValue[i]?.title
+            ? returnedValue[i]?.title
             : "No title",
-          creator_label: returnedValue[i].endDate ? getDateFromTimestamp({
-              timestamp: returnedValue[i].endDate?.seconds,
+          creator_label: returnedValue[i].endDateTime ? getDateFromTimestamp({
+              timestamp: returnedValue[i].endDateTime?.seconds,
               format: "MMM Do"
-            }) : "No enddate",
-          creator_name: returnedValue[i]?.person?.username
-            ? returnedValue[i]?.person?.username
-            : "No name",
-          creator_Uri: returnedValue[i]?.person?.username
-            ? "/u/" + returnedValue[i]?.person?.username
+            }) : "No end date",
+          creator_name: returnedValue[i]?.creatorName
+            ? returnedValue[i]?.creatorName
+            : "No username",
+          creator_Uri: returnedValue[i]?.creatorName
+            ? "/u/" + returnedValue[i]?.creatorName
             : "/u",
           type: "recent-campaign-item",
           photoURL: returnedValue[i]?.campaignVideoThumbnailLink

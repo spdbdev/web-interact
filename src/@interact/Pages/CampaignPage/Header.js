@@ -40,7 +40,7 @@ export default function Header({ campaignData }) {
         Created by
         <img
           src={campaignUser?.photoURL ? campaignUser?.photoURL : "https://iili.io/HH6JxB1.md.jpg"}
-          alt={'No Image'}
+          alt={'No image'}
           align="center"
           className="profile_image"
           style={{
