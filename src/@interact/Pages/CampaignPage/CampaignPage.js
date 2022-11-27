@@ -368,123 +368,121 @@ function CampaignPage(userData) {
   if (!campaignData) return <div>Loading...</div>;
 
   return (
-    <Slide direction="down" timeout={1369} in={true} mountOnEnter unmountOnExit>
-      <JumboContentLayout
-        layoutOptions={{
-          wrapper: {
-            sx: {
-              [theme.breakpoints.up("lg")]: {
-                px: 10,
-              },
-              [theme.breakpoints.up("xxl")]: {
-                px: 30,
-              },
+    <JumboContentLayout
+      layoutOptions={{
+        wrapper: {
+          sx: {
+            [theme.breakpoints.up("lg")]: {
+              px: 10,
+            },
+            [theme.breakpoints.up("xxl")]: {
+              px: 30,
             },
           },
-        }}
-      >
-        <Box className="CampaignPage">
-          {renderUserCampaignStatus()}
-          <Header campaignData={campaignData} badgeUrl={medal} />
-          <p>{localStorage.getItem("data")}</p>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            spacing={2.669}
-            sx={{
-              position: "relative",
-              py: 3,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flex: 1,
-                mr: 0,
-                borderRadius: 3,
-                overflow: "hidden",
-                paddingBottom: "36.921%",
-                position: "relative",
-              }}
-            >
-              <iframe
-                style={{ flex: 1, position: "absolute" }}
-                src={campaignData?.videoUrl}
-                title="YouTube video player"
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </Box>
-
-            {num_giveaway > 0 && campaignId != null ? (
-              <Giveaway
-                campaignId={campaignId}
-                isCampaignEnded={isCampaignEnded}
-                isCampaignScheduled={isCampaignScheduled}
-                campaignData={campaignData}
-                hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
-                hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
-                setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
-                setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
-                vipChanceMultiplier={vipChanceMultiplier}
-                freeChanceMultiplier={freeChanceMultiplier}
-                winningChances={winningChances}
-              />
-            ) : null}
-          </Stack>
-
-          <Stats campaignData={campaignData} bids={bids} />
-
-          {num_auction > 0 ? (
-            <Stack
-              direction="row"
-              spacing={1.4921}
-              style={{
-                padding: "20px 0",
-              }}
-            >
-              <Leaderboard campaignData={campaignData} bids={bids} />
-              <Auction
-                isCampaignEnded={isCampaignEnded}
-                isCampaignScheduled={isCampaignScheduled}
-                bidAction={saveBid}
-                campaignData={campaignData}
-                bids={bids}
-                userAuctionPosition={userAuctionPosition}
-                hasUserEnteredAuction={hasUserEnteredAuction}
-                setHasUserEnteredAuction={setHasUserEnteredAuction}
-              />
-            </Stack>
-          ) : null}
-
+        },
+      }}
+    >
+      <Box className="CampaignPage">
+        {renderUserCampaignStatus()}
+        <Header campaignData={campaignData} badgeUrl={medal} />
+        <p>{localStorage.getItem("data")}</p>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          spacing={2.669}
+          sx={{
+            position: "relative",
+            py: 3,
+          }}
+        >
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flex: 1,
+              mr: 0,
+              borderRadius: 3,
+              overflow: "hidden",
+              paddingBottom: "36.921%",
+              position: "relative",
             }}
           >
-            <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7 }}>
-              {/* <CreatorName campaignData={campaignData} /> */}
-              <CampaignInfo
-                isCampaignEnded={isCampaignEnded}
-                campaignData={campaignData}
-                giveaways={giveaways}
-                bids={bids}
-                comments={comments}
-                campaignId={campaignId}
-                // supporters={supporters}
-              />
-            </Box>
-            <Box sx={{ flex: 1, mt: 5, mb: 7 }}>
-              <Faq campaignData={campaignData} />
-            </Box>
+            <iframe
+              style={{ flex: 1, position: "absolute" }}
+              src={campaignData?.videoUrl}
+              title="YouTube video player"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </Box>
+
+          {num_giveaway > 0 && campaignId != null ? (
+            <Giveaway
+              campaignId={campaignId}
+              isCampaignEnded={isCampaignEnded}
+              isCampaignScheduled={isCampaignScheduled}
+              campaignData={campaignData}
+              hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
+              hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
+              setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
+              setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
+              vipChanceMultiplier={vipChanceMultiplier}
+              freeChanceMultiplier={freeChanceMultiplier}
+              winningChances={winningChances}
+            />
+          ) : null}
+        </Stack>
+
+        <Stats campaignData={campaignData} bids={bids} />
+
+        {num_auction > 0 ? (
+          <Stack
+            direction="row"
+            spacing={1.4921}
+            style={{
+              padding: "20px 0",
+            }}
+          >
+            <Leaderboard campaignData={campaignData} bids={bids} />
+            <Auction
+              isCampaignEnded={isCampaignEnded}
+              isCampaignScheduled={isCampaignScheduled}
+              bidAction={saveBid}
+              campaignData={campaignData}
+              bids={bids}
+              userAuctionPosition={userAuctionPosition}
+              hasUserEnteredAuction={hasUserEnteredAuction}
+              setHasUserEnteredAuction={setHasUserEnteredAuction}
+            />
+          </Stack>
+        ) : null}
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7 }}>
+            {/* <CreatorName campaignData={campaignData} /> */}
+            <CampaignInfo
+              isCampaignEnded={isCampaignEnded}
+              campaignData={campaignData}
+              giveaways={giveaways}
+              bids={bids}
+              comments={comments}
+              campaignId={campaignId}
+              // supporters={supporters}
+            />
+          </Box>
+          <Box sx={{ flex: 1, mt: 5, mb: 7 }}>
+            <Faq campaignData={campaignData} />
           </Box>
         </Box>
-      </JumboContentLayout>
-    </Slide>
+      </Box>
+    </JumboContentLayout>
   );
 }
 
