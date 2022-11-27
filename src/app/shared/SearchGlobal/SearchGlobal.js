@@ -60,14 +60,14 @@ const SearchGlobal = ({ sx }) => {
             docCampaign.docs.map((campaign) => {
               let campaign_data = campaign.data();
               let obj = {
-                title: campaign_data.header.title ? campaign_data.header.title : "No Title",
+                title: campaign_data.header.title ? campaign_data.header.title : "No title",
                 description: campaign_data.header.tagline1,
                 endDate: campaign_data.endDate ? getDateFromTimestamp({
                   timestamp: campaign_data.endDate?.seconds
-                }) : "No EndDate",
-                goal:campaign_data.goal ? campaign_data.goal : "No Goal",
-                goalValue:campaign_data.goalValue ? campaign_data.goalValue : "No GoalValue",
-                username:campaign_data.person.username ? campaign_data.person.username : "No UserName",
+                }) : "No end date",
+                goal:campaign_data.goal ? campaign_data.goal : "No goal",
+                goalValue:campaign_data.goalValue ? campaign_data.goalValue : "No goal value",
+                username:campaign_data.creatorName ? campaign_data.creatorName : "No username",
                 id: campaign.id,
                 photoURL: campaign_data?.campaignVideoThumbnailLink ? campaign_data?.campaignVideoThumbnailLink : "https://iili.io/HH6JxB1.md.jpg",
                 type:'campaign'

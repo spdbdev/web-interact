@@ -53,7 +53,7 @@ export default function Header({ campaignData }) {
         >
         </img>
         <a href={`/u/${campaignData?.person?.username}`} style={{ color: "#782fee" }}>
-          {campaignData?.person?.username}
+          {campaignData?.creatorName}
         </a>
       </Typography>
       <Divider />
