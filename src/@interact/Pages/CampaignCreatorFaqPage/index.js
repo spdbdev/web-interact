@@ -327,10 +327,11 @@ const CampaignCreatorFaqPage = () => {
       expand: false
     },
     {
-      question: 'When do you get paid?',
+      question: 'When do I receive my funds raised (payout) from the campaign?',
       answer: (
         <>
-          <p>Within 3 business days after the campaign is completed.</p>
+          <p>You funds are sent directly to your Stripe-linked bank account after payment is collected from auction winners at the end of the campaign (near instant after the campaign ends). 
+            This might take some time to process, up to 3 business days (Stripe controls this).</p>
         </>
       ),
       expand: false
