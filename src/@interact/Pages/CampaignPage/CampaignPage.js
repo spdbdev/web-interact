@@ -26,7 +26,7 @@ import {
   onSnapshot,
   getCountFromServer,
 } from "firebase/firestore";
-import { Box, Stack } from "@mui/material";
+import { Box, Slide, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { auth, db } from "@jumbo/services/auth/firebase/firebase";
@@ -35,8 +35,8 @@ import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory } from "../../../firebase";
 import React from "react";
-import {LAYOUT_NAMES} from "../../../app/layouts/layouts";
-import {useJumboApp} from "@jumbo/hooks";
+import { LAYOUT_NAMES } from "../../../app/layouts/layouts";
+import { useJumboApp } from "@jumbo/hooks";
 
 function CampaignPage(userData) {
   const { user } = useCurrentUser();
@@ -66,7 +66,7 @@ function CampaignPage(userData) {
 
   const [medal, setMedal] = useState(null);
 
-  if (!campaignId) navigate('/a/invalidcampaign');//update this to 
+  if (!campaignId) navigate("/a/invalidcampaign"); //update this to
 
   /* let user = {
 		uid: "wKKU2BUMagamPdJnhjw6iplg6w82",
@@ -79,34 +79,29 @@ function CampaignPage(userData) {
   useEffect(async () => {
     //if (loading) return;
     //if (!user) return navigate("/"); // this page should be browsable without login
-    console.log("Campaign id",campaignId)
+    console.log("Campaign id", campaignId);
     let id = await checkCampaignID();
     //console.log('campaignId >>>>>', campaignId);
     getCampaignData(id);
     checkPurchasedEntry();
     getMedalStatus();
   }, [user]);
-  
-  const getMedalStatus = async() => {
-    const grossRevenue = user.grossRevenue;
+
+  const getMedalStatus = async () => {
+    const grossRevenue = user?.grossRevenue;
 
     if (grossRevenue === undefined) {
       setMedal(null);
-    }
-    else if (grossRevenue <= 1000) {
-      setMedal('/images/pages/profile/bronzeCreatorRank.png');
-    }
-    else if (grossRevenue <= 10000) {
-      setMedal('/images/pages/profile/silverCreatorRank.png');
-    }
-    else if (grossRevenue <= 100000) {
-      setMedal('/images/pages/profile/goldCreatorRank.png');
-    }
-    else if (grossRevenue <= 1000000) {
-      setMedal('/images/pages/profile/platinumCreatorRank.png');
-    }
-    else {
-      setMedal('/images/pages/profile/diamondCreatorRank.png');
+    } else if (grossRevenue <= 1000) {
+      setMedal("/images/pages/profile/bronzeCreatorRank.png");
+    } else if (grossRevenue <= 10000) {
+      setMedal("/images/pages/profile/silverCreatorRank.png");
+    } else if (grossRevenue <= 100000) {
+      setMedal("/images/pages/profile/goldCreatorRank.png");
+    } else if (grossRevenue <= 1000000) {
+      setMedal("/images/pages/profile/platinumCreatorRank.png");
+    } else {
+      setMedal("/images/pages/profile/diamondCreatorRank.png");
     }
   };
 
@@ -131,9 +126,9 @@ function CampaignPage(userData) {
       if (docSnapshots.exists()) setCampaignId(docSnapshots.id);
       return docSnapshots.id;
     } else {
-      setCampaignId(campaignId)
+      setCampaignId(campaignId);
       return campaignId;
-    };
+    }
   };
 
   const getCampaignData = async (_id = null) => {
@@ -143,12 +138,14 @@ function CampaignPage(userData) {
       query(doc(db, "campaigns", id_for_campaign)),
       (querySnapshot) => {
         let _campaignData = querySnapshot.data();
-        console.log("Campaign Data",_campaignData)
+        console.log("Campaign Data", _campaignData);
         setCampaignData(_campaignData);
         saveToRecentCampaignHistory(id_for_campaign, user);
         //Check Campaign End Time
-        let campaignEndDate = new Date(_campaignData.endDate.seconds * 1000);
-        let campaignStartDate = new Date(_campaignData.startDate.seconds *1000);
+        let campaignEndDate = new Date(_campaignData?.endDate?.seconds * 1000);
+        let campaignStartDate = new Date(
+          _campaignData?.startDate?.seconds * 1000
+        );
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
         if (campaignStartDate - now > 0) setIsCampaignScheduled(true);
@@ -172,8 +169,7 @@ function CampaignPage(userData) {
           (element) => element.email === user.email
         );
         setUserAuctionPosition(++position);
-        if (position > 0)
-          setHasUserEnteredAuction(true);
+        if (position > 0) setHasUserEnteredAuction(true);
       }
     );
 
@@ -201,7 +197,9 @@ function CampaignPage(userData) {
   };
 
   const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(doc(db, "users", creator_id, "GiveawayLossHistory", user_id));
+    const campaignHistoryUsers = await getDoc(
+      doc(db, "users", creator_id, "GiveawayLossHistory", user_id)
+    );
     if (doc.exists) {
       const { numOfLoss } = campaignHistoryUsers.data();
       return parseInt(numOfLoss);
@@ -285,28 +283,36 @@ function CampaignPage(userData) {
     }
   };
 
-	const saveBid = async (amount, auto, desiredRanking, maxBidPrice) => {
-		if (!checkAuthentication()) return;
-		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
-		let user_data = userSnap.docs[0];
-		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
-			person: {
-				username: user_data.data().name,
-				id: user_data.id,
-				photoURL: user.photoURL,
-			},
-			desiredRanking,
-			maxBidPrice,
-			price: amount,
-			auto: auto,
-			email: user.email,
-			time: serverTimestamp(),
-		});
+  const saveBid = async (amount, auto, desiredRanking, maxBidPrice) => {
+    if (!checkAuthentication()) return;
+    var userSnap = await getDocs(
+      query(collection(db, "users"), where("uid", "==", user.uid))
+    );
+    let user_data = userSnap.docs[0];
+    await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
+      person: {
+        username: user_data.data().name,
+        id: user_data.id,
+        photoURL: user.photoURL,
+      },
+      desiredRanking,
+      maxBidPrice,
+      price: amount,
+      auto: auto,
+      email: user.email,
+      time: serverTimestamp(),
+    });
 
-		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
-		const counter = snapshot.data().count;
-		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
-	};
+    const snapshot = await getCountFromServer(
+      collection(db, "campaigns", campaignId, "bids")
+    );
+    const counter = snapshot.data().count;
+    setDoc(
+      doc(db, "campaigns", campaignId),
+      { numAuctionBids: counter },
+      { merge: true }
+    );
+  };
 
   function renderUserCampaignStatus() {
     if (
@@ -359,124 +365,126 @@ function CampaignPage(userData) {
     }
   }
 
-  if(!campaignData) return <div>Loading...</div>;
+  if (!campaignData) return <div>Loading...</div>;
 
   return (
-    <JumboContentLayout
-      layoutOptions={{
-        wrapper: {
-          sx: {
-            [theme.breakpoints.up("lg")]: {
-              px: 10,
-            },
-            [theme.breakpoints.up("xxl")]: {
-              px: 30,
+    <Slide direction="down" timeout={1369} in={true} mountOnEnter unmountOnExit>
+      <JumboContentLayout
+        layoutOptions={{
+          wrapper: {
+            sx: {
+              [theme.breakpoints.up("lg")]: {
+                px: 10,
+              },
+              [theme.breakpoints.up("xxl")]: {
+                px: 30,
+              },
             },
           },
-        },
-      }}
-    >
-      <Box className="CampaignPage">
-        {renderUserCampaignStatus()}
-        <Header campaignData={campaignData} badgeUrl={medal}/>
-        <p>{localStorage.getItem("data")}</p>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          spacing={2.669}
-          sx={{
-            position: "relative",
-            py: 3,
-          }}
-        >
+        }}
+      >
+        <Box className="CampaignPage">
+          {renderUserCampaignStatus()}
+          <Header campaignData={campaignData} badgeUrl={medal} />
+          <p>{localStorage.getItem("data")}</p>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            spacing={2.669}
+            sx={{
+              position: "relative",
+              py: 3,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flex: 1,
+                mr: 0,
+                borderRadius: 3,
+                overflow: "hidden",
+                paddingBottom: "36.921%",
+                position: "relative",
+              }}
+            >
+              <iframe
+                style={{ flex: 1, position: "absolute" }}
+                src={campaignData?.videoUrl}
+                title="YouTube video player"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </Box>
+
+            {num_giveaway > 0 && campaignId != null ? (
+              <Giveaway
+                campaignId={campaignId}
+                isCampaignEnded={isCampaignEnded}
+                isCampaignScheduled={isCampaignScheduled}
+                campaignData={campaignData}
+                hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
+                hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
+                setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
+                setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
+                vipChanceMultiplier={vipChanceMultiplier}
+                freeChanceMultiplier={freeChanceMultiplier}
+                winningChances={winningChances}
+              />
+            ) : null}
+          </Stack>
+
+          <Stats campaignData={campaignData} bids={bids} />
+
+          {num_auction > 0 ? (
+            <Stack
+              direction="row"
+              spacing={1.4921}
+              style={{
+                padding: "20px 0",
+              }}
+            >
+              <Leaderboard campaignData={campaignData} bids={bids} />
+              <Auction
+                isCampaignEnded={isCampaignEnded}
+                isCampaignScheduled={isCampaignScheduled}
+                bidAction={saveBid}
+                campaignData={campaignData}
+                bids={bids}
+                userAuctionPosition={userAuctionPosition}
+                hasUserEnteredAuction={hasUserEnteredAuction}
+                setHasUserEnteredAuction={setHasUserEnteredAuction}
+              />
+            </Stack>
+          ) : null}
+
           <Box
             sx={{
               display: "flex",
-              flex: 1,
-              mr: 0,
-              borderRadius: 3,
-              overflow: "hidden",
-              paddingBottom: "36.921%",
-              position: "relative",
+              flexDirection: "row",
             }}
           >
-            <iframe
-              style={{ flex: 1, position: "absolute" }}
-              src={campaignData?.videoUrl}
-              title="YouTube video player"
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </Box>
-
-          {num_giveaway > 0 && campaignId != null ? (
-            <Giveaway
-              campaignId={campaignId}
-              isCampaignEnded={isCampaignEnded}
-              isCampaignScheduled={isCampaignScheduled}
-              campaignData={campaignData}
-              hasUserClaimedFreeEntry={hasUserClaimedFreeEntry}
-              hasUserPurchasedVIPEntry={hasUserPurchasedVIPEntry}
-              setHasUserClaimedFreeEntry={setHasUserClaimedFreeEntry}
-              setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
-              vipChanceMultiplier={vipChanceMultiplier}
-              freeChanceMultiplier={freeChanceMultiplier}
-              winningChances={winningChances}
-            />
-          ) : null}
-        </Stack>
-
-        <Stats campaignData={campaignData} bids={bids} />
-
-        {num_auction > 0 ? (
-          <Stack
-            direction="row"
-            spacing={1.4921}
-            style={{
-              padding: "20px 0",
-            }}
-          >
-            <Leaderboard campaignData={campaignData} bids={bids} />
-            <Auction
-              isCampaignEnded={isCampaignEnded}
-              isCampaignScheduled={isCampaignScheduled}
-              bidAction={saveBid}
-              campaignData={campaignData}
-              bids={bids}
-			        userAuctionPosition={userAuctionPosition}
-              hasUserEnteredAuction={hasUserEnteredAuction}
-              setHasUserEnteredAuction={setHasUserEnteredAuction}
-            />
-          </Stack>
-        ) : null}
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7}}>
-            {/* <CreatorName campaignData={campaignData} /> */}
-            <CampaignInfo
-              isCampaignEnded={isCampaignEnded}
-              campaignData={campaignData}
-              giveaways={giveaways}
-              bids={bids}
-              comments={comments}
-              campaignId={campaignId}
-              // supporters={supporters}
-            />
-          </Box>
-          <Box sx={{ flex: 1, mt: 5, mb: 7 }}>
-            <Faq campaignData={campaignData} />
+            <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7 }}>
+              {/* <CreatorName campaignData={campaignData} /> */}
+              <CampaignInfo
+                isCampaignEnded={isCampaignEnded}
+                campaignData={campaignData}
+                giveaways={giveaways}
+                bids={bids}
+                comments={comments}
+                campaignId={campaignId}
+                // supporters={supporters}
+              />
+            </Box>
+            <Box sx={{ flex: 1, mt: 5, mb: 7 }}>
+              <Faq campaignData={campaignData} />
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </JumboContentLayout>
+      </JumboContentLayout>
+    </Slide>
   );
 }
 
