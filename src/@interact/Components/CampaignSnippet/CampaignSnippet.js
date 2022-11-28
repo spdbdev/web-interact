@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import UserCampaignStatus from "./UserCampaignStatus";
 import { getDateFromTimestamp } from "app/utils";
 import { fetchUser } from "../../../firebase";
+import moment from "moment";
 
 export default function CampaignSnippet(props) {
   
@@ -59,10 +60,17 @@ export default function CampaignSnippet(props) {
           I will {info.goal} at ${formatMoney(info.goalValue)}
         </Typography>
         <Typography variant="caption" sx={{ color: "text.secondary" }}>
-          by {getDateFromTimestamp({
-                  timestamp: info.endDateTime?.seconds,
-                  format: "MMM Do"
-                })}
+          {(()=> {
+            if (moment().isBefore(moment.unix(info?.startDateTime?.seconds))) {
+              return <span> {moment.unix(info?.startDateTime?.seconds).fromNow()}</span>
+            }
+            else if (moment().isBefore(moment.unix(info?.endDateTime?.seconds)) ) {
+              return <span>Ends {moment.unix(info?.endDateTime?.seconds).fromNow()}</span>
+            }
+            else {
+              return <span>Ended {moment.unix(info?.endDateTime?.seconds).toNow()}</span>
+            }
+          })()}
         </Typography>
 
         <br />
