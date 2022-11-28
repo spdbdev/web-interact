@@ -189,6 +189,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	}
 
 	const handleDesiredRank = function(e){
+		e.preventDefault();
 		// prevent values less than 0 or higher than allowed interactions 20.
 		if(e.target.value < 1) e.target.value = 1;
 		else if(e.target.value > parseInt(campaignData?.numAuctionInteractions)) e.target.value = campaignData?.numAuctionInteractions;
@@ -198,7 +199,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 	}
 
 	const followCampaign = async () => {
-    	const targetUser = await fetchUserByName(campaignData?.person?.username);
+    	const targetUser = await fetchUserByName(campaignData?.creatorName);
 		if(user === undefined) {
             console.log("You need to sign in to follow");
             navigate("/a/signin");
@@ -271,8 +272,10 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 
 					setOpen(false);
 					if (resp.data.added) {
-						setPaymentMethods([resp.data.paymentmethod]);
-						setSelectPaymentMethod(resp.data.paymentmethod.id);
+						
+						setPaymentMethods(resp.data.paymentmethod.data);
+						setSelectPaymentMethod(resp.data.paymentmethod.data[0].id);
+
 						setLoading(false);
 						if (selectPopUp === 1) {
 							setOpenPopup(true);
@@ -539,6 +542,7 @@ export default function Auction({isCampaignEnded, isCampaignScheduled, bids, use
 					value={desiredRank}
 					label="Desired rank"
 					onChange={(e) => handleDesiredRank(e)}
+					MenuProps={{ disableScrollLock: true }}
 					>
 					{options}
 				</Select>

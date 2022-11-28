@@ -20,7 +20,7 @@ import { fetchUser } from "../../../firebase";
 export default function Header({ campaignData }) {
   const [campaignUser, setCampaignUser] = useState({});
   useEffect(async ()  =>{
-    if(campaignData?.person?.id){
+    if(campaignData?.creatorId){
       let userData = await fetchUser(campaignData.creatorId);
       setCampaignUser(userData);
     }

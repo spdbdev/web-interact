@@ -21,7 +21,15 @@ const firebaseConfig = {
 
 const FinalSwal = Swal.mixin({
   customClass: {
+      container: 'custom_swal_container',
       popup: 'custom_swal_popup',
+      title: 'custom_swal_title',
+      closeButton: 'custom_swal_closeButton',
+      image: 'custom_swal_image',
+      htmlContainer: 'custom_swal_htmlcontainer',
+      confirmButton: 'custom_swal_confirmButton',
+      cancelButton: 'custom_swal_cancelButton',
+      footer: 'custom_swal_footer'
   }
 });
 

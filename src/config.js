@@ -7,6 +7,8 @@ export const DUMMY_CAMPAIGN = {
   campaignVideoThumbnailLink:
     "http://i3.ytimg.com/vi/n0UXA7oLc-s/hqdefault.jpg",
   categories: ["Humor", "Films, shows & anime", "Sports"],
+  creatorName: "creator",
+  creatorId: "temp_creator_id",
   creatorWeeklyAvailability: 8,
   currency: "USD",
   currencyExchangeRate: 1,

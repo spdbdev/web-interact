@@ -12,6 +12,7 @@ import { auth, db, logout } from "@jumbo/services/auth/firebase/firebase";
 import { doc, query, updateDoc, collection, getDocs, setDoc, where, addDoc } from "firebase/firestore";
 import { TabNavigation } from "../TabNavigation";
 import { useAuthState } from "react-firebase-hooks/auth";
+import CheckIcon from '@mui/icons-material/Check';
 
 export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
   const navigate = useNavigate();
@@ -72,7 +73,13 @@ export default function PaymentTab({selectedTabIndex, setSelectedTabIndex}) {
           <br /> Funds will be deposited automatically within 3
           business days after the campaign ends.
         </TitleAndDesc>
-        {accountId && <TitleAndDesc title={"Account Linked"}><h3>Your account has been linked to Stripe</h3></TitleAndDesc> }
+        {/* {accountId && <TitleAndDesc title={"Account Linked"}><h3>Your account has been linked to Stripe</h3></TitleAndDesc> } */}
+        {accountId && 
+        <Stack direction="row" spacing={2} sx={{}}>
+          <Typography sx={{fontWeight: 500, fontSize: "20px"}}>Account Linked</Typography>
+          <CheckIcon />
+        </Stack>
+        }
         {!accountId &&<InteractButton onClick={handleLinkStripeClick}>
           <Span
             sx={{

@@ -17,14 +17,14 @@ export default function Stats({ campaignData, bids }) {
 	const { user } = useCurrentUser();
 	const [targetUser, setTargetUser] = useState({});
 	useEffect(async ()  => {
-		let defaultUser = await fetchUserByName(campaignData?.person?.username);
+		let defaultUser = await fetchUserByName(campaignData?.creatorName);
 		setTargetUser(defaultUser);
 		const userListener = onSnapshot(query(doc(db, "users",defaultUser.id)), (querySnapshot) => {
 			let userData = querySnapshot.data();
 			const id = querySnapshot.id;
 			setTargetUser({ ...userData, id });
 		});
-  	}, [campaignData?.person])
+  	}, [campaignData?.creatorName]) // erased campaignData.person, so changed it to creatorName
 	return (
 		<Stack
 		direction="row"

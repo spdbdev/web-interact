@@ -22,7 +22,7 @@ import { FollowButton } from "../CampaignPage/Stats";
 import { fetchUserByName } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
-import Swal from "sweetalert2";
+import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import Typography from "@mui/material/Typography";
 import { LAYOUT_NAMES } from "../../../app/layouts/layouts";
@@ -45,14 +45,14 @@ const style = {
   p: 4,
 };
 function CropProfilePicture({
-  open,
-  setOpen,
+  cropModalOpen,
+  setCropModalOpen,
   imgageObj,
   updatePhotoURL,
   setImage,
 }) {
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => setCropModalOpen(true);
+  const handleClose = () => setCropModalOpen(false);
   const [completedCrop, setCompletedCrop] = useState();
   const [imageRef, setImageRef] = useState();
   const [crop, setCrop] = useState({
@@ -87,7 +87,7 @@ function CropProfilePicture({
         (err) => console.log(err),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setOpen(false);
+            setCropModalOpen(false);
             updatePhotoURL(url);
             setImage(url);
           });
@@ -136,7 +136,7 @@ function CropProfilePicture({
   return (
     <Modal
       align="center"
-      open={open}
+      open={cropModalOpen}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -208,6 +208,7 @@ function UserProfilePage() {
   const fileRef = useRef();
   const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
   const [medal, setMedal] = React.useState(null);
+  const Swal = useSwalWrapper();
 
   const [cropModalOpen, setCropModalOpen] = React.useState(false);
   const [croppingImg, setCroppingImg] = React.useState({});
@@ -329,8 +330,8 @@ function UserProfilePage() {
           followers={targetUser?.followers}
         />
         <CropProfilePicture
-          open={cropModalOpen}
-          setOpen={setCropModalOpen}
+          cropModalOpen={cropModalOpen}
+          setCropModalOpen={setCropModalOpen}
           imgageObj={croppingImg}
           updatePhotoURL={updatePhotoURL}
           setImage={setImage}

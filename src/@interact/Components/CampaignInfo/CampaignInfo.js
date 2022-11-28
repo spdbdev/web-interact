@@ -143,7 +143,7 @@ function CampaignInfo({
         {campaignData?.info?.description}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CommentApp comments={comments} campaignId={campaignId} user={user} isCampaignCreator={campaignData?.person?.id === user?.id ? true : false}/>
+        <CommentApp comments={comments} campaignId={campaignId} user={user} isCampaignCreator={campaignData?.creatorId === user?.id ? true : false}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Supporters supporters={supporters} campaignId={campaignId} />

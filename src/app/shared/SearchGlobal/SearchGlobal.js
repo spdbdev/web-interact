@@ -7,40 +7,36 @@ import { db } from "@jumbo/services/auth/firebase/firebase";
 import { query, collection, getDocs, where, startAt, endAt, orderBy } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import { getDateFromTimestamp } from "@interact/Components/utils";
-import { Popper } from '@mui/material';
-
-/*
-Component for AutoComboDropdown
-Developed to change the width of dropdown now
-*/
-const AutoComboDropDown = function (props) {
-  return (
-    <Popper {...props} style={{width: props.isonmobile === "true" ? '110px' : '250px'}} />
-  )
-};
+import AutoComboDropDown from "./AutoComboDropDown";
 
 const SearchGlobal = ({ sx }) => {
   let navigate = useNavigate();
   const [value, setValue] = React.useState('');
   const [searchValue, setSearchValue] = React.useState([]);
-  const [isonmobile, SetOnMobile] = React.useState(window.innerWidth < 550);
+  const [isonmobile, setOnMobile] = React.useState(window.innerWidth < 550);
   useEffect(() => {
-    SetOnMobile(window.innerWidth < 550);
+    setOnMobile(window.innerWidth < 550);
   },[window.innerWidth])
   useEffect(() => {
       const fetchData = setTimeout( async () => {
           if(value){
             const searchkey = value;
             const searchTerm = searchkey;
-            const strlength = searchTerm.length;
-            const strFrontCode = searchTerm.slice(0, strlength-1);
-            const strEndCode = searchTerm.slice(strlength-1, searchTerm.length);
-            const endCode = strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
-            const q = query(collection(db, "users"), orderBy('name'), where("name", ">=", searchTerm), where("name", "<", endCode));
-            const doc = await getDocs(q);
+            const userQueryUpper = query(collection(db, "users"), orderBy('name'), where("name", ">=", searchTerm.toUpperCase()));
+            const userQueryLower = query(collection(db, "users"), orderBy('name'), where("name", "<=",searchTerm.toUpperCase() + "\uf8ff"));
+            const docUserUpper = await getDocs(userQueryUpper);
+            const docUserLower = await getDocs(userQueryLower);
+            let usersData = [];
+            docUserUpper.docs.map((user) => {
+              usersData.push(user.data());
+            });
+            docUserLower.docs.map((user) => {
+              usersData.push(user.data());
+            });
+            
             let tempValues = []
-            doc.docs.map((user) => {
-              let data = user.data();
+            usersData.map((user) => {
+              let data = user;
               let obj = {
                 title: data.name,
                 description: data.email,
@@ -51,14 +47,21 @@ const SearchGlobal = ({ sx }) => {
               tempValues.push(obj)
             })
             const searchTermCampaign = searchkey;
-            const strlengthCampaign = searchTermCampaign.length;
-            const strFrontCodeCampaign = searchTermCampaign.slice(0, strlengthCampaign-1);
-            const strEndCodeCampaign = searchTermCampaign.slice(strlengthCampaign-1, searchTermCampaign.length);
-            const endCodeCampaign = strFrontCodeCampaign + String.fromCharCode(strEndCodeCampaign.charCodeAt(0) + 1);
-            const qCampaign = query(collection(db, "campaigns"), orderBy('title'), where("title", ">=", searchTermCampaign), where("title", "<", endCodeCampaign));
-            const docCampaign = await getDocs(qCampaign);
-            docCampaign.docs.map((campaign) => {
-              let campaign_data = campaign.data();
+            const campaignQueryUpper = query(collection(db, "campaigns"), orderBy('title'), where("title", ">=", searchTermCampaign.toUpperCase()));
+            const campaignQueryLower = query(collection(db, "campaigns"), orderBy('title'), where("title", "<=",searchTermCampaign.toUpperCase() + "\uf8ff"));
+            const docCampaignUpper = await getDocs(campaignQueryUpper);
+            const docCampaignLower = await getDocs(campaignQueryLower);
+            let campaignData = [];
+            docCampaignUpper.docs.map((campaign) => {
+              let id = campaign.id;
+              campaignData.push({...campaign.data(), id});
+            });
+            docCampaignLower.docs.map((campaign) => {
+              let id = campaign.id;
+              campaignData.push({...campaign.data(), id});
+            });
+            campaignData.map((campaign) => {
+              let campaign_data = campaign;
               let obj = {
                 title: campaign_data.title ? campaign_data.title : "No title",
                 endDate: campaign_data.endDateTime ? getDateFromTimestamp({
@@ -93,12 +96,13 @@ const SearchGlobal = ({ sx }) => {
                 width: "100%",
               }}
               loading={true}
+              loadingText="No results"
               options={searchValue}
               freeSolo
               onInputChange={(e) => changeSearch(e)}
               getOptionLabel={(option) => (option?.title)?option?.title:""}
               renderOption={(props, option) => (
-                <>
+                <div key={Math.random()}>
                 {(option.type === 'profile')?(
                   <Box component="li" {...props} onClick={() => (option.type == "profile")?navigate("/u/"+option.title):"" }>
                     <img
@@ -124,7 +128,7 @@ const SearchGlobal = ({ sx }) => {
                     {" "+option.title+" - "+option.endDate+" - "+option.goal+" - "+option.username}
                     </Box>
                 )}
-                </>
+                </div>
               )}
               renderInput={(params) => (
                   <TextField

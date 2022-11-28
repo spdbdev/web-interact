@@ -57,7 +57,7 @@ export default function Leaderboard({ campaignData, bids }) {
     bids = bids?.map((x, i) => {
       return {
         id: i + 1,
-        username: x.person.username,
+        username: x.creatorName,
         bidPrice: x.price,
         /* bidPrice: x.auto
           ? i == bids.length - 1

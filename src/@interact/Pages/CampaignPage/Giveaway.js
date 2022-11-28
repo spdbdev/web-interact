@@ -174,7 +174,7 @@ export default function Giveaway({
 		return true;
 	}
 	const followCampaign = async () => {
-        const targetUser = await fetchUserByName(campaignData?.person?.username);
+        const targetUser = await fetchUserByName(campaignData?.creatorName);
 		console.log("user", user);
 		console.log("targetuser", targetUser);
 		if(user === undefined) {
@@ -229,11 +229,11 @@ export default function Giveaway({
 					const mdata = resp.data.paymentmethod.data;
 					console.log(resp.data.paymentmethod.data);
 					if (mdata.length > 0) {
-					setPaymentMethods(resp.data.paymentmethod.data);
-					setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
-					setOpenPopup(true);
+						setPaymentMethods(resp.data.paymentmethod.data);
+						setSelectedPaymentMethod(resp.data.paymentmethod.data[0].id);
+						setOpenPopup(true);
 					} else {
-					setOpen(true);
+						setOpen(true);
 					}
 				})
 				.catch((err) => {
@@ -300,6 +300,7 @@ export default function Giveaway({
 		.then((resp) => {
 			const pmid = resp.paymentMethod.id;
 			if (pmid && userCustomerId) {
+				console.log("here");
 				getRequest(`/a/method/attach/${userCustomerId}/${pmid}`)
 				.then((resp) => {
 					setOpen(false);
@@ -341,6 +342,7 @@ export default function Giveaway({
 		})
 		.catch((err) => {
 		/* Handle Error*/
+			console.log(err);
 			setOpen(false);
 			setLoading(false);
 			Swal.fire({
@@ -360,17 +362,16 @@ export default function Giveaway({
  
 	return (
 		<>
-		<ConfirmVIPPopup
-			openstate={openPopup}
-			settheOpenPopup={setOpenPopup}
-			closefunction={closefunction}
-			allprimarymethod={paymentMethods}
-			onaddclick={handleOpen}
-			price={vipEntryPrice}
-			userCustomerId={userCustomerId}
-			setHasUserPurchasedVIPEntry={setHasUserPurchasedVIPEntry}
-			selectPaymentMethod={selectedPaymentMethod}
-			setSelectedPaymentMethod={setSelectedPaymentMethod}
+			<ConfirmVIPPopup
+				openstate={openPopup}
+				settheOpenPopup={setOpenPopup}
+				closefunction={closefunction}
+				allprimarymethod={paymentMethods}
+				onaddclick={handleOpen}
+				price={vipEntryPrice}
+				userCustomerId={userCustomerId}
+				selectPaymentMethod={selectedPaymentMethod}
+				setSelectedPaymentMethod={setSelectedPaymentMethod}
 			/>
 			<Modal
 				open={open}
@@ -400,7 +401,11 @@ export default function Giveaway({
 										<CardCvcElement className={"cvc_input"} />
 								</div>
 							</div>
-							<InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Next</InteractFlashyButton>
+							<FormControlLabel style={{marginTop: '10px'}}
+								control={<Checkbox disabled checked sx={{ '& .MuiSvgIcon-root': { fontSize: 20 } }}/>}
+								label={<Typography style={{fontSize: '14px'}}>Save payment info for future purchases.</Typography>}
+							/>
+							<InteractFlashyButton onClick={handleSubmit} loading={loading} className="stripe-card_field_button">Submit</InteractFlashyButton>
 						</div>
 					</div>
 				</Box>
@@ -471,6 +476,10 @@ export default function Giveaway({
 				<InteractButton onClick={buyGiveawayAlert} disabled={hasUserPurchasedVIPEntry || isCampaignEnded || isCampaignScheduled || isCurrentUserCreator}>
 					Buy VIP entry
 				</InteractButton>
+
+				{/* <InteractButton onClick={buyGiveawayAlert}>
+					Buy VIP entry
+				</InteractButton> */}
 				</Box>
 			</Box>
 

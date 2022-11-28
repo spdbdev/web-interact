@@ -22,78 +22,127 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 	const FieldValue = db.FieldValue;
 
 	db.collection("campaigns").get().then((querySnapshot) => {
-		querySnapshot.forEach((doc) => 
+		querySnapshot.forEach(async (doc) => 
 		{
-			const element = doc.data();
-			const elementid = doc.id;
-			let campaignStatus = element.campaignStatus;
+			const campaign = doc.data();
+			const campaign_id = doc.id;
+			let campaignStatus = campaign.campaignStatus;
 
-			if (typeof element.startDateTime === "object") 
+			if (typeof campaign.startDateTime === "object") 
 			{
-				let sec = element.startDateTime.seconds;
+				let sec = campaign.startDateTime.seconds;
 				let starttime = new Date(sec);
 				let currenttime = new Date();
 				if (currenttime >= starttime) {
-					if (campaignStatus == "scheduled") {
+					if (campaignStatus === "scheduled") {
 						campaignStatus = "live";
 					}
 				}
 			}
 
-			if (typeof element.endDateTime === "object") 
+			if (typeof campaign.endDateTime === "object") 
 			{
-				let endsec = element.endDateTime.seconds;
+				let endsec = campaign.endDateTime.seconds;
 				let endtime = new Date(endsec);
 				var currenttime = new Date();
 				if (currenttime >= endtime) {
-					if (campaignStatus == "live") {
+					if (campaignStatus === "live") {
 						campaignStatus = "ended";
 					}
 				}
 			}
 
-			let transferStatus =
-				typeof element.transferStatus === "undefined" || element.transferStatus === "pending"
-				? "pending" : element.transferStatus;
+			let transferStatus = campaign.transferStatus ?? "pending";
 
 			if (campaignStatus === "ended" && transferStatus === "pending") 
 			{
+				/* 
+					grossRevenue of VIP users, we have index [campaignVIPtotal] in campaign. 
+					for auction users we have to calculate grossRevenue on run time. [campaignAuctionTotal]
+				*/
+
+				let campaignAuctionTotal = await make_payment(campaign, campaign_id, "top3AuctionWinners");
+				campaignAuctionTotal += await make_payment(campaign, campaign_id, "normalAuctionWinners");
+
+				// campaignAuctionTotal is in cents. like $40.50 will be 4050
+				let campaignTotal = parseFloat(campaign.campaignVIPtotal) + (campaignAuctionTotal/100);
+				update_user(campaign, campaignTotal);
+
 				transferStatus = "done";
-				update_user(element);
-				make_payment(element, elementid, "top3AuctionWinners");
-				make_payment(element, elementid, "normalAuctionWinners");
 			}
 
-			db.collection("campaigns").doc(elementid).set({
-				addelement: element.mytotal,
+			db.collection("campaigns").doc(campaign_id).set({
+				addelement: campaign.mytotal,
 				transferStatus: transferStatus,
 				campaignStatus: campaignStatus,
 			}, { merge: true });
-			// doc.data() is never undefined for query doc snapshots
+			
 			console.log(doc.id, " => ", doc.data());
 		});
 	})
 	.catch((error) => {
 		console.log("Error getting campaigns: ", error);
 	});
+	
+	async function make_payment(campaign, campaign_id, collection) {
+		let amount_collected = 0;
+		try {
+			db.collection("campaigns").doc(campaign_id).collection(collection).get().then((snapshot) => 
+			{
+				if (!snapshot.empty) 
+				{
+					snapshot.forEach(async (document) => {
+						let doc = document.data();
+						doc.id = document.id;
+						const winnersdata = document.data();
 
-	async function update_user(campaign) 
+						if(winnersdata.price > 0 && !!winnersdata.stripe_customer_id && !!winnersdata.payment_id)
+						{
+							const paymentintent = await stripe.paymentIntents.create({
+								amount: winnersdata.price * 100,
+								currency: "usd",
+								customer: winnersdata.stripe_customer_id,
+								payment_method: winnersdata.payment_id,
+								off_session: true,
+								confirm: true,
+							});
+	
+							if(paymentintent.status === 'succeeded')
+							{
+								let amount = paymentintent.amount_received;
+								amount_collected += amount;
+	
+								db.collection("users").doc(campaign.person.id).collection("Contributions").doc(doc.person.id).set({
+									contributionTotal: FieldValue.increment(amount),
+									interactionTotal: FieldValue.increment(1)
+								}, { merge: true });
+	
+							}
+						}
+					});
+				}		
+			})
+			.catch((error) => {
+				console.error("Error getting document:", error);
+			});
+		} catch (error) {
+			console.error("Error getting document:", error);
+		}
+
+		return amount_collected;
+	}
+
+	async function update_user(campaign, campaignTotal) 
 	{
 		const userQuery = db.collection("users").where("uid", "==", campaign.creatorId);
 		userQuery.get().then( async (querySnapshot) => {
 			if (!querySnapshot.empty) 
 			{
 				const snapshot = querySnapshot.docs[0];
-				const snapshotData = snapshot.data();
-
+				const user = snapshot.data();
 				const userid = snapshot.id;
-				let grossRevenue = 0;
-				if (snapshotData.grossRevenue) {
-					grossRevenue = parseFloat(snapshotData.grossRevenue) + parseFloat(campaign.campaignGoalTotal);
-				} else {
-					grossRevenue = parseFloat(campaign.campaignGoalTotal);
-				}
-
+				
+				let grossRevenue = campaignTotal;
 				switch (true) {
 					case grossRevenue < 1000:
 						grossRevenue =  grossRevenue - ((17 *grossRevenue) / 100)
@@ -117,11 +166,13 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 				const transfer = await stripe.transfers.create({
 					amount: grossRevenue * 100,
 					currency: 'usd',
-					destination: snapshotData.accountId,
+					destination: user.accountId,
 					// transfer_group: 'ORDER_95',
 				});
 
-				const documentRef = snapshot.ref; // now you have a DocumentReference
+				let previous_grossRevenue = user.grossRevenue ? parseFloat(user.grossRevenue) : 0;
+				grossRevenue += previous_grossRevenue;
+
 				db.collection("users").doc(userid).set({grossRevenue: grossRevenue}, { merge: true });
 			} else {
 				console.error("Error getting document:");
@@ -132,40 +183,6 @@ exports.scheduleFunction = functions.pubsub.schedule("*/15 * * * *").onRun(async
 		});
 	}
 
-	async function make_payment(campaign, campaign_id, collection) {
-		try {
-			db.collection("campaigns").doc(campaign_id).collection(collection).get().then((snapshot) => 
-			{
-				if (!snapshot.empty) 
-				{
-					snapshot.forEach(async (document) => {
-						let doc = document.data();
-						doc.id = document.id;
-						const winnersdata = document.data();
-					
-						db.collection("users").doc(campaign.creatorId).collection("Contributions").doc(doc.creatorId).set({
-							contributionTotal: FieldValue.increment(winnersdata.price),
-							interactionTotal: FieldValue.increment(1)
-						}, { merge: true });
-
-						const paymentintent = await stripe.paymentIntents.create({
-							amount: winnersdata.price * 100,
-							currency: "usd",
-							customer: "cus_MlMuoDXSvJx2Xc",
-							payment_method: "pm_1M1r8qIRYjPm2gCp9FpRWyBv",
-							off_session: true,
-							confirm: true,
-						});
-					});
-				}		
-			})
-			.catch((error) => {
-				console.error("Error getting document:", error);
-			});
-		} catch (error) {
-			console.error("Error getting document:", error);
-		}
-	}
 
 	return null;
 });

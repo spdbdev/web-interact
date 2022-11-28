@@ -23,7 +23,7 @@ import {
   onSnapshot,
   getCountFromServer,
 } from "firebase/firestore";
-import { Box, Stack } from "@mui/material";
+import { Box, Slide, Stack } from "@mui/material";
 import UserCampaignStatus from "@interact/Components/CampaignSnippet/UserCampaignStatus";
 import JumboContentLayout from "@jumbo/components/JumboContentLayout";
 import { db } from "@jumbo/services/auth/firebase/firebase";
@@ -32,6 +32,8 @@ import { sortBids } from "app/utils";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import { saveToRecentCampaignHistory, isCampaignId } from "../../../firebase";
 import React from "react";
+import { LAYOUT_NAMES } from "../../../app/layouts/layouts";
+import { useJumboApp } from "@jumbo/hooks";
 import Swal from "sweetalert2";
 
 function CampaignPage(userData) {
@@ -60,7 +62,7 @@ function CampaignPage(userData) {
 
   const [medal, setMedal] = useState(null);
 
-  if (!campaignId) navigate('/a/invalidcampaign');//update this to 
+  if (!campaignId) navigate("/a/invalidcampaign"); //update this to
 
   useEffect(async () => {
     const isValidate = await isCampaignId(routeParams.campaignId);
@@ -72,33 +74,30 @@ function CampaignPage(userData) {
   },[routeParams])
 
   useEffect(async () => {
-    console.log("Campaign id",campaignId)
+    //if (loading) return;
+    //if (!user) return navigate("/"); // this page should be browsable without login
+    console.log("Campaign id", campaignId);
     let id = await checkCampaignID();
     getCampaignData(id);
     checkPurchasedEntry();
     getMedalStatus();
-  }, [user,campaignId]);
-  
-  const getMedalStatus = async() => {
-    const grossRevenue = user.grossRevenue;
+  }, [user]);
+
+  const getMedalStatus = async () => {
+    const grossRevenue = user?.grossRevenue;
 
     if (grossRevenue === undefined) {
       setMedal(null);
-    }
-    else if (grossRevenue <= 1000) {
-      setMedal('/images/pages/profile/bronzeCreatorRank.png');
-    }
-    else if (grossRevenue <= 10000) {
-      setMedal('/images/pages/profile/silverCreatorRank.png');
-    }
-    else if (grossRevenue <= 100000) {
-      setMedal('/images/pages/profile/goldCreatorRank.png');
-    }
-    else if (grossRevenue <= 1000000) {
-      setMedal('/images/pages/profile/platinumCreatorRank.png');
-    }
-    else {
-      setMedal('/images/pages/profile/diamondCreatorRank.png');
+    } else if (grossRevenue <= 1000) {
+      setMedal("/images/pages/profile/bronzeCreatorRank.png");
+    } else if (grossRevenue <= 10000) {
+      setMedal("/images/pages/profile/silverCreatorRank.png");
+    } else if (grossRevenue <= 100000) {
+      setMedal("/images/pages/profile/goldCreatorRank.png");
+    } else if (grossRevenue <= 1000000) {
+      setMedal("/images/pages/profile/platinumCreatorRank.png");
+    } else {
+      setMedal("/images/pages/profile/diamondCreatorRank.png");
     }
   };
 
@@ -123,9 +122,9 @@ function CampaignPage(userData) {
       if (docSnapshots.exists()) setCampaignId(docSnapshots.id);
       return docSnapshots.id;
     } else {
-      setCampaignId(campaignId)
+      setCampaignId(campaignId);
       return campaignId;
-    };
+    }
   };
 
   const getCampaignData = async (_id = null) => {
@@ -135,16 +134,18 @@ function CampaignPage(userData) {
       query(doc(db, "campaigns", id_for_campaign)),
       (querySnapshot) => {
         let _campaignData = querySnapshot.data();
-        console.log("Campaign Data",_campaignData);
+        console.log("Campaign Data", _campaignData);
         setCampaignData(_campaignData);
-        if(user?.bannedBy?.includes(_campaignData?.person?.id)) {
+        if(user?.bannedBy?.includes(_campaignData?.creatorId)) {
           Swal.fire("Banned!", "You're banned from this creator's campaigns", "error");
           navigate('/u/');
         }
         saveToRecentCampaignHistory(id_for_campaign, user);
         //Check Campaign End Time
         let campaignEndDate = new Date(_campaignData?.endDate?.seconds * 1000);
-        let campaignStartDate = new Date(_campaignData?.startDate?.seconds *1000);
+        let campaignStartDate = new Date(
+          _campaignData?.startDate?.seconds * 1000
+        );
         let now = new Date();
         if (campaignEndDate - now < 0) setIsCampaignEnded(true);
         if (campaignStartDate - now > 0) setIsCampaignScheduled(true);
@@ -169,7 +170,7 @@ function CampaignPage(userData) {
           (element) => element.email === user.email
         );
         setUserAuctionPosition(++position);
-        setHasUserEnteredAuction(true);
+        if (position > 0) setHasUserEnteredAuction(true);
       }
     );
 
@@ -199,7 +200,9 @@ function CampaignPage(userData) {
   };
 
   const getUserLostHistory = async (creator_id, user_id) => {
-    const campaignHistoryUsers = await getDoc(doc(db, "users", creator_id, "GiveawayLossHistory", user_id));
+    const campaignHistoryUsers = await getDoc(
+      doc(db, "users", creator_id, "GiveawayLossHistory", user_id)
+    );
     if (doc.exists) {
       const { numOfLoss } = campaignHistoryUsers.data();
       return parseInt(numOfLoss);
@@ -285,28 +288,36 @@ function CampaignPage(userData) {
     }
   };
 
-	const saveBid = async (amount, auto, desiredRanking, maxBidPrice) => {
-		if (!checkAuthentication()) return;
-		var userSnap = await getDocs(query(collection(db, "users"), where("uid", "==", user.uid)));
-		let user_data = userSnap.docs[0];
-		await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
-			person: {
-				username: user_data.data().name,
-				id: user_data.id,
-				photoURL: user.photoURL,
-			},
-			desiredRanking,
-			maxBidPrice,
-			price: amount,
-			auto: auto,
-			email: user.email,
-			time: serverTimestamp(),
-		});
+  const saveBid = async (amount, auto, desiredRanking, maxBidPrice) => {
+    if (!checkAuthentication()) return;
+    var userSnap = await getDocs(
+      query(collection(db, "users"), where("uid", "==", user.uid))
+    );
+    let user_data = userSnap.docs[0];
+    await setDoc(doc(db, "campaigns", campaignId, "bids", user.uid), {
+      person: {
+        username: user_data.data().name,
+        id: user_data.id,
+        photoURL: user.photoURL,
+      },
+      desiredRanking,
+      maxBidPrice,
+      price: amount,
+      auto: auto,
+      email: user.email,
+      time: serverTimestamp(),
+    });
 
-		const snapshot = await getCountFromServer(collection(db, "campaigns", campaignId, "bids"));
-		const counter = snapshot.data().count;
-		setDoc(doc(db, "campaigns", campaignId), { numAuctionBids: counter }, { merge: true });
-	};
+    const snapshot = await getCountFromServer(
+      collection(db, "campaigns", campaignId, "bids")
+    );
+    const counter = snapshot.data().count;
+    setDoc(
+      doc(db, "campaigns", campaignId),
+      { numAuctionBids: counter },
+      { merge: true }
+    );
+  };
 
   function renderUserCampaignStatus() {
     if (
@@ -349,6 +360,7 @@ function CampaignPage(userData) {
               userGiveawayWinChance={chances}
               auctionLeaderboardSpots={campaignData.numAuctionInteractions}
               showUserAvatar
+              user={user}
             />
           </Box>
         </Stack>
@@ -358,7 +370,7 @@ function CampaignPage(userData) {
     }
   }
 
-  if(!campaignData) return <div>Loading...</div>;
+  if (!campaignData) return <div>Loading...</div>;
 
   return (
     <JumboContentLayout
@@ -377,7 +389,7 @@ function CampaignPage(userData) {
     >
       <Box className="CampaignPage">
         {renderUserCampaignStatus()}
-        <Header campaignData={campaignData} badgeUrl={medal}/>
+        <Header campaignData={campaignData} badgeUrl={medal} />
         <p>{localStorage.getItem("data")}</p>
         <Stack
           direction="row"
@@ -449,7 +461,7 @@ function CampaignPage(userData) {
               bidAction={saveBid}
               campaignData={campaignData}
               bids={bids}
-			  userAuctionPosition={userAuctionPosition}
+              userAuctionPosition={userAuctionPosition}
               hasUserEnteredAuction={hasUserEnteredAuction}
               setHasUserEnteredAuction={setHasUserEnteredAuction}
             />
@@ -462,7 +474,7 @@ function CampaignPage(userData) {
             flexDirection: "row",
           }}
         >
-          <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7}}>
+          <Box sx={{ flex: 1, mt: 1.21, mr: 3, mb: 7 }}>
             {/* <CreatorName campaignData={campaignData} /> */}
             <CampaignInfo
               isCampaignEnded={isCampaignEnded}

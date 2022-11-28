@@ -41,10 +41,10 @@ function FollowedCampaigns() {
 
 		const docSnap = await getDocs(collection(db, "campaigns"));
 		if (!docSnap.empty) {
+			// console.log(docSnap.docs)
 		for (let document of docSnap.docs) 
 		{
 			let doc = document.data();
-
 			let endDate = doc.endDate?.seconds;
 			let new_doc = {
 				title: doc.title,
@@ -53,9 +53,9 @@ function FollowedCampaigns() {
 				}),
 				goal: doc.goal,
 				goalValue: doc.goalValue,
-				username: doc.person?.username
+				username: doc.creatorName,
+				id: document.id,
 			};
-
 
 			current_campaigns.push(new_doc);
 

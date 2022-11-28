@@ -70,16 +70,13 @@ const Sidebar = () => {
           label: returnedValue[i]?.title
             ? returnedValue[i]?.title
             : "No title",
-          creator_label: returnedValue[i].endDateTime ? "Ends on " + getDateFromTimestamp({
-              timestamp: returnedValue[i].endDateTime?.seconds,
-              format: "MMM Do"
-            }) : "No end date",
-          /*creator_name: returnedValue[i]?.creatorName
+          creator_label: "Created by",
+          creator_name: returnedValue[i]?.creatorName
             ? returnedValue[i]?.creatorName
-            : "No username",
+            : "No name",
           creator_Uri: returnedValue[i]?.creatorName
             ? "/u/" + returnedValue[i]?.creatorName
-            : "/u",*/
+            : "/u",
           type: "recent-campaign-item",
           photoURL: returnedValue[i]?.campaignVideoThumbnailLink
             ? returnedValue[i]?.campaignVideoThumbnailLink
@@ -95,13 +92,19 @@ const Sidebar = () => {
 
   useEffect(() => {
     if(user && user.following) {
-      getFollowingList();
+      const fetchData = setTimeout( async () => {
+        getFollowingList();
+      })
+      return () => clearTimeout(fetchData)
     }
   }, [user]);
 
   useEffect(() => {
     if(user && user.recentCampaignData) {
-      getRecentCampaignList();
+      const fetchData = setTimeout( async () => {
+        getRecentCampaignList();
+      })
+      return () => clearTimeout(fetchData)
     }
   }, [user]);
 
@@ -118,10 +121,7 @@ const Sidebar = () => {
       if (result.value) {
         if (user && targetUser) {
           followUser(user, targetUser, false);
-          //Swal.fire("Success!", "You have unfollowed.", "success");
         }
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        //Swal.fire("Cancelled", "You are still following that user", "success");
       }
     });
   };

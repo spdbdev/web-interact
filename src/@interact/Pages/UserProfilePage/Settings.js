@@ -284,37 +284,45 @@ function Settings() {
   const updateemailofloginuser = async () => {
     const duplicateMsg = "Firebase: Error (auth/email-already-in-use).";
     const recentLoginRequiredMsg = "Firebase: Error (auth/requires-recent-login).";
-    
-    updateEmail(auth.currentUser, email)
-    .then((res) => {
-      const user = doc(db, "users", userId);
-      updateDoc(user, {
-        email: email,
-      })
-      .then((response) => {
-        Swal.fire(
-          "Success!",
-          "Email successfully updated",
-          "success"
-        );
+    if (email == auth.currentUser.email) {
+      Swal.fire(
+        "Error!",
+        "That's your current email...",
+        "error"
+      );
+    }
+    else {
+      updateEmail(auth.currentUser, email)
+      .then((res) => {
+        const user = doc(db, "users", userId);
+        updateDoc(user, {
+          email: email,
+        })
+        .then((response) => {
+          Swal.fire(
+            "Success!",
+            "Email Successfully Updated",
+            "success"
+          );
+        })
+        .catch(err => {
+          console.log(error);
+          Swal.fire(
+            "Error!",
+            "An Error Occurred.",
+            "error"
+          );
+        });
       })
       .catch(err => {
-        console.log(error);
+        console.log(err);
         Swal.fire(
           "Error!",
-          "An error occurred.",
+          (err.message == duplicateMsg || err.message == recentLoginRequiredMsg) ? "That email is already in use." : "Oops, An Error Occurred.",
           "error"
         );
       });
-    })
-    .catch(err => {
-      console.log(err);
-      Swal.fire(
-        "Error!",
-        (err.message == duplicateMsg || err.message == recentLoginRequiredMsg) ? "That email is already in use" : "Oops, an error occurred.",
-        "error"
-      );
-    });
+    }
 
     // await updateEmail(auth.currentUser, email);
   };
@@ -1028,7 +1036,7 @@ function Settings() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
+            <br />
             <div className="ButtonsWrapper" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <InteractFlashyButton onClick={updateemailofloginuser}>
                 Change email
