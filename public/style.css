@@ -66,6 +66,10 @@
   z-index: 1200 !important;
 }
 
+.custom_swal_container {
+  z-index: 1200 !important;
+}
+
 .custom_swal_popup {
   width: 24em !important;
   overflow: hidden !important;
