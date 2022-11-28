@@ -462,6 +462,19 @@ export const isCampaignId = async (campaignId) => {
   }
 }
 
+/*
+Function to update photoURL of User.
+*/
+export const updateUserPhotoURL = async (userid, url) => {
+  setDoc(doc(db, "users", userid), { photoURL: url }, { merge: true });
+};
+
+/*
+Function to update Description of User.
+*/
+export const updateUserDescription = async (userid, description) => {
+  await setDoc(doc(db, "users", userid),{ description: description },{ merge: true });
+}
 
 export {
   auth,

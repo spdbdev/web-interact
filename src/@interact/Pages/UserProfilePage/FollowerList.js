@@ -1,6 +1,5 @@
 import "./UserProfilePage.css";
 import { useEffect, useState } from "react";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReactModal from "react-modal";
 import CloseIcon from '@mui/icons-material/Close';
 import useCurrentUser from "@interact/Hooks/use-current-user";
@@ -54,7 +53,6 @@ function FollowerListItem(data) {
         paddingTop: 6.9,
         paddingBottom: 6.9,
         alignItems: "center",
-        //borderBottom: "1px solid #aaa",
       }}
     >
       <img
@@ -81,8 +79,14 @@ function FollowerListItem(data) {
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <FollowButton user={user} targetUser={data.data} sx={{width:'50%'}}/>
-          <BanButton user={user} targetUser={data.data} sx={{width:'50%', marginLeft:"10px", marginRight:'10px'}}/>
+          {
+            user ? (
+              <>
+                <FollowButton user={user} targetUser={data.data} sx={{width:'50%'}}/>
+                <BanButton user={user} targetUser={data.data} sx={{width:'50%', marginLeft:"10px", marginRight:'10px'}}/>
+              </>
+              ) : <></>
+          }
         </div>
       </div>
     </div>

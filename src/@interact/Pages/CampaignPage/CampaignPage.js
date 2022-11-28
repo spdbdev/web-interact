@@ -64,24 +64,15 @@ function CampaignPage(userData) {
 
   if (!campaignId) navigate("/a/invalidcampaign"); //update this to
 
-  useEffect(async () => {
-    const isValidate = await isCampaignId(routeParams.campaignId);
-    if(isValidate) {
-      setCampaignId(routeParams.campaignId);
-    }else {
-      navigate('/a/invalidcampaign');
-    }
-  },[routeParams])
-
-  useEffect(async () => {
-    //if (loading) return;
-    //if (!user) return navigate("/"); // this page should be browsable without login
-    console.log("Campaign id", campaignId);
-    let id = await checkCampaignID();
-    getCampaignData(id);
-    checkPurchasedEntry();
-    getMedalStatus();
-  }, [user]);
+  useEffect(() => {
+    const fetchData = setTimeout( async () => {
+      let id = await checkCampaignID(routeParams.campaignId);
+      getCampaignData(id);
+      checkPurchasedEntry();
+      getMedalStatus();
+    });
+    return () => clearTimeout(fetchData)
+  }, [user, routeParams]);
 
   const getMedalStatus = async () => {
     const grossRevenue = user?.grossRevenue;
@@ -109,7 +100,7 @@ function CampaignPage(userData) {
     return true;
   };
 
-  const checkCampaignID = async () => {
+  const checkCampaignID = async (campaignId) => {
     // check if the campaignId is a uid or custom_url
     const docSnap = await getDoc(doc(db, "campaigns", campaignId));
     if (!docSnap.exists()) {
@@ -119,8 +110,12 @@ function CampaignPage(userData) {
       );
       const customURLQuerySnapshot = await getDocs(customURLQ);
       var docSnapshots = customURLQuerySnapshot.docs[0];
-      if (docSnapshots.exists()) setCampaignId(docSnapshots.id);
-      return docSnapshots.id;
+      if (docSnapshots.exists()) {
+        setCampaignId(docSnapshots.id);
+        return docSnapshots.id;
+      }else {
+        navigate("/a/invalidcampaign");
+      } 
     } else {
       setCampaignId(campaignId);
       return campaignId;

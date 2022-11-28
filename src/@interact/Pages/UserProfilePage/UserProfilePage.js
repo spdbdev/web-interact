@@ -1,7 +1,6 @@
 import { TextField, Button, Stack } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import { Box, Slide } from "@mui/material";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -15,160 +14,16 @@ import Setting from "./Settings";
 import FollowerList from "./FollowerList";
 import { db, storage as Storage } from "@jumbo/services/auth/firebase/firebase";
 import { setDoc, doc, query, onSnapshot, getDocs, where, collection } from "firebase/firestore";
-
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
 import { FollowButton } from "../CampaignPage/Stats";
-import { fetchUserByName } from "../../../firebase";
+import { fetchUserByName, updateUserPhotoURL, updateUserDescription } from "../../../firebase";
 import useCurrentUser from "@interact/Hooks/use-current-user";
 import EditIcon from "@mui/icons-material/Edit";
 import useSwalWrapper from "@jumbo/vendors/sweetalert2/hooks";
 import { StyledTab } from "@interact/Pages/CreateCampaignPage/CampaignCreationTabs";
 import Typography from "@mui/material/Typography";
-import { LAYOUT_NAMES } from "../../../app/layouts/layouts";
-import { useJumboApp } from "@jumbo/hooks";
-
-import Modal from "@mui/material/Modal";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
-import InteractFlashyButton from "@interact/Components/Button/InteractFlashyButton";
-import { flexbox } from "@mui/system";
-import JumboCardQuick from "@jumbo/components/JumboCardQuick";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-};
-function CropProfilePicture({
-  cropModalOpen,
-  setCropModalOpen,
-  imgageObj,
-  updatePhotoURL,
-  setImage,
-}) {
-  const handleOpen = () => setCropModalOpen(true);
-  const handleClose = () => setCropModalOpen(false);
-  const [completedCrop, setCompletedCrop] = useState();
-  const [imageRef, setImageRef] = useState();
-  const [crop, setCrop] = useState({
-    unit: "%", // Can be 'px' or '%'
-    x: 25,
-    y: 25,
-    width: 50,
-    height: 50,
-  });
-
-  const handleSubmit = async (event) => {
-    if (imageRef && completedCrop.width && completedCrop.height) {
-      const croppedImageUrl = await getCroppedImg(
-        imageRef,
-        completedCrop,
-        "newFile.jpeg"
-      );
-      if (!croppedImageUrl) return;
-
-      const storageRef = ref(
-        Storage,
-        `/user_profile_pictures/${imgageObj.name}.jpg`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, croppedImageUrl);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const percent = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-        },
-        (err) => console.log(err),
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            setCropModalOpen(false);
-            updatePhotoURL(url);
-            setImage(url);
-          });
-        }
-      );
-    }
-  };
-
-  function getCroppedImg(image, crop, fileName) {
-    const canvas = document.createElement("canvas");
-    const pixelRatio = window.devicePixelRatio;
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const ctx = canvas.getContext("2d");
-    canvas.width = crop.width * pixelRatio * scaleX;
-    canvas.height = crop.height * pixelRatio * scaleY;
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width * scaleX,
-      crop.height * scaleY
-    );
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            console.error("Canvas is empty");
-            return;
-          }
-          blob.name = fileName;
-          resolve(blob);
-        },
-        "image/jpeg",
-        1
-      );
-    });
-  }
-
-  return (
-    <Modal
-      align="center"
-      open={cropModalOpen}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <JumboCardQuick 
-        id="cropPhoto"
-        sx={{padding: 6.2169, my: 14.1469, maxWidth: 690, maxHeight: 690 }}>
-
-            <ReactCrop
-              crop={crop}
-              onChange={(c) => setCrop(c)}
-              onComplete={(c) => setCompletedCrop(c)}
-            >
-              <img
-                src={imgageObj.url}
-                onLoad={(e) => setImageRef(e.currentTarget)}
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
-                alt=""
-              />
-            </ReactCrop>
-
-            <Box mt={4.69} mb={-1.69} align="center" >
-              <InteractFlashyButton onClick={handleSubmit}>
-                Save
-              </InteractFlashyButton>
-            </Box>
-
-      </JumboCardQuick>
-    </Modal>
-  );
-}
-
+import CropProfilePicture from "./CropProfilePicture"
+import EditProfileDescription from "./EditProfileDescription";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -200,7 +55,6 @@ function UserProfilePage() {
   const params = useParams();
   const { user } = useCurrentUser();
   const isCreator = user?.name === params.username ? true : false;
-
   const [description, setDescription] = useState("Welcome to my profile page");
   const [tab, setTab] = React.useState(0);
   const [modalOpened, setModalOpened] = useState(false);
@@ -209,25 +63,17 @@ function UserProfilePage() {
   const [image, setImage] = React.useState("https://iili.io/HH6JxB1.md.jpg");
   const [medal, setMedal] = React.useState(null);
   const Swal = useSwalWrapper();
-
   const [cropModalOpen, setCropModalOpen] = React.useState(false);
+  const [editDescriptionModalOpen, setEditDescriptionModalOpen] = React.useState(false);
   const [croppingImg, setCroppingImg] = React.useState({});
 
   const updatePhotoURL = async (url) => {
-    setDoc(doc(db, "users", user.id), { photoURL: url }, { merge: true });
+    updateUserPhotoURL(user.id, url);
   };
 
   const updateDescription = async (description) => {
-    try {
-      await setDoc(
-        doc(db, "users", user.id),
-        { description: description },
-        { merge: true }
-      );
-      setDescription(description);
-    } catch (error) {
-      console.log("Error while updating description", error);
-    }
+    updateUserDescription(user.id, description);
+    setDescription(description);
   };
 
   const getTargetUser = async () => {
@@ -241,25 +87,13 @@ function UserProfilePage() {
         const id = querySnapshot.id;
         setTargetUser({ ...userData, id });
         setImage(userData?.photoURL ? userData?.photoURL : "https://iili.io/HH6JxB1.md.jpg");
-        if (userData?.description?.length > 0)
+        if (userData?.description?.length > 0) {
           setDescription(userData.description);
+        }else {
+          setDescription("Welcome to my profile page");
+        }
       }
     );
-  };
-
-  const handleFileClick = function () {
-    fileRef.current.click();
-  };
-
-  const handleEditDescription = async function (e) {
-    const { value: text } = await Swal.fire({
-      title: "Bio",
-      input: "textarea",
-      inputValue: description,
-      confirmButtonText: "Update",
-      showCancelButton: true,
-    });
-    if (text) updateDescription(text);
   };
 
   const handleChange = (event, newValue) => {
@@ -336,6 +170,12 @@ function UserProfilePage() {
           updatePhotoURL={updatePhotoURL}
           setImage={setImage}
         />
+        <EditProfileDescription
+          editModalOpen={editDescriptionModalOpen}
+          setEditModalOpen={setEditDescriptionModalOpen}
+          description={description}
+          updateDescription={updateDescription}
+        />
         <Stack
           direction="column"
           alignItems="center"
@@ -357,12 +197,12 @@ function UserProfilePage() {
                   type="file"
                   accept="image/*"
                   id="image-item-form--input-id"
+                  onClick={(e) => e.target.value = null}
                   onChange={(e) => handleChangeImage(e)}
                   ref={fileRef}
                 ></input>
               </form>
             )}
-            {/* <input type="file" onChange={handleChangeImage} /> */}
             <img className="profilePic" alt="profile-pic" src={image} />
           </div>
           <div style={{display: "flex", alignItems: "center", flexDirection: "row", position: "relative", marginTop: "10px"}}>
@@ -405,7 +245,7 @@ function UserProfilePage() {
             {user?.name === params.username && (
               <EditIcon
                 className="profile-desc--edit"
-                onClick={(e) => handleEditDescription(e)}
+                onClick={(e) => setEditDescriptionModalOpen(true)}
               />
             )}
           </Box>
